@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { useThemeColor } from '@/src/hooks/useThemeColor'
 import { TextGradient } from '@/src/components/TextGradient'
-import { CustomButton } from '@/src/components/Button'
+import { CustomButton } from '@/src/components/GradientButton'
 import { Typography } from '@/src/components/common/style-guide/typography'
 import { useNavigation } from '@react-navigation/native'
 

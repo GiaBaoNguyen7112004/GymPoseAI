@@ -1,5 +1,3 @@
-import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
 import {
     useFonts,
     Poppins_300Light,
@@ -12,8 +10,6 @@ import { ActivityIndicator, View } from 'react-native'
 import { Provider } from 'react-redux'
 import { RootStackNavigation } from '@/src/navigations'
 import { store } from '@/src/store'
-
-const Stack = createStackNavigator()
 
 export default function App() {
     const [fontsLoaded] = useFonts({

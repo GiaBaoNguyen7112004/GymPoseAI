@@ -1,8 +1,8 @@
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
 import WelcomeStack from './WelcomeStack'
 import ForgotPassword from '@/src/screens/Auth/ForgotPassword'
-import Register from '@/src/screens/Auth/Register'
 import Login from '@/src/screens/Auth/Login'
+import RegisterStack from './RegisterStack'
 export type AuthStackParamList = {
     Login: undefined
     Register: undefined
@@ -18,7 +18,7 @@ const AuthStack = () => {
     return (
         <Stack.Navigator screenOptions={navigationOptions}>
             <Stack.Screen component={Login} name='Login' />
-            <Stack.Screen component={Register} name='Register' />
+            <Stack.Screen component={RegisterStack} name='Register' />
             <Stack.Screen component={ForgotPassword} name='ForgotPassword' />
             <Stack.Screen component={WelcomeStack} name='WelcomeStack' />
         </Stack.Navigator>
