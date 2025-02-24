@@ -27,7 +27,6 @@ const Login = (): JSX.Element => {
     const [credentials, setCredentials] = useState({ email: '', password: '' })
     const [allowLogin, setAllowLogin] = useState(false)
     const [emailError, setEmailError] = useState('')
-    const [emailTouched, setEmailTouched] = useState(false)
 
     const handleSetAllowLogin = () => {
         setAllowLogin(
@@ -38,13 +37,13 @@ const Login = (): JSX.Element => {
     }
 
     const _onBlurEmail = useCallback(() => {
-        if (emailTouched && !validateEmail(credentials.email.trim())) {
+        if (!validateEmail(credentials.email.trim())) {
             setEmailError('Invalid email format')
         } else {
             setEmailError('')
         }
         handleSetAllowLogin()
-    }, [credentials.email, credentials.password, emailTouched])
+    }, [credentials.email, credentials.password])
 
     const _onPressToggleHidePassword = useCallback(() => {
         setHidePassword((prev) => !prev)
@@ -53,9 +52,6 @@ const Login = (): JSX.Element => {
     const _onChange = useCallback((field: 'email' | 'password', value: string) => {
         setCredentials((prev) => {
             const newCredentials = { ...prev, [field]: value.trim() }
-            if (field === 'email') {
-                setEmailTouched(true)
-            }
             handleSetAllowLogin()
             return newCredentials
         })

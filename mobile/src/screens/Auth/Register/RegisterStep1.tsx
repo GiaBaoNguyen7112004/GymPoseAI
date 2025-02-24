@@ -119,6 +119,9 @@ const RegisterStep1 = (): JSX.Element => {
     const handleLogin = () => {
         navigation.navigate('Login')
     }
+    const handleRegister = () => {
+        navigation.navigate('RegisterStep2')
+    }
     const handleCheckboxChange = () => {
         setHasAcceptedTerms((prev) => !prev)
     }
@@ -220,6 +223,7 @@ const RegisterStep1 = (): JSX.Element => {
                         </View>
                         <View style={{ width: '100%', alignItems: 'center' }}>
                             <GradientButton
+                                onPress={handleRegister}
                                 disabled={!allowLogin}
                                 activeOpacity={0.6}
                                 style={{

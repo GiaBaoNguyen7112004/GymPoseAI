@@ -154,20 +154,57 @@ const RegisterStep2 = (): JSX.Element => {
                                     </Text>
                                 </View>
                                 <View style={styles.loginForm}>
+                                <View style={styles.rowForm}>
                                     <View style={styles.textInputWrapper}>
+                                        <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
                                         <TextInput
                                             autoCapitalize='none'
-                                            value={username}
-                                            onChangeText={_onChangeUsername}
-                                            placeholder='Username, email or phone number'
+                                            
+    
+                                            placeholder='Email'
                                             style={styles.input}
                                             placeholderTextColor='#ADA4A5'
+                                           
                                         />
                                     </View>
+                                    
+                                </View>
+                                <View style={styles.rowForm}>
                                     <View style={styles.textInputWrapper}>
+                                        <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
                                         <TextInput
-                                            value={password}
-                                            onChangeText={_onChangePassword}
+                                            autoCapitalize='none'
+                                            
+    
+                                            placeholder='Email'
+                                            style={styles.input}
+                                            placeholderTextColor='#ADA4A5'
+                                           
+                                        />
+                                    </View>
+                                    
+                                </View>
+                                <View style={styles.rowForm}>
+                                    <View style={styles.textInputWrapper}>
+                                        <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
+                                        <TextInput
+                                            autoCapitalize='none'
+                                            
+    
+                                            placeholder='Email'
+                                            style={styles.input}
+                                            placeholderTextColor='#ADA4A5'
+                                           
+                                        />
+                                    </View>
+                                    
+                                </View>
+                                <View style={styles.rowForm}>
+                                    <View style={styles.textInputWrapper}>
+                                        <MyIcon name='lockIcon' size={18} style={styles.Input__icon} />
+                                        <TextInput
+                                            
+                                            
                                             secureTextEntry={hidePassword}
                                             placeholder='Password'
                                             style={styles.input}
@@ -177,13 +214,15 @@ const RegisterStep2 = (): JSX.Element => {
                                             style={styles.hidePasswordIcon}
                                             onPress={_onPressToggleHidePassword}
                                         >
-                                            {hidePassword ? (
-                                                <Icon name='eye-off-outline' size={20} color='#333' />
-                                            ) : (
-                                                <Icon name='eye-outline' color='#318bfb' size={20} />
-                                            )}
+                                            <Icon
+                                                name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
+                                                size={20}
+                                                color={hidePassword ? '#333' : '#318bfb'}
+                                            />
                                         </TouchableOpacity>
                                     </View>
+                                </View>
+
                                     <GradientButton
                                         onPress={_onLogin}
                                         disabled={!allowLogin}
@@ -238,34 +277,62 @@ const styles = StyleSheet.create({
         lineHeight: 18
     },
     loginForm: {
-        marginTop: 30,
-        width: SCREEN_WIDTH * 0.9
-    },
-    textInputWrapper: {
-        position: 'relative',
-        width: '100%',
-        height: 48,
-        flexShrink: 0,
-        marginVertical: 15
-    },
-    hidePasswordIcon: {
-        position: 'absolute',
-        height: 30,
-        width: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        right: 5,
-        top: (44 - 30) / 2
-    },
-    input: {
-        width: '100%',
-        height: '100%',
-        paddingHorizontal: 15,
-        borderRadius: 14,
-        borderColor: '#F7F8F8',
-        borderWidth: 1,
-        backgroundColor: '#F7F8F8'
-    },
+      marginTop: 30,
+      width: SCREEN_WIDTH * 0.9,
+      alignItems: 'center'
+  },
+  rowForm: {
+      position: 'relative',
+      width: '100%',
+      marginVertical: 7.5
+  },
+  errorText: {
+      color: '#FF0000',
+      fontSize: 12,
+      position: 'absolute',
+      bottom: -14,
+      left: 10
+  },
+  textInputWrapper: {
+      width: '100%',
+      height: 48,
+      flexShrink: 0,
+      paddingHorizontal: 15,
+      borderRadius: 14,
+      borderColor: '#F7F8F8',
+      borderWidth: 1,
+      backgroundColor: '#F7F8F8',
+      flexDirection: 'row',
+      alignItems: 'center'
+  },
+  hidePasswordIcon: {
+      position: 'absolute',
+      height: 30,
+      width: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      right: 5,
+      top: (44 - 30) / 2,
+      backgroundColor: '#F7F8F8'
+  },
+  input: {
+      flex: 1
+  },
+  Input__icon: {
+      marginRight: 10
+  },
+  linkText: {
+      color: '#ADA4A5',
+      fontFamily: 'Poppins',
+      fontSize: 12,
+      fontStyle: 'normal',
+      fontWeight: '500',
+      lineHeight: 18,
+      textDecorationLine: 'underline',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center'
+  },
     btnLogin: {
         marginTop: 7.5,
         width: '100%',
@@ -274,47 +341,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 22,
         elevation: 10
-    },
-    otherOptionsWrapper: {
-        width: SCREEN_WIDTH * 0.9,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    forgotPassword: {
-        width: SCREEN_WIDTH * 0.8,
-        marginVertical: 15,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    divideLine: {
-        marginVertical: 10,
-        position: 'relative',
-        height: 2,
-        width: '100%',
-        backgroundColor: '#ddd'
-    },
-    ORtextWrapper: {
-        width: 40,
-        height: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        top: (2 - 20) / 2,
-        left: (SCREEN_WIDTH * 0.9 - 40) / 2,
-        position: 'absolute',
-        paddingHorizontal: 10,
-        backgroundColor: '#fff'
-    },
-    btnLoginWithFacebook: {
-        marginTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    registerWrapper: {
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderTopColor: '#ddd',
-        borderTopWidth: 1
     },
     loadingWrapper: {
         width: SCREEN_WIDTH,
