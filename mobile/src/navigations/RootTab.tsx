@@ -16,7 +16,7 @@ const RootTabComponent = (): JSX.Element => {
         tabBarStyle: { display: 'none' }
     }
 
-    const logined = false
+    const logined = true
 
     return (
         <RootTab.Navigator initialRouteName={logined ? 'HomeTab' : 'AuthStack'} screenOptions={navigationOptions}>

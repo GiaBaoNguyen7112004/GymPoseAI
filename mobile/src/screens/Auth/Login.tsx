@@ -28,42 +28,33 @@ const Login = (): JSX.Element => {
     const [allowLogin, setAllowLogin] = useState(false)
     const [emailError, setEmailError] = useState('')
 
-    const handleSetAllowLogin = () => {
-        setAllowLogin(
-            credentials.email.trim() !== '' &&
-                credentials.password.trim() !== '' &&
-                validateEmail(credentials.email.trim())
-        )
+    const handleSetAllowLogin = (email: string, password: string) => {
+        setAllowLogin(email.trim() !== '' && password.trim() !== '' && validateEmail(email.trim()))
     }
 
     const _onBlurEmail = useCallback(() => {
-        if (!validateEmail(credentials.email.trim())) {
-            setEmailError('Invalid email format')
-        } else {
-            setEmailError('')
-        }
-        handleSetAllowLogin()
+        const emailTrimmed = credentials.email.trim()
+        setEmailError(validateEmail(emailTrimmed) ? '' : 'Invalid email format')
+        handleSetAllowLogin(emailTrimmed, credentials.password)
     }, [credentials.email, credentials.password])
-
     const _onPressToggleHidePassword = useCallback(() => {
         setHidePassword((prev) => !prev)
     }, [])
 
     const _onChange = useCallback((field: 'email' | 'password', value: string) => {
         setCredentials((prev) => {
-            const newCredentials = { ...prev, [field]: value.trim() }
-            handleSetAllowLogin()
+            const newCredentials = { ...prev, [field]: value }
+            handleSetAllowLogin(newCredentials.email, newCredentials.password)
             return newCredentials
         })
     }, [])
 
     const _onLogin = useCallback(async () => {
-        if (!allowLogin) return // Prevent login if not allowed.
+        if (!allowLogin) return
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
             navigation.navigate('WelcomeStack')
-            //alert('Login thành công');
         }, 2000)
     }, [allowLogin])
 
@@ -88,104 +79,104 @@ const Login = (): JSX.Element => {
         })
     }
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.container}>
-            <SafeAreaView style={styles.container}>
-                {loading && (
-                    <View style={styles.loadingWrapper}>
-                        <View style={styles.loading}>
-                            <Animated.Image
-                                onLayout={_animationLoadingDeg}
-                                style={{
-                                    width: 30,
-                                    height: 30,
-                                    marginRight: 10,
-                                    transform: [
-                                        {
-                                            rotate: _loadingDeg.interpolate({
-                                                inputRange: [0, 1],
-                                                outputRange: ['0deg', '360deg']
-                                            })
-                                        }
-                                    ]
-                                }}
-                                source={require('@/src/assets/Icons/waiting.png')}
-                            />
-                            <Text style={{ fontWeight: '500' }}>Logging in...</Text>
-                        </View>
+        <SafeAreaView style={styles.container}>
+            {loading && (
+                <View style={styles.loadingWrapper}>
+                    <View style={styles.loading}>
+                        <Animated.Image
+                            onLayout={_animationLoadingDeg}
+                            style={{
+                                width: 30,
+                                height: 30,
+                                marginRight: 10,
+                                transform: [
+                                    {
+                                        rotate: _loadingDeg.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: ['0deg', '360deg']
+                                        })
+                                    }
+                                ]
+                            }}
+                            source={require('@/src/assets/Icons/waiting.png')}
+                        />
+                        <Text style={{ fontWeight: '500' }}>Logging in...</Text>
                     </View>
-                )}
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                    <View style={styles.container}>
-                        <View style={styles.ContainerTop}>
-                            <View style={styles.callToAction}>
-                                <Text style={styles.callToAction__desc}>Hey there,</Text>
-                                <Text style={styles.callToAction__heading}>Welcome Back</Text>
+                </View>
+            )}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <View style={styles.container}>
+                    <View style={styles.ContainerTop}>
+                        <View style={styles.callToAction}>
+                            <Text style={styles.callToAction__desc}>Hey there,</Text>
+                            <Text style={styles.callToAction__heading}>Welcome Back</Text>
+                        </View>
+                        <View style={styles.loginForm}>
+                            <View style={styles.rowForm}>
+                                <View style={styles.textInputWrapper}>
+                                    <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
+                                    <TextInput
+                                        autoCapitalize='none'
+                                        value={credentials.email}
+                                        onChangeText={(text) => _onChange('email', text)}
+                                        placeholder='Email'
+                                        style={styles.input}
+                                        placeholderTextColor='#ADA4A5'
+                                        onBlur={() => {
+                                            _onBlurEmail()
+                                        }}
+                                    />
+                                </View>
+                                {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
                             </View>
-                            <View style={styles.loginForm}>
-                                <View style={styles.rowForm}>
-                                    <View style={styles.textInputWrapper}>
-                                        <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
-                                        <TextInput
-                                            autoCapitalize='none'
-                                            value={credentials.email}
-                                            onChangeText={(text) => _onChange('email', text)}
-                                            placeholder='Email'
-                                            style={styles.input}
-                                            placeholderTextColor='#ADA4A5'
-                                            onBlur={_onBlurEmail}
+                            <View style={styles.rowForm}>
+                                <View style={styles.textInputWrapper}>
+                                    <MyIcon name='lockIcon' size={18} style={styles.Input__icon} />
+                                    <TextInput
+                                        value={credentials.password}
+                                        onChangeText={(text) => _onChange('password', text)}
+                                        secureTextEntry={hidePassword}
+                                        placeholder='Password'
+                                        style={styles.input}
+                                        placeholderTextColor='#ADA4A5'
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.hidePasswordIcon}
+                                        onPress={_onPressToggleHidePassword}
+                                    >
+                                        <Icon
+                                            name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
+                                            size={20}
+                                            color={hidePassword ? '#333' : '#318bfb'}
                                         />
-                                    </View>
-                                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                                    </TouchableOpacity>
                                 </View>
-                                <View style={styles.rowForm}>
-                                    <View style={styles.textInputWrapper}>
-                                        <MyIcon name='lockIcon' size={18} style={styles.Input__icon} />
-                                        <TextInput
-                                            value={credentials.password}
-                                            onChangeText={(text) => _onChange('password', text)}
-                                            secureTextEntry={hidePassword}
-                                            placeholder='Password'
-                                            style={styles.input}
-                                            placeholderTextColor='#ADA4A5'
-                                        />
-                                        <TouchableOpacity
-                                            style={styles.hidePasswordIcon}
-                                            onPress={_onPressToggleHidePassword}
-                                        >
-                                            <Icon
-                                                name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
-                                                size={20}
-                                                color={hidePassword ? '#333' : '#318bfb'}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
+                            </View>
 
-                                <View>
-                                    <Text style={styles.linkText} onPress={handleForgotPassword}>
-                                        Forgot your password?
-                                    </Text>
-                                </View>
+                            <View>
+                                <Text style={styles.linkText} onPress={handleForgotPassword}>
+                                    Forgot your password?
+                                </Text>
                             </View>
                         </View>
-                        <View style={styles.ContainerBottom}>
-                            <GradientButton
-                                onPress={_onLogin}
-                                disabled={!allowLogin}
-                                style={[styles.btnLogin, { opacity: allowLogin ? 1 : 0.6 }]}
-                            >
-                                <MyIcon name='loginIcon' style={styles.Input__icon} />
-                                <Text style={styles.btnText}>Login</Text>
-                            </GradientButton>
-                            <Pressable style={styles.registerWrapper} onPress={handleRegister}>
-                                <Text style={styles.callToAction__desc}>Don’t have an account yet?</Text>
-                                <TextGradient style={styles.strongText} text=' Register' />
-                            </Pressable>
-                        </View>
                     </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+                    <View style={styles.ContainerBottom}>
+                        <GradientButton
+                            onPress={_onLogin}
+                            disabled={!allowLogin}
+                            style={[styles.btnLogin, { opacity: allowLogin ? 1 : 0.6 }]}
+                        >
+                            <MyIcon name='loginIcon' style={styles.Input__icon} />
+                            <Text style={styles.btnText}>Login</Text>
+                        </GradientButton>
+                        <Pressable style={styles.registerWrapper} onPress={handleRegister}>
+                            <Text style={styles.callToAction__desc}>Don’t have an account yet?</Text>
+                            <TextGradient style={styles.strongText} text=' Register' />
+                        </Pressable>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
     )
 }
 

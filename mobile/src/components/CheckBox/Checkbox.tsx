@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, NativeSyntheticEvent, TargetedEvent } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 interface CustomCheckboxProps {
@@ -7,6 +7,7 @@ interface CustomCheckboxProps {
     color?: string
     initialChecked?: boolean
     onValueChange?: (newValue: boolean) => void
+    onBlur?: (e: NativeSyntheticEvent<TargetedEvent>) => void
     icon?: string
     ColorIcon?: string
 }
@@ -17,7 +18,8 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
     initialChecked = false,
     onValueChange,
     icon = 'check',
-    ColorIcon = '#fff'
+    ColorIcon = '#fff',
+    onBlur
 }) => {
     const [checked, setChecked] = useState(initialChecked)
 
@@ -51,7 +53,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
     )
 
     return (
-        <TouchableOpacity style={styles.checkboxContainer} onPress={handleClick}>
+        <TouchableOpacity style={styles.checkboxContainer} onPress={handleClick} onBlur={onBlur}>
             <View style={[checkboxStyles.checkbox, checked && checkboxStyles.checked]}>
                 {checked && <Icon name={icon} size={size / 1.5} color={ColorIcon} />}
             </View>

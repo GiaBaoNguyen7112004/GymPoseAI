@@ -32,6 +32,8 @@ const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
         <TouchableOpacity onPress={onPress} disabled={disabled} style={style} {...props}>
             <LinearGradient
                 colors={gradientColors as [string, string, ...string[]]}
+                start={{ x: 1, y: 0.5 }}
+                end={{ x: 0, y: 0.5 }}
                 style={[styles.container, Square ? styles.square : styles.rounded]}
             >
                 {children}

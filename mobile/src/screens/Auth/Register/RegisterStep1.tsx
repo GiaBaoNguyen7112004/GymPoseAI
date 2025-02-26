@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     Keyboard,
     SafeAreaView,
@@ -29,7 +29,7 @@ const RegisterStep1 = (): JSX.Element => {
         email: '',
         password: ''
     })
-    const [allowLogin, setAllowLogin] = useState(false)
+    const [allowRegister, setAllowRegister] = useState(false)
     const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
     const [firstNameError, setFirstNameError] = useState('')
     const [lastNameError, setLastNameError] = useState('')
@@ -48,7 +48,7 @@ const RegisterStep1 = (): JSX.Element => {
             !emailError &&
             !passwordError &&
             hasAcceptedTerms
-        setAllowLogin(isValid)
+        setAllowRegister(isValid)
     }
 
     const _onPressToggleHidePassword = useCallback(() => {
@@ -87,50 +87,50 @@ const RegisterStep1 = (): JSX.Element => {
         return ''
     }
 
-    const _onChange = useCallback(
-        (field: 'firstName' | 'lastName' | 'email' | 'password', value: string) => {
-            setCredentials((prev) => ({ ...prev, [field]: value.trim() }))
-            _onBlur(field)
-        },
-        [credentials, firstNameError, lastNameError, emailError, passwordError, hasAcceptedTerms]
-    )
+    const _onChange = useCallback((field: 'firstName' | 'lastName' | 'email' | 'password', value: string) => {
+        setCredentials((prev) => ({ ...prev, [field]: value }))
+    }, [])
 
-    const _onBlur = useCallback(
-        (field: 'firstName' | 'lastName' | 'email' | 'password') => {
+    const _onBlur = useCallback((field: 'firstName' | 'lastName' | 'email' | 'password') => {
+        setCredentials((prev) => {
             let error = ''
+            const value = prev[field] || ''
+
             if (field === 'firstName') {
-                error = validateFirstName(credentials.firstName)
+                error = validateFirstName(value)
                 setFirstNameError(error)
             } else if (field === 'lastName') {
-                error = validateLastName(credentials.lastName)
+                error = validateLastName(value)
                 setLastNameError(error)
             } else if (field === 'email') {
-                error = validateEmail(credentials.email)
+                error = validateEmail(value)
                 setEmailError(error)
             } else if (field === 'password') {
-                error = validatePassword(credentials.password)
+                error = validatePassword(value)
                 setPasswordError(error)
             }
-            handleAllowRegister()
-        },
-        [credentials, firstNameError, lastNameError, emailError, passwordError, hasAcceptedTerms]
-    )
+
+            return prev
+        })
+    }, [])
+
+    useEffect(() => {
+        handleAllowRegister()
+    }, [credentials, hasAcceptedTerms])
 
     const handleLogin = () => {
-        navigation.navigate('Login')
+        navigation.navigate('RegisterStep3')
     }
     const handleRegister = () => {
         navigation.navigate('RegisterStep2')
     }
     const handleCheckboxChange = () => {
-        setHasAcceptedTerms((prev) => !prev)
+        setHasAcceptedTerms((prev) => {
+            const newValue = !prev
+            setTermsError(newValue ? '' : 'You need to accept the terms.')
+            return newValue
+        })
     }
-
-    useLayoutEffect(() => {
-        handleAllowRegister()
-        setTermsError(hasAcceptedTerms ? '' : 'Please accept the terms')
-    }, [hasAcceptedTerms])
-
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
             <SafeAreaView style={styles.container}>
@@ -224,11 +224,11 @@ const RegisterStep1 = (): JSX.Element => {
                         <View style={{ width: '100%', alignItems: 'center' }}>
                             <GradientButton
                                 onPress={handleRegister}
-                                disabled={!allowLogin}
+                                disabled={!allowRegister}
                                 activeOpacity={0.6}
                                 style={{
-                                    ...styles.btnLogin,
-                                    opacity: allowLogin ? 1 : 0.6
+                                    ...styles.btnRegister,
+                                    opacity: allowRegister ? 1 : 0.6
                                 }}
                             >
                                 <Text style={{ fontSize: 16, color: '#fff', fontWeight: '500' }}>Register</Text>
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: '#F7F8F8'
     },
-    btnLogin: {
+    btnRegister: {
         marginTop: 7.5,
         width: SCREEN_WIDTH * 0.9,
         shadowColor: 'green',
