@@ -17,6 +17,16 @@ import movement2 from '@/src/assets/Icons/movement2.svg'
 import movement3 from '@/src/assets/Icons/movement3.svg'
 import FitnessX from '@/src/assets/Icons/FitnessX.svg'
 import logoX from '@/src/assets/Icons/X.svg'
+import homeIcon from '@/src/assets/Icons/Home.svg'
+import cameraIcon from '@/src/assets/Icons/Camera.svg'
+import searchIcon from '@/src/assets/Icons/Search.svg'
+import activity from '@/src/assets/Icons/Activity.svg'
+import ProfileLight from '@/src/assets/Icons/ProfileLight.svg'
+import homeIconFilled from '@/src/assets/Icons/HomeFilled.svg'
+import cameraIconFilled from '@/src/assets/Icons/CameraFilled.svg'
+import activityFilled from '@/src/assets/Icons/ActivityFilled.svg'
+import ProfileLightFilled from '@/src/assets/Icons/ProfileFilled.svg'
+import dotGradient from '@/src/assets/Icons/Ellipse 63.svg'
 export type IconName =
     | 'registerIcon'
     | 'lockIcon'
@@ -35,14 +45,29 @@ export type IconName =
     | 'movement3'
     | 'fitnessX'
     | 'logoX'
+    | 'homeIcon'
+    | 'cameraIcon'
+    | 'searchIcon'
+    | 'activity'
+    | 'profileLight'
+    | 'homeIconFilled'
+    | 'cameraIconFilled'
+    | 'activityFilled'
+    | 'profileLightFilled'
+    | 'dotGradient'
 
-interface IconProps extends SvgProps {
+// Add more icons here...
+
+interface IconProps {
     name: IconName
     size?: number
     width?: number
+    fill?: string
+    stroke?: string
+    [key: string]: any
 }
 
-const Icon: React.FC<IconProps> = ({ name, size = 24, width, ...props }) => {
+const Icon: React.FC<IconProps> = ({ name, size = 24, width, fill, stroke, ...props }) => {
     const icons: { [key in IconName]: React.ComponentType<SvgProps> } = useMemo(
         () => ({
             registerIcon: registerIcon,
@@ -61,14 +86,28 @@ const Icon: React.FC<IconProps> = ({ name, size = 24, width, ...props }) => {
             movement2: movement2,
             movement3: movement3,
             fitnessX: FitnessX,
-            logoX: logoX
+            logoX: logoX,
+            homeIcon: homeIcon,
+            cameraIcon: cameraIcon,
+            searchIcon: searchIcon,
+            activity: activity,
+            profileLight: ProfileLight,
+            homeIconFilled: homeIconFilled,
+            cameraIconFilled: cameraIconFilled,
+            activityFilled: activityFilled,
+            profileLightFilled: ProfileLightFilled,
+            dotGradient: dotGradient
+            // Add more icons here...
         }),
         []
     )
 
     const SelectedIcon = useMemo(() => icons[name], [name, icons])
 
-    return <SelectedIcon height={size} width={width ? width : size} {...props} />
+    const fillColor = fill ? { fill } : {}
+    const strokeColor = stroke ? { stroke: stroke } : {}
+
+    return <SelectedIcon height={size} width={width ? width : size} {...fillColor} {...strokeColor} {...props} />
 }
 
 export default Icon

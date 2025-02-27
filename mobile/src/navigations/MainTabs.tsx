@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { StyleSheet } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { StyleSheet, View } from 'react-native'
 import { TabBarComponent } from '../components/BottomTabBar/BottomTabBar'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Profile } from '../screens/Home/Profile'
@@ -13,9 +12,14 @@ import { Home } from '../screens/Home'
 import { WorkoutTracker } from '../screens/Home/WorkoutTracker'
 import TakePhoto from '../screens/Home/TakePhoto'
 import Search from '../screens/Home/Search'
+import { Icon as MyIcon } from '../components/Icon'
+import { IconName } from '../components/Icon/Icon'
+import { GradientButton } from '../components/GradientButton'
+import { navigation } from '../services/NavigationService'
+import HomeTab from './HomeTabs'
 
 export type HomeTabParamList = {
-    Home: undefined
+    HomeTab: undefined
     WorkoutTracker: undefined
     Search: undefined
     TakePhoto: undefined
@@ -42,46 +46,67 @@ const ProfileStack = () => {
 }
 
 const Tab = createBottomTabNavigator<HomeTabParamList>()
-const HomeTab = () => {
+
+const getTabBarIcon = (iconName: IconName, iconActive: IconName, focused: any, iconSize = 23) => {
+    return focused ? (
+        <View style={styles.wrapperActiveIcon}>
+            <MyIcon name={iconActive} size={iconSize} />
+            <MyIcon name='dotGradient' size={4} style={styles.dotIcon} />
+        </View>
+    ) : (
+        <MyIcon name={iconName} size={iconSize} />
+    )
+}
+
+const MainTabs = () => {
     return (
         <Tab.Navigator
             tabBar={TabBarComponent}
             screenOptions={{
+                headerShown: false,
                 tabBarShowLabel: false,
-                tabBarStyle: { backgroundColor: 'white' }
+                tabBarStyle: { backgroundColor: 'white', paddingTop: 18 }
             }}
         >
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ focused }) => <Icon name='home' size={30} color={focused ? '#000' : '#ddd'} />
+                    tabBarIcon: ({ focused }) => getTabBarIcon('homeIcon', 'homeIconFilled', focused)
                 }}
-                component={Home}
-                name='Home'
+                component={HomeTab}
+                name='HomeTab'
             />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ focused }) => <Icon name='magnify' size={30} color={focused ? '#000' : '#ddd'} />
+                    tabBarIcon: ({ focused }) => getTabBarIcon('activity', 'activityFilled', focused)
                 }}
                 component={WorkoutTracker}
                 name='WorkoutTracker'
             />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ focused }) => <Icon name='plus-box' size={30} color={'#ddd'} />
+                    tabBarIcon: ({ focused }) => (
+                        <GradientButton
+                            onPress={() => navigation.navigate('Search')}
+                            rounded
+                            style={styles.wrapperSearchIcon}
+                        >
+                            <MyIcon name={'searchIcon'} size={23} />
+                        </GradientButton>
+                    )
                 }}
                 component={Search}
                 name='Search'
             />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ focused }) => <Icon name='magnify' size={30} color={focused ? '#000' : '#ddd'} />
+                    tabBarIcon: ({ focused }) => getTabBarIcon('cameraIcon', 'cameraIconFilled', focused)
                 }}
                 component={TakePhoto}
                 name='TakePhoto'
             />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ focused }) => <Icon name='account' size={30} color={focused ? '#000' : '#ddd'} />
+                    tabBarIcon: ({ focused }) => getTabBarIcon('profileLight', 'profileLightFilled', focused)
                 }}
                 component={ProfileStack}
                 name='Profile'
@@ -90,6 +115,26 @@ const HomeTab = () => {
     )
 }
 
-export default HomeTab
+export default MainTabs
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    wrapperActiveIcon: {
+        position: 'relative',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    dotIcon: {
+        position: 'absolute',
+        bottom: -8
+    },
+    wrapperSearchIcon: {
+        shadowColor: 'rgba(149, 173, 254, 0.30)',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 1,
+        shadowRadius: 22,
+        elevation: 10,
+        marginBottom: 23 + 10,
+        width: 60,
+        height: 60
+    }
+})

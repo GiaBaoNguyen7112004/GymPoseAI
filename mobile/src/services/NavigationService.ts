@@ -1,16 +1,15 @@
 import * as React from 'react'
 import { StackActions, NavigationContainerRef, NavigationAction } from '@react-navigation/native'
-import { HomeTabParamList } from '../navigations/HomeTab'
+import { HomeTabParamList } from '../navigations/MainTabs'
 import { AuthStackParamList } from '../navigations/AuthStack'
 import { RegisterStackParamList } from '../navigations/RegisterStack'
-import { WelcomeStackParamList } from '../navigations/WelcomeStack'
 import { rootStackParamList } from '../navigations/RootTab'
 
 type commonParamList = AuthStackParamList &
     HomeTabParamList &
     rootStackParamList &
     RegisterStackParamList &
-    WelcomeStackParamList
+    HomeTabParamList
 
 export const navigationRef: React.RefObject<NavigationContainerRef<commonParamList>> = React.createRef()
 

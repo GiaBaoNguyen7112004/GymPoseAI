@@ -9,8 +9,6 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
-    KeyboardAvoidingView,
-    Platform,
     Pressable
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -54,7 +52,7 @@ const Login = (): JSX.Element => {
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
-            navigation.navigate('WelcomeStack')
+            navigation.navigate('Welcome')
         }, 2000)
     }, [allowLogin])
 

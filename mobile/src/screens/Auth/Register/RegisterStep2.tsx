@@ -333,6 +333,7 @@ const RegisterStep2 = (): JSX.Element => {
                                     <GradientButton
                                         disabled={!allowLogin}
                                         activeOpacity={0.6}
+                                        Square
                                         style={{
                                             ...styles.btnLogin,
                                             opacity: allowLogin ? 1 : 0.6

@@ -226,6 +226,7 @@ const RegisterStep1 = (): JSX.Element => {
                                 onPress={handleRegister}
                                 disabled={!allowRegister}
                                 activeOpacity={0.6}
+                                Square
                                 style={{
                                     ...styles.btnRegister,
                                     opacity: allowRegister ? 1 : 0.6

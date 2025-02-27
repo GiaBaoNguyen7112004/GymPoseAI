@@ -1,7 +1,6 @@
 import React, { memo } from 'react'
-import { TouchableOpacity, Text, StyleSheet, View, ViewStyle } from 'react-native'
+import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TouchableOpacityProps } from 'react-native-gesture-handler'
 import { StyleProp } from 'react-native'
 
@@ -15,6 +14,7 @@ interface ButtonProps {
     rounded?: boolean
     Square?: boolean
     disabled?: boolean
+    [key: string]: any
 }
 
 const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
@@ -51,10 +51,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     square: {
-        borderRadius: 14
+        borderRadius: 999
     },
     rounded: {
-        borderRadius: 999
+        borderRadius: 999,
+        aspectRatio: 1 / 1
     }
 })
 export default memo(GradientButton)

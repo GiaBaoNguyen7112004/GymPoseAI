@@ -28,7 +28,7 @@ export default function WelcomeScreen() {
                             </Text>
                         </View>
                     </View>
-                    <GradientButton style={styles.btn}>
+                    <GradientButton style={styles.btn} Square>
                         <Text style={styles.textInnerBtn} onPress={handleGoToHome}>
                             Go To Home
                         </Text>

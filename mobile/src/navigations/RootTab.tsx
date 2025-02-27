@@ -1,10 +1,10 @@
 import { createMaterialTopTabNavigator, MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs'
 import AuthStack from './AuthStack'
-import HomeTab from './HomeTab'
+import MainTabs from './MainTabs'
 
 export type rootStackParamList = {
     AuthStack: undefined
-    HomeTab: undefined
+    MainTab: undefined
     StoryTaker: undefined
     Direct: undefined
 }
@@ -16,12 +16,12 @@ const RootTabComponent = (): JSX.Element => {
         tabBarStyle: { display: 'none' }
     }
 
-    const logined = true
+    const logined = false
 
     return (
-        <RootTab.Navigator initialRouteName={logined ? 'HomeTab' : 'AuthStack'} screenOptions={navigationOptions}>
+        <RootTab.Navigator initialRouteName={logined ? 'MainTab' : 'AuthStack'} screenOptions={navigationOptions}>
             {!logined && <RootTab.Screen name='AuthStack' component={AuthStack} />}
-            {logined && <RootTab.Screen name='HomeTab' component={HomeTab} />}
+            {logined && <RootTab.Screen name='MainTab' component={MainTabs} />}
         </RootTab.Navigator>
     )
 }
