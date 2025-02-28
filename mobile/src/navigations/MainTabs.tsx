@@ -8,7 +8,6 @@ import PrivacyPolicy from '../screens/Home/Profile/PrivacyPolicy'
 import ContactUs from '../screens/Home/Profile/ContactUs'
 import Setting from '../screens/Home/Profile/Setting/Setting'
 import ActivityHistory from '../screens/Others/ActivityHistory'
-import { Home } from '../screens/Home'
 import { WorkoutTracker } from '../screens/Home/WorkoutTracker'
 import TakePhoto from '../screens/Home/TakePhoto'
 import Search from '../screens/Home/Search'
@@ -84,7 +83,7 @@ const MainTabs = () => {
             />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ focused }) => (
+                    tabBarIcon: () => (
                         <GradientButton
                             onPress={() => navigation.navigate('Search')}
                             rounded

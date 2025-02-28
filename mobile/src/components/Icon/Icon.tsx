@@ -27,6 +27,11 @@ import cameraIconFilled from '@/src/assets/Icons/CameraFilled.svg'
 import activityFilled from '@/src/assets/Icons/ActivityFilled.svg'
 import ProfileLightFilled from '@/src/assets/Icons/ProfileFilled.svg'
 import dotGradient from '@/src/assets/Icons/Ellipse 63.svg'
+import NotificationIcon from '@/src/assets/Icons/Notification.svg'
+import workout1 from '@/src/assets/Icons/Ab-Workout 1.svg'
+import workout2 from '@/src/assets/Icons/lowebody-workout 1.svg'
+import ArrowRightGradient from '@/src/assets/Icons/Arrow - Right Gradient.svg'
+import pieChart from '@/src/assets/Icons/Banner--Pie-Ellipse.svg'
 export type IconName =
     | 'registerIcon'
     | 'lockIcon'
@@ -55,6 +60,11 @@ export type IconName =
     | 'activityFilled'
     | 'profileLightFilled'
     | 'dotGradient'
+    | 'notificationIcon'
+    | 'workout1'
+    | 'workout2'
+    | 'arrowRightGradient'
+    | 'pieChart'
 
 // Add more icons here...
 
@@ -96,7 +106,12 @@ const Icon: React.FC<IconProps> = ({ name, size = 24, width, fill, stroke, ...pr
             cameraIconFilled: cameraIconFilled,
             activityFilled: activityFilled,
             profileLightFilled: ProfileLightFilled,
-            dotGradient: dotGradient
+            dotGradient: dotGradient,
+            notificationIcon: NotificationIcon,
+            workout1: workout1,
+            workout2: workout2,
+            arrowRightGradient: ArrowRightGradient,
+            pieChart: pieChart
             // Add more icons here...
         }),
         []

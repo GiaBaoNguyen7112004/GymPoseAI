@@ -1,7 +1,14 @@
-import { Text } from 'react-native'
+import { SafeAreaView, Text, View } from 'react-native'
 
 function Notification() {
-    return <Text>Notifications Page WHY? l</Text>
+    console.log('notification')
+    return (
+        <SafeAreaView>
+            <View>
+                <Text>Notifications Page WHY? l</Text>
+            </View>
+        </SafeAreaView>
+    )
 }
 
 export default Notification
