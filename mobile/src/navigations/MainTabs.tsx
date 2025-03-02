@@ -9,19 +9,21 @@ import ContactUs from '../screens/Home/Profile/ContactUs'
 import Setting from '../screens/Home/Profile/Setting/Setting'
 import ActivityHistory from '../screens/Others/ActivityHistory'
 import { WorkoutTracker } from '../screens/Home/WorkoutTracker'
-import TakePhoto from '../screens/Home/TakePhoto'
+import StoryTaker from '../screens/Home/StoryTaker'
 import Search from '../screens/Home/Search'
 import { Icon as MyIcon } from '../components/Icon'
 import { IconName } from '../components/Icon/Icon'
 import { GradientButton } from '../components/GradientButton'
 import { navigation } from '../services/NavigationService'
-import HomeTab from './HomeTabs'
-
-export type HomeTabParamList = {
-    HomeTab: undefined
+import Home from '../screens/Home/Home'
+export type MainTabParamList = {
+    Home: undefined
     WorkoutTracker: undefined
     Search: undefined
-    TakePhoto: undefined
+    StoryTaker: {
+        sendToDirect: boolean
+        username: string
+    }
     Profile: undefined
 }
 
@@ -44,7 +46,7 @@ const ProfileStack = () => {
     )
 }
 
-const Tab = createBottomTabNavigator<HomeTabParamList>()
+const Tab = createBottomTabNavigator<MainTabParamList>()
 
 const getTabBarIcon = (iconName: IconName, iconActive: IconName, focused: any, iconSize = 23) => {
     return focused ? (
@@ -71,8 +73,8 @@ const MainTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) => getTabBarIcon('homeIcon', 'homeIconFilled', focused)
                 }}
-                component={HomeTab}
-                name='HomeTab'
+                component={Home}
+                name='Home'
             />
             <Tab.Screen
                 options={{
@@ -100,8 +102,8 @@ const MainTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) => getTabBarIcon('cameraIcon', 'cameraIconFilled', focused)
                 }}
-                component={TakePhoto}
-                name='TakePhoto'
+                component={StoryTaker}
+                name='StoryTaker'
             />
             <Tab.Screen
                 options={{

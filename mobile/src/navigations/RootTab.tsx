@@ -1,3 +1,4 @@
+import Notification from '../screens/Home/Notification'
 import AuthStack from './AuthStack'
 import MainTabs from './MainTabs'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -5,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 export type rootStackParamList = {
     AuthStack: undefined
     MainTab: undefined
+    Notification: undefined
     StoryTaker: undefined
     Direct: undefined
 }
@@ -21,6 +23,7 @@ const RootTabComponent = (): JSX.Element => {
         >
             <RootTab.Screen name='AuthStack' component={AuthStack} />
             <RootTab.Screen name='MainTab' component={MainTabs} />
+            <RootTab.Screen name='Notification' component={Notification} />
         </RootTab.Navigator>
     )
 }

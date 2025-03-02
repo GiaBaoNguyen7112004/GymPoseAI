@@ -32,6 +32,17 @@ import workout1 from '@/src/assets/Icons/Ab-Workout 1.svg'
 import workout2 from '@/src/assets/Icons/lowebody-workout 1.svg'
 import ArrowRightGradient from '@/src/assets/Icons/Arrow - Right Gradient.svg'
 import pieChart from '@/src/assets/Icons/Banner--Pie-Ellipse.svg'
+import line28Icon from '@/src/assets/Icons/Line 28.svg'
+import sleepGraph from '@/src/assets/Icons/Sleep-Graph.svg'
+import filterGradient from '@/src/assets/Icons/FilterGradient.svg'
+import filter from '@/src/assets/Icons/Filter.svg'
+import searchGray from '@/src/assets/Icons/SearchGray.svg'
+import workout3 from '@/src/assets/Icons/workout3.svg'
+import arroWRightOutline from '@/src/assets/Icons/Workout-Btn.svg'
+import arrowLeft from '@/src/assets/Icons/Arrow - Left 2.svg'
+import moreIcon from '@/src/assets/Icons/more-vertical 9.svg'
+import closeSquare from '@/src/assets/Icons/Close Square.svg'
+import closeSquareBold from '@/src/assets/Icons/Close Square bold.svg'
 export type IconName =
     | 'registerIcon'
     | 'lockIcon'
@@ -65,13 +76,24 @@ export type IconName =
     | 'workout2'
     | 'arrowRightGradient'
     | 'pieChart'
+    | 'line28Icon'
+    | 'sleepGraph'
+    | 'filterGradient'
+    | 'filter'
+    | 'searchGray'
+    | 'workout3'
+    | 'arroWRightOutline'
+    | 'arrowLeft'
+    | 'moreIcon'
+    | 'closeSquare'
+    | 'closeSquareBold'
 
 // Add more icons here...
 
 interface IconProps {
     name: IconName
     size?: number
-    width?: number
+    width?: number | string
     fill?: string
     stroke?: string
     [key: string]: any
@@ -111,7 +133,18 @@ const Icon: React.FC<IconProps> = ({ name, size = 24, width, fill, stroke, ...pr
             workout1: workout1,
             workout2: workout2,
             arrowRightGradient: ArrowRightGradient,
-            pieChart: pieChart
+            pieChart: pieChart,
+            line28Icon: line28Icon,
+            sleepGraph: sleepGraph,
+            filterGradient: filterGradient,
+            filter: filter,
+            searchGray: searchGray,
+            workout3: workout3,
+            arroWRightOutline: arroWRightOutline,
+            arrowLeft: arrowLeft,
+            moreIcon: moreIcon,
+            closeSquare: closeSquare,
+            closeSquareBold: closeSquareBold
             // Add more icons here...
         }),
         []

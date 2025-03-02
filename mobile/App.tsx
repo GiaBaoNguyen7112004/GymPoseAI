@@ -10,6 +10,7 @@ import { ActivityIndicator, View } from 'react-native'
 import { Provider } from 'react-redux'
 import { RootStackNavigation } from '@/src/navigations'
 import { store } from '@/src/store'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -29,8 +30,10 @@ export default function App() {
     }
 
     return (
-        <Provider store={store}>
-            <RootStackNavigation />
-        </Provider>
+        <GestureHandlerRootView>
+            <Provider store={store}>
+                <RootStackNavigation />
+            </Provider>
+        </GestureHandlerRootView>
     )
 }
