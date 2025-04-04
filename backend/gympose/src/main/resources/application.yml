@@ -1,0 +1,17 @@
+server:
+  servlet:
+    context-path: /gym-pose
+  port: 8696
+spring:
+  thymeleaf:
+    mode: HTML
+  datasource:
+    url: ${DBMS_CONNECTION}
+    username: ${DBMS_USERNAME}
+    password: ${DBMS_PASSWORD}
+    hikari:
+      max-lifetime: 60000
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
