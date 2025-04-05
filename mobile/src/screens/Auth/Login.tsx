@@ -1,107 +1,43 @@
-import React, { useState, useCallback } from 'react'
-import {
-    Animated,
-    Keyboard,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-    Pressable
-} from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../constants'
-import { Icon as MyIcon } from '@/src/components/Icon'
-import { GradientButton } from '@/src/components/GradientButton'
-import { TextGradient } from '@/src/components/TextGradient'
-import { navigation } from '@/src/services/NavigationService'
-import { validateEmail } from '@/src/utils/validationValue'
-
-const Login = (): JSX.Element => {
-    const [loading, setLoading] = useState(false)
-    const [hidePassword, setHidePassword] = useState(true)
-    const [credentials, setCredentials] = useState({ email: '', password: '' })
-    const [allowLogin, setAllowLogin] = useState(false)
-    const [emailError, setEmailError] = useState('')
-
-    const handleSetAllowLogin = (email: string, password: string) => {
-        setAllowLogin(email.trim() !== '' && password.trim() !== '' && validateEmail(email.trim()))
-    }
-
-    const _onBlurEmail = useCallback(() => {
-        const emailTrimmed = credentials.email.trim()
-        setEmailError(validateEmail(emailTrimmed) ? '' : 'Invalid email format')
-        handleSetAllowLogin(emailTrimmed, credentials.password)
-    }, [credentials.email, credentials.password])
-    const _onPressToggleHidePassword = useCallback(() => {
-        setHidePassword((prev) => !prev)
-    }, [])
-
-    const _onChange = useCallback((field: 'email' | 'password', value: string) => {
-        setCredentials((prev) => {
-            const newCredentials = { ...prev, [field]: value }
-            handleSetAllowLogin(newCredentials.email, newCredentials.password)
-            return newCredentials
-        })
-    }, [])
-
-    const _onLogin = useCallback(async () => {
-        if (!allowLogin) return
-        setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
-            navigation.navigate('Welcome')
-        }, 2000)
-    }, [allowLogin])
-
-    const handleRegister = () => {
-        navigation.navigate('Register')
-    }
-    const handleForgotPassword = () => {
-        navigation.navigate('ForgotPassword')
-    }
-
-    const _loadingDeg = new Animated.Value(0)
-    const _animationLoadingDeg = () => {
-        Animated.timing(_loadingDeg, {
-            useNativeDriver: true,
-            toValue: 1,
-            duration: 400
-        }).start(() => {
-            _loadingDeg.setValue(0)
-            if (loading) {
-                _animationLoadingDeg()
+import { useForm, FormProvider } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Keyboard, SafeAreaView, StyleSheet, Text, TouchableWithoutFeedback, View, Pressable } from 'react-native'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import MyIcon from '@/src/components/Icon'
+import GradientButton from '@/src/components/GradientButton'
+import TextGradient from '@/src/components/TextGradient'
+import { schema, SchemaType } from '@/src/utils/rules.util'
+import TextInputCustom from '@/src/components/TextInput'
+import Loader from '@/src/components/Loader'
+import { useMutation } from '@tanstack/react-query'
+import authApi from '@/src/apis/auth.api'
+import { useContext } from 'react'
+import { AppContext } from '@/src/Contexts/App.context'
+type FormData = Pick<SchemaType, 'email' | 'password'>
+const FormSchema = schema.pick(['email', 'password'])
+function Login() {
+    const { setAuthenticated, setProfile } = useContext(AppContext)
+    const { ...methods } = useForm<FormData>({
+        defaultValues: { email: '', password: '' },
+        resolver: yupResolver(FormSchema),
+        mode: 'onBlur'
+    })
+    const loginMutation = useMutation({
+        mutationFn: authApi.login
+    })
+    const canSubmit = methods.formState.isValid
+    const handleRegister = () => {}
+    const handleForgotPassword = () => {}
+    const onSubmit = methods.handleSubmit((data) => {
+        loginMutation.mutate(data, {
+            onSuccess: (data) => {
+                setAuthenticated(true)
+                setProfile(data.data.data.user)
             }
         })
-    }
+    })
     return (
         <SafeAreaView style={styles.container}>
-            {loading && (
-                <View style={styles.loadingWrapper}>
-                    <View style={styles.loading}>
-                        <Animated.Image
-                            onLayout={_animationLoadingDeg}
-                            style={{
-                                width: 30,
-                                height: 30,
-                                marginRight: 10,
-                                transform: [
-                                    {
-                                        rotate: _loadingDeg.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: ['0deg', '360deg']
-                                        })
-                                    }
-                                ]
-                            }}
-                            source={require('@/src/assets/Icons/waiting.png')}
-                        />
-                        <Text style={{ fontWeight: '500' }}>Logging in...</Text>
-                    </View>
-                </View>
-            )}
+            {loginMutation.isPending && <Loader title='Logging in' />}
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View style={styles.container}>
                     <View style={styles.ContainerTop}>
@@ -109,62 +45,41 @@ const Login = (): JSX.Element => {
                             <Text style={styles.callToAction__desc}>Hey there,</Text>
                             <Text style={styles.callToAction__heading}>Welcome Back</Text>
                         </View>
-                        <View style={styles.loginForm}>
-                            <View style={styles.rowForm}>
-                                <View style={styles.textInputWrapper}>
-                                    <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
-                                    <TextInput
+                        <FormProvider {...methods}>
+                            <View style={styles.loginForm}>
+                                <View style={styles.rowForm}>
+                                    <TextInputCustom
+                                        icon='messageIcon'
+                                        type='default'
                                         autoCapitalize='none'
-                                        value={credentials.email}
-                                        onChangeText={(text) => _onChange('email', text)}
                                         placeholder='Email'
-                                        style={styles.input}
-                                        placeholderTextColor='#ADA4A5'
-                                        onBlur={() => {
-                                            _onBlurEmail()
-                                        }}
+                                        name='email'
                                     />
                                 </View>
-                                {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-                            </View>
-                            <View style={styles.rowForm}>
-                                <View style={styles.textInputWrapper}>
-                                    <MyIcon name='lockIcon' size={18} style={styles.Input__icon} />
-                                    <TextInput
-                                        value={credentials.password}
-                                        onChangeText={(text) => _onChange('password', text)}
-                                        secureTextEntry={hidePassword}
+                                <View style={styles.rowForm}>
+                                    <TextInputCustom
+                                        icon='lockIcon'
+                                        type='password'
                                         placeholder='Password'
-                                        style={styles.input}
-                                        placeholderTextColor='#ADA4A5'
+                                        name='password'
                                     />
-                                    <TouchableOpacity
-                                        style={styles.hidePasswordIcon}
-                                        onPress={_onPressToggleHidePassword}
-                                    >
-                                        <Icon
-                                            name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
-                                            size={20}
-                                            color={hidePassword ? '#333' : '#318bfb'}
-                                        />
-                                    </TouchableOpacity>
+                                </View>
+
+                                <View>
+                                    <Text style={styles.linkText} onPress={handleForgotPassword}>
+                                        Forgot your password?
+                                    </Text>
                                 </View>
                             </View>
-
-                            <View>
-                                <Text style={styles.linkText} onPress={handleForgotPassword}>
-                                    Forgot your password?
-                                </Text>
-                            </View>
-                        </View>
+                        </FormProvider>
                     </View>
                     <View style={styles.ContainerBottom}>
                         <GradientButton
-                            onPress={_onLogin}
-                            disabled={!allowLogin}
-                            style={[styles.btnLogin, { opacity: allowLogin ? 1 : 0.6 }]}
+                            style={[styles.btnLogin, { opacity: canSubmit ? 1 : 0.6 }]}
+                            disabled={!canSubmit}
+                            onPress={onSubmit}
                         >
-                            <MyIcon name='loginIcon' style={styles.Input__icon} />
+                            <MyIcon name='loginIcon' />
                             <Text style={styles.btnText}>Login</Text>
                         </GradientButton>
                         <Pressable style={styles.registerWrapper} onPress={handleRegister}>
@@ -229,41 +144,6 @@ const styles = StyleSheet.create({
         width: '100%',
         marginVertical: 15
     },
-    errorText: {
-        color: '#FF0000',
-        fontSize: 12,
-        position: 'absolute',
-        bottom: -14,
-        left: 10
-    },
-    textInputWrapper: {
-        width: '100%',
-        height: 48,
-        flexShrink: 0,
-        paddingHorizontal: 15,
-        borderRadius: 14,
-        borderColor: '#F7F8F8',
-        borderWidth: 1,
-        backgroundColor: '#F7F8F8',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    hidePasswordIcon: {
-        position: 'absolute',
-        height: 30,
-        width: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        right: 5,
-        top: (44 - 30) / 2,
-        backgroundColor: '#F7F8F8'
-    },
-    input: {
-        flex: 1
-    },
-    Input__icon: {
-        marginRight: 10
-    },
     linkText: {
         color: '#ADA4A5',
         fontFamily: 'Poppins',
@@ -294,6 +174,7 @@ const styles = StyleSheet.create({
         elevation: 10
     },
     btnText: {
+        marginLeft: 12,
         color: '#FFF',
         fontSize: 16,
         fontWeight: '700',
@@ -328,30 +209,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#fff'
     },
-    btnLoginWithFacebook: {
-        marginTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
     registerWrapper: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
-    },
-    loadingWrapper: {
-        width: SCREEN_WIDTH,
-        height: SCREEN_HEIGHT,
-        position: 'absolute',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        zIndex: 99
-    },
-    loading: {
-        flexDirection: 'row',
-        padding: 15,
-        borderRadius: 5,
-        backgroundColor: '#fff',
         alignItems: 'center'
     }
 })

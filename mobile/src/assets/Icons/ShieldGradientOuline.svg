@@ -1,0 +1,16 @@
+<svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Shield Done">
+<path id="Stroke 1" fill-rule="evenodd" clip-rule="evenodd" d="M7.98698 17.0051C7.98698 17.0051 14.3803 15.0692 14.3803 9.73258C14.3803 4.39508 14.612 3.97841 14.0995 3.46508C13.5861 2.95175 8.82531 1.29175 7.98698 1.29175C7.14864 1.29175 2.38781 2.95175 1.87531 3.46508C1.36198 3.97841 1.59364 4.39508 1.59364 9.73258C1.59364 15.0692 7.98698 17.0051 7.98698 17.0051Z" stroke="url(#paint0_linear_1315_2600)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Stroke 3" d="M5.82153 8.89569L7.3982 10.4749L10.6465 7.22485" stroke="url(#paint1_linear_1315_2600)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1315_2600" x1="14.4325" y1="17.0051" x2="-2.78205" y2="15.9123" gradientUnits="userSpaceOnUse">
+<stop stop-color="#92A3FD"/>
+<stop offset="1" stop-color="#9DCEFF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_1315_2600" x1="10.6465" y1="10.4749" x2="4.26157" y2="9.74134" gradientUnits="userSpaceOnUse">
+<stop stop-color="#92A3FD"/>
+<stop offset="1" stop-color="#9DCEFF"/>
+</linearGradient>
+</defs>
+</svg>

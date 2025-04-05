@@ -16,7 +16,7 @@ export function getTabBarHeight() {
 }
 
 // there is simple tab bar component used when creating navigator that will update this layout
-export function TabBarComponent(props: BottomTabBarProps) {
+export default function TabBarComponent(props: BottomTabBarProps) {
     return (
         <View
             collapsable={false}

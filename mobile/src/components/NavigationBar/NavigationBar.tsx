@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { Icon } from '../Icon'
+import Icon from '../Icon'
 export interface NavigationBarProps {
     title: string
     callback?: () => any

@@ -1,20 +1,11 @@
 import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
-import { GradientButton } from '@/src/components/GradientButton'
-import { Icon as MyIcon } from '@/src/components/Icon'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants'
+import GradientButton from '@/src/components/GradientButton'
+import MyIcon from '@/src/components/Icon'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { navigation } from '@/src/services/NavigationService'
-import { CommonActions } from '@react-navigation/native'
 
 export default function WelcomeScreen() {
-    const handleGoToHome = () => {
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'HomeTab' }]
-            })
-        )
-    }
+    const handleGoToHome = () => {}
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1, height: SCREEN_HEIGHT }}>

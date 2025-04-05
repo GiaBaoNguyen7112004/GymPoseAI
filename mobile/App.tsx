@@ -1,3 +1,4 @@
+import * as Linking from 'expo-linking'
 import {
     useFonts,
     Poppins_300Light,
@@ -7,12 +8,28 @@ import {
     Poppins_700Bold
 } from '@expo-google-fonts/poppins'
 import { ActivityIndicator, View } from 'react-native'
-import { Provider } from 'react-redux'
-import { RootStackNavigation } from '@/src/navigations'
-import { store } from '@/src/store'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import RootStackNavigation from './src/navigation/RootStackNavigation'
+import { NavigationContainer } from '@react-navigation/native'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AppProvider } from './src/Contexts/App.context'
+import storage from './src/utils/StorageManager.util'
 
+const prefix = Linking.createURL('/')
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false
+        }
+    }
+})
+
+storage.load()
 export default function App() {
+    const linking = {
+        prefixes: [prefix]
+    }
     const [fontsLoaded] = useFonts({
         Poppins_Light: Poppins_300Light,
         Poppins_Regular: Poppins_400Regular,
@@ -31,9 +48,13 @@ export default function App() {
 
     return (
         <GestureHandlerRootView>
-            <Provider store={store}>
-                <RootStackNavigation />
-            </Provider>
+            <QueryClientProvider client={queryClient}>
+                <NavigationContainer linking={linking}>
+                    <AppProvider>
+                        <RootStackNavigation />
+                    </AppProvider>
+                </NavigationContainer>
+            </QueryClientProvider>
         </GestureHandlerRootView>
     )
 }

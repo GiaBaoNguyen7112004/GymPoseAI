@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { SvgProps } from 'react-native-svg'
 import registerIcon from '@/src/assets/Icons/registerIcon.svg'
 import MessageIcon from '@/src/assets/Icons/Message.svg'
@@ -43,6 +43,13 @@ import arrowLeft from '@/src/assets/Icons/Arrow - Left 2.svg'
 import moreIcon from '@/src/assets/Icons/more-vertical 9.svg'
 import closeSquare from '@/src/assets/Icons/Close Square.svg'
 import closeSquareBold from '@/src/assets/Icons/Close Square bold.svg'
+import bellGradientOline from '@/src/assets/Icons/bellGradientOutline.svg'
+import profileGradientOuline from '@/src/assets/Icons/ProfilegradientOutline.svg'
+import settingGradientOuline from '@/src/assets/Icons/SettingGradientOuline.svg'
+import arrowRightGray from '@/src/assets/Icons/Arrow - Right 4.svg'
+import shieldGradientOuline from '@/src/assets/Icons/ShieldGradientOuline.svg'
+import messageGradientOuline from '@/src/assets/Icons/MessageGradientOuline.svg'
+
 export type IconName =
     | 'registerIcon'
     | 'lockIcon'
@@ -87,6 +94,12 @@ export type IconName =
     | 'moreIcon'
     | 'closeSquare'
     | 'closeSquareBold'
+    | 'bellGradientOline'
+    | 'profileGradientOuline'
+    | 'settingGradientOuline'
+    | 'arrowRightGray'
+    | 'shieldGradientOuline'
+    | 'messageGradientOuline'
 
 // Add more icons here...
 
@@ -144,7 +157,13 @@ const Icon: React.FC<IconProps> = ({ name, size = 24, width, fill, stroke, ...pr
             arrowLeft: arrowLeft,
             moreIcon: moreIcon,
             closeSquare: closeSquare,
-            closeSquareBold: closeSquareBold
+            closeSquareBold: closeSquareBold,
+            bellGradientOline: bellGradientOline,
+            profileGradientOuline: profileGradientOuline,
+            settingGradientOuline: settingGradientOuline,
+            arrowRightGray: arrowRightGray,
+            shieldGradientOuline: shieldGradientOuline,
+            messageGradientOuline: messageGradientOuline
             // Add more icons here...
         }),
         []

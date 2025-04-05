@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacityProps } from 'react-native-gesture-handler'
@@ -20,21 +20,22 @@ interface ButtonProps {
 const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
     onPress,
     children,
-    Square,
+    Square = true,
     linerColors = ['#92A3FD', '#9DCEFF'],
     disabled,
     style,
+    containerStyle,
     ...props
 }) => {
     const gradientColors = linerColors.length >= 2 ? linerColors : ['#92A3FD', '#9DCEFF']
 
     return (
-        <TouchableOpacity onPress={onPress} disabled={disabled} style={style} {...props}>
+        <TouchableOpacity onPress={onPress} disabled={disabled} style={containerStyle} {...props}>
             <LinearGradient
                 colors={gradientColors as [string, string, ...string[]]}
                 start={{ x: 1, y: 0.5 }}
                 end={{ x: 0, y: 0.5 }}
-                style={[styles.container, Square ? styles.square : styles.rounded]}
+                style={[styles.container, style, Square ? styles.square : styles.rounded]}
             >
                 {children}
             </LinearGradient>

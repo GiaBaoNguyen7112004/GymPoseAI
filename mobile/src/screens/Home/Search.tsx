@@ -3,8 +3,8 @@ import { StyleSheet, Text, View, FlatList, Keyboard, Animated, TouchableWithoutF
 import { Pressable, TextInput } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Icon as MyIcon } from '@/src/components/Icon'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants'
+import MyIcon from '@/src/components/Icon'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
 import useDebounce from '@/src/hooks/useDebounce'
 
 function Search() {

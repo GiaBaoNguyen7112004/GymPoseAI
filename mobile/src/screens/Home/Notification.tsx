@@ -1,9 +1,7 @@
 import React, { useRef, useMemo, useCallback, useState, useEffect } from 'react'
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
-import { Icon as MyIcon } from '@/src/components/Icon'
+import MyIcon from '@/src/components/Icon'
 import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
-import { SCREEN_WIDTH } from '@/src/constants'
-import { navigation } from '@/src/services/NavigationService'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { IconName } from '@/src/components/Icon/Icon'
@@ -143,7 +141,7 @@ function Notification() {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView style={styles.wrapperScreen}>
                 <View>
-                    <NavigationBar title={'Notifications'} callback={() => navigation.goBack()} />
+                    <NavigationBar title={'Notifications'} />
                 </View>
                 {isLoading ? (
                     renderLoading()

@@ -2,12 +2,11 @@ import { useIsFocused, RouteProp, useNavigation } from '@react-navigation/native
 import React, { useRef, useState, useEffect } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View, Animated, FlatList, ScrollView } from 'react-native'
 import { Camera, CameraView, FlashMode } from 'expo-camera'
-import { CameraType } from 'expo-camera/build/Camera.types'
 import * as MediaLibrary from 'expo-media-library'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { SCREEN_HEIGHT, SCREEN_WIDTH, STATUS_BAR_HEIGHT } from '../../constants'
+import { SCREEN_HEIGHT, SCREEN_WIDTH, useStatusBarHeight } from '@/src/constants/Devices.constant'
 import { PanGestureHandler, PanGestureHandlerGestureEvent, State } from 'react-native-gesture-handler'
-import { MainTabParamList } from '@/src/navigations/MainTabs'
+import { MainTabParamList } from '@/src/navigation/MainTabs'
 import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
 
 type StoryTakerRouteProp = RouteProp<MainTabParamList, 'StoryTaker'>
@@ -25,7 +24,6 @@ export type StoryImageSpec = {
 }
 
 const StoryTaker = ({ route }: StoryTakerProps) => {
-    const { sendToDirect, username } = route?.params || {}
     const focused = useIsFocused()
     const [page, setPage] = useState<number>(1)
     const [showGallery, setShowGallery] = useState<boolean>(false)
@@ -84,19 +82,28 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
 
     const _onTakePhoto = async () => {
         if (_cameraRef.current) {
-            const photo = await _cameraRef.current.takePictureAsync({
-                quality: 1,
-                base64: true
-            })
+            try {
+                const photo = await _cameraRef.current.takePictureAsync({
+                    quality: 1,
+                    base64: true
+                })
 
-            const images: StoryImageSpec[] = []
-            images.push({
-                width: photo.width,
-                height: photo.height,
-                uri: photo.uri,
-                base64: photo.base64 || '',
-                extension: (photo.uri || '').split('.').pop() || 'jpg'
-            })
+                const asset = await MediaLibrary.createAssetAsync(photo.uri)
+                console.log('Photo saved to Media Library:', asset)
+
+                // Cập nhật lại danh sách ảnh
+                if (selectedGroupIndex > -1 && hasPermission) {
+                    const result = await MediaLibrary.getAssetsAsync({
+                        album: groups[selectedGroupIndex],
+                        first: 9 * page,
+                        mediaType: MediaLibrary.MediaType.photo
+                    })
+                    setPhotos(result.assets)
+                    setSelectedIndex(0)
+                }
+            } catch (error) {
+                console.error('Error saving photo to Media Library:', error)
+            }
         }
     }
 
@@ -146,14 +153,16 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
                 setSelectedPhotos(temp)
             }
         } else {
-            const images: StoryImageSpec[] = []
-            images.push({
-                width: photos[index].width,
-                height: photos[index].height,
-                uri: photos[index].uri,
-                base64: '',
-                extension: photos[index].filename.split('.').pop() || 'jpg'
-            })
+            const images: StoryImageSpec[] = [
+                {
+                    width: photos[index].width,
+                    height: photos[index].height,
+                    uri: photos[index].uri,
+                    base64: '',
+                    extension: photos[index].filename.split('.').pop() || 'jpg'
+                }
+            ]
+            console.log('Single image selected: ', images) // Xử lý ảnh đơn đã chọn, ví dụ: chuyển sang màn hình chỉnh sửa
         }
     }
 
@@ -189,13 +198,14 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
     }
 
     const _onDoneMultiSelect = () => {
-        const images: StoryImageSpec[] = [...selectedPhotos].map((photoIndex) => ({
+        const images: StoryImageSpec[] = selectedPhotos.map((photoIndex) => ({
             width: photos[photoIndex].width,
             height: photos[photoIndex].height,
             uri: photos[photoIndex].uri,
             base64: '',
             extension: photos[photoIndex].filename.split('.').pop() || 'jpg'
         }))
+        console.log('Multiple images selected: ', images)
     }
 
     if (hasPermission === null) {
@@ -204,6 +214,8 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
     if (hasPermission === false) {
         return <Text>No access to camera</Text>
     }
+
+    const statusBarHeight = useStatusBarHeight()
 
     return (
         <>
@@ -218,12 +230,19 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
                         />
                     )}
 
-                    <View style={styles.topOptions}>
+                    <View
+                        style={[
+                            styles.topOptions,
+                            {
+                                top: statusBarHeight
+                            }
+                        ]}
+                    >
                         <TouchableOpacity style={styles.btnTopOptions}>
                             <Icon name='tune' size={30} color='#fff' />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.btnTopOptions}></TouchableOpacity>
-                        <TouchableOpacity style={styles.btnTopOptions}>
+                        <TouchableOpacity style={styles.btnTopOptions} onPress={() => navigation.goBack()}>
                             <Text
                                 style={{
                                     fontSize: 30,
@@ -307,7 +326,14 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
                         }}
                     >
                         <NavigationBar title='Your Gallery' callback={_onHideGallery} />
-                        <View style={styles.galleryOptionsWrapper}>
+                        <View
+                            style={[
+                                styles.galleryOptionsWrapper,
+                                {
+                                    height: 170 - statusBarHeight - 44
+                                }
+                            ]}
+                        >
                             <TouchableOpacity
                                 onPress={_onShowGroups}
                                 activeOpacity={0.8}
@@ -516,16 +542,7 @@ const styles = StyleSheet.create({
         height: SCREEN_HEIGHT,
         width: SCREEN_WIDTH
     },
-    takeOptionsWrapper: {
-        top: 0,
-        left: 0,
-        zIndex: 999,
-        height: SCREEN_HEIGHT,
-        width: SCREEN_WIDTH,
-        paddingTop: STATUS_BAR_HEIGHT
-    },
     topOptions: {
-        top: STATUS_BAR_HEIGHT,
         left: 0,
         height: 60,
         width: SCREEN_WIDTH,
@@ -551,7 +568,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     galleryInfo: {
-        paddingTop: STATUS_BAR_HEIGHT,
         height: 170,
         width: '100%',
         position: 'absolute',
@@ -607,11 +623,7 @@ const styles = StyleSheet.create({
         height: 200,
         marginVertical: 1.25
     },
-    galleryHeader: {
-        marginTop: STATUS_BAR_HEIGHT
-    },
     galleryOptionsWrapper: {
-        height: 170 - STATUS_BAR_HEIGHT - 44,
         width: '100%',
         justifyContent: 'space-between',
         flexDirection: 'row',

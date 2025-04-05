@@ -1,136 +1,43 @@
-import React, { useCallback, useEffect, useState } from 'react'
 import {
     Keyboard,
     SafeAreaView,
     StyleSheet,
     Text,
-    TextInput,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
     KeyboardAvoidingView,
     Platform
 } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices'
-import { Icon as MyIcon } from '@/src/components/Icon'
-import { GradientButton } from '@/src/components/GradientButton'
-import { TextGradient } from '@/src/components/TextGradient'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import GradientButton from '@/src/components/GradientButton'
+import TextGradient from '@/src/components/TextGradient'
 import { Pressable } from 'react-native-gesture-handler'
-import { navigation } from '@/src/services/NavigationService'
-import { Checkbox } from '@/src/components/CheckBox'
-import { validatePassword as passwordUtils, validateEmail as emailUtils } from '@/src/utils/validationValue'
+import { schema, SchemaType } from '@/src/utils/rules.util'
+import { FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import TextInputCustom from '@/src/components/TextInput'
+import CheckInput from '@/src/components/CheckInput'
 
-const RegisterStep1 = (): JSX.Element => {
-    const [hidePassword, setHidePassword] = useState(true)
-    const [credentials, setCredentials] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
+type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'password' | 'policy'>
+
+const FormSchema = schema.pick(['email', 'password', 'first_name', 'last_name', 'policy'])
+
+function RegisterStep1() {
+    const { ...methods } = useForm<FormData>({
+        defaultValues: {
+            email: '',
+            first_name: '',
+            last_name: '',
+            password: '',
+            policy: false
+        },
+        resolver: yupResolver(FormSchema),
+        mode: 'onBlur'
     })
-    const [allowRegister, setAllowRegister] = useState(false)
-    const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
-    const [firstNameError, setFirstNameError] = useState('')
-    const [lastNameError, setLastNameError] = useState('')
-    const [emailError, setEmailError] = useState('')
-    const [passwordError, setPasswordError] = useState('')
-    const [termsError, setTermsError] = useState('')
+    const canSubmit = methods.formState.isValid
+    const handleLogin = () => {}
+    const handleRegister = () => {}
 
-    const handleAllowRegister = () => {
-        const isValid =
-            credentials.firstName.trim() !== '' &&
-            credentials.lastName.trim() !== '' &&
-            credentials.email.trim() !== '' &&
-            credentials.password.trim() !== '' &&
-            !firstNameError &&
-            !lastNameError &&
-            !emailError &&
-            !passwordError &&
-            hasAcceptedTerms
-        setAllowRegister(isValid)
-    }
-
-    const _onPressToggleHidePassword = useCallback(() => {
-        setHidePassword((prev) => !prev)
-    }, [])
-
-    const validateFirstName = (firstName: string) => {
-        if (!firstName.trim()) {
-            return 'First name is required'
-        }
-        return ''
-    }
-
-    const validateLastName = (lastName: string) => {
-        if (!lastName.trim()) {
-            return 'Last name is required'
-        }
-        return ''
-    }
-
-    const validateEmail = (email: string) => {
-        if (!email.trim()) {
-            return 'Email is required'
-        } else if (!emailUtils(email)) {
-            return 'Invalid email format'
-        }
-        return ''
-    }
-
-    const validatePassword = (password: string) => {
-        if (!password.trim()) {
-            return 'Password is required'
-        } else if (!passwordUtils(password)) {
-            return 'Password must be strong'
-        }
-        return ''
-    }
-
-    const _onChange = useCallback((field: 'firstName' | 'lastName' | 'email' | 'password', value: string) => {
-        setCredentials((prev) => ({ ...prev, [field]: value }))
-    }, [])
-
-    const _onBlur = useCallback((field: 'firstName' | 'lastName' | 'email' | 'password') => {
-        setCredentials((prev) => {
-            let error = ''
-            const value = prev[field] || ''
-
-            if (field === 'firstName') {
-                error = validateFirstName(value)
-                setFirstNameError(error)
-            } else if (field === 'lastName') {
-                error = validateLastName(value)
-                setLastNameError(error)
-            } else if (field === 'email') {
-                error = validateEmail(value)
-                setEmailError(error)
-            } else if (field === 'password') {
-                error = validatePassword(value)
-                setPasswordError(error)
-            }
-
-            return prev
-        })
-    }, [])
-
-    useEffect(() => {
-        handleAllowRegister()
-    }, [credentials, hasAcceptedTerms])
-
-    const handleLogin = () => {
-        navigation.navigate('RegisterStep3')
-    }
-    const handleRegister = () => {
-        navigation.navigate('RegisterStep2')
-    }
-    const handleCheckboxChange = () => {
-        setHasAcceptedTerms((prev) => {
-            const newValue = !prev
-            setTermsError(newValue ? '' : 'You need to accept the terms.')
-            return newValue
-        })
-    }
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
             <SafeAreaView style={styles.container}>
@@ -141,95 +48,60 @@ const RegisterStep1 = (): JSX.Element => {
                                 <Text style={styles.callToAction__desc}>Hey there,</Text>
                                 <Text style={styles.callToAction__heading}>Create an Account</Text>
                             </View>
-                            <View style={styles.registerForm}>
-                                <View style={styles.rowForm}>
-                                    <View style={styles.textInputWrapper}>
-                                        <MyIcon name='profileIcon' size={18} style={styles.Input__icon} />
-                                        <TextInput
+                            <FormProvider {...methods}>
+                                <View style={styles.registerForm}>
+                                    <View style={styles.rowForm}>
+                                        <TextInputCustom
+                                            type='default'
+                                            icon='profileIcon'
                                             autoCapitalize='none'
-                                            value={credentials.firstName}
-                                            onChangeText={(text) => _onChange('firstName', text)}
-                                            onBlur={() => _onBlur('firstName')}
-                                            placeholder='First Name '
-                                            style={styles.input}
-                                            placeholderTextColor='#ADA4A5'
+                                            placeholder='First Name'
+                                            name='first_name'
                                         />
                                     </View>
-                                    {firstNameError ? <Text style={styles.errorText}>{firstNameError}</Text> : null}
-                                </View>
-                                <View style={styles.rowForm}>
-                                    <View style={styles.textInputWrapper}>
-                                        <MyIcon name='profileIcon' size={18} style={styles.Input__icon} />
-                                        <TextInput
-                                            value={credentials.lastName}
-                                            onChangeText={(text) => _onChange('lastName', text)}
-                                            onBlur={() => _onBlur('lastName')}
+                                    <View style={styles.rowForm}>
+                                        <TextInputCustom
+                                            type='default'
+                                            icon='profileIcon'
+                                            autoCapitalize='none'
                                             placeholder='Last Name'
-                                            style={styles.input}
-                                            placeholderTextColor='#ADA4A5'
+                                            name='last_name'
                                         />
                                     </View>
-                                    {lastNameError ? <Text style={styles.errorText}>{lastNameError}</Text> : null}
-                                </View>
-                                <View style={styles.rowForm}>
-                                    <View style={styles.textInputWrapper}>
-                                        <MyIcon name='messageIcon' size={18} style={styles.Input__icon} />
-                                        <TextInput
-                                            value={credentials.email}
+                                    <View style={styles.rowForm}>
+                                        <TextInputCustom
+                                            type='default'
+                                            icon='messageIcon'
                                             placeholder='Email'
-                                            onChangeText={(text) => _onChange('email', text)}
-                                            onBlur={() => _onBlur('email')}
-                                            style={styles.input}
-                                            placeholderTextColor='#ADA4A5'
+                                            name='email'
                                         />
                                     </View>
-                                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-                                </View>
-                                <View style={styles.rowForm}>
-                                    <View style={styles.textInputWrapper}>
-                                        <MyIcon name='lockIcon' size={18} style={styles.Input__icon} />
-                                        <TextInput
-                                            value={credentials.password}
-                                            secureTextEntry={hidePassword}
+                                    <View style={styles.rowForm}>
+                                        <TextInputCustom
+                                            type='password'
+                                            icon='lockIcon'
                                             placeholder='Password'
-                                            onChangeText={(text) => _onChange('password', text)}
-                                            onBlur={() => _onBlur('password')}
-                                            style={styles.input}
-                                            placeholderTextColor='#ADA4A5'
+                                            name='password'
                                         />
-                                        <TouchableOpacity
-                                            style={styles.hidePasswordIcon}
-                                            onPress={_onPressToggleHidePassword}
-                                        >
-                                            <Icon
-                                                name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
-                                                size={20}
-                                                color={hidePassword ? '#333' : '#318bfb'}
-                                            />
-                                        </TouchableOpacity>
-                                        {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+                                    </View>
+                                    <View style={styles.rowForm}>
+                                        <CheckInput
+                                            label=' By continuing you accept our Privacy Policy and Term of Use'
+                                            name='policy'
+                                        />
                                     </View>
                                 </View>
-                                <View style={styles.policy}>
-                                    <View style={styles.checkboxWrapper}>
-                                        <Checkbox onValueChange={handleCheckboxChange} />
-                                        <Text style={styles.checkboxText}>
-                                            By continuing you accept our Privacy Policy and Term of Use
-                                        </Text>
-                                    </View>
-                                    {termsError ? <Text style={styles.errorText}>{termsError}</Text> : null}
-                                </View>
-                            </View>
+                            </FormProvider>
                         </View>
                         <View style={{ width: '100%', alignItems: 'center' }}>
                             <GradientButton
                                 onPress={handleRegister}
-                                disabled={!allowRegister}
                                 activeOpacity={0.6}
                                 Square
+                                disabled={!canSubmit}
                                 style={{
                                     ...styles.btnRegister,
-                                    opacity: allowRegister ? 1 : 0.6
+                                    opacity: canSubmit ? 1 : 0.6
                                 }}
                             >
                                 <Text style={{ fontSize: 16, color: '#fff', fontWeight: '500' }}>Register</Text>
@@ -286,60 +158,6 @@ const styles = StyleSheet.create({
         position: 'relative',
         width: '100%',
         marginVertical: 10
-    },
-    Input__icon: {},
-    errorText: {
-        color: '#FF0000',
-        fontSize: 12,
-        position: 'absolute',
-        bottom: -14,
-        left: 10
-    },
-    textInputWrapper: {
-        width: '100%',
-        height: 48,
-        flexShrink: 0,
-        paddingHorizontal: 15,
-        borderRadius: 14,
-        borderColor: '#F7F8F8',
-        borderWidth: 1,
-        backgroundColor: '#F7F8F8',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    policy: {
-        width: '100%'
-    },
-    checkboxWrapper: {
-        marginTop: 5,
-        flexDirection: 'row',
-        marginLeft: 5
-    },
-    checkboxText: {
-        marginLeft: 10,
-        maxWidth: 224,
-        color: '#ADA4A5',
-        fontSize: 12,
-        fontWeight: 400,
-        lineHeight: 15
-    },
-    hidePasswordIcon: {
-        position: 'absolute',
-        height: 30,
-        width: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        right: 5,
-        top: (44 - 30) / 2
-    },
-    input: {
-        width: '100%',
-        height: '100%',
-        paddingHorizontal: 15,
-        borderRadius: 14,
-        borderColor: '#F7F8F8',
-        borderWidth: 1,
-        backgroundColor: '#F7F8F8'
     },
     btnRegister: {
         marginTop: 7.5,

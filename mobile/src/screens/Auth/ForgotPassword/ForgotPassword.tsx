@@ -11,23 +11,23 @@ import {
     Keyboard,
     Pressable
 } from 'react-native'
-import { SCREEN_WIDTH } from '../../../constants'
-import { Icon as MyIcon } from '@/src/components/Icon'
+import { SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import MyIcon from '@/src/components/Icon'
 import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
 import { RouteProp, NavigationProp } from '@react-navigation/native'
-import { AuthStackParamList } from '@/src/navigations/AuthStack'
-import { GradientButton } from '@/src/components/GradientButton'
-import { TextGradient } from '@/src/components/TextGradient'
+import GradientButton from '@/src/components/GradientButton'
+import TextGradient from '@/src/components/TextGradient'
+import { SuperRootStackParamList } from '@/src/navigation/RootStackNavigation'
 
-type ForgotPasswordRouteProp = RouteProp<AuthStackParamList, 'ForgotPassword'>
-type ForgotPasswordNavigationProp = NavigationProp<AuthStackParamList, 'ForgotPassword'>
+type ForgotPasswordRouteProp = RouteProp<SuperRootStackParamList, 'ForgotPassword'>
+type ForgotPasswordNavigationProp = NavigationProp<SuperRootStackParamList, 'ForgotPassword'>
 
 type ForgotPasswordProps = {
     navigation: ForgotPasswordNavigationProp
     route: ForgotPasswordRouteProp
 }
 
-const ForgotPassword = ({ navigation }: ForgotPasswordProps) => {
+const ForgotPassword = ({ navigation, route }: ForgotPasswordProps) => {
     const [loading, setLoading] = useState(false)
     const [sendingReset, setSendingReset] = useState(false)
     const [sentReset, setSentReset] = useState(false)
@@ -43,7 +43,7 @@ const ForgotPassword = ({ navigation }: ForgotPasswordProps) => {
     ]
 
     const _loadingDeg = useRef(new Animated.Value(0)).current
-    const _loadingDeg2 = useRef(new Animated.Value(0)).current // Corrected: Moved _loadingDeg2 here
+    const _loadingDeg2 = useRef(new Animated.Value(0)).current
 
     const { _loadingDegAnimation2, _loadingDegAnimation } = getAnimationActions(
         _loadingDeg,

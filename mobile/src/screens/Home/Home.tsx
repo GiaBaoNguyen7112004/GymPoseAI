@@ -1,16 +1,14 @@
-import { GradientButton } from '@/src/components/GradientButton'
-import { Icon } from '@/src/components/Icon'
-import { TextGradient } from '@/src/components/TextGradient'
-import { SCREEN_WIDTH } from '@/src/constants'
+import GradientButton from '@/src/components/GradientButton'
+import MyIcon from '@/src/components/Icon'
+import TextGradient from '@/src/components/TextGradient'
+import { SCREEN_WIDTH } from '@/src/constants/Devices.constant'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Icon as MyIcon } from '@/src/components/Icon'
 import Progress from '@/src/components/Progress'
-import { IconName } from '@/src/components/Icon/Icon'
 import { useRef } from 'react'
-import { navigation } from '@/src/services/NavigationService'
+import { IconName } from '@/src/components/Icon/Icon'
 
 const DATA = [
     { id: 1, value: 600, time: '6am - 8am' },
@@ -67,9 +65,7 @@ const colors: [string, string, ...string[]][] = [
 ]
 const names: IconName[] = ['workout1', 'workout2', 'movement1', 'movement2', 'movement3']
 function Home() {
-    const handleNotificationClick = () => {
-        navigation.navigate('Notification')
-    }
+    const handleNotificationClick = () => {}
 
     const renderWaterLogItem = ({ item }: { item: { id: number; value: number; time: string } }) => (
         <View style={styles.waterIntake__item}>
@@ -141,7 +137,7 @@ function Home() {
                         <Text style={styles.headerHeading}>Stefani Wong</Text>
                     </View>
                     <TouchableOpacity style={styles.headerButton} onPress={handleNotificationClick}>
-                        <Icon name='notificationIcon' size={18} />
+                        <MyIcon name='notificationIcon' size={18} />
                     </TouchableOpacity>
                 </View>
 
@@ -159,7 +155,7 @@ function Home() {
                             </View>
 
                             <View style={styles.bmiChartContainer}>
-                                <Icon name='pieChart' size={176} style={styles.bmiChart} />
+                                <MyIcon name='pieChart' size={176} style={styles.bmiChart} />
                                 <Text style={styles.bmiResult}>24.7</Text>
                             </View>
 
@@ -219,7 +215,7 @@ function Home() {
                                     <TextGradient textStyle={styles.stats__value} text='760 kCal' />
                                     <View style={styles.calories_chart}>
                                         <Progress.Circle progress={0.2} size={66} />
-                                        <GradientButton rounded style={styles.calories__btn}>
+                                        <GradientButton rounded containerStyle={styles.calories__btn}>
                                             <Text style={styles.calories__btn_text}>230kCal left</Text>
                                         </GradientButton>
                                     </View>
