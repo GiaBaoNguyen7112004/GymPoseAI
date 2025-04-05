@@ -1,4 +1,4 @@
-package com.pbl5.gympose.payload.response;
+package com.pbl5.gympose.payload.general;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pbl5.gympose.util.CommonConstant;
