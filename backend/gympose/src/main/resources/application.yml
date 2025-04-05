@@ -15,3 +15,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: ${LOG_PATH}
