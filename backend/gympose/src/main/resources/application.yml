@@ -19,3 +19,9 @@ logging:
   config: classpath:logback-spring.xml
   file:
     path: ${LOG_PATH}
+app:
+  auth:
+    access-token-secret: 928d4aef-6452-4ca1-8e4e-7dabad510423
+    access-token-expiration-msec: 7200000
+    refresh-token-secret: cf427568-e272-4d5d-8195-18cc8bcbd0c4
+    refresh-token-expiration-msec: 2592000000

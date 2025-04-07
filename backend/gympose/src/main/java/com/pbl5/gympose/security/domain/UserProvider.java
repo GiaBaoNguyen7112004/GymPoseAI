@@ -1,6 +1,7 @@
-package com.pbl5.gympose.security;
+package com.pbl5.gympose.security.domain;
 
 import com.pbl5.gympose.entity.User;
+import com.pbl5.gympose.security.domain.enums.AuthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
