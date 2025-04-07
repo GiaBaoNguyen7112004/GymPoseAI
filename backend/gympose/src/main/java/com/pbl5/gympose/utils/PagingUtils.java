@@ -1,4 +1,4 @@
-package com.pbl5.gympose.util;
+package com.pbl5.gympose.utils;
 
 import org.apache.commons.text.CaseUtils;
 import org.springframework.data.domain.PageRequest;

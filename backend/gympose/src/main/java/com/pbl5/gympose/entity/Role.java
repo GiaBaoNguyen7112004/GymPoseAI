@@ -1,5 +1,6 @@
 package com.pbl5.gympose.entity;
 
+import com.pbl5.gympose.utils.CommonConstant;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +21,11 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
     String name;
-    @OneToMany(mappedBy = "role")
-    List<User> users = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private List<User> users = new ArrayList<>();
+
+    public String getRoleName() {
+        return CommonConstant.PREFIX_ROLE + this.name.toUpperCase();
+    }
 }

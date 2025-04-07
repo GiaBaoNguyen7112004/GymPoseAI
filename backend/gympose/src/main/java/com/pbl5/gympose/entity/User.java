@@ -2,7 +2,7 @@ package com.pbl5.gympose.entity;
 
 import com.pbl5.gympose.enums.Gender;
 import com.pbl5.gympose.notification.Notification;
-import com.pbl5.gympose.security.UserProvider;
+import com.pbl5.gympose.security.domain.UserProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -56,8 +56,13 @@ public class User extends AbstractEntity {
     Integer deleteAccountToken;
     LocalDateTime requestDeleteAccountAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_role",  // Tên bảng nối
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<WorkoutHistory> workoutHistories = new ArrayList<>();
