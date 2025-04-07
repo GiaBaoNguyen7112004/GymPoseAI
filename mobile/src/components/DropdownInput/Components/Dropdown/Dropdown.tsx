@@ -1,8 +1,21 @@
 import React, { useRef } from 'react'
-import { StyleSheet, TouchableOpacity, StyleProp, ViewStyle, TextStyle, GestureResponderEvent } from 'react-native'
+import {
+    StyleSheet,
+    TouchableOpacity,
+    StyleProp,
+    ViewStyle,
+    TextStyle,
+    GestureResponderEvent,
+    ImageStyle
+} from 'react-native'
 import { Dropdown, IDropdownRef } from 'react-native-element-dropdown'
-import { DropdownItem } from '@/src/types/common.type'
-import Icon, { IconName } from '@/src/components/Icon/Icon'
+import Icon from '@/src/components/Icon/Icon'
+import { IconName } from '@/src/constants/icon.constants'
+
+export interface DropdownItem {
+    label: string
+    value: string
+}
 
 export interface CustomDropdownProps {
     data: DropdownItem[]
@@ -15,6 +28,10 @@ export interface CustomDropdownProps {
     textStyle?: StyleProp<TextStyle>
     onPress?: (event: GestureResponderEvent) => void
     onblur?: () => void
+    iconStyle?: StyleProp<ImageStyle>
+    itemStyle?: StyleProp<ViewStyle>
+    itemTextStyle?: StyleProp<TextStyle>
+    containerDropdownStyle?: StyleProp<ViewStyle>
 }
 
 function CustomDropdown({
@@ -26,7 +43,11 @@ function CustomDropdown({
     containerStyle,
     dropdownStyle,
     textStyle,
-    onblur
+    onblur,
+    iconStyle,
+    itemStyle,
+    itemTextStyle,
+    containerDropdownStyle
 }: CustomDropdownProps) {
     const dropdownRef = useRef<IDropdownRef>(null)
     const showDropdown = () => {
@@ -37,8 +58,8 @@ function CustomDropdown({
             {iconSource && <Icon name={iconSource} size={18} style={styles.icon} />}
             <Dropdown
                 ref={dropdownRef}
-                containerStyle={[styles.containerList]}
-                itemContainerStyle={[styles.item]}
+                containerStyle={[styles.containerList, containerDropdownStyle]}
+                itemContainerStyle={[styles.item, itemStyle]}
                 style={[styles.dropdown, dropdownStyle]}
                 placeholderStyle={[styles.placeholderStyle, textStyle]}
                 selectedTextStyle={[styles.selectedTextStyle, textStyle]}
@@ -56,6 +77,9 @@ function CustomDropdown({
                 closeModalWhenSelectedItem
                 onBlur={onblur}
                 mode='auto'
+                dropdownPosition='auto'
+                iconStyle={iconStyle}
+                itemTextStyle={[itemTextStyle]}
             />
         </TouchableOpacity>
     )
@@ -76,7 +100,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     containerList: {
-        borderRadius: 14
+        borderRadius: 14,
+        overflow: 'hidden'
     },
     dropdown: {
         flex: 1
@@ -85,7 +110,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#ADA4A5'
     },
-    item: {},
+    item: {
+        flexShrink: 0
+    },
     selectedTextStyle: {
         fontSize: 16,
         color: '#000'

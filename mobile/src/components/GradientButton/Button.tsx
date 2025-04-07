@@ -20,7 +20,7 @@ interface ButtonProps {
 const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
     onPress,
     children,
-    Square = true,
+    Square,
     linerColors = ['#92A3FD', '#9DCEFF'],
     disabled,
     style,

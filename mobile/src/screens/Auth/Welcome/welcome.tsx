@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
 import GradientButton from '@/src/components/GradientButton'
 import MyIcon from '@/src/components/Icon'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function WelcomeScreen() {

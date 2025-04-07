@@ -11,23 +11,13 @@ import {
     Keyboard,
     Pressable
 } from 'react-native'
-import { SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import MyIcon from '@/src/components/Icon'
 import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
-import { RouteProp, NavigationProp } from '@react-navigation/native'
 import GradientButton from '@/src/components/GradientButton'
 import TextGradient from '@/src/components/TextGradient'
-import { SuperRootStackParamList } from '@/src/navigation/RootStackNavigation'
 
-type ForgotPasswordRouteProp = RouteProp<SuperRootStackParamList, 'ForgotPassword'>
-type ForgotPasswordNavigationProp = NavigationProp<SuperRootStackParamList, 'ForgotPassword'>
-
-type ForgotPasswordProps = {
-    navigation: ForgotPasswordNavigationProp
-    route: ForgotPasswordRouteProp
-}
-
-const ForgotPassword = ({ navigation, route }: ForgotPasswordProps) => {
+const ForgotPassword = () => {
     const [loading, setLoading] = useState(false)
     const [sendingReset, setSendingReset] = useState(false)
     const [sentReset, setSentReset] = useState(false)
@@ -109,10 +99,7 @@ const ForgotPassword = ({ navigation, route }: ForgotPasswordProps) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.container}>
                 <View>
-                    <NavigationBar
-                        title={sentReset ? 'Verification' : 'Forgot Password'}
-                        callback={() => navigation.goBack()}
-                    />
+                    <NavigationBar title={sentReset ? 'Verification' : 'Forgot Password'} />
                 </View>
                 {sentReset ? (
                     <VerificationScreen
@@ -210,7 +197,7 @@ const VerificationScreen = ({
             <Text style={styles.btnResentText}>If you didn’t receive a code,</Text>
             <TextGradient style={styles.strongText} text=' Resend' />
         </Pressable>
-        <GradientButton activeOpacity={0.8} style={styles.btnNext}>
+        <GradientButton activeOpacity={0.8} style={styles.btnNext} Square>
             {!loading && <Text style={styles.btnText}>Send</Text>}
             {loading && (
                 <>
@@ -286,7 +273,7 @@ const FindAccountScreen = ({
                     style={styles.input}
                 />
             </View>
-            <GradientButton onPress={_checkExistUsername} activeOpacity={0.8} style={styles.btnNext}>
+            <GradientButton onPress={_checkExistUsername} activeOpacity={0.8} style={styles.btnNext} Square>
                 {!loading && <Text style={styles.btnText}>Next</Text>}
                 {loading && (
                     <>

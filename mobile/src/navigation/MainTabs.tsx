@@ -1,22 +1,16 @@
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StyleSheet, View } from 'react-native'
 import TabBarComponent from '@/src/components/BottomTabBar/BottomTabBar'
-import { WorkoutTracker } from '@/src/screens/Home/WorkoutTracker'
-import StoryTaker from '@/src/screens/Home/StoryTaker'
-import Search from '@/src/screens/Home/Search'
+import WorkoutTracker from '@/src/screens/Main/WorkoutTracker'
+import StoryTaker from '@/src/screens/Main/StoryTaker/StoryTaker'
+import Search from '@/src/screens/Main/Search/Search'
 import MyIcon from '@/src/components/Icon'
-import { IconName } from '@/src/components/Icon/Icon'
 import GradientButton from '@/src/components/GradientButton'
-import Home from '@/src/screens/Home/Home'
+import Home from '@/src/screens/Main/Home/Home'
 import ProfileStack from './ProfileStack'
+import { MainTabParamList } from './types'
+import { IconName } from '../constants/icon.constants'
 
-export type MainTabParamList = {
-    Home: undefined
-    WorkoutTracker: undefined
-    Search: undefined
-    StoryTaker: undefined
-    Profile: undefined
-}
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
 const MainTabs = () => {

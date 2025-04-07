@@ -1,3 +1,3 @@
 import CustomDropdown from './Dropdown'
-export { CustomDropdownProps } from './Dropdown'
+export { CustomDropdownProps, DropdownItem } from './Dropdown'
 export default CustomDropdown

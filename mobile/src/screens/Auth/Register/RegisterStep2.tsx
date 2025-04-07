@@ -10,24 +10,25 @@ import {
     KeyboardAvoidingView,
     Platform
 } from 'react-native'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import MyIcon from '@/src/components/Icon'
 import GradientButton from '@/src/components/GradientButton'
 import { LinearGradient } from 'expo-linear-gradient'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
-import Loader from '@/src/components/Loader'
+import Loader from '@/src/components/LoaderModal'
 import { schema, SchemaType } from '@/src/utils/rules.util'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import DatePickerInput from '@/src/components/DatePickerInput'
 import TextInputCustom from '@/src/components/TextInput'
 import DropdownInput from '@/src/components/DropdownInput'
-import { DataGender } from '@/src/constants/Menu.constant'
+import { RootStackScreenProps } from '@/src/navigation/types'
+import { DataGender } from '@/src/constants/dropdown.constant'
 
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
 const FormSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
 
-function RegisterStep2() {
+function RegisterStep2({ navigation }: RootStackScreenProps<'RegisterStep2'>) {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const loading = false
     const { ...methods } = useForm<FormData>({
@@ -35,7 +36,9 @@ function RegisterStep2() {
         mode: 'onBlur'
     })
     const canSubmit = methods.formState.isValid
-    const onSubmit = () => {}
+    const onSubmit = () => {
+        navigation.replace('RegisterStep3')
+    }
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true)
@@ -152,6 +155,7 @@ function RegisterStep2() {
                                         </View>
 
                                         <GradientButton
+                                            Square
                                             activeOpacity={0.6}
                                             disabled={!canSubmit}
                                             style={{

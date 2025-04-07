@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { API_URL } from '@env'
+import { API_URL, URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from '@env'
 import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
 import storage from './StorageManager.util'
 import { AuthResponse, RefreshTokenResponse } from '../types/auth.type'
+
+console.log('API_URL ', URL_LOGIN)
 
 class Http {
     instance: AxiosInstance
@@ -70,6 +72,7 @@ class Http {
                 if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
                     const message = (error.response?.data as any)?.message || error.message
                     console.log(message)
+                    return Promise.reject(error)
                 }
                 return Promise.reject(error)
             }

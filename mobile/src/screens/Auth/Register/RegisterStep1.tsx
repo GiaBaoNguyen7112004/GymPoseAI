@@ -8,7 +8,7 @@ import {
     KeyboardAvoidingView,
     Platform
 } from 'react-native'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import GradientButton from '@/src/components/GradientButton'
 import TextGradient from '@/src/components/TextGradient'
 import { Pressable } from 'react-native-gesture-handler'
@@ -17,12 +17,13 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import TextInputCustom from '@/src/components/TextInput'
 import CheckInput from '@/src/components/CheckInput'
+import { RootStackScreenProps } from '@/src/navigation/types'
 
 type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'password' | 'policy'>
 
 const FormSchema = schema.pick(['email', 'password', 'first_name', 'last_name', 'policy'])
 
-function RegisterStep1() {
+function RegisterStep1({ navigation }: RootStackScreenProps<'RegisterStep1'>) {
     const { ...methods } = useForm<FormData>({
         defaultValues: {
             email: '',
@@ -35,8 +36,12 @@ function RegisterStep1() {
         mode: 'onBlur'
     })
     const canSubmit = methods.formState.isValid
-    const handleLogin = () => {}
-    const handleRegister = () => {}
+    const handleLogin = () => {
+        navigation.navigate('Login')
+    }
+    const handleRegister = () => {
+        navigation.replace('RegisterStep2')
+    }
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>

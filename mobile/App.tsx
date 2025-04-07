@@ -49,11 +49,11 @@ export default function App() {
     return (
         <GestureHandlerRootView>
             <QueryClientProvider client={queryClient}>
-                <NavigationContainer linking={linking}>
-                    <AppProvider>
+                <AppProvider>
+                    <NavigationContainer linking={linking}>
                         <RootStackNavigation />
-                    </AppProvider>
-                </NavigationContainer>
+                    </NavigationContainer>
+                </AppProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>
     )

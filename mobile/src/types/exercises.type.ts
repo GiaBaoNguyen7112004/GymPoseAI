@@ -1,3 +1,5 @@
+import { categories } from './workoutHistory.type'
+
 export interface Exercise {
     id: string
     name: string
@@ -10,7 +12,9 @@ export interface Exercise {
 
 export interface Category {
     id: string
-    name: string
+    name: categories | string
+    exercise_count: number
+    duration_minutes: number
 }
 
 export interface Step {

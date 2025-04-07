@@ -1,12 +1,15 @@
 import GradientButton from '@/src/components/GradientButton'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/Devices.constant'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { WorkoutBenefitsList } from './Components/WorkoutBenefitsList'
+import { RootStackScreenProps } from '@/src/navigation/types'
 
-export default function RegisterStep3() {
-    const handleConfirm = () => {}
+export default function RegisterStep3({ navigation }: RootStackScreenProps<'RegisterStep3'>) {
+    const handleConfirm = () => {
+        navigation.replace('Login')
+    }
 
     return (
         <View style={{ flex: 1 }}>
