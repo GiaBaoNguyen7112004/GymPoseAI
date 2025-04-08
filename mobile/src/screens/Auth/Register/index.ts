@@ -1,9 +1,9 @@
-import RegisterStep1 from './RegisterStep1'
-import RegisterStep2 from './RegisterStep2'
-import RegisterStep3 from './RegisterStep3'
+import CreateAccount from './Screens/CreateAccount'
+import CompleteProfile from './Screens/CompleteProfile'
+import ConfirmYourGoal from './Screens/ConfirmYourGoal'
 
 export const Register = {
-    RegisterStep1,
-    RegisterStep2,
-    RegisterStep3
+    CreateAccount,
+    CompleteProfile,
+    ConfirmYourGoal
 } as const

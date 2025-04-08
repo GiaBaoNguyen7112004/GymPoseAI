@@ -30,9 +30,9 @@ function RootStackNavigation() {
                 <>
                     <RootStack.Screen name='Login' component={Login} />
                     <RootStack.Group screenOptions={{ headerShown: false }}>
-                        <RootStack.Screen name='RegisterStep1' component={Register.RegisterStep1} />
-                        <RootStack.Screen name='RegisterStep2' component={Register.RegisterStep2} />
-                        <RootStack.Screen name='RegisterStep3' component={Register.RegisterStep3} />
+                        <RootStack.Screen name='CreateAccount' component={Register.CreateAccount} />
+                        <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
+                        <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
                     </RootStack.Group>
                     <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
                 </>

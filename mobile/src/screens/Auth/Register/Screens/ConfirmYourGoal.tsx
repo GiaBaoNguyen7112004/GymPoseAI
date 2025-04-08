@@ -3,10 +3,10 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { WorkoutBenefitsList } from './Components/WorkoutBenefitsList'
 import { RootStackScreenProps } from '@/src/navigation/types'
+import { WorkoutBenefitsList } from '../Components/WorkoutBenefitsList'
 
-export default function RegisterStep3({ navigation }: RootStackScreenProps<'RegisterStep3'>) {
+export default function ConfirmYourGoal({ navigation }: RootStackScreenProps<'ConfirmYourGoal'>) {
     const handleConfirm = () => {
         navigation.replace('Login')
     }

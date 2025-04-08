@@ -6,9 +6,9 @@ import { Category } from '../types/exercises.type'
 
 export type RootStackParamList = {
     Login: undefined
-    RegisterStep1: undefined
-    RegisterStep2: undefined
-    RegisterStep3: undefined
+    CreateAccount: undefined
+    CompleteProfile: undefined
+    ConfirmYourGoal: undefined
     ForgotPassword: undefined
     Welcome: undefined
     MainTab: undefined

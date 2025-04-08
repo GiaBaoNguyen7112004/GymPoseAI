@@ -23,7 +23,7 @@ type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'passwor
 
 const FormSchema = schema.pick(['email', 'password', 'first_name', 'last_name', 'policy'])
 
-function RegisterStep1({ navigation }: RootStackScreenProps<'RegisterStep1'>) {
+function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
     const { ...methods } = useForm<FormData>({
         defaultValues: {
             email: '',
@@ -40,7 +40,7 @@ function RegisterStep1({ navigation }: RootStackScreenProps<'RegisterStep1'>) {
         navigation.navigate('Login')
     }
     const handleRegister = () => {
-        navigation.replace('RegisterStep2')
+        navigation.replace('CompleteProfile')
     }
 
     return (
@@ -187,4 +187,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default RegisterStep1
+export default CreateAccount

@@ -28,7 +28,7 @@ import { DataGender } from '@/src/constants/dropdown.constant'
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
 const FormSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
 
-function RegisterStep2({ navigation }: RootStackScreenProps<'RegisterStep2'>) {
+function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>) {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const loading = false
     const { ...methods } = useForm<FormData>({
@@ -37,7 +37,7 @@ function RegisterStep2({ navigation }: RootStackScreenProps<'RegisterStep2'>) {
     })
     const canSubmit = methods.formState.isValid
     const onSubmit = () => {
-        navigation.replace('RegisterStep3')
+        navigation.replace('ConfirmYourGoal')
     }
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -250,4 +250,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default RegisterStep2
+export default CompleteProfile
