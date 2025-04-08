@@ -1,7 +1,8 @@
 // navigation/types.ts
-import type { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native'
+import type { CompositeScreenProps } from '@react-navigation/native'
 import type { StackScreenProps } from '@react-navigation/stack'
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
+import { Category } from '../types/exercises.type'
 
 export type RootStackParamList = {
     Login: undefined
@@ -16,6 +17,8 @@ export type RootStackParamList = {
     PrivacyPolicy: undefined
     WorkoutHistoryCenter: undefined
     WorkoutHistoryDetail: { workout_id: string }
+    CategoryDetail: { category: Category }
+    WorkoutDetail: { workout_id: string }
 }
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, T>

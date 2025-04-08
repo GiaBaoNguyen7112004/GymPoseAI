@@ -10,4 +10,5 @@ declare module '@env' {
     export const URL_USER: string
     export const URL_TARGETS: string
     export const URL_CATEGORIES: string
+    export const URL_WORKOUTS: string
 }

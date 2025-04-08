@@ -1,13 +1,30 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MyIcon from '@/src/components/Icon'
 import { Category } from '@/src/types/exercises.type'
+import { categories } from '@/src/types/workoutHistory.type'
+import { ICONS_CATEGORY_MAP } from '@/src/constants/common.constants'
+import { useMemo } from 'react'
 
-interface CategoryCartProps {
+interface CategoryCardProps {
     onPress?: () => void
     itemData: Category
 }
 
-function CategoryCart({ onPress, itemData }: CategoryCartProps) {
+const mapSizeImageToData: Record<categories, number> = {
+    'abdominal muscles': 121,
+    'lower body': 73,
+    'full body': 110
+}
+
+function CategoryCard({ onPress, itemData }: CategoryCardProps) {
+    const IconObj = useMemo(() => {
+        const iconName = ICONS_CATEGORY_MAP.get(itemData.name as categories) || 'movement1'
+        const size = mapSizeImageToData[itemData.name as categories] || 110
+        return {
+            iconName,
+            size
+        }
+    }, [itemData.name])
     return (
         <View style={styles.exerciseCard}>
             <View style={styles.exerciseInfo}>
@@ -20,13 +37,13 @@ function CategoryCart({ onPress, itemData }: CategoryCartProps) {
                 </TouchableOpacity>
             </View>
             <View style={styles.exerciseImageContainer}>
-                <MyIcon name='AbWorkout' size={121} />
+                <MyIcon name={IconObj.iconName} size={IconObj.size} />
             </View>
         </View>
     )
 }
 
-export default CategoryCart
+export default CategoryCard
 
 const styles = StyleSheet.create({
     exerciseCard: {
@@ -45,7 +62,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '500',
         color: '#1D1617',
-        marginBottom: 5
+        marginBottom: 5,
+        textTransform: 'capitalize'
     },
     exerciseDetails: {
         fontSize: 12,

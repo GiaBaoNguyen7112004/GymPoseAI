@@ -6,6 +6,9 @@ import { Category } from '../types/exercises.type'
 const categoriesApi = {
     getCategories() {
         return http.get<ResponseApi<Category[], any>>(URL_CATEGORIES)
+    },
+    getCategoriesById({ id }: { id: string }) {
+        return http.get<ResponseApi<Category, any>>(`${URL_CATEGORIES}/${id}`)
     }
 }
 

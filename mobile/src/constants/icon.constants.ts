@@ -48,6 +48,8 @@ import settingGradientOuline from '@/src/assets/Icons/SettingGradientOuline.svg'
 import arrowRightGray from '@/src/assets/Icons/Arrow - Right 4.svg'
 import shieldGradientOuline from '@/src/assets/Icons/ShieldGradientOuline.svg'
 import messageGradientOuline from '@/src/assets/Icons/MessageGradientOuline.svg'
+import stepLine from '@/src/assets/Icons/StepLine.svg'
+import stepDot from '@/src/assets/Icons/StepDot.svg'
 
 export type IconName =
     | 'registerIcon'
@@ -99,6 +101,8 @@ export type IconName =
     | 'arrowRightGray'
     | 'shieldGradientOuline'
     | 'messageGradientOuline'
+    | 'stepLine'
+    | 'stepDot'
 
 export const ICONS: { [key in IconName]: React.ComponentType<SvgProps> } = {
     registerIcon: registerIcon,
@@ -149,5 +153,7 @@ export const ICONS: { [key in IconName]: React.ComponentType<SvgProps> } = {
     settingGradientOuline: settingGradientOuline,
     arrowRightGray: arrowRightGray,
     shieldGradientOuline: shieldGradientOuline,
-    messageGradientOuline: messageGradientOuline
+    messageGradientOuline: messageGradientOuline,
+    stepLine: stepLine,
+    stepDot: stepDot
 } as const

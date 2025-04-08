@@ -1,8 +1,9 @@
-import React, { useContext, useRef } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native'
+import React, { useContext, useRef, useCallback } from 'react'
+import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native'
 import BottomSheet, {
     BottomSheetBackdrop,
     BottomSheetBackdropProps,
+    BottomSheetFlatList,
     BottomSheetView,
     WINDOW_WIDTH
 } from '@gorhom/bottom-sheet'
@@ -15,8 +16,9 @@ import WorkoutChart from '@/src/components/WorkoutChart'
 import { LinearGradient } from 'expo-linear-gradient'
 import { COLOR_BRANDS } from '@/src/constants/common.constants'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
-import { categories } from '@/src/types/workoutHistory.type'
 import categoriesApi from '@/src/apis/categories.api'
+import CategoryCard from '@/src/components/CategoryCard'
+import { Category } from '@/src/types/exercises.type'
 
 const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: '#fff',
@@ -33,15 +35,12 @@ const chartConfig: AbstractChartConfig = {
     propsForDots: { r: '2.5', strokeWidth: '1', stroke: '#FFF', fill: '#92A3FD' },
     propsForBackgroundLines: { strokeDasharray: '', strokeWidth: 1.2, stroke: '#F7F8F8' }
 }
-const mapSizeImageToData: Record<categories, number> = {
-    'abdominal muscles': 121,
-    'lower body': 73,
-    'full body': 74
-}
+
 const lineChartColor = (opacity = 1) => `rgba(255, 255, 255, ${opacity})`
 
 function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
     const { profile } = useContext(AppContext)
+
     const { data: workoutQuery } = useQuery({
         queryKey: ['workoutHistory', profile?.id],
         queryFn: () => workoutHistoryApi.getWorkoutHistoryByViewMode({ id: profile?.id as string, viewMode: 'weekly' }),
@@ -55,6 +54,7 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
         staleTime: 1000 * 60 * 10
     })
     const categoriesData = categoriesQuery?.data.data || []
+
     const goBackScreen = () => {
         navigation.goBack()
     }
@@ -71,11 +71,19 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
         />
     )
 
+    const handleCategoryPress = (category: Category) => {
+        navigation.navigate('CategoryDetail', { category: category })
+    }
+
+    const renderCategoryItem = useCallback(({ item }: { item: Category }) => {
+        return <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />
+    }, [])
+
     return (
         <LinearGradient
             colors={COLOR_BRANDS.primary}
-            start={{ x: 0.4, y: 0 }}
-            end={{ x: 0.2, y: 1 }}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 0.02, y: 0 }}
             style={styles.content}
         >
             <SafeAreaView style={styles.container}>
@@ -98,15 +106,23 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
                 </View>
                 <BottomSheet
                     ref={bottomSheetRef}
-                    index={2}
-                    snapPoints={['50%', '60%']}
+                    index={0}
+                    snapPoints={['72%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
+                    style={{ marginTop: 100 }}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <View style={styles.trainingSection}>
                             <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
+                            <BottomSheetFlatList
+                                data={categoriesData}
+                                renderItem={renderCategoryItem}
+                                keyExtractor={(item) => item.id.toString()}
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={{ flexGrow: 1, paddingBottom: 90 }}
+                            />
                         </View>
                     </BottomSheetView>
                 </BottomSheet>
@@ -127,7 +143,6 @@ const styles = StyleSheet.create({
     header: {
         zIndex: 100
     },
-
     headerTitle: {
         color: '#FFF',
         fontSize: 16,
@@ -145,12 +160,12 @@ const styles = StyleSheet.create({
     },
     trainingSection: {
         flex: 1,
-        padding: 20
+        paddingHorizontal: 20
     },
     trainingTitle: {
         fontSize: 16,
         fontWeight: '600',
-        marginBottom: 15,
+        marginBottom: 19,
         color: '#1D1617'
     }
 })

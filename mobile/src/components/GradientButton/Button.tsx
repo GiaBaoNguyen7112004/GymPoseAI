@@ -1,11 +1,11 @@
 import { memo } from 'react'
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native'
+import { TouchableOpacity, StyleSheet, ViewStyle, GestureResponderEvent } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacityProps } from 'react-native-gesture-handler'
 import { StyleProp } from 'react-native'
 
 interface ButtonProps {
-    onPress?: () => void
+    onPress?: (event: GestureResponderEvent) => void
     children?: React.ReactNode
     primary?: boolean
     outline?: boolean

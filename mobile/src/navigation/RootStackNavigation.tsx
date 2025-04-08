@@ -12,6 +12,8 @@ import ContactUs from '../screens/Other/ContactUs'
 import PrivacyPolicy from '../screens/Other/PrivacyPolicy/PrivacyPolicy'
 import WorkoutHistoryCenter from '../screens/Other/WorkoutHistoryCenter/WorkoutHistoryCenter'
 import WorkoutHistoryDetail from '../screens/Other/WorkoutHistoryDetail'
+import CategoryDetail from '../screens/Other/CategoryDetail'
+import WorkoutDetail from '../screens/Other/WorkoutDetail'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -37,7 +39,7 @@ function RootStackNavigation() {
             ) : (
                 <>
                     <RootStack.Screen name='MainTab' component={MainTabs} />
-                    <RootStack.Screen name='Notification' component={Notification} />
+                    <RootStack.Screen name='Notification' component={Notification} options={{ gestureEnabled: true }} />
                     <RootStack.Screen
                         name='WorkoutHistoryCenter'
                         component={WorkoutHistoryCenter}
@@ -46,6 +48,16 @@ function RootStackNavigation() {
                     <RootStack.Screen
                         name='WorkoutHistoryDetail'
                         component={WorkoutHistoryDetail}
+                        options={{ gestureEnabled: true }}
+                    />
+                    <RootStack.Screen
+                        name='CategoryDetail'
+                        component={CategoryDetail}
+                        options={{ gestureEnabled: true }}
+                    />
+                    <RootStack.Screen
+                        name='WorkoutDetail'
+                        component={WorkoutDetail}
                         options={{ gestureEnabled: true }}
                     />
                     <RootStack.Screen name='Welcome' component={WelcomeScreen} />

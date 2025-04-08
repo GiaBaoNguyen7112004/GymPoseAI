@@ -11,3 +11,10 @@ export function isAxiosUnprocessableEntityError<FormError>(error: unknown): erro
 export function isAxiosUnauthorizedError<FormError>(error: unknown): error is AxiosError<FormError> {
     return isAxiosError(error) && error.response?.status === HttpStatusCode.Unauthorized
 }
+
+export function getYouTubeVideoId(url: string) {
+    const regex =
+        /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|embed|shorts|watch)\?v=|watch\?.+&v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    const match = url.match(regex)
+    return match ? match[1] : null
+}

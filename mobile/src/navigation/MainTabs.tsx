@@ -5,11 +5,11 @@ import WorkoutTracker from '@/src/screens/Main/WorkoutTracker'
 import StoryTaker from '@/src/screens/Main/StoryTaker/StoryTaker'
 import Search from '@/src/screens/Main/Search/Search'
 import MyIcon from '@/src/components/Icon'
-import GradientButton from '@/src/components/GradientButton'
 import Home from '@/src/screens/Main/Home/Home'
 import ProfileStack from './ProfileStack'
 import { MainTabParamList } from './types'
 import { IconName } from '../constants/icon.constants'
+import { LinearGradient } from 'expo-linear-gradient'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
@@ -39,9 +39,14 @@ const MainTabs = () => {
             <Tab.Screen
                 options={{
                     tabBarIcon: () => (
-                        <GradientButton rounded style={styles.wrapperSearchIcon}>
+                        <LinearGradient
+                            colors={['#92A3FD', '#9DCEFF']}
+                            start={{ x: 1, y: 0.5 }}
+                            end={{ x: 0, y: 0.5 }}
+                            style={[styles.wrapperSearchIcon]}
+                        >
                             <MyIcon name={'searchIcon'} size={23} />
-                        </GradientButton>
+                        </LinearGradient>
                     )
                 }}
                 component={Search}
@@ -93,10 +98,13 @@ const styles = StyleSheet.create({
         shadowColor: 'rgba(149, 173, 254, 0.30)',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
-        shadowRadius: 22,
         elevation: 10,
         marginBottom: 23 + 10,
         width: 60,
-        height: 60
+        height: 60,
+        borderRadius: 999,
+        aspectRatio: 1 / 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })

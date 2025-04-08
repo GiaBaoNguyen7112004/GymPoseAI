@@ -2,12 +2,14 @@ import { categories } from './workoutHistory.type'
 
 export interface Exercise {
     id: string
+    thumbnail_url: string
     name: string
+    duration_minutes: number
     description: string
     media_url: string
     category: Category
     met?: number
-    steps: Step[]
+    steps?: StepOfExercise[]
 }
 
 export interface Category {
@@ -15,9 +17,10 @@ export interface Category {
     name: categories | string
     exercise_count: number
     duration_minutes: number
+    calories_burned: number
 }
 
-export interface Step {
+export interface StepOfExercise {
     id: string
     title: string
     description: string
