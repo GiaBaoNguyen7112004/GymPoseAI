@@ -1,1 +1,3 @@
-export { default as GradientButton } from './Button'
+import GradientButton from './Button'
+
+export default GradientButton

@@ -1,9 +1,9 @@
-import { Icon } from '@/src/components/Icon'
-import { IconName } from '@/src/components/Icon/Icon'
-import { SCREEN_WIDTH } from '@/src/constants'
+import Icon from '@/src/components/Icon'
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import { IconName } from '@/src/constants/icon.constants'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useRef } from 'react'
-import { Animated, StyleSheet, Text, View, FlatList, Image } from 'react-native'
+import { Animated, StyleSheet, Text, View } from 'react-native'
 
 const ITEM_WIDTH = SCREEN_WIDTH * 0.7
 const ITEM_HEIGHT = 478

@@ -1,20 +1,24 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { Icon } from '../Icon'
+import { StyleSheet, Text, View, TouchableOpacity, StyleProp, TextStyle } from 'react-native'
+import Icon from '../Icon'
+import { Ionicons } from '@expo/vector-icons'
 export interface NavigationBarProps {
     title: string
     callback?: () => any
+    headingStyle?: StyleProp<TextStyle>
+    buttonBackStyle?: StyleProp<TextStyle>
+    iconColor?: string
 }
-const NavigationBar = ({ callback, title }: NavigationBarProps) => {
+const NavigationBar = ({ callback, title, headingStyle, buttonBackStyle, iconColor }: NavigationBarProps) => {
     const _onCallBack = () => {
         if (callback) callback()
     }
     return (
         <View style={styles.navigationBar}>
-            <TouchableOpacity onPress={_onCallBack} style={styles.btnBack}>
-                <Icon name='arrowLeft' size={20} />
+            <TouchableOpacity onPress={_onCallBack} style={[styles.btnBack, buttonBackStyle]}>
+                <Ionicons name='chevron-back' size={20} color={iconColor} />
             </TouchableOpacity>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={[styles.title, headingStyle]}>{title}</Text>
         </View>
     )
 }
@@ -39,7 +43,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         position: 'absolute',
         left: 29,
-        top: 0
+        top: 0,
+        zIndex: 1
     },
     title: {
         flex: 1,
@@ -47,7 +52,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 24,
         color: '#1D1617',
-        textAlign: 'center',
-        zIndex: -1
+        textAlign: 'center'
     }
 })

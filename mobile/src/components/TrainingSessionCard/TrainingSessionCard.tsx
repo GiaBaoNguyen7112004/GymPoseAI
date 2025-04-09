@@ -1,0 +1,83 @@
+import { View, Text, TouchableOpacity, StyleSheet, StyleProp, ViewStyle, Pressable } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import MyIcon from '@/src/components/Icon'
+import Progress from '@/src/components/Progress'
+import { workoutHistory } from '@/src/types/workoutHistory.type'
+import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/src/constants/common.constants'
+import AvatarWithIcon from '../AvatarWithIcon'
+
+interface TrainingSessionCardProps {
+    item: workoutHistory
+    style?: StyleProp<ViewStyle>
+    onPress?: () => void
+}
+
+function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps) {
+    const progress = item.calories_burned / item.calories_base
+    const colors = item.category == 'lower body' ? COLOR_BRANDS.primary : COLOR_BRANDS.secondary
+    const icon = ICONS_CATEGORY_MAP.get(item.category) || 'movement1'
+    return (
+        <Pressable style={[styles.workoutItem, style]} onPress={onPress}>
+            <AvatarWithIcon size={50} colors={colors} icon={icon} />
+            <View style={styles.workoutItem__content}>
+                <Text style={styles.nameWorkout}>{item.name_workout}</Text>
+                <Text style={styles.statsWorkout}>
+                    {item.calories_burned} Calories Burned | {item.duration_minutes} minutes
+                </Text>
+                <Progress.Bar progress={progress} barHeight={191} barWidth={10} style={styles.workoutProgressbar} />
+            </View>
+            <TouchableOpacity>
+                <MyIcon name='arroWRightOutline' size={24} />
+            </TouchableOpacity>
+        </Pressable>
+    )
+}
+
+export default TrainingSessionCard
+
+const styles = StyleSheet.create({
+    workoutItem: {
+        width: '100%',
+        padding: 15,
+        maxHeight: 80,
+        borderRadius: 16,
+        backgroundColor: '#fff',
+        shadowColor: 'rgb(29, 36, 42)',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.05,
+        shadowRadius: 40,
+        elevation: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        columnGap: 10,
+        alignSelf: 'center'
+    },
+    workoutItem__content: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        height: 80
+    },
+    nameWorkout: {
+        marginTop: 15,
+        fontSize: 12,
+        color: '#1D1617',
+        fontWeight: '500',
+        lineHeight: 18
+    },
+    statsWorkout: {
+        marginTop: 3,
+        fontSize: 10,
+        color: '#A4A9AD',
+        fontWeight: '400',
+        lineHeight: 15
+    },
+    workoutProgressbar: {
+        transform: [
+            { rotate: '90deg' },
+            { translateY: -95 },
+            {
+                translateX: -80
+            }
+        ]
+    }
+})

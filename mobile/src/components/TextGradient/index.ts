@@ -1,1 +1,3 @@
-export { default as TextGradient } from './TextGradient'
+import TextGradient from './TextGradient'
+
+export default TextGradient

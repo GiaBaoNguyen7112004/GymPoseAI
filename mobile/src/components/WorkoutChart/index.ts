@@ -1,1 +1,3 @@
-export { default as WorkoutChart } from './WorkoutChart'
+import WorkoutChart from './WorkoutChart'
+export { ViewModeType } from './WorkoutChart'
+export default WorkoutChart
