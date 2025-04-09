@@ -1,207 +1,183 @@
+import { useEffect, useRef, useState } from 'react'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import authApi from '@/src/apis/auth.api'
 import GradientButton from '@/src/components/GradientButton'
 import TextGradient from '@/src/components/TextGradient'
-import { SCREEN_WIDTH } from '@gorhom/bottom-sheet'
-import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, Animated } from 'react-native'
+import { schema, SchemaType } from '@/src/utils/rules.util'
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import OTPInput from '@/src/components/OTPInput'
 
-function VerificationScreen({
-    loading,
-    sendingReset,
-    _loadingDegAnimation,
-    _loadingDegAnimation2,
-    code,
-    inputRefs,
-    handleCodeChange,
-    handleKeyPress,
-    handleFocus,
-    _loadingDeg2 // Receive _loadingDeg2
-}: {
-    loading: boolean
-    sendingReset: boolean
-    _loadingDegAnimation: () => void
-    _loadingDegAnimation2: () => void
-    code: string[]
-    inputRefs: React.RefObject<TextInput>[]
-    handleCodeChange: (text: string, index: number) => void
-    handleKeyPress: (event: { nativeEvent: { key: string } }, index: number) => void
-    handleFocus: (index: number) => void
-    _loadingDeg2: Animated.Value // Type _loadingDeg2
-}) {
+interface VerificationScreenProps {
+    onSuccess: (otp: string) => void
+    email: string
+    onSingUp: () => void
+}
+
+type FormData = Pick<SchemaType, 'otp'>
+const formSchema = schema.pick(['otp'])
+
+const RESEND_TIMEOUT = 10
+
+function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenProps) {
+    const { mutate: verifyOtp, isPending: isVerifying } = useMutation({
+        mutationFn: authApi.verifyOtpForgotPassword
+    })
+
+    const { mutate: resendOtp, isPending: isResending } = useMutation({
+        mutationFn: authApi.resentOTPForgotPassword
+    })
+    const methods = useForm<FormData>({
+        defaultValues: { otp: '' },
+        resolver: yupResolver(formSchema),
+        mode: 'onBlur'
+    })
+    const { handleSubmit } = methods
+    const [countdown, setCountdown] = useState(0)
+    const timerId = useRef<NodeJS.Timeout | undefined>(undefined)
+    const canSubmit = methods.formState.isValid
+    const isResendCode = countdown > 0
+
+    useEffect(() => {
+        if (countdown > 0 && !timerId.current) {
+            timerId.current = setInterval(() => {
+                setCountdown((prev) => prev - 1)
+            }, 1000)
+        }
+
+        return () => {
+            if (countdown === 0 && timerId.current) {
+                clearInterval(timerId.current)
+                timerId.current = undefined
+            }
+        }
+    }, [countdown])
+
+    const onSubmit = handleSubmit(({ otp }) => {
+        verifyOtp(
+            { email, otp },
+            {
+                onSuccess: () => onSuccess(otp),
+                onError: () => {
+                    Alert.alert("That code didn't work", 'Please re-enter your code or request a new one', [
+                        { text: 'Try again' }
+                    ])
+                }
+            }
+        )
+    })
+
+    const handleResend = () => {
+        if (countdown > 0 || isResending) return
+        setCountdown(RESEND_TIMEOUT)
+        resendOtp({ email })
+    }
+
     return (
-        <View style={styles.verifyScreenWrapper}>
-            {sendingReset && (
-                <Animated.Image
-                    onLayout={_loadingDegAnimation2}
-                    style={{
-                        marginLeft: 10,
-                        height: 24,
-                        width: 24,
-                        transform: [
-                            {
-                                rotate: _loadingDeg2.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: ['0deg', '360deg']
-                                })
-                            }
-                        ]
-                    }}
-                    source={require('@/src/assets/Icons/waiting.png')}
-                />
-            )}
-            <Text style={styles.titleVerify}>Enter Verification Code</Text>
-            <View style={styles.formCodeWrapper}>
-                {code.map((digit, i) => (
-                    <View key={i} style={styles.inputRounded}>
-                        <TextInput
-                            ref={inputRefs[i]}
-                            style={styles.input_code}
-                            keyboardType='numeric'
-                            maxLength={1}
-                            value={digit}
-                            onChangeText={(text) => handleCodeChange(text, i)}
-                            onKeyPress={(event) => handleKeyPress(event, i)}
-                            onFocus={() => handleFocus(i)}
-                        />
+        <FormProvider {...methods}>
+            <View style={styles.wrapper}>
+                <View>
+                    <Text style={styles.title}>Enter Verification Code</Text>
+                    <View style={styles.otpWrapper}>
+                        <OTPInput name='otp' otpLength={4} />
                     </View>
-                ))}
+                </View>
+
+                <View>
+                    <TouchableOpacity style={styles.resendWrapper} disabled={isResendCode} onPress={handleResend}>
+                        <Text style={styles.resendText}>
+                            {isResendCode ? `You can resend in ${countdown}s` : `If you didn’t receive a code,`}
+                        </Text>
+                        {!isResendCode && <TextGradient style={styles.resendStrong} text=' Resend' />}
+                    </TouchableOpacity>
+
+                    <GradientButton
+                        activeOpacity={0.8}
+                        style={styles.submitBtn}
+                        Square
+                        onPress={onSubmit}
+                        isLoading={isVerifying}
+                    >
+                        <Text style={styles.submitText}>Send</Text>
+                    </GradientButton>
+
+                    <Text style={styles.haveAccountText}>Do you have an account?</Text>
+                    <TouchableOpacity style={styles.signupBtn} onPress={onSingUp}>
+                        <Text style={styles.signupText}>Sign up</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <Pressable style={styles.btnResent}>
-                <Text style={styles.btnResentText}>If you didn’t receive a code,</Text>
-                <TextGradient style={styles.strongText} text=' Resend' />
-            </Pressable>
-            <GradientButton activeOpacity={0.8} style={styles.btnNext} Square>
-                {!loading && <Text style={styles.btnText}>Send</Text>}
-                {loading && (
-                    <>
-                        <Animated.Image
-                            onLayout={_loadingDegAnimation}
-                            style={{
-                                ...styles.loadingIcon,
-                                position: 'absolute',
-                                transform: [
-                                    {
-                                        rotate: _loadingDeg2.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: ['0deg', '360deg']
-                                        })
-                                    }
-                                ]
-                            }}
-                            source={require('@/src/assets/Icons/loading.png')}
-                        />
-                        <Text style={{ lineHeight: 24 }}> </Text>
-                    </>
-                )}
-            </GradientButton>
-            <Text
-                style={{
-                    color: '#ABABAB',
-                    fontSize: 12,
-                    fontWeight: '500',
-                    marginTop: 58
-                }}
-            >
-                Do you have an account?
-            </Text>
-            <TouchableOpacity style={styles.btnSignUpWrapper}>
-                <Text style={styles.textInnerSignUp}>Sign up</Text>
-            </TouchableOpacity>
-        </View>
+        </FormProvider>
     )
 }
 
 export default VerificationScreen
+
 const styles = StyleSheet.create({
-    verifyScreenWrapper: {
+    wrapper: {
         flex: 1,
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
-    titleVerify: {
+    title: {
         marginTop: 72,
-        color: '#444',
         fontSize: 16,
-        fontWeight: '600'
-    },
-    formCodeWrapper: {
-        marginTop: 26,
-        width: SCREEN_WIDTH * 0.9,
-        flexDirection: 'row',
-        columnGap: 20,
-        justifyContent: 'center'
-    },
-    inputRounded: {
-        position: 'relative',
-        display: 'flex',
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 999,
-        borderWidth: 1,
-        borderColor: '#444'
-    },
-    input_code: {
-        position: 'absolute',
-        top: 12,
-        width: 24,
-        height: 30,
-        color: '#444',
-        fontSize: 24,
         fontWeight: '600',
-        lineHeight: 24,
-        textAlign: 'center',
-        textAlignVertical: 'center'
+        color: '#1D1617',
+        alignSelf: 'center'
     },
-    btnResent: {
-        marginTop: 14,
+    otpWrapper: {
+        marginTop: 26,
+        width: SCREEN_WIDTH * 0.9
+    },
+    resendWrapper: {
+        marginTop: 60,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
     },
-    btnResentText: {
+    resendText: {
+        fontSize: 14,
         color: '#ABABAB',
+        fontWeight: '500'
+    },
+    resendStrong: {
         fontSize: 14,
         fontWeight: '500'
     },
-    strongText: {
-        fontSize: 14,
-        fontWeight: '500'
-    },
-    btnNext: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    submitBtn: {
         marginTop: 30,
         width: SCREEN_WIDTH * 0.9,
-        marginBottom: 29,
-        shadowColor: 'rgba(149, 173, 254, 0.30)',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 1,
-        shadowRadius: 22,
-        elevation: 10
+        marginBottom: 29
     },
-    btnText: {
-        color: '#FFF',
+    submitText: {
         fontSize: 16,
-        fontWeight: '700',
-        lineHeight: 24
+        color: '#fff',
+        fontWeight: '700'
     },
-    btnSignUpWrapper: {
+    haveAccountText: {
+        fontSize: 12,
+        color: '#ABABAB',
+        fontWeight: '500',
+        alignSelf: 'center',
+        marginTop: 30
+    },
+    signupBtn: {
         marginTop: 18,
-        backgroundColor: '#fff',
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: '#444',
         width: SCREEN_WIDTH * 0.9,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 999,
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#444'
+        marginBottom: 100
     },
-    textInnerSignUp: {
-        color: '#8F8F8F',
+    signupText: {
         fontSize: 16,
-        fontWeight: '600'
-    },
-    loadingIcon: {
-        width: 25,
-        height: 25
+        fontWeight: '600',
+        color: '#8F8F8F'
     }
 })

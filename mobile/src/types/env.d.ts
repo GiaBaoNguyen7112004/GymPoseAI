@@ -11,4 +11,8 @@ declare module '@env' {
     export const URL_TARGETS: string
     export const URL_CATEGORIES: string
     export const URL_WORKOUTS: string
+    export const URL_FORGOT_PASSWORD: string
+    export const URL_VERIFY_OTP: string
+    export const URL_RESET_PASSWORD: string
+    export const URL_RESEND_OTP_FORGOT_PASSWORD: string
 }

@@ -30,7 +30,7 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
     })
     const canSubmit = methods.formState.isValid
     const handleRegister = () => {
-        navigation.push('RegisterStep1')
+        navigation.push('CreateAccount')
     }
     const handleForgotPassword = () => {
         navigation.push('ForgotPassword')
@@ -83,12 +83,7 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
                         </FormProvider>
                     </View>
                     <View style={styles.ContainerBottom}>
-                        <GradientButton
-                            style={[styles.btnLogin, { opacity: canSubmit ? 1 : 0.6 }]}
-                            disabled={!canSubmit}
-                            onPress={onSubmit}
-                            Square
-                        >
+                        <GradientButton style={styles.btnLogin} disabled={!canSubmit} onPress={onSubmit} Square>
                             <MyIcon name='loginIcon' />
                             <Text style={styles.btnText}>Login</Text>
                         </GradientButton>

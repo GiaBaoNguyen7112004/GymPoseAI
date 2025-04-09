@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         position: 'absolute',
         left: 29,
-        top: 0
+        top: 0,
+        zIndex: 1
     },
     title: {
         flex: 1,

@@ -16,3 +16,10 @@ export type RefreshTokenResponse = ResponseApi<
     },
     any
 >
+
+export type FindAccountResponse = ResponseApi<
+    {
+        user: User
+    },
+    any
+>

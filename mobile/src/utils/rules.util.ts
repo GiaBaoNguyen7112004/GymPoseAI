@@ -48,7 +48,11 @@ export const schema = yup.object({
             const minAgeDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate())
             return value <= minAgeDate
         }),
-    policy: yup.bool().oneOf([true], 'You must agree to the terms and conditions.').required('policy is required')
+    policy: yup.bool().oneOf([true], 'You must agree to the terms and conditions.').required('policy is required'),
+    otp: yup
+        .string()
+        .required('Please enter the verification code')
+        .matches(/^\d{4}$/, 'The verification code must be exactly 4 digits')
 })
 
 export type SchemaType = yup.InferType<typeof schema>

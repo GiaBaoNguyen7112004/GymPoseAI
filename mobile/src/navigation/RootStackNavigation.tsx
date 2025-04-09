@@ -21,7 +21,7 @@ function RootStackNavigation() {
     const { isAuthenticated } = useContext(AppContext)
     const navigationOptions: StackNavigationOptions = {
         headerShown: false,
-        gestureEnabled: false
+        gestureEnabled: true
     }
 
     return (
@@ -30,9 +30,21 @@ function RootStackNavigation() {
                 <>
                     <RootStack.Screen name='Login' component={Login} />
                     <RootStack.Group screenOptions={{ headerShown: false }}>
-                        <RootStack.Screen name='CreateAccount' component={Register.CreateAccount} />
-                        <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
-                        <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
+                        <RootStack.Screen
+                            name='CreateAccount'
+                            component={Register.CreateAccount}
+                            options={{ gestureEnabled: false }}
+                        />
+                        <RootStack.Screen
+                            name='CompleteProfile'
+                            component={Register.CompleteProfile}
+                            options={{ gestureEnabled: false }}
+                        />
+                        <RootStack.Screen
+                            name='ConfirmYourGoal'
+                            component={Register.ConfirmYourGoal}
+                            options={{ gestureEnabled: false }}
+                        />
                     </RootStack.Group>
                     <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
                 </>

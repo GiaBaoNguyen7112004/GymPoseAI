@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
 import storage from './StorageManager.util'
 import { AuthResponse, RefreshTokenResponse } from '../types/auth.type'
 
-console.log('API_URL ', URL_LOGIN)
+console.log('API_URL ', API_URL)
 
 class Http {
     instance: AxiosInstance
@@ -14,7 +14,7 @@ class Http {
     constructor() {
         this.accessToken = storage.getAccessToken()
         this.instance = axios.create({
-            baseURL: API_URL,
+            baseURL: 'http://192.168.1.3:5000',
             timeout: 10000,
             headers: { 'Content-Type': 'application/json' }
         })
