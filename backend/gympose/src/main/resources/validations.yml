@@ -7,20 +7,20 @@ sign_up_request:
     email:
       code: VAL.SU0102
       message: Email must be a well-formed email address
-  firstname:
+  first_name:
     not_blank:
       code: VAL.SU0201
-      message: Firstname must not be blank
+      message: First name must not be blank
     size:
       code: VAL.SU0202
-      message: Firstname size must be between 1 and 100
-  lastname:
+      message: First name size must be between 1 and 100
+  last_name:
     not_blank:
       code: VAL.SU0301
-      message: Lastname must not be blank
+      message: Last name must not be blank
     size:
       code: VAL.SU0302
-      message: Lastname size must be between 1 and 100
+      message: Last name size must be between 1 and 100
   password:
     not_blank:
       code: VAL.SU0401

@@ -4,6 +4,10 @@ public final class ErrorMessage {
     //Authentication
     public static final String UNAUTHENTICATED = "unauthenticated";
     public static final String UNAUTHORIZED = "unauthorized";
+    public static final String INCORRECT_EMAIL_OR_PASSWORD = "incorrect_email_or_password";
+    public static final String ACCOUNT_NOT_EXISTED = "account_not_existed";
+    public static final String ACCOUNT_LOCKED = "account_locked";
+    public static final String ACCOUNT_NOT_ACTIVE = "account_not_active";
 
     //Internal server error
     public static final String INTERNAL_SERVER_ERROR = "internal_server_error";

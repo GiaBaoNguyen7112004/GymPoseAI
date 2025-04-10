@@ -25,6 +25,10 @@ public class Role {
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
 
+    public Role(String name) {
+        this.name = name;
+    }
+
     public String getRoleName() {
         return CommonConstant.PREFIX_ROLE + this.name.toUpperCase();
     }

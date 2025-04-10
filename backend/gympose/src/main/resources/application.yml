@@ -1,27 +1,27 @@
 server:
+  port: 8696
   servlet:
     context-path: /gym-pose
-  port: 8696
 spring:
   thymeleaf:
     mode: HTML
   datasource:
-    url: ${DBMS_CONNECTION}
-    username: ${DBMS_USERNAME}
-    password: ${DBMS_PASSWORD}
+    url: ${DBMS_CONNECTION:jdbc:postgresql://localhost:5433/gympose}
+    username: ${DBMS_USERNAME:postgres}
+    password: ${DBMS_PASSWORD:giabao123123}
     hikari:
       max-lifetime: 60000
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
-logging:
-  config: classpath:logback-spring.xml
-  file:
-    path: ${LOG_PATH}
+#logging:
+#  config: classpath:logback-spring.xml.bak
+#  file:
+#    path: ${LOG_PATH}
 app:
   auth:
-    access-token-secret: 928d4aef-6452-4ca1-8e4e-7dabad510423
+    access-token-secret: ${ACCESS_TOKEN_SECRET:Ckj2tdZqqx4zYqn0iSB9bUPIsckWdFoa/YIi1kzGWKc9qM5XCbRoPHmWhft9pZZCGeKYcAhgILzOu++4toDC0Gn9iDWTlRAlnQ8efRnVU8I=}
     access-token-expiration-msec: 7200000
-    refresh-token-secret: cf427568-e272-4d5d-8195-18cc8bcbd0c4
+    refresh-token-secret: ${REFRESH_TOKEN_SECRET:iq6GbB4ypM4UvmGQTu6fD+7IJvD07edYE/dyNOWO+23t6trHtj2QZ13U+YHDLOsdmIwDTVhTQOF5c3yHxDCKaw==4}
     refresh-token-expiration-msec: 2592000000

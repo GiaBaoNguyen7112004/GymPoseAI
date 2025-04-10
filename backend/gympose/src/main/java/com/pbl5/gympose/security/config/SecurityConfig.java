@@ -1,5 +1,8 @@
 package com.pbl5.gympose.security.config;
 
+import com.pbl5.gympose.security.filter.JwtAuthEntryPoint;
+import com.pbl5.gympose.security.filter.JwtAuthFilter;
+import com.pbl5.gympose.security.service.CustomUserDetailsService;
 import com.pbl5.gympose.utils.UrlMapping;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,33 +16,27 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
 @EnableWebSecurity
+@Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
     public final String[] PUBLIC_ENDPOINT = {
-            UrlMapping.AUTHENTICATION + "/**",
+            UrlMapping.AUTHENTICATION + "/**"
     };
 
-    AuthTokenFilter authTokenFilter;
-    UserDetailsService userDetailsService;
+    CustomUserDetailsService customUserDetailsService;
+    JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-        return new JwtAuthenticationEntryPoint();
     }
 
     @Bean
@@ -50,24 +47,31 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
 
+    public JwtAuthEntryPoint jwtAuthEntryPoint() {
+        return new JwtAuthEntryPoint();
+    }
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception
-                        -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint()))
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtAuthEntryPoint()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(daoAuthenticationProvider())
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(PUBLIC_ENDPOINT).permitAll()
-                                .anyRequest().authenticated());
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PUBLIC_ENDPOINT).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 }
 

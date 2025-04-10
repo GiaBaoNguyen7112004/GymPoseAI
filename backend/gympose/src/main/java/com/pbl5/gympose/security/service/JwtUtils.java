@@ -1,8 +1,6 @@
-package com.pbl5.gympose.security.utils;
+package com.pbl5.gympose.security.service;
 
-import com.pbl5.gympose.entity.Role;
 import com.pbl5.gympose.exception.UnauthenticatedException;
-import com.pbl5.gympose.exception.UnauthorizedException;
 import com.pbl5.gympose.exception.message.ErrorMessage;
 import com.pbl5.gympose.security.config.AppProperties;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -24,7 +22,7 @@ public class JwtUtils {
     public static final String USERNAME_CLAIM = "username";
     private final AppProperties appProperties;
 
-    public String generateToken(String username, List<Role> roles, boolean isRefreshToken) {
+    public String generateToken(String username, List<String> roles, boolean isRefreshToken) {
         return Jwts.builder().setSubject(username)
                 .claim(ROLES_CLAIM, roles)
                 .claim(USERNAME_CLAIM, username)
@@ -45,27 +43,26 @@ public class JwtUtils {
     }
 
     public String getUsernameFromJWT(String jwt, boolean isRefreshToken) {
-        return Jwts.parserBuilder().setSigningKey(isRefreshToken ? appProperties.getAuth().getRefreshTokenSecret()
-                        : appProperties.getAuth().getAccessTokenSecret())
-                .build().parseClaimsJws(jwt).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(isRefreshToken ? getRefreshTokenSecretKey()
+                : getAccessTokenSecretKey()).build().parseClaimsJws(jwt).getBody().getSubject();
     }
 
     public boolean verifyToken(String token, boolean isRefreshToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(isRefreshToken ? appProperties.getAuth().getRefreshTokenSecret()
-                    : appProperties.getAuth().getAccessTokenSecret()).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(getAccessTokenSecretKey()).build().parseClaimsJws(token);
+
             return true;
         } catch (ExpiredJwtException expiredJwtException) {
             if (isRefreshToken) {
                 throw new UnauthenticatedException(ErrorMessage.EXPIRED_REFRESH_TOKEN);
             } else {
-                throw new UnauthorizedException(ErrorMessage.EXPIRED_ACCESS_TOKEN);
+                throw new UnauthenticatedException(ErrorMessage.EXPIRED_ACCESS_TOKEN);
             }
         } catch (Exception e) {
             if (isRefreshToken) {
                 throw new UnauthenticatedException(ErrorMessage.INVALID_REFRESH_TOKEN);
             } else {
-                throw new UnauthorizedException(ErrorMessage.INVALID_ACCESS_TOKEN);
+                throw new UnauthenticatedException(ErrorMessage.INVALID_ACCESS_TOKEN);
             }
         }
     }

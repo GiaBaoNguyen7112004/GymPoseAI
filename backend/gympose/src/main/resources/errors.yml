@@ -7,9 +7,22 @@ internal_server_error:
 unauthenticated:
   code: ERR.AUTH0101
   message: Unauthenticated, You don’t have permission to access!
-unauthorized:
+incorrect_email_or_password:
   code: ERR.AUTH0102
+  message: Unauthenticated, incorrect email or password
+account_not_existed:
+  code: ERR.AUTH0103
+  message: Unauthenticated, account not existed
+account_locked:
+  code: ERR.AUTH0104
+  message: Unauthenticated, account was locked
+account_not_active:
+  code: ERR.AUTH0105
+  message: Unauthenticated, account is not active
+unauthorized:
+  code: ERR.AUTH0201
   message: Unauthorized, You do not have permission to access this page!
+
 
 #token
 invalid_access_token:

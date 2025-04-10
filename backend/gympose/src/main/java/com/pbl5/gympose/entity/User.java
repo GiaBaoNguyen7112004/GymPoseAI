@@ -30,7 +30,7 @@ public class User extends AbstractEntity {
     @Column(nullable = false, unique = true)
     String email;
 
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", nullable = true)
     String avatar;
 
     @Column(nullable = false)
@@ -56,7 +56,7 @@ public class User extends AbstractEntity {
     Integer deleteAccountToken;
     LocalDateTime requestDeleteAccountAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_role",  // Tên bảng nối
             joinColumns = @JoinColumn(name = "user_id"),
