@@ -9,12 +9,12 @@ import TabBar from './Components/TabBar'
 import FilterBar from './Components/FilterBar'
 import { PaginationMeta, QueryConfigWorkoutHistory, ResponseApi } from '@/src/types/utils.type'
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
-import workoutHistoryApi from '@/src/apis/workoutHistory.api'
 import { AppContext } from '@/src/Contexts/App.context'
 import TrainingSessionCard from '@/src/components/TrainingSessionCard'
 import Loader from '@/src/components/Loader'
 import LoaderModal from '@/src/components/LoaderModal'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
+import { workoutHistoryApi } from '@/src/services/rest'
 
 function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
     const { profile } = useContext(AppContext)

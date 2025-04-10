@@ -1,59 +1,64 @@
-import { useForm, FormProvider } from 'react-hook-form'
-import Icon from 'react-native-vector-icons/FontAwesome'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Keyboard, SafeAreaView, StyleSheet, Text, TouchableWithoutFeedback, View, Pressable } from 'react-native'
-import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
-import MyIcon from '@/src/components/Icon'
-import GradientButton from '@/src/components/GradientButton'
-import TextGradient from '@/src/components/TextGradient'
-import { schema, SchemaType } from '@/src/utils/rules.util'
-import TextInputCustom from '@/src/components/TextInput'
-import Loader from '@/src/components/LoaderModal'
-import { useMutation } from '@tanstack/react-query'
-import authApi from '@/src/apis/auth.api'
 import { useContext } from 'react'
+import { Keyboard, SafeAreaView, StyleSheet, Text, TouchableWithoutFeedback, View, Pressable } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+
 import { AppContext } from '@/src/Contexts/App.context'
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import { schema, SchemaType } from '@/src/utils/rules.util'
 import handleFormError from '@/src/utils/handleFormError'
 import { RootStackScreenProps } from '@/src/navigation/types'
+import { authApi } from '@/src/services/rest'
+
+import MyIcon from '@/src/components/Icon'
+import Loader from '@/src/components/LoaderModal'
+import GradientButton from '@/src/components/GradientButton'
+import TextGradient from '@/src/components/TextGradient'
+import TextInputCustom from '@/src/components/TextInput'
 
 type FormData = Pick<SchemaType, 'email' | 'password'>
-const FormSchema = schema.pick(['email', 'password'])
+const formSchema = schema.pick(['email', 'password'])
+
 function Login({ navigation }: RootStackScreenProps<'Login'>) {
     const { setAuthenticated, setProfile } = useContext(AppContext)
-    const { ...methods } = useForm<FormData>({
+
+    const methods = useForm<FormData>({
         defaultValues: { email: '', password: '' },
-        resolver: yupResolver(FormSchema),
+        resolver: yupResolver(formSchema),
         mode: 'onBlur'
     })
+
+    const { handleSubmit, setError, formState } = methods
+
     const loginMutation = useMutation({
         mutationFn: authApi.login
     })
-    const canSubmit = methods.formState.isValid
-    const handleRegister = () => {
-        navigation.push('CreateAccount')
-    }
-    const handleForgotPassword = () => {
-        navigation.push('ForgotPassword')
-    }
-    const onSubmit = methods.handleSubmit((data) => {
+
+    const onSubmit = handleSubmit((data) => {
         loginMutation.mutate(data, {
-            onSuccess: (data) => {
+            onSuccess: ({ data }) => {
                 setAuthenticated(true)
-                setProfile(data.data.data.user)
+                setProfile(data.data.user)
             },
-            onError: (error) => handleFormError<FormData>(error, methods.setError)
+            onError: (error) => handleFormError<FormData>(error, setError)
         })
     })
+
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.screenWrapper}>
                 {loginMutation.isPending && <Loader title='Logging in' />}
-                <View style={styles.Container}>
-                    <View style={styles.ContainerTop}>
+
+                <View style={styles.container}>
+                    {/* Top Section */}
+                    <View style={styles.containerTop}>
                         <View style={styles.callToAction}>
                             <Text style={styles.callToAction__desc}>Hey there,</Text>
                             <Text style={styles.callToAction__heading}>Welcome Back</Text>
                         </View>
+
                         <FormProvider {...methods}>
                             <View style={styles.loginForm}>
                                 <View style={styles.rowForm}>
@@ -73,31 +78,33 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
                                         name='password'
                                     />
                                 </View>
-
-                                <View>
-                                    <Text style={styles.linkText} onPress={handleForgotPassword}>
-                                        Forgot your password?
-                                    </Text>
-                                </View>
+                                <Text style={styles.linkText} onPress={() => navigation.push('ForgotPassword')}>
+                                    Forgot your password?
+                                </Text>
                             </View>
                         </FormProvider>
                     </View>
-                    <View style={styles.ContainerBottom}>
-                        <GradientButton style={styles.btnLogin} disabled={!canSubmit} onPress={onSubmit} Square>
+
+                    {/* Bottom Section */}
+                    <View style={styles.containerBottom}>
+                        <GradientButton style={styles.btnLogin} disabled={!formState.isValid} onPress={onSubmit} Square>
                             <MyIcon name='loginIcon' />
                             <Text style={styles.btnText}>Login</Text>
                         </GradientButton>
+
                         <View style={styles.divideLine}>
                             <View style={styles.ORtextWrapper}>
                                 <Text style={styles.textOr}>OR</Text>
                             </View>
                         </View>
+
                         <View style={styles.otherOptionsWrapper}>
                             <Pressable style={styles.btnOther}>
                                 <Icon name='facebook-f' size={20} color='#1877F2' />
                             </Pressable>
                         </View>
-                        <Pressable style={styles.registerWrapper} onPress={handleRegister}>
+
+                        <Pressable style={styles.registerWrapper} onPress={() => navigation.push('CreateAccount')}>
                             <Text style={styles.callToAction__desc}>Don’t have an account yet?</Text>
                             <TextGradient style={styles.strongText} text=' Register' />
                         </Pressable>
@@ -112,21 +119,16 @@ export default Login
 
 const styles = StyleSheet.create({
     screenWrapper: {
-        backgroundColor: '#FFF',
-        flex: 1
-    },
-    Container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        backgroundColor: '#FFF'
     },
-    ContainerTop: {
-        width: SCREEN_WIDTH,
+    container: {
+        flex: 1,
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
-    ContainerBottom: {
+    containerTop: {
         width: SCREEN_WIDTH,
-        justifyContent: 'center',
         alignItems: 'center'
     },
     callToAction: {
@@ -135,52 +137,41 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     callToAction__heading: {
-        color: '#1D1617',
         fontSize: 20,
         fontWeight: '700',
+        color: '#1D1617',
         lineHeight: 30
     },
     callToAction__desc: {
-        color: '#1D1617',
-        textAlign: 'center',
         fontSize: 16,
         fontWeight: '400',
-        lineHeight: 24,
-        flexDirection: 'row',
-        alignItems: 'center'
+        color: '#1D1617',
+        lineHeight: 24
     },
     loginForm: {
-        marginTop: 30,
         width: SCREEN_WIDTH * 0.9,
+        marginTop: 30,
         alignItems: 'center'
     },
     rowForm: {
-        position: 'relative',
         width: '100%',
         marginVertical: 15
     },
     linkText: {
-        color: '#ADA4A5',
-        fontFamily: 'Poppins',
         fontSize: 12,
-        fontStyle: 'normal',
         fontWeight: '500',
-        lineHeight: 18,
-        textDecorationLine: 'underline',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center'
+        color: '#ADA4A5',
+        textDecorationLine: 'underline'
     },
-    strongText: {
-        fontWeight: '500',
-        fontSize: 16,
-        lineHeight: 21
+    containerBottom: {
+        width: SCREEN_WIDTH,
+        alignItems: 'center'
     },
     btnLogin: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 7.5,
         width: SCREEN_WIDTH * 0.9,
+        marginTop: 7.5,
         shadowColor: 'rgba(149, 173, 254, 0.30)',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
@@ -189,15 +180,33 @@ const styles = StyleSheet.create({
     },
     btnText: {
         marginLeft: 12,
-        color: '#FFF',
         fontSize: 16,
         fontWeight: '700',
+        color: '#FFF',
         lineHeight: 24
+    },
+    divideLine: {
+        width: SCREEN_WIDTH * 0.9,
+        height: 1,
+        marginTop: 29,
+        backgroundColor: '#DDDADA',
+        position: 'relative'
+    },
+    ORtextWrapper: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: [{ translateX: -25 }, { translateY: -10 }],
+        backgroundColor: '#FFF',
+        paddingHorizontal: 10
+    },
+    textOr: {
+        fontSize: 12,
+        fontWeight: '400',
+        color: '#1D1617'
     },
     otherOptionsWrapper: {
         marginTop: 29,
-        width: SCREEN_WIDTH * 0.9,
-        justifyContent: 'center',
         alignItems: 'center'
     },
     btnOther: {
@@ -209,35 +218,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    forgotPassword: {
-        width: SCREEN_WIDTH * 0.8,
-        marginVertical: 15,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    divideLine: {
-        width: SCREEN_WIDTH * 0.9,
-        marginTop: 29,
-        position: 'relative',
-        height: 1,
-        backgroundColor: '#DDDADA'
-    },
-    ORtextWrapper: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: [{ translateX: '-50%' }, { translateY: '-50%' }],
-        backgroundColor: '#fff'
-    },
-    textOr: {
-        color: '#1D1617',
-        fontSize: 12,
-        fontWeight: 400
-    },
     registerWrapper: {
         marginTop: 30,
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center'
+    },
+    strongText: {
+        fontSize: 16,
+        fontWeight: '500',
+        lineHeight: 21
     }
 })

@@ -15,8 +15,8 @@ import { useCallback } from 'react'
 import { Exercise } from '@/src/types/exercises.type'
 import WorkoutCard from '@/src/components/WorkoutCard'
 import { useQuery } from '@tanstack/react-query'
-import workoutApi from '@/src/apis/workout.api'
 import { categories } from '@/src/types/workoutHistory.type'
+import { workoutApi } from '@/src/services/rest'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category } = route.params

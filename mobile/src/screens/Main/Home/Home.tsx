@@ -8,12 +8,12 @@ import { useContext } from 'react'
 import TrainingSessionCard from '@/src/components/TrainingSessionCard'
 import { HomeTabScreenProps } from '@/src/navigation/types'
 import { useQuery } from '@tanstack/react-query'
-import workoutHistoryApi from '@/src/apis/workoutHistory.api'
 import { AppContext } from '@/src/Contexts/App.context'
 import WaterIntake from './components/WaterIntake/WaterIntake'
 import BMIStats from './components/BMI'
 import WorkoutProgressChart from './components/WorkoutProgress'
 import CaloriesStats from './components/CaloriesStats'
+import { workoutHistoryApi } from '@/src/services/rest'
 
 function Home({ navigation }: HomeTabScreenProps<'Home'>) {
     const { profile } = useContext(AppContext)
@@ -54,6 +54,7 @@ function Home({ navigation }: HomeTabScreenProps<'Home'>) {
                 </View>
 
                 <View style={styles.bmiWrapper}>
+                    {/* BMI Stats */}
                     <BMIStats />
                 </View>
                 <View style={styles.scheduleWrapper}>

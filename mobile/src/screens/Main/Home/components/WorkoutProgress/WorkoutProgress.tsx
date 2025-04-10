@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import WorkoutChart, { ViewModeType } from '@/src/components/WorkoutChart'
-import CustomDropdown, { DropdownItem } from '@/src/components/DropdownInput/Components/Dropdown'
+import CustomDropdown from '@/src/components/DropdownInput/Components/Dropdown'
 import { useQuery } from '@tanstack/react-query'
-import workoutHistoryApi from '@/src/apis/workoutHistory.api'
 import { ViewModeDropdown } from '@/src/constants/dropdown.constant'
+import { workoutHistoryApi } from '@/src/services/rest'
 
 interface WorkoutProgressProps {
     user_id: string

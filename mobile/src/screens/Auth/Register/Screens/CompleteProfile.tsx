@@ -2,58 +2,56 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
     Animated,
     Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     SafeAreaView,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
-    View,
-    KeyboardAvoidingView,
-    Platform
+    View
 } from 'react-native'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
-import MyIcon from '@/src/components/Icon'
-import GradientButton from '@/src/components/GradientButton'
-import { LinearGradient } from 'expo-linear-gradient'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
-import Loader from '@/src/components/LoaderModal'
-import { schema, SchemaType } from '@/src/utils/rules.util'
+import { LinearGradient } from 'expo-linear-gradient'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+
+import MyIcon from '@/src/components/Icon'
+import GradientButton from '@/src/components/GradientButton'
+import DropdownInput from '@/src/components/DropdownInput'
 import DatePickerInput from '@/src/components/DatePickerInput'
 import TextInputCustom from '@/src/components/TextInput'
-import DropdownInput from '@/src/components/DropdownInput'
+
 import { RootStackScreenProps } from '@/src/navigation/types'
+import { schema, SchemaType } from '@/src/utils/rules.util'
 import { DataGender } from '@/src/constants/dropdown.constant'
 
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
-const FormSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
+const formSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
 
 function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>) {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-    const loading = false
-    const { ...methods } = useForm<FormData>({
-        resolver: yupResolver(FormSchema),
+
+    const methods = useForm<FormData>({
+        resolver: yupResolver(formSchema),
         mode: 'onBlur'
     })
+
     const canSubmit = methods.formState.isValid
-    const onSubmit = () => {
-        navigation.replace('ConfirmYourGoal')
-    }
+
+    const onSubmit = () => navigation.replace('ConfirmYourGoal')
+
+    // Keyboard visibility listener
     useEffect(() => {
-        const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardVisible(true)
-        })
-
-        const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardVisible(false)
-        })
-
+        const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true))
+        const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false))
         return () => {
-            showSubscription.remove()
-            hideSubscription.remove()
+            showSub.remove()
+            hideSub.remove()
         }
     }, [])
 
+    // Animations
     const bannerOpacity = useRef(new Animated.Value(1)).current
     const bannerTranslateY = useRef(new Animated.Value(0)).current
     const formTranslateY = useRef(new Animated.Value(0)).current
@@ -86,9 +84,8 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-            {loading && <Loader title='Register' />}
             <SafeAreaView style={styles.container}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={{ flex: 1 }}>
                         <View style={styles.centerContainer}>
                             <Animated.View
@@ -101,13 +98,13 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
                             >
                                 <MyIcon name='registerIcon' size={278} width={375} style={styles.banner} />
                             </Animated.View>
+
                             <Animated.View style={{ transform: [{ translateY: formTranslateY }] }}>
                                 <View style={styles.callToAction}>
-                                    <Text style={styles.callToAction__heading}>Let’s complete your profile</Text>
-                                    <Text style={styles.callToAction__desc}>
-                                        It will help us to know more about you!
-                                    </Text>
+                                    <Text style={styles.heading}>Let’s complete your profile</Text>
+                                    <Text style={styles.subHeading}>It will help us to know more about you!</Text>
                                 </View>
+
                                 <FormProvider {...methods}>
                                     <View style={styles.formContainer}>
                                         <View style={styles.rowForm}>
@@ -118,6 +115,7 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
                                                 name='gender'
                                             />
                                         </View>
+
                                         <View style={styles.rowForm}>
                                             <DatePickerInput
                                                 icon='calendarIcon'
@@ -125,46 +123,42 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
                                                 label='Date of birth'
                                             />
                                         </View>
+
                                         <View style={styles.rowForm}>
                                             <View style={{ flex: 1 }}>
                                                 <TextInputCustom name='weight' icon='weightScaleIcon' type='numeric' />
                                             </View>
-
                                             <LinearGradient
                                                 colors={['#C58BF2', '#EEA4CE']}
                                                 start={{ x: 0.8, y: 0 }}
                                                 end={{ x: 0, y: 1 }}
-                                                style={styles.gradientBox}
+                                                style={styles.unitBox}
                                             >
-                                                <Text style={styles.textInnerGradientBox}>KG</Text>
+                                                <Text style={styles.unitText}>KG</Text>
                                             </LinearGradient>
                                         </View>
+
                                         <View style={styles.rowForm}>
                                             <View style={{ flex: 1 }}>
-                                                <TextInputCustom icon='swapIcon' name='height' type='numeric' />
+                                                <TextInputCustom name='height' icon='swapIcon' type='numeric' />
                                             </View>
-
                                             <LinearGradient
                                                 colors={['#C58BF2', '#EEA4CE']}
                                                 start={{ x: 0.8, y: 0 }}
                                                 end={{ x: 0, y: 1 }}
-                                                style={styles.gradientBox}
+                                                style={styles.unitBox}
                                             >
-                                                <Text style={styles.textInnerGradientBox}>CM</Text>
+                                                <Text style={styles.unitText}>CM</Text>
                                             </LinearGradient>
                                         </View>
 
                                         <GradientButton
                                             Square
-                                            activeOpacity={0.6}
                                             disabled={!canSubmit}
-                                            style={{
-                                                ...styles.btnSubmit,
-                                                opacity: canSubmit ? 1 : 0.6
-                                            }}
                                             onPress={onSubmit}
+                                            style={[styles.submitBtn, { opacity: canSubmit ? 1 : 0.6 }]}
                                         >
-                                            <Text style={styles.textInnerBtn}>Next</Text>
+                                            <Text style={styles.submitText}>Next</Text>
                                             <MyIcon name='arrowRightIcon' />
                                         </GradientButton>
                                     </View>
@@ -174,15 +168,18 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
                     </View>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
+
+            {/* Optional loading state */}
+            {/* loading && <Loader title='Register' /> */}
         </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: '#FFF',
-        height: SCREEN_HEIGHT,
-        flex: 1
+        height: SCREEN_HEIGHT
     },
     centerContainer: {
         flex: 1,
@@ -196,13 +193,13 @@ const styles = StyleSheet.create({
         marginTop: 30,
         alignItems: 'center'
     },
-    callToAction__heading: {
+    heading: {
         color: '#1D1617',
         fontSize: 20,
         fontWeight: '700',
         lineHeight: 30
     },
-    callToAction__desc: {
+    subHeading: {
         color: '#7B6F72',
         textAlign: 'center',
         fontSize: 12,
@@ -215,12 +212,11 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     rowForm: {
-        position: 'relative',
         width: '100%',
         marginVertical: 9,
         flexDirection: 'row'
     },
-    gradientBox: {
+    unitBox: {
         marginLeft: 15,
         width: 48,
         height: 48,
@@ -228,24 +224,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    textInnerGradientBox: {
+    unitText: {
         color: '#FFF',
         fontSize: 12,
         fontWeight: '500'
     },
-    btnSubmit: {
+    submitBtn: {
         marginTop: 30,
+        width: WINDOW_WIDTH * 0.9,
         shadowColor: 'red',
         shadowOffset: { width: 0, height: 1000 },
         shadowOpacity: 1,
         shadowRadius: 22,
-        elevation: 10,
-        width: WINDOW_WIDTH * 0.9
+        elevation: 10
     },
-    textInnerBtn: {
+    submitText: {
         color: '#FFF',
         fontSize: 16,
-        fontWeight: 700,
+        fontWeight: '700',
         lineHeight: 24
     }
 })

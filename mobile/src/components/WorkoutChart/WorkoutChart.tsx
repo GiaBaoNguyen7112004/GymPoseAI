@@ -6,9 +6,7 @@ import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 
 import Tooltip, { TooltipDataType } from './Components/Tooltip'
 import { formatDate } from '@/src/utils/format.util'
-import { workoutHistoryOfDay } from '@/src/types/workoutHistory.type'
-
-export type ViewModeType = 'weekly' | 'monthly' | 'yearly'
+import { ViewModeType, workoutHistoryOfDay } from '@/src/types/workoutHistory.type'
 
 const chartConfigDefault: AbstractChartConfig = {
     backgroundGradientFrom: '#fff',

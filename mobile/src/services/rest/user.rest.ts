@@ -1,7 +1,7 @@
-import { ResponseApi } from '../types/utils.type'
+import { ResponseApi } from '@/src/types/utils.type'
 import { URL_USER } from '@env'
-import http from '../utils/https.util'
-import { User } from '../types/user.type'
+import { User } from '@/src/types/user.type'
+import http from '../core/httpClient'
 
 const userApi = {
     getProfile({ id }: { id: string }) {

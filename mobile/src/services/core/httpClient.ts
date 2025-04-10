@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API_URL, URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from '@env'
 import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
-import storage from './StorageManager.util'
-import { AuthResponse, RefreshTokenResponse } from '../types/auth.type'
+import storage from '@/src/utils/StorageManager.util'
+import { AuthResponse, RefreshTokenResponse } from '@/src/types/auth.type'
 
 console.log('API_URL ', API_URL)
 

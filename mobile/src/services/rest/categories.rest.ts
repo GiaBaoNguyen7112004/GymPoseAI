@@ -1,7 +1,7 @@
-import { ResponseApi } from '../types/utils.type'
+import { ResponseApi } from '@/src/types/utils.type'
+import http from '../core/httpClient'
+import { Category } from '@/src/types/exercises.type'
 import { URL_CATEGORIES } from '@env'
-import http from '../utils/https.util'
-import { Category } from '../types/exercises.type'
 
 const categoriesApi = {
     getCategories() {

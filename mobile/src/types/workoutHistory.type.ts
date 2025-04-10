@@ -23,3 +23,5 @@ export interface workoutHistoryOfDay {
 }
 
 export type categories = 'abdominal muscles' | 'lower body' | 'full body'
+
+export type ViewModeType = 'weekly' | 'monthly' | 'yearly'

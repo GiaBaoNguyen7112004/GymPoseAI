@@ -11,14 +11,13 @@ import { HomeTabScreenProps } from '@/src/navigation/types'
 import NavigationBar from '@/src/components/NavigationBar'
 import { useQuery } from '@tanstack/react-query'
 import { AppContext } from '@/src/Contexts/App.context'
-import workoutHistoryApi from '@/src/apis/workoutHistory.api'
 import WorkoutChart from '@/src/components/WorkoutChart'
 import { LinearGradient } from 'expo-linear-gradient'
 import { COLOR_BRANDS } from '@/src/constants/common.constants'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
-import categoriesApi from '@/src/apis/categories.api'
 import CategoryCard from '@/src/components/CategoryCard'
 import { Category } from '@/src/types/exercises.type'
+import { categoriesApi, workoutHistoryApi } from '@/src/services/rest'
 
 const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: '#fff',

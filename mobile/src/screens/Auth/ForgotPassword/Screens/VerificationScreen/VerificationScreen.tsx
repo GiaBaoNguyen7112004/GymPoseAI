@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import authApi from '@/src/apis/auth.api'
+
 import GradientButton from '@/src/components/GradientButton'
 import TextGradient from '@/src/components/TextGradient'
-import { schema, SchemaType } from '@/src/utils/rules.util'
-import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import OTPInput from '@/src/components/OTPInput'
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import { schema, SchemaType } from '@/src/utils/rules.util'
+import { authApi } from '@/src/services/rest'
 
 interface VerificationScreenProps {
     onSuccess: (otp: string) => void
@@ -22,6 +23,17 @@ const formSchema = schema.pick(['otp'])
 const RESEND_TIMEOUT = 10
 
 function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenProps) {
+    const methods = useForm<FormData>({
+        defaultValues: { otp: '' },
+        resolver: yupResolver(formSchema),
+        mode: 'onBlur'
+    })
+
+    const { handleSubmit } = methods
+
+    const [countdown, setCountdown] = useState(0)
+    const timerId = useRef<NodeJS.Timeout | null>(null)
+
     const { mutate: verifyOtp, isPending: isVerifying } = useMutation({
         mutationFn: authApi.verifyOtpForgotPassword
     })
@@ -29,31 +41,6 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
     const { mutate: resendOtp, isPending: isResending } = useMutation({
         mutationFn: authApi.resentOTPForgotPassword
     })
-    const methods = useForm<FormData>({
-        defaultValues: { otp: '' },
-        resolver: yupResolver(formSchema),
-        mode: 'onBlur'
-    })
-    const { handleSubmit } = methods
-    const [countdown, setCountdown] = useState(0)
-    const timerId = useRef<NodeJS.Timeout | undefined>(undefined)
-    const canSubmit = methods.formState.isValid
-    const isResendCode = countdown > 0
-
-    useEffect(() => {
-        if (countdown > 0 && !timerId.current) {
-            timerId.current = setInterval(() => {
-                setCountdown((prev) => prev - 1)
-            }, 1000)
-        }
-
-        return () => {
-            if (countdown === 0 && timerId.current) {
-                clearInterval(timerId.current)
-                timerId.current = undefined
-            }
-        }
-    }, [countdown])
 
     const onSubmit = handleSubmit(({ otp }) => {
         verifyOtp(
@@ -75,6 +62,27 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
         resendOtp({ email })
     }
 
+    useEffect(() => {
+        if (countdown <= 0 || timerId.current) return
+
+        timerId.current = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1 && timerId.current) {
+                    clearInterval(timerId.current)
+                    timerId.current = null
+                }
+                return prev - 1
+            })
+        }, 1000)
+
+        return () => {
+            if (timerId.current) {
+                clearInterval(timerId.current)
+                timerId.current = null
+            }
+        }
+    }, [countdown])
+
     return (
         <FormProvider {...methods}>
             <View style={styles.wrapper}>
@@ -86,19 +94,19 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
                 </View>
 
                 <View>
-                    <TouchableOpacity style={styles.resendWrapper} disabled={isResendCode} onPress={handleResend}>
+                    <TouchableOpacity style={styles.resendWrapper} disabled={countdown > 0} onPress={handleResend}>
                         <Text style={styles.resendText}>
-                            {isResendCode ? `You can resend in ${countdown}s` : `If you didn’t receive a code,`}
+                            {countdown > 0 ? `You can resend in ${countdown}s` : `If you didn’t receive a code,`}
                         </Text>
-                        {!isResendCode && <TextGradient style={styles.resendStrong} text=' Resend' />}
+                        {countdown === 0 && <TextGradient style={styles.resendStrong} text=' Resend' />}
                     </TouchableOpacity>
 
                     <GradientButton
-                        activeOpacity={0.8}
-                        style={styles.submitBtn}
                         Square
+                        style={styles.submitBtn}
                         onPress={onSubmit}
                         isLoading={isVerifying}
+                        activeOpacity={0.8}
                     >
                         <Text style={styles.submitText}>Send</Text>
                     </GradientButton>

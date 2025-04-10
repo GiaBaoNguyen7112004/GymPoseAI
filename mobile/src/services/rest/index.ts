@@ -1,0 +1,6 @@
+export { default as authApi } from './auth.rest'
+export { default as categoriesApi } from './categories.rest'
+export { default as targetApi } from './target.rest'
+export { default as userApi } from './user.rest'
+export { default as workoutApi } from './workout.rest'
+export { default as workoutHistoryApi } from './workoutHistory.rest'

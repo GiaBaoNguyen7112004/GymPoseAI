@@ -3,29 +3,28 @@ import YoutubePlayer from 'react-native-youtube-iframe'
 import Icon from 'react-native-vector-icons/Feather'
 import { RootStackScreenProps } from '@/src/navigation/types'
 import { useQuery } from '@tanstack/react-query'
-import workoutApi from '@/src/apis/workout.api'
 import GradientButton from '@/src/components/GradientButton'
 import TimeLine from './components/TimeLine'
 import { getYouTubeVideoId } from '@/src/utils/common.util'
+import { workoutApi } from '@/src/services/rest'
 
 function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetail'>) {
     const { workout_id } = route.params
+
     const { data } = useQuery({
         queryKey: ['workout', workout_id],
         queryFn: () => workoutApi.getWorkoutById({ id: workout_id })
     })
-    const workoutData = data?.data.data
+
+    const workoutData = data?.data?.data
     const workoutIdYoutube = getYouTubeVideoId(
         workoutData?.media_url || 'https://youtu.be/irfw1gQ0foQ?si=HDvPCvOcnmu9XJ79'
     )
+
     return (
-        <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-        >
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <SafeAreaView style={styles.container}>
-                {/* Header with close button */}
+                {/* Header */}
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
                         <Icon name='x' size={18} color='#333' />
@@ -34,36 +33,37 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
 
                 {/* Content */}
                 <View style={styles.content}>
-                    {/* Video Player */}
+                    {/* Video */}
                     <View style={styles.videoContainer}>
                         <YoutubePlayer height={300} videoId={workoutIdYoutube as string} />
                     </View>
 
-                    {/* Exercise Title */}
+                    {/* Title */}
                     <View style={styles.titleContainer}>
-                        <Text style={styles.title}>{workoutData?.name}</Text>
-                        <Text style={styles.subtitle}>{workoutData?.duration_minutes} minutes</Text>
+                        <Text style={styles.title}>{workoutData?.name || 'Workout'}</Text>
+                        <Text style={styles.subtitle}>{workoutData?.duration_minutes || 0} minutes</Text>
                     </View>
 
                     {/* Description */}
                     <View style={styles.descriptionContainer}>
                         <Text style={styles.sectionTitle}>Descriptions</Text>
                         <Text style={styles.descriptionText} numberOfLines={5} ellipsizeMode='tail'>
-                            {workoutData?.description}
+                            {workoutData?.description || 'No description available.'}
                         </Text>
                     </View>
 
-                    {/* How To Do It */}
+                    {/* Steps */}
                     <View style={styles.howToContainer}>
                         <View style={styles.howToHeader}>
                             <Text style={styles.sectionTitle}>How To Do It</Text>
                             <Text style={styles.stepsCount}>{workoutData?.steps?.length || 0} Steps</Text>
                         </View>
-
                         <View style={styles.stepsContainer}>
                             <TimeLine stepsData={workoutData?.steps || []} />
                         </View>
                     </View>
+
+                    {/* Start Button */}
                     <GradientButton Square containerStyle={styles.buttonSubmit}>
                         <Text style={styles.textInnerButtonSubmit}>Start</Text>
                     </GradientButton>
@@ -108,10 +108,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         width: '100%'
     },
-    video: {
-        flex: 1,
-        width: '100%'
-    },
     titleContainer: {
         marginBottom: 16
     },
@@ -119,7 +115,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: '#1D1617',
-        transform: 'capitalize'
+        textTransform: 'capitalize'
     },
     subtitle: {
         marginTop: 5,
@@ -140,9 +136,6 @@ const styles = StyleSheet.create({
         color: '#7B6F72',
         lineHeight: 18,
         fontWeight: '400'
-    },
-    readMore: {
-        color: '#3B82F6'
     },
     howToContainer: {
         marginBottom: 24

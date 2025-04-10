@@ -1,17 +1,18 @@
-import GradientButton from '@/src/components/GradientButton'
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import Loader from '@/src/components/Loader'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { schema, SchemaType } from '@/src/utils/rules.util'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
-import authApi from '@/src/apis/auth.api'
-import { User } from '@/src/types/user.type'
-import TextInputCustom from '@/src/components/TextInput'
-import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
-import handleFormError from '@/src/utils/handleFormError'
+import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+
+import GradientButton from '@/src/components/GradientButton'
+import MyIcon from '@/src/components/Icon'
+import TextInputCustom from '@/src/components/TextInput'
+
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import { schema, SchemaType } from '@/src/utils/rules.util'
+import handleFormError from '@/src/utils/handleFormError'
+import { authApi } from '@/src/services/rest'
+
 interface FindAccountScreenProps {
     onSuccess: (email: string) => void
     email: string
@@ -23,34 +24,22 @@ const FormSchema = schema.pick(['email'])
 
 function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScreenProps) {
     const methods = useForm<FormData>({
-        defaultValues: {
-            email: email
-        },
-        mode: 'onBlur',
-        resolver: yupResolver(FormSchema)
+        defaultValues: { email },
+        resolver: yupResolver(FormSchema),
+        mode: 'onBlur'
     })
 
-    const { handleSubmit } = methods
-    const canSubmit = methods.formState.isValid
+    const { formState, handleSubmit, setError } = methods
+    const { isValid } = formState
 
-    const { mutate: findPasswordMutate, isPending } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: authApi.findAccount,
-        onSuccess: (data) => {
-            const user = data.data.data.user
-            onSuccess(user.email)
-        },
-        onError: (error) => handleFormError<FormData>(error, methods.setError)
+        onSuccess: (res) => onSuccess(res.data.data.user.email),
+        onError: (error) => handleFormError<FormData>(error, setError)
     })
 
-    const onSubmit = handleSubmit((data) => {
-        const body = { email: data.email }
-        findPasswordMutate(body, {
-            onSuccess: (data) => {
-                const email = data.data.data.user.email
-                onSuccess(email)
-            },
-            onError: (errors) => handleFormError<FormData>(errors, methods.setError)
-        })
+    const handleFindAccount = handleSubmit((data) => {
+        mutate({ email: data.email })
     })
 
     return (
@@ -68,9 +57,9 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
                         activeOpacity={0.8}
                         containerStyle={styles.btnNext}
                         Square
-                        disabled={!canSubmit}
+                        disabled={!isValid}
                         isLoading={isPending}
-                        onPress={onSubmit}
+                        onPress={handleFindAccount}
                     >
                         <Text style={styles.btnText}>Next</Text>
                     </GradientButton>
@@ -80,6 +69,7 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
                             <Text style={styles.textOr}>OR</Text>
                         </View>
                     </View>
+
                     <View style={styles.otherOptionsWrapper}>
                         <Pressable style={styles.btnOther}>
                             <Icon name='facebook-f' size={20} color='#1877F2' />
@@ -105,8 +95,8 @@ const styles = StyleSheet.create({
     headerText: {
         marginTop: 72,
         fontSize: 24,
-        textAlign: 'center',
-        fontWeight: '600'
+        fontWeight: '600',
+        textAlign: 'center'
     },
     descriptionText: {
         marginVertical: 20,
@@ -122,13 +112,13 @@ const styles = StyleSheet.create({
     },
     btnNext: {
         marginTop: 30,
+        width: '100%',
+        height: 50,
         shadowColor: 'rgba(149, 173, 254, 0.30)',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 22,
-        elevation: 10,
-        width: '100%',
-        height: 50
+        elevation: 10
     },
     btnText: {
         color: '#FFF',
@@ -136,34 +126,32 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 24
     },
-    loadingText: {
-        lineHeight: 24
-    },
     divideLine: {
         width: SCREEN_WIDTH * 0.9,
         marginTop: 29,
-        position: 'relative',
         height: 1,
-        backgroundColor: '#DDDADA'
+        backgroundColor: '#DDDADA',
+        position: 'relative'
     },
     ORtextWrapper: {
         position: 'absolute',
         top: '50%',
         left: '50%',
-        transform: [{ translateX: '-50%' }, { translateY: '-50%' }],
-        backgroundColor: '#fff'
+        transform: [{ translateX: -50 }, { translateY: -8 }],
+        backgroundColor: '#fff',
+        paddingHorizontal: 8
     },
     textOr: {
         color: '#1D1617',
         fontSize: 12,
-        fontWeight: 400
+        fontWeight: '400'
     },
     otherOptionsWrapper: {
         marginTop: 29,
         width: SCREEN_WIDTH * 0.9,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
         gap: 12
     },
     btnOther: {
@@ -174,15 +162,5 @@ const styles = StyleSheet.create({
         borderColor: '#DDDADA',
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    btnLoginWithFitnessX: {
-        marginTop: 20,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    fbText: {
-        marginLeft: 10,
-        fontWeight: '800',
-        color: '#92A3FD'
     }
 })
