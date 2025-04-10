@@ -2,7 +2,7 @@ import { createStackNavigator, StackNavigationOptions } from '@react-navigation/
 import { ProfileStackParamList } from './types'
 import Profile from '../screens/Main/Profile'
 import AccountCenter from '../screens/Other/AccountCenter'
-import ActivityHistory from '../screens/Other/ActivityHistory'
+import ActivityHistory from '../screens/Other/ActivityTracker'
 import Setting from '../screens/Other/Setting/Setting'
 
 const Stack = createStackNavigator<ProfileStackParamList>()

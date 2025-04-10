@@ -19,6 +19,7 @@ export type RootStackParamList = {
     WorkoutHistoryDetail: { workout_id: string }
     CategoryDetail: { category: Category }
     WorkoutDetail: { workout_id: string }
+    ActivityTracker: undefined
 }
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, T>

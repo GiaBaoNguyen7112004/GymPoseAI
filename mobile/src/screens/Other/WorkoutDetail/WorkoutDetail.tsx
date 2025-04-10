@@ -77,6 +77,7 @@ export default WorkoutDetail
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: '#FFF'
     },
     scrollView: {
@@ -106,7 +107,8 @@ const styles = StyleSheet.create({
         aspectRatio: 16 / 9,
         marginBottom: 20,
         overflow: 'hidden',
-        width: '100%'
+        width: '100%',
+        backgroundColor: '#1D1617'
     },
     video: {
         flex: 1,

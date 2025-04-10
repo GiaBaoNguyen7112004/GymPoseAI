@@ -24,7 +24,7 @@ export default function ConfirmYourGoal({ navigation }: RootStackScreenProps<'Co
                     </View>
                 </View>
                 <View style={styles.ContainerBottom}>
-                    <GradientButton style={[styles.btnWrapper]} onPress={handleConfirm}>
+                    <GradientButton style={[styles.btnWrapper]} onPress={handleConfirm} Square>
                         <Text style={styles.btnText}>Confirm</Text>
                     </GradientButton>
                 </View>
