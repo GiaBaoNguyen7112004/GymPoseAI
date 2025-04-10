@@ -110,6 +110,9 @@ export const generateEmptyChartData = (viewMode: ViewModeType, start: Date): Dat
                     totalCaloriesBurned: 0
                 }
             })
+
+        default:
+            return []
     }
 }
 

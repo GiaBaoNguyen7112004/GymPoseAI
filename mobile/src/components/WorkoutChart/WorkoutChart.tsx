@@ -56,7 +56,7 @@ export default function WorkoutChart({
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartContainer}>
                 <LineChart
                     data={chartContent}
-                    width={chartWidth}
+                    width={chartWidth as number}
                     height={172}
                     yAxisSuffix='%'
                     chartConfig={chartConfig}
