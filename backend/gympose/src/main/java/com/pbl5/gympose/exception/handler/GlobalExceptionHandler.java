@@ -3,6 +3,7 @@ package com.pbl5.gympose.exception.handler;
 import com.pbl5.gympose.exception.*;
 import com.pbl5.gympose.exception.response.ErrorResponse;
 import com.pbl5.gympose.payload.general.ResponseData;
+import com.pbl5.gympose.utils.LogUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -56,12 +57,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseData> handlingMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-
+        LogUtils.info(ex.getMessage());
         List<ErrorResponse> errorResponses = new ArrayList<>();
         errors.stream().forEach(objectError -> {
             String error = ErrorUtils.convertToSnakeCase(Objects.requireNonNull(objectError.getCode()));
+            LogUtils.info(error);
+            LogUtils.info(objectError.getCode());
             String fieldName = ErrorUtils.convertToSnakeCase(((FieldError) objectError).getField());
+            LogUtils.info(((FieldError) objectError).getField());
             String resource = ErrorUtils.convertToSnakeCase(objectError.getObjectName());
+            LogUtils.info(objectError.getObjectName());
 
             ErrorResponse errorResponse = ErrorUtils.getValidationError(resource, fieldName, error);
             errorResponses.add(errorResponse);
@@ -74,6 +79,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseData> handlingException(Exception ex) {
+        LogUtils.info(ex.getLocalizedMessage());
         ErrorResponse error = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .build();

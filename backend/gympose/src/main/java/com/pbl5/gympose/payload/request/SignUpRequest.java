@@ -7,29 +7,32 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SignUpRequest {
     @NotBlank
     @Email
-    private String email;
+    String email;
 
     @NotBlank
     @Size(min = 1, max = 100)
-    private String firstname;
+    String firstName;
 
     @NotBlank
     @Size(min = 1, max = 100)
-    private String lastname;
+    String lastName;
 
     @NotBlank
     @Pattern(regexp = CommonConstant.PASSWORD_RULE)
-    private String password;
+    String password;
 
     @NotBlank
-    private String passwordConfirmation;
+    String passwordConfirmation;
 }

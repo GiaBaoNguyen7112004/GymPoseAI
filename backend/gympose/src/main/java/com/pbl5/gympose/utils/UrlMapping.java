@@ -6,7 +6,8 @@ public final class UrlMapping {
 
     //    AUTHENTICATION
     public static final String AUTHENTICATION = API + "/authentication";
-    public static final String REGISTER = "/register";
+    public static final String SIGN_UP = "/sign-up";
+    public static final String LOGIN = "/login";
 
     private UrlMapping() {
     }
