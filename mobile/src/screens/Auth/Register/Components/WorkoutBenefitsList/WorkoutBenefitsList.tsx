@@ -14,19 +14,19 @@ const DATA = [
         id: '1',
         title: 'Improve Shape',
         desc: 'I have a low amount of body fat and need / want to build more muscle',
-        nameIcon: 'movement1'
+        nameIcon: 'AbWorkout'
     },
     {
         id: '2',
         title: 'Lean & Tone',
         desc: 'I’m “skinny fat”. look thin but have no shape. I want to add learn muscle in the right way',
-        nameIcon: 'movement2'
+        nameIcon: 'loweBodyWorkout'
     },
     {
         id: '3',
         title: 'Lose a Fat',
         desc: 'I have over 20 lbs to lose. I want to drop all this fat and gain muscle mass',
-        nameIcon: 'movement3'
+        nameIcon: 'FullBodyWorkout'
     }
 ]
 

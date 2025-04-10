@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
         width: 130,
-        maxHeight: 70
+        maxHeight: 85
     },
     tooltipHeader: {
         flexDirection: 'row',

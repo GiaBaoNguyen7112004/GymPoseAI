@@ -38,6 +38,9 @@ function Home({ navigation }: HomeTabScreenProps<'Home'>) {
     const handleWorkoutCardClick = (workoutId: string) => {
         navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
     }
+    const handleCheckTodayTarget = () => {
+        navigation.navigate('ActivityTracker')
+    }
     return (
         <ScrollView style={styles.safeArea} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
             <SafeAreaView style={styles.container}>
@@ -60,7 +63,7 @@ function Home({ navigation }: HomeTabScreenProps<'Home'>) {
                 <View style={styles.scheduleWrapper}>
                     <View style={styles.ScheduleAction}>
                         <Text style={styles.scheduleAction__title}>Today Target</Text>
-                        <GradientButton Square style={styles.schedule__btn}>
+                        <GradientButton Square style={styles.schedule__btn} onPress={handleCheckTodayTarget}>
                             <Text style={styles.schedule__btn_text}>Check</Text>
                         </GradientButton>
                     </View>
@@ -70,6 +73,7 @@ function Home({ navigation }: HomeTabScreenProps<'Home'>) {
                         <Text style={styles.title}>Activity Status</Text>
                         <View style={styles.stats}>
                             <View style={styles.stats__BoxLeft}>
+                                {/* Water Intake bar */}
                                 <WaterIntake />
                             </View>
                             <View style={styles.stats__boxRight}>

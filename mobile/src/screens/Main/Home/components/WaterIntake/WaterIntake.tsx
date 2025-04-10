@@ -25,7 +25,7 @@ function WaterIntake() {
     )
     return (
         <View style={styles.stats_waterIntake}>
-            <Progress.Bar progress={1} />
+            <Progress.Bar progress={0.3} />
             <View>
                 <Text style={styles.stats__title}>Water Intake</Text>
                 <TextGradient textStyle={styles.stats__value} text='4 Liters' />

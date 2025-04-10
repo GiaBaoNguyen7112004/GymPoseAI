@@ -14,6 +14,7 @@ import WorkoutHistoryCenter from '../screens/Other/WorkoutHistoryCenter/WorkoutH
 import WorkoutHistoryDetail from '../screens/Other/WorkoutHistoryDetail'
 import CategoryDetail from '../screens/Other/CategoryDetail'
 import WorkoutDetail from '../screens/Other/WorkoutDetail'
+import ActivityTracker from '../screens/Other/ActivityTracker'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -25,54 +26,35 @@ function RootStackNavigation() {
     }
 
     return (
-        <RootStack.Navigator screenOptions={navigationOptions} initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
+        <RootStack.Navigator screenOptions={navigationOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>
             {!isAuthenticated ? (
                 <>
-                    <RootStack.Screen name='Login' component={Login} />
-                    <RootStack.Group screenOptions={{ headerShown: false }}>
-                        <RootStack.Screen
-                            name='CreateAccount'
-                            component={Register.CreateAccount}
-                            options={{ gestureEnabled: false }}
-                        />
-                        <RootStack.Screen
-                            name='CompleteProfile'
-                            component={Register.CompleteProfile}
-                            options={{ gestureEnabled: false }}
-                        />
-                        <RootStack.Screen
-                            name='ConfirmYourGoal'
-                            component={Register.ConfirmYourGoal}
-                            options={{ gestureEnabled: false }}
-                        />
+                    <RootStack.Group screenOptions={{ gestureEnabled: false }}>
+                        <RootStack.Screen name='Login' component={Login} />
+                        <RootStack.Screen name='CreateAccount' component={Register.CreateAccount} />
+                        <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
+                        <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
+                        <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
                     </RootStack.Group>
-                    <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
                 </>
             ) : (
                 <>
-                    <RootStack.Screen name='MainTab' component={MainTabs} />
-                    <RootStack.Screen name='Notification' component={Notification} options={{ gestureEnabled: true }} />
-                    <RootStack.Screen
-                        name='WorkoutHistoryCenter'
-                        component={WorkoutHistoryCenter}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen
-                        name='WorkoutHistoryDetail'
-                        component={WorkoutHistoryDetail}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen
-                        name='CategoryDetail'
-                        component={CategoryDetail}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen
-                        name='WorkoutDetail'
-                        component={WorkoutDetail}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen name='Welcome' component={WelcomeScreen} />
+                    <RootStack.Group screenOptions={{ gestureEnabled: true }}>
+                        <RootStack.Screen
+                            name='Welcome'
+                            component={WelcomeScreen}
+                            options={{
+                                gestureEnabled: false
+                            }}
+                        />
+                        <RootStack.Screen name='MainTab' component={MainTabs} />
+                        <RootStack.Screen name='Notification' component={Notification} />
+                        <RootStack.Screen name='WorkoutHistoryCenter' component={WorkoutHistoryCenter} />
+                        <RootStack.Screen name='WorkoutHistoryDetail' component={WorkoutHistoryDetail} />
+                        <RootStack.Screen name='CategoryDetail' component={CategoryDetail} />
+                        <RootStack.Screen name='WorkoutDetail' component={WorkoutDetail} />
+                        <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
+                    </RootStack.Group>
                 </>
             )}
             <RootStack.Group navigationKey={isAuthenticated ? 'user' : 'guest'}>
