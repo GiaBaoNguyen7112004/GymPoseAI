@@ -72,8 +72,8 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
                     </View>
                 </View>
                 <BottomSheet
-                    index={1}
-                    snapPoints={['72%']}
+                    index={2}
+                    snapPoints={['50%', '72%', '92%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
