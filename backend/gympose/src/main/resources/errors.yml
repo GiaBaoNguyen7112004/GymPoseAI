@@ -19,6 +19,9 @@ account_locked:
 account_not_active:
   code: ERR.AUTH0105
   message: Unauthenticated, account is not active
+account_already_active:
+  code: ERR.AUTH0106
+  message: Account is already active
 unauthorized:
   code: ERR.AUTH0201
   message: Unauthorized, You do not have permission to access this page!
@@ -37,9 +40,17 @@ invalid_refresh_token:
 expired_refresh_token:
   code: ERR.TOK0202
   message: Expired refresh token!
-
-
+invalid_account_verification_token:
+  code: ERR.TOK0301
+  message: Invalid account verification token!
+expired_account_verification_token:
+  code: ERR.TOK0302
+  message: Expired account verification token!
+  
 #user
 user_not_found:
   code: ERR.USE0101
   message: User was not found!
+user_already_existed:
+  code: ERR.USE0102
+  message: User already existed

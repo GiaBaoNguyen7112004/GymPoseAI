@@ -1,8 +1,8 @@
 package com.pbl5.gympose.security.service;
 
+import com.pbl5.gympose.config.AppProperties;
 import com.pbl5.gympose.exception.UnauthenticatedException;
 import com.pbl5.gympose.exception.message.ErrorMessage;
-import com.pbl5.gympose.security.config.AppProperties;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

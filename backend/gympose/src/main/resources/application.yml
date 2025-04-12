@@ -3,6 +3,9 @@ server:
   servlet:
     context-path: /gym-pose
 spring:
+  messages:
+    basename: messages
+    encoding: UTF-8
   thymeleaf:
     mode: HTML
   datasource:
@@ -15,6 +18,18 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME:giabao7112004@gmail.com}
+    password: ${EMAIL_PASSWORD:gisb quje jpua taef}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    default-encoding: UTF-8
 #logging:
 #  config: classpath:logback-spring.xml.bak
 #  file:
@@ -25,3 +40,9 @@ app:
     access-token-expiration-msec: 7200000
     refresh-token-secret: ${REFRESH_TOKEN_SECRET:iq6GbB4ypM4UvmGQTu6fD+7IJvD07edYE/dyNOWO+23t6trHtj2QZ13U+YHDLOsdmIwDTVhTQOF5c3yHxDCKaw==4}
     refresh-token-expiration-msec: 2592000000
+  admin:
+    email: ${ADMIN_EMAIL:giabao7112004@gmail.com}
+    password: ${ADMIN_PASSWORD:giabao123123}
+    first-name: ${ADMIN_FIRST_NAME:ADMIN}
+    last-name: ${ADMIN_LAST_NAME:SYSTEM}
+web-url: http://localhost:3000
