@@ -16,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
@@ -41,6 +42,7 @@ public class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     Gender gender;
 
+    @Builder.Default
     @Column(nullable = false)
     Boolean isEnabled = false;
 
@@ -53,7 +55,7 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user")
     List<Token> tokens;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role",  // Tên bảng nối
             joinColumns = @JoinColumn(name = "user_id"),

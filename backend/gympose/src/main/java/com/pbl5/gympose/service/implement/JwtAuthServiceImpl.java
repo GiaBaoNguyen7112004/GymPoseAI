@@ -2,7 +2,7 @@ package com.pbl5.gympose.service.implement;
 
 import com.pbl5.gympose.entity.Role;
 import com.pbl5.gympose.entity.User;
-import com.pbl5.gympose.enums.RoleType;
+import com.pbl5.gympose.enums.RoleName;
 import com.pbl5.gympose.event.UserRegistrationEvent;
 import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.exception.UnauthenticatedException;
@@ -56,7 +56,7 @@ public class JwtAuthServiceImpl implements AuthService {
 
         User user = userMapper.toUser(signUpRequest);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setRoles(Stream.of(new Role(RoleType.USER.name())).toList());
+        user.setRoles(Stream.of(new Role(RoleName.USER.name())).toList());
         User savedUser = userService.save(user);
 
         eventPublisher.publishEvent(new UserRegistrationEvent(savedUser));
