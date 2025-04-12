@@ -9,7 +9,10 @@ import { AppContext } from '@/src/Contexts/App.context'
 export default function WelcomeScreen({ navigation }: RootStackScreenProps<'Welcome'>) {
     const { profile } = useContext(AppContext)
     const handleGoToHome = () => {
-        navigation.navigate('MainTab')
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTab' }]
+        })
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>

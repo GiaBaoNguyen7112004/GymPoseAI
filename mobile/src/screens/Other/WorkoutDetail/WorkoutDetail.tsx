@@ -22,15 +22,16 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
     )
 
     return (
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-            <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+            <SafeAreaView style={styles.navBar}>
                 {/* Header */}
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
                         <Icon name='x' size={18} color='#333' />
                     </TouchableOpacity>
                 </View>
-
+            </SafeAreaView>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 {/* Content */}
                 <View style={styles.content}>
                     {/* Video */}
@@ -68,8 +69,8 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
                         <Text style={styles.textInnerButtonSubmit}>Start</Text>
                     </GradientButton>
                 </View>
-            </SafeAreaView>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF'
     },
+    navBar: { height: 85 },
     scrollView: {
         flex: 1,
         backgroundColor: '#FFF'

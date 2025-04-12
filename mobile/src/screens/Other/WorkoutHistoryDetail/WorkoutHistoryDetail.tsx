@@ -39,13 +39,14 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
         return Math.floor((end.getTime() - start.getTime()) / 60000)
     }, [workout])
 
-    const progressData = useMemo(() => calculateData(workout, poseErrors.length), [workout, poseErrors])
+    const progressData = useMemo(() => calculateData(workout), [workout])
 
     return (
-        <ScrollView style={styles.scrollView}>
-            <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+            <SafeAreaView style={styles.navbar}>
                 <NavigationBar title='Summary' callback={navigation.goBack} />
-
+            </SafeAreaView>
+            <ScrollView style={styles.scrollView}>
                 {/* Workout Summary */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Workout Summary</Text>
@@ -65,15 +66,20 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
                                     label='Calories Burned'
                                     value={`${workout?.calories_burned}`}
                                     unit={`/ ${workout?.calories_base} CAL`}
-                                    color='#FF8DA8'
+                                    color={(progressData as any).colors?.[1]}
                                 />
                                 <ActivityItem
                                     label='Exercise Time'
                                     value={`${workoutDuration}`}
                                     unit={`/ ${workout?.duration_minutes} MIN`}
-                                    color='#9DCEFF'
+                                    color={(progressData as any).colors[0]}
                                 />
-                                <ActivityItem label='Form Accuracy' value='0' unit='%' color='#0284C7' />
+                                <ActivityItem
+                                    label='Form Accuracy'
+                                    value={(progressData as any).data[2].toFixed(2).toString()}
+                                    unit='%'
+                                    color={(progressData as any).colors[2]}
+                                />
                             </View>
 
                             <View style={styles.chartWrapper}>
@@ -111,8 +117,8 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
                         </View>
                     </View>
                 </View>
-            </SafeAreaView>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 
@@ -128,7 +134,7 @@ const card = {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#FFF' },
     scrollView: { flex: 1, backgroundColor: '#FFF' },
-
+    navbar: { height: 90 },
     section: { marginTop: 20, paddingHorizontal: 16 },
     sectionTitle: {
         fontSize: 16,

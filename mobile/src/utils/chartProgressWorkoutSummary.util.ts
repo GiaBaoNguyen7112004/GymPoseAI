@@ -1,8 +1,8 @@
 import { ProgressChartData } from 'react-native-chart-kit/dist/ProgressChart'
 import { workoutHistory } from '../types/workoutHistory.type'
 
-export const calculateData = (workoutSummaryData?: workoutHistory, errors_count?: number) => {
-    const summary: workoutHistory = workoutSummaryData || {
+export const calculateData = (workoutSummaryData?: workoutHistory): ProgressChartData => {
+    const defaultSummary: workoutHistory = {
         calories_base: 1,
         calories_burned: 0,
         category: 'abdominal muscles',
@@ -14,19 +14,19 @@ export const calculateData = (workoutSummaryData?: workoutHistory, errors_count?
         reps_count: 1,
         errors_count: 0
     }
-    errors_count = errors_count ? errors_count : 0
-    const workoutStartTime = new Date(summary.start_time)
-    const workoutEndTime = new Date(summary.end_time)
 
-    const workoutDuration = Math.floor((workoutEndTime.getTime() - workoutStartTime.getTime()) / 60000)
-    const exerciseProgress = workoutDuration / summary.duration_minutes
-    const caloriesProgress = summary.calories_burned / summary.calories_base
-    const formAccuracy = 100 - (errors_count / summary.reps_count) * 100
+    const summary = workoutSummaryData || defaultSummary
+    const workoutStartTime = new Date(summary.start_time).getTime()
+    const workoutEndTime = new Date(summary.end_time).getTime()
 
-    const dataChart: ProgressChartData = {
+    const workoutDuration = Math.max(1, Math.floor((workoutEndTime - workoutStartTime) / 60000))
+    const exerciseProgress = summary.duration_minutes ? workoutDuration / summary.duration_minutes : 0
+    const caloriesProgress = summary.calories_base ? summary.calories_burned / summary.calories_base : 0
+    const formAccuracy = summary.reps_count ? 100 - (summary.errors_count / summary.reps_count) * 100 : 0
+
+    return {
         labels: ['exerciseProgress', 'caloriesProgress', 'formAccuracy'],
         data: [exerciseProgress, caloriesProgress, formAccuracy],
-        colors: ['#FF927D', '#9DCEFF', '#FF8DA8']
+        colors: ['#9DCEFF', '#FF8DA8', '#0284C7']
     }
-    return dataChart
 }
