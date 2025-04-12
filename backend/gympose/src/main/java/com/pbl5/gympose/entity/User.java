@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,12 +48,10 @@ public class User extends AbstractEntity {
     LocalDate dateOfBirth;
     Double height;
     Double weight;
-    UUID accountVerificationToken;
+
     LocalDateTime accountVerifiedAt;
-    Integer resetPasswordToken;
-    LocalDateTime requestResetPasswordAt;
-    Integer deleteAccountToken;
-    LocalDateTime requestDeleteAccountAt;
+    @OneToMany(mappedBy = "user")
+    List<Token> tokens;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
@@ -62,16 +59,16 @@ public class User extends AbstractEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<WorkoutHistory> workoutHistories = new ArrayList<>();
+    List<WorkoutHistory> workoutHistories;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<Notification> notifications = new ArrayList<>();
+    List<Notification> notifications;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<UserProvider> userProviders = new ArrayList<>();
+    List<UserProvider> userProviders;
 
     public int getAge() {
         return LocalDate.now().getYear() - this.getDateOfBirth().getYear();

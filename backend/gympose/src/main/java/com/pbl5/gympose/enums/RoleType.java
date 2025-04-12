@@ -1,5 +1,5 @@
 package com.pbl5.gympose.enums;
 
-public enum RoleEnum {
+public enum RoleType {
     ADMIN, USER;
 }

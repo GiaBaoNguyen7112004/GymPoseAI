@@ -1,6 +1,7 @@
 package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.payload.general.ResponseData;
+import com.pbl5.gympose.payload.request.AccountVerificationRequest;
 import com.pbl5.gympose.payload.request.LoginRequest;
 import com.pbl5.gympose.payload.request.SignUpRequest;
 import com.pbl5.gympose.service.AuthService;
@@ -11,10 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(UrlMapping.AUTHENTICATION)
@@ -34,6 +32,15 @@ public class AuthController {
     public ResponseEntity<ResponseData> login(@RequestBody LoginRequest loginRequest) {
         ResponseData responseData = ResponseData.success(authService.login(loginRequest),
                 FeedbackMessage.LOGIN_SUCCESS);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PatchMapping(UrlMapping.VERIFY_ACCOUNT)
+    public ResponseEntity<ResponseData> verifyAccount(@RequestBody AccountVerificationRequest
+                                                              accountVerificationRequest) {
+        authService.verifyAccount(accountVerificationRequest);
+        ResponseData responseData = ResponseData
+                .successWithoutMetaAndData(FeedbackMessage.VERIFY_ACCOUNT_SUCCESS);
         return ResponseEntity.ok(responseData);
     }
 }
