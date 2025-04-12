@@ -13,9 +13,9 @@ import StatItem from './Components/StatItem'
 
 import { COLOR_BRANDS } from '@/src/constants/common.constants'
 import { RootStackScreenProps } from '@/src/navigation/types'
-import workoutHistoryApi from '@/src/apis/workoutHistory.api'
 import { formatDate } from '@/src/utils/format.util'
 import { calculateData } from '@/src/utils/chartProgressWorkoutSummary.util'
+import { workoutHistoryApi } from '@/src/services/rest'
 
 export default function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
     const { workout_id } = route.params
