@@ -287,7 +287,7 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
                                     borderWidth: 4
                                 }}
                             />
-                            {sendToDirect && username && (
+                            {/* {sendToDirect && username && (
                                 <View style={styles.sendTo}>
                                     <Text
                                         style={{
@@ -304,7 +304,7 @@ const StoryTaker = ({ route }: StoryTakerProps) => {
                                         </Text>
                                     </Text>
                                 </View>
-                            )}
+                            )} */}
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={0.8} onPress={() => setFront(!front)}>
                             <Icon name='camera-retake' size={40} color='#fff' />

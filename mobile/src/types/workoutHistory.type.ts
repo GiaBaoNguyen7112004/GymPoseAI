@@ -7,12 +7,15 @@ export interface workoutHistory {
     calories_burned: number
     calories_base: number
     category: categories
+    reps_count: number
+    errors_count: number
 }
 
 export interface pose_error {
     id: string
     ai_result: string
     created_at: string
+    rep_index: number
 }
 
 export interface workoutHistoryOfDay {

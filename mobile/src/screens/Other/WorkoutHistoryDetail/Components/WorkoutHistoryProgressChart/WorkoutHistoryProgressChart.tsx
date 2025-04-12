@@ -18,10 +18,11 @@ function WorkoutHistoryProgressChart({
                 data={data}
                 width={120}
                 height={120}
-                strokeWidth={16}
+                strokeWidth={10}
                 radius={32}
                 chartConfig={chartConfig}
                 hideLegend
+                withCustomBarColorFromData
             />
         </View>
     )
@@ -37,11 +38,11 @@ const styles = StyleSheet.create({
 })
 
 const chartProgressConfigDefault: AbstractChartConfig = {
-    backgroundGradientFrom: '#1E1E1E',
-    backgroundGradientTo: '#1E1E1E',
-    color: (opacity = 1, index) => {
+    backgroundGradientFrom: '#FFF',
+    backgroundGradientTo: '#FFF',
+    color: (opacity = 1, index?: number) => {
         const colors = ['90,200,250', '76,217,100', '255,59,48']
-        if (index != undefined) return `rgba(${colors[index]}, ${opacity})`
-        return '#fff'
+        const safeIndex = index ?? 0
+        return `rgba(${colors[safeIndex % colors.length]}, ${opacity})`
     }
 }
