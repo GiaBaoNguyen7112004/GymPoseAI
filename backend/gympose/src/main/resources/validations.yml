@@ -32,3 +32,10 @@ sign_up_request:
     not_blank:
       code: VAL.SU0501
       message: Password confirmation must not be blank
+
+#category
+category_creation_request:
+  name:
+    not_blank:
+      code: VAL.CA0101
+      message: Category's name must not be blank !

@@ -55,7 +55,7 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user")
     List<Token> tokens;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "user_role",  // Tên bảng nối
             joinColumns = @JoinColumn(name = "user_id"),

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,11 +24,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
+@EnableMethodSecurity
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
     public final String[] PUBLIC_ENDPOINT = {
-            UrlMapping.AUTHENTICATION + "/**"
+            UrlMapping.AUTHENTICATION + "/**",
+            UrlMapping.CATEGORIES + UrlMapping.CATEGORY_GET_ALL,
+            UrlMapping.CATEGORIES + UrlMapping.CATEGORY_GET_BY_ID
     };
 
     CustomUserDetailsService customUserDetailsService;

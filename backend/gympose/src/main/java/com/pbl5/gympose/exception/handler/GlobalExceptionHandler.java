@@ -1,11 +1,13 @@
 package com.pbl5.gympose.exception.handler;
 
 import com.pbl5.gympose.exception.*;
+import com.pbl5.gympose.exception.message.ErrorMessage;
 import com.pbl5.gympose.exception.response.ErrorResponse;
 import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.utils.LogUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -75,6 +77,13 @@ public class GlobalExceptionHandler {
         ResponseData responseData = ResponseData.error(errorResponses);
 
         return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ResponseData> handlingAccessDeniedException(AccessDeniedException ex) {
+        ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessage.UNAUTHORIZED);
+        ResponseData responseData = ResponseData.error(error);
+        return new ResponseEntity<>(responseData, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

@@ -10,6 +10,14 @@ public final class UrlMapping {
     public static final String LOGIN = "/login";
     public static final String VERIFY_ACCOUNT = "/verify-account";
 
+    //  CATEGORY
+    public static final String CATEGORIES = API + "/categories";
+    public static final String CATEGORY_UPDATE = "/{category-id}";
+    public static final String CATEGORY_GET_BY_ID = "/{category-id}";
+    public static final String CATEGORY_DELETE_BY_ID = "/{category-id}";
+    public static final String CATEGORY_GET_ALL = "";
+    public static final String CATEGORY_CREATE = "";
+
     private UrlMapping() {
     }
 }

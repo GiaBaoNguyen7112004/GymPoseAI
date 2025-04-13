@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "categories")
@@ -21,6 +21,6 @@ public class Category {
     UUID id;
     String name;
 
-    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL)
-    List<Exercise> exercises = new ArrayList<>();
+    @OneToMany(mappedBy = "category", orphanRemoval = true, fetch = FetchType.EAGER)
+    List<Exercise> exercises;
 }

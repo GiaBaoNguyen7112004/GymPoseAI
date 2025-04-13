@@ -46,7 +46,7 @@ invalid_account_verification_token:
 expired_account_verification_token:
   code: ERR.TOK0302
   message: Expired account verification token!
-  
+
 #user
 user_not_found:
   code: ERR.USE0101
@@ -54,3 +54,8 @@ user_not_found:
 user_already_existed:
   code: ERR.USE0102
   message: User already existed
+
+#category
+category_not_found:
+  code: ERR.CAT0101
+  message: Category was not found!

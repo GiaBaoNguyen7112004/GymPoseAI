@@ -19,13 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtUtils {
     public static final String ROLES_CLAIM = "roles";
-    public static final String USERNAME_CLAIM = "username";
     private final AppProperties appProperties;
 
     public String generateToken(String username, List<String> roles, boolean isRefreshToken) {
         return Jwts.builder().setSubject(username)
                 .claim(ROLES_CLAIM, roles)
-                .claim(USERNAME_CLAIM, username)
                 .setIssuedAt(new Date())
                 .setExpiration(isRefreshToken
                         ? new Date(new Date().getTime() + appProperties.getAuth().getAccessTokenExpirationMsec())
