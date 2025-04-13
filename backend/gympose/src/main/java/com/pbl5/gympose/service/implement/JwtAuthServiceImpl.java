@@ -1,5 +1,7 @@
 package com.pbl5.gympose.service.implement;
 
+import com.pbl5.gympose.cache.CachePrefix;
+import com.pbl5.gympose.cache.CacheService;
 import com.pbl5.gympose.entity.Role;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.RoleName;
@@ -10,6 +12,7 @@ import com.pbl5.gympose.exception.message.ErrorMessage;
 import com.pbl5.gympose.mapper.UserMapper;
 import com.pbl5.gympose.payload.request.AccountVerificationRequest;
 import com.pbl5.gympose.payload.request.LoginRequest;
+import com.pbl5.gympose.payload.request.LogoutRequest;
 import com.pbl5.gympose.payload.request.SignUpRequest;
 import com.pbl5.gympose.payload.response.JwtLoginResponse;
 import com.pbl5.gympose.payload.response.LoginResponse;
@@ -19,6 +22,7 @@ import com.pbl5.gympose.security.service.JwtUtils;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.service.TokenService;
 import com.pbl5.gympose.service.UserService;
+import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Service
@@ -47,7 +52,7 @@ public class JwtAuthServiceImpl implements AuthService {
     UserService userService;
     ApplicationEventPublisher eventPublisher;
     TokenService tokenService;
-
+    CacheService cacheService;
 
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
@@ -77,8 +82,9 @@ public class JwtAuthServiceImpl implements AuthService {
                     .stream().map(GrantedAuthority::getAuthority).toList();
             String email = userPrincipal.getUsername();
 
-            String refreshToken = jwtUtils.generateToken(email, roles, true);
-            String accessToken = jwtUtils.generateToken(email, roles, false);
+            boolean isRefreshToken = true;
+            String refreshToken = jwtUtils.generateToken(email, roles, isRefreshToken);
+            String accessToken = jwtUtils.generateToken(email, roles, !isRefreshToken);
 
             return new JwtLoginResponse(userMapper.toUserResponse(userService.findById(userPrincipal.getId())),
                     accessToken, refreshToken);
@@ -109,5 +115,21 @@ public class JwtAuthServiceImpl implements AuthService {
         user.setAccountVerifiedAt(LocalDateTime.now());
         tokenService.deleteToken(accountVerificationRequest.getAccountVerificationToken());
         userService.save(user);
+    }
+
+    @Override
+    public void logout(LogoutRequest logoutRequest) {
+        String accessToken = logoutRequest.getAccessToken();
+        String refreshToken = logoutRequest.getRefreshToken();
+
+        boolean isRefreshToken = true;
+        Claims accessTokenClaims = jwtUtils.verifyToken(accessToken, !isRefreshToken);
+        Claims refreshTokenClaims = jwtUtils.verifyToken(refreshToken, isRefreshToken);
+
+        String prefix = CachePrefix.BLACK_LIST_TOKENS.getPrefix();
+        cacheService.set(prefix + jwtUtils.getJwtIdFromJWT(accessTokenClaims), 1,
+                jwtUtils.getTokenAvailableDuration(accessTokenClaims), TimeUnit.MILLISECONDS);
+        cacheService.set(prefix + jwtUtils.getJwtIdFromJWT(refreshTokenClaims), 1,
+                jwtUtils.getTokenAvailableDuration(refreshTokenClaims), TimeUnit.MILLISECONDS);
     }
 }

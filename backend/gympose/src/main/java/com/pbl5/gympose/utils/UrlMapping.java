@@ -9,6 +9,7 @@ public final class UrlMapping {
     public static final String SIGN_UP = "/sign-up";
     public static final String LOGIN = "/login";
     public static final String VERIFY_ACCOUNT = "/verify-account";
+    public static final String LOGOUT = "/logout";
 
     //  CATEGORY
     public static final String CATEGORIES = API + "/categories";
