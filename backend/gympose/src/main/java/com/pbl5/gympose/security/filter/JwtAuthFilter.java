@@ -9,6 +9,7 @@ import com.pbl5.gympose.security.service.CustomUserDetailsService;
 import com.pbl5.gympose.security.service.JwtUtils;
 import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.LogUtils;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,9 +41,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             LogUtils.info(request.getRequestURI());
             String token = parseJwt(request);
-            if (StringUtils.hasText(token) && jwtUtils.verifyToken(token, false)) {
+            if (StringUtils.hasText(token)) {
+                Claims claims = jwtUtils.verifyToken(token, false);
                 UserDetails userDetails = customUserDetailsService
-                        .loadUserByUsername(jwtUtils.getUsernameFromJWT(token, false));
+                        .loadUserByUsername(jwtUtils.getUsernameFromJWT(claims));
                 var authentication = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

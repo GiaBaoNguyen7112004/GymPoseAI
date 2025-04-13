@@ -1,4 +1,4 @@
-#sign_up
+#authentication
 sign_up_request:
   email:
     not_blank:
@@ -32,6 +32,16 @@ sign_up_request:
     not_blank:
       code: VAL.SU0501
       message: Password confirmation must not be blank
+
+logout_request:
+  access_token:
+    not_blank:
+      code: VAL.LO0101
+      message: Access token must not be blank !
+  refresh_token:
+    not_blank:
+      code: VAL.LO0102
+      message: Refresh token must not be blank !
 
 #category
 category_creation_request:

@@ -3,6 +3,7 @@ package com.pbl5.gympose.controller;
 import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.payload.request.AccountVerificationRequest;
 import com.pbl5.gympose.payload.request.LoginRequest;
+import com.pbl5.gympose.payload.request.LogoutRequest;
 import com.pbl5.gympose.payload.request.SignUpRequest;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.utils.FeedbackMessage;
@@ -41,6 +42,13 @@ public class AuthController {
         authService.verifyAccount(accountVerificationRequest);
         ResponseData responseData = ResponseData
                 .successWithoutMetaAndData(FeedbackMessage.VERIFY_ACCOUNT_SUCCESS);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping(UrlMapping.LOGOUT)
+    public ResponseEntity<ResponseData> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
+        authService.logout(logoutRequest);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.LOGOUT_SUCCESS);
         return ResponseEntity.ok(responseData);
     }
 }

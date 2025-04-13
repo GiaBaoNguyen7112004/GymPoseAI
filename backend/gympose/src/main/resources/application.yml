@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /gym-pose
 spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
   messages:
     basename: messages
     encoding: UTF-8
