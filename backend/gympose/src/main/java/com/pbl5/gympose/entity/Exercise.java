@@ -27,10 +27,15 @@ public class Exercise {
     String description;
 
     @Column(columnDefinition = "text")
+    String thumbnailUrl;
+
+    @Column(columnDefinition = "text")
     String mediaUrl;
 
     @Column(nullable = false)
     Double met;
+
+    Integer durationMinutes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

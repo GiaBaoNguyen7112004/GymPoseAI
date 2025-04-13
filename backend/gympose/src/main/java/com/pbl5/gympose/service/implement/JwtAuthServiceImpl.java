@@ -48,6 +48,7 @@ public class JwtAuthServiceImpl implements AuthService {
     ApplicationEventPublisher eventPublisher;
     TokenService tokenService;
 
+
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
         if (userService.isExistedUser(signUpRequest.getEmail())) {
@@ -79,7 +80,7 @@ public class JwtAuthServiceImpl implements AuthService {
             String refreshToken = jwtUtils.generateToken(email, roles, true);
             String accessToken = jwtUtils.generateToken(email, roles, false);
 
-            return new JwtLoginResponse(userMapper.toUserResponse(userService.findByEmail(email)),
+            return new JwtLoginResponse(userMapper.toUserResponse(userService.findById(userPrincipal.getId())),
                     accessToken, refreshToken);
         } catch (BadCredentialsException e) {
             throw new BadRequestException(ErrorMessage.INCORRECT_EMAIL_OR_PASSWORD);

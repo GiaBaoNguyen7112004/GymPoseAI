@@ -3,7 +3,6 @@ package com.pbl5.gympose.config;
 import com.pbl5.gympose.entity.Role;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.RoleName;
-import com.pbl5.gympose.repository.RoleRepository;
 import com.pbl5.gympose.repository.UserRepository;
 import com.pbl5.gympose.utils.LogUtils;
 import lombok.AccessLevel;
@@ -24,13 +23,13 @@ public class AppInitConfig {
     AppProperties appProperties;
 
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(UserRepository userRepository) {
         LogUtils.info("Initializing application.....");
         return args -> {
             if (userRepository.findByEmail(appProperties.getAdmin().getEmail()).isEmpty()) {
-                Role adminRole = roleRepository.save(Role.builder()
+                Role adminRole = Role.builder()
                         .name(RoleName.ADMIN.name())
-                        .build());
+                        .build();
 
                 LogUtils.info(appProperties.getAdmin().getPassword());
                 User user = User.builder()

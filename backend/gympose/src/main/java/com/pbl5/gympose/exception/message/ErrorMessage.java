@@ -25,6 +25,10 @@ public final class ErrorMessage {
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String USER_ALREADY_EXISTED = "user_already_existed";
 
+
+    //Category
+    public static final String CATEGORY_NOT_FOUND = "category_not_found";
+
     private ErrorMessage() {
     }
 }
