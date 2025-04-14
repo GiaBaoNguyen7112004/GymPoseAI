@@ -20,7 +20,7 @@ interface ReadMoreTextProps {
 
 const ReadMoreText = ({
     content,
-    numberOfLines = 3,
+    numberOfLines = 1,
     textStyle,
     readMoreText = 'Read More...',
     readLessText = 'Read Less'
