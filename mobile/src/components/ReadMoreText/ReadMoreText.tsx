@@ -23,7 +23,7 @@ const ReadMoreText = ({
     numberOfLines = 3,
     textStyle,
     readMoreText = 'Read More...',
-    readLessText = 'Read Less...'
+    readLessText = 'Read Less'
 }: ReadMoreTextProps) => {
     const [expanded, setExpanded] = useState(false)
     const [shouldShowReadMore, setShouldShowReadMore] = useState(false)
