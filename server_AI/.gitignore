@@ -1,0 +1,12 @@
+# Bỏ qua thư mục môi trường ảo
+.venv/
+
+# Bỏ qua thư mục test
+test/
+
+AI/GRU/
+AI/LR/
+AI/UP_DOWN/
+
+AI/__pycache__/
+constant/__pycache__/
