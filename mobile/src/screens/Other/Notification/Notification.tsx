@@ -5,6 +5,7 @@ import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { IconName } from '@/src/constants/icon.constants'
+import LoaderModal from '@/src/components/LoaderModal'
 
 const colors: [string, string, ...string[]][] = [
     ['#92A3FD', '#9DCEFF'],
@@ -128,15 +129,6 @@ function Notification() {
         []
     )
 
-    const renderLoading = useCallback(
-        () => (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size='large' color='#DDDADA' />
-            </View>
-        ),
-        []
-    )
-
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView style={styles.wrapperScreen}>
@@ -144,16 +136,15 @@ function Notification() {
                     <NavigationBar title={'Notifications'} />
                 </View>
                 {isLoading ? (
-                    renderLoading()
-                ) : notifications.length > 0 ? (
+                    <LoaderModal title='Loading' />
+                ) : (
                     <FlatList
                         data={notifications}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.id}
                         contentContainerStyle={styles.notificationContainer}
+                        ListEmptyComponent={renderEmpty}
                     />
-                ) : (
-                    renderEmpty()
                 )}
                 <BottomSheet
                     ref={bottomSheetRef}
