@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import NavigationBar from '@/src/components/NavigationBar'
 import TextGradient from '@/src/components/TextGradient'
 import AvatarWithIcon from '@/src/components/AvatarWithIcon'
-import WorkoutHistoryProgressChart from './Components/WorkoutHistoryProgressChart/WorkoutHistoryProgressChart'
+import WorkoutHistoryProgressChart from './Components/WorkoutHistoryProgressChart'
 import FormFeedBack from './Components/FormFeedBack'
 import ActivityItem from './Components/ActivityItem'
 import StatItem from './Components/StatItem'
@@ -14,8 +14,8 @@ import StatItem from './Components/StatItem'
 import { COLOR_BRANDS } from '@/src/constants/common.constants'
 import { RootStackScreenProps } from '@/src/navigation/types'
 import { formatDate } from '@/src/utils/format.util'
-import { calculateData } from '@/src/utils/chartProgressWorkoutSummary.util'
 import { workoutHistoryApi } from '@/src/services/rest'
+import { calculateWorkoutSummaryChart } from '@/src/utils/chart.util'
 
 export default function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
     const { workout_id } = route.params
@@ -39,7 +39,7 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
         return Math.floor((end.getTime() - start.getTime()) / 60000)
     }, [workout])
 
-    const progressData = useMemo(() => calculateData(workout), [workout])
+    const progressData = useMemo(() => calculateWorkoutSummaryChart(workout), [workout])
 
     return (
         <View style={styles.container}>

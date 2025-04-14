@@ -53,7 +53,7 @@ function Profile() {
                 <View style={styles.menuSettingItem}>
                     <Text style={styles.menuSetting__heading}>Account</Text>
                     <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='profileGradientOuline' size={12} />
+                        <Icon name='profileGradientOutline' size={12} />
                         <Text style={styles.setting__label}>Personal Data</Text>
                         <Icon name='arrowRightGray' size={18} />
                     </TouchableOpacity>
@@ -61,7 +61,7 @@ function Profile() {
                 <View style={styles.menuSettingItem}>
                     <Text style={styles.menuSetting__heading}>Notification</Text>
                     <TouchableOpacity style={styles.menuSetting__btn} onPress={() => handleSwitchChange(!switchValue)}>
-                        <Icon name='bellGradientOline' size={12} />
+                        <Icon name='bellGradientOutline' size={12} />
                         <Text style={styles.setting__label}>Pop-up Notification</Text>
                         <Switch value={switchValue} onValueChange={handleSwitchChange} ref={switchRef} />
                     </TouchableOpacity>
@@ -69,17 +69,17 @@ function Profile() {
                 <View style={styles.menuSettingItem}>
                     <Text style={styles.menuSetting__heading}>Other</Text>
                     <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='messageGradientOuline' size={12} />
+                        <Icon name='messageGradientOutline' size={12} />
                         <Text style={styles.setting__label}>Contact Us</Text>
                         <Icon name='arrowRightGray' size={18} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='shieldGradientOuline' size={12} />
+                        <Icon name='shieldGradientOutline' size={12} />
                         <Text style={styles.setting__label}>Privacy Policy</Text>
                         <Icon name='arrowRightGray' size={18} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='settingGradientOuline' size={12} />
+                        <Icon name='settingGradientOutline' size={12} />
                         <Text style={styles.setting__label}>Settings</Text>
                         <Icon name='arrowRightGray' size={18} />
                     </TouchableOpacity>

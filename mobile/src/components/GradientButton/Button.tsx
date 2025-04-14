@@ -13,18 +13,20 @@ interface ButtonProps {
     Square?: boolean
     disabled?: boolean
     isLoading?: boolean
+    rounded?: boolean
     [key: string]: any
 }
 
 const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
     onPress,
     children,
-    Square,
+    Square = false,
     linerColors = ['#92A3FD', '#9DCEFF'],
     disabled,
     isLoading,
     style,
     containerStyle,
+    rounded = false,
     ...props
 }) => {
     const gradientColors = linerColors.length >= 2 ? linerColors : ['#92A3FD', '#9DCEFF']
@@ -39,7 +41,8 @@ const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
                 style={[
                     styles.container,
                     style,
-                    Square ? styles.square : styles.rounded,
+                    Square && styles.square,
+                    rounded && styles.rounded,
                     { opacity: !isDisabled ? 1 : 0.6 }
                 ]}
             >

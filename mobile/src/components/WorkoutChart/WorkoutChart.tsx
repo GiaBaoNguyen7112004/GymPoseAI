@@ -4,29 +4,26 @@ import { LineChart } from 'react-native-chart-kit'
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
 
 import Tooltip from './Components/Tooltip'
-import { workoutHistoryOfDay, ViewModeType } from '@/src/types/workoutHistory.type'
-import {
-    calculateChartData,
-    defaultChartConfig,
-    defaultLineColor,
-    getChartWidth
-} from '@/src/utils/chartWorkoutHistory.util'
+import { workoutHistoryOfDay } from '@/src/types/workoutHistory.type'
 import { useTooltip } from '@/src/hooks/useTooltip'
+import { workoutHistoryLineChart } from '@/src/config/chart.config'
+import { calculateWorkoutHistoryChart, getChartWidth } from '@/src/utils/chart.util'
+import { ViewModeType } from '@/src/types/utils.type'
 
 interface WorkoutChartProps {
     workoutData: workoutHistoryOfDay[]
     viewMode: ViewModeType
-    chartConfig?: typeof defaultChartConfig
+    chartConfig?: typeof workoutHistoryLineChart.lineChartConfig
     lineChartColor?: (opacity: number) => string
 }
 
 export default function WorkoutChart({
     workoutData,
     viewMode,
-    chartConfig = defaultChartConfig,
-    lineChartColor = defaultLineColor
+    chartConfig = workoutHistoryLineChart.lineChartConfig,
+    lineChartColor = workoutHistoryLineChart.lineChartColor
 }: WorkoutChartProps) {
-    const chartData = useMemo(() => calculateChartData(workoutData, viewMode), [workoutData, viewMode])
+    const chartData = useMemo(() => calculateWorkoutHistoryChart(workoutData, viewMode), [workoutData, viewMode])
 
     const chartWidth = useMemo(() => getChartWidth(viewMode, chartData.length), [viewMode, chartData])
 

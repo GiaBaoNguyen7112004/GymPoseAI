@@ -13,6 +13,7 @@ export type AuthResponse = ResponseApi<
 export type RefreshTokenResponse = ResponseApi<
     {
         access_token: string
+        refresh_token: string
     },
     any
 >

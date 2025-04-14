@@ -1,7 +1,12 @@
 import http from '@/src/services/core/httpClient'
 import { URL_GET_WORKOUT_HISTORY } from '@env'
-import { PaginationMeta, QueryConfigWorkoutHistory, ResponseApi } from '@/src/types/utils.type'
-import { pose_error, ViewModeType, workoutHistory, workoutHistoryOfDay } from '@/src/types/workoutHistory.type'
+import { PaginationMeta, ResponseApi, ViewModeType } from '@/src/types/utils.type'
+import {
+    pose_error,
+    QueryConfigWorkoutHistory,
+    workoutHistory,
+    workoutHistoryOfDay
+} from '@/src/types/workoutHistory.type'
 
 const workoutHistoryApi = {
     getWorkoutHistory({ params, user_id }: { params: QueryConfigWorkoutHistory; user_id: string }) {

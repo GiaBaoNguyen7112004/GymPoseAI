@@ -12,7 +12,7 @@ import CalendarIcon from '@/src/assets/Icons/Calendar.svg'
 import TwoUserIcon from '@/src/assets/Icons/2 User.svg'
 import ArrowDown from '@/src/assets/Icons/Arrow - Down 2.svg'
 import movement1 from '@/src/assets/Icons/movement1.svg'
-import FullBodyWorkout from '@/src/assets/Icons/Fullbody Workout.svg'
+import FullBodyWorkout from '@/src/assets/Icons/FullBody Workout.svg'
 import movement3 from '@/src/assets/Icons/movement3.svg'
 import FitnessX from '@/src/assets/Icons/FitnessX.svg'
 import logoX from '@/src/assets/Icons/X.svg'
@@ -28,7 +28,7 @@ import ProfileLightFilled from '@/src/assets/Icons/ProfileFilled.svg'
 import dotGradient from '@/src/assets/Icons/Ellipse 63.svg'
 import NotificationIcon from '@/src/assets/Icons/Notification.svg'
 import AbWorkout from '@/src/assets/Icons/Ab-Workout 1.svg'
-import loweBodyWorkout from '@/src/assets/Icons/lowebody-workout 1.svg'
+import loweBodyWorkout from '@/src/assets/Icons/loweBody-workout 1.svg'
 import ArrowRightGradient from '@/src/assets/Icons/Arrow - Right Gradient.svg'
 import pieChart from '@/src/assets/Icons/Banner--Pie-Ellipse.svg'
 import line28Icon from '@/src/assets/Icons/Line 28.svg'
@@ -42,14 +42,17 @@ import arrowLeft from '@/src/assets/Icons/Arrow - Left 2.svg'
 import moreIcon from '@/src/assets/Icons/more-vertical 9.svg'
 import closeSquare from '@/src/assets/Icons/Close Square.svg'
 import closeSquareBold from '@/src/assets/Icons/Close Square bold.svg'
-import bellGradientOline from '@/src/assets/Icons/bellGradientOutline.svg'
-import profileGradientOuline from '@/src/assets/Icons/ProfilegradientOutline.svg'
-import settingGradientOuline from '@/src/assets/Icons/SettingGradientOuline.svg'
+import bellGradientOutline from '@/src/assets/Icons/bellGradientOutline.svg'
+import profileGradientOutline from '@/src/assets/Icons/ProfileGradientOutline.svg'
+import settingGradientOutline from '@/src/assets/Icons/SettingGradientOutline.svg'
 import arrowRightGray from '@/src/assets/Icons/Arrow - Right 4.svg'
-import shieldGradientOuline from '@/src/assets/Icons/ShieldGradientOuline.svg'
-import messageGradientOuline from '@/src/assets/Icons/MessageGradientOuline.svg'
+import shieldGradientOutline from '@/src/assets/Icons/ShieldGradientOutline.svg'
+import messageGradientOutline from '@/src/assets/Icons/MessageGradientOutline.svg'
 import stepLine from '@/src/assets/Icons/StepLine.svg'
 import stepDot from '@/src/assets/Icons/StepDot.svg'
+import glassOfWater from '@/src/assets/Icons/glassOfWaterIcon.svg'
+import boots from '@/src/assets/Icons/bootsIcon.svg'
+import humanDrinking from '@/src/assets/Icons/human-female-drinking.svg'
 
 export type IconName =
     | 'registerIcon'
@@ -95,14 +98,17 @@ export type IconName =
     | 'moreIcon'
     | 'closeSquare'
     | 'closeSquareBold'
-    | 'bellGradientOline'
-    | 'profileGradientOuline'
-    | 'settingGradientOuline'
+    | 'bellGradientOutline'
+    | 'profileGradientOutline'
+    | 'settingGradientOutline'
     | 'arrowRightGray'
-    | 'shieldGradientOuline'
-    | 'messageGradientOuline'
+    | 'shieldGradientOutline'
+    | 'messageGradientOutline'
     | 'stepLine'
     | 'stepDot'
+    | 'boots'
+    | 'glassOfWater'
+    | 'humanDrinking'
 
 export const ICONS: { [key in IconName]: React.ComponentType<SvgProps> } = {
     registerIcon: registerIcon,
@@ -148,12 +154,15 @@ export const ICONS: { [key in IconName]: React.ComponentType<SvgProps> } = {
     moreIcon: moreIcon,
     closeSquare: closeSquare,
     closeSquareBold: closeSquareBold,
-    bellGradientOline: bellGradientOline,
-    profileGradientOuline: profileGradientOuline,
-    settingGradientOuline: settingGradientOuline,
+    bellGradientOutline: bellGradientOutline,
+    profileGradientOutline: profileGradientOutline,
+    settingGradientOutline: settingGradientOutline,
     arrowRightGray: arrowRightGray,
-    shieldGradientOuline: shieldGradientOuline,
-    messageGradientOuline: messageGradientOuline,
+    shieldGradientOutline: shieldGradientOutline,
+    messageGradientOutline: messageGradientOutline,
     stepLine: stepLine,
-    stepDot: stepDot
+    stepDot: stepDot,
+    boots: boots,
+    glassOfWater: glassOfWater,
+    humanDrinking: humanDrinking
 } as const

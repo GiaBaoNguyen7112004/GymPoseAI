@@ -29,7 +29,7 @@ function ControlledInput({ type = 'default', icon, name, rules, defaultValue, ..
                 placeholderTextColor='#ADA4A5'
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
-                value={field.value}
+                value={field.value?.toString() ?? ''}
                 keyboardType={type != 'password' ? type : 'default'}
             />
             {isPassword && (

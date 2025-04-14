@@ -7,6 +7,7 @@ import {
     Poppins_600SemiBold,
     Poppins_700Bold
 } from '@expo-google-fonts/poppins'
+import Toast from 'react-native-toast-message'
 import { ActivityIndicator, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import RootStackNavigation from './src/navigation/RootStackNavigation'
@@ -52,6 +53,7 @@ export default function App() {
                 <AppProvider>
                     <NavigationContainer linking={linking}>
                         <RootStackNavigation />
+                        <Toast />
                     </NavigationContainer>
                 </AppProvider>
             </QueryClientProvider>

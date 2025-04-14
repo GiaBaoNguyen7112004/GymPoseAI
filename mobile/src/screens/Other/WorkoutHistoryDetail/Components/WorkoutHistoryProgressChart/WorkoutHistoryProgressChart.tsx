@@ -1,3 +1,4 @@
+import { workoutSummaryProgressRingChart } from '@/src/config/chart.config'
 import { StyleSheet, View } from 'react-native'
 import { ProgressChart } from 'react-native-chart-kit'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
@@ -10,7 +11,7 @@ interface WorkoutHistoryProgressChartProps {
 
 function WorkoutHistoryProgressChart({
     data,
-    chartConfig = chartProgressConfigDefault
+    chartConfig = workoutSummaryProgressRingChart.progressRingChartConfig
 }: WorkoutHistoryProgressChartProps) {
     return (
         <View style={styles.chartContainer}>
@@ -36,13 +37,3 @@ const styles = StyleSheet.create({
         height: 120
     }
 })
-
-const chartProgressConfigDefault: AbstractChartConfig = {
-    backgroundGradientFrom: '#FFF',
-    backgroundGradientTo: '#FFF',
-    color: (opacity = 1, index?: number) => {
-        const colors = ['90,200,250', '76,217,100', '255,59,48']
-        const safeIndex = index ?? 0
-        return `rgba(${colors[safeIndex % colors.length]}, ${opacity})`
-    }
-}

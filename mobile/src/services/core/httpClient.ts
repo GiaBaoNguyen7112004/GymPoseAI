@@ -89,8 +89,9 @@ const refreshToken = async (): Promise<string> => {
 
     try {
         const res = await http.post<RefreshTokenResponse>(URL_REFRESH_TOKEN, { refresh_token })
-        const { access_token } = res.data.data
+        const { access_token, refresh_token: new_refresh_token } = res.data.data
         await storage.saveAccessToken(access_token)
+        await storage.saveRefreshToken(new_refresh_token)
         return access_token
     } catch (error) {
         storage.clearStorage()

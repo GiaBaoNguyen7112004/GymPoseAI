@@ -1,3 +1,5 @@
+import { ResponseApi } from './utils.type'
+
 export interface CaloriesTargetOfDay {
     date: string
     calories_burned: number
@@ -5,7 +7,22 @@ export interface CaloriesTargetOfDay {
 }
 
 export interface WaterTargetOfDay {
-    date: string // "2025-04-10"
-    water_intake: number // đơn vị: lít
-    water_target: number // đơn vị: lít
+    date: string
+    water_intake: number
+    water_target: number
 }
+
+export interface StatsTargetOfDay {
+    water: WaterTargetOfDay
+    calories: CaloriesTargetOfDay
+}
+
+export type WeekTargetResponseAPI = ResponseApi<StatsTargetOfDay[], any>
+
+export type TodayTargetResponseAPI = ResponseApi<
+    {
+        calories: number
+        water: number
+    },
+    any
+>

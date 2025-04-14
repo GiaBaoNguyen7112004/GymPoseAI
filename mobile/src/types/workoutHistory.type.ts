@@ -1,3 +1,5 @@
+import { BaseQueryConfig, ViewModeType } from './utils.type'
+
 export interface workoutHistory {
     id: string
     name_workout: string
@@ -27,4 +29,7 @@ export interface workoutHistoryOfDay {
 
 export type categories = 'abdominal muscles' | 'lower body' | 'full body'
 
-export type ViewModeType = 'weekly' | 'monthly' | 'yearly'
+export interface QueryConfigWorkoutHistory extends BaseQueryConfig {
+    category?: categories
+    viewMode?: ViewModeType
+}
