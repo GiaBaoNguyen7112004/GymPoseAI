@@ -1,19 +1,17 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, FlatList, View } from 'react-native'
+
 import { useInfiniteQuery } from '@tanstack/react-query'
-import activityApi from '@/src/services/rest/acitity.rest'
-import { UserActivity } from '@/src/types/userActivity.type'
-import { PaginationMeta, ResponseApi } from '@/src/types/utils.type'
-import ActivityItem from '../ActivityItem/ActivityItem'
+import { activityApi } from '@/src/services/rest'
 import Loader from '@/src/components/Loader'
+import ActivityItem from '../ActivityItem/ActivityItem'
+
+import { ResponseAPIActivityPage } from '@/src/types/userActivity.type'
 
 function LatestActivity() {
-    const [isSeeMoreClicked, setIsSeeMoreClicked] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false)
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
-        ResponseApi<UserActivity[], PaginationMeta>,
-        Error
-    >({
+    const queryConfig = useInfiniteQuery<ResponseAPIActivityPage, Error>({
         queryKey: ['latest-activity'],
         queryFn: async ({ pageParam = 1 }) => {
             const response = await activityApi.getDailyActivity({
@@ -21,23 +19,24 @@ function LatestActivity() {
             })
             return response.data
         },
-        getNextPageParam: (lastPage) => {
-            const { current_page, total_page } = lastPage.meta
-            return current_page < total_page ? current_page + 1 : undefined
-        },
+        getNextPageParam: ({ meta }) => (meta.current_page < meta.total_page ? meta.current_page + 1 : undefined),
         initialPageParam: 1,
-        staleTime: 1000 * 60
+        staleTime: 60 * 1000
     })
+
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = queryConfig
 
     const activities = data?.pages.flatMap((page) => page.data) || []
 
-    const handleSeeMore = () => setIsSeeMoreClicked(true)
+    const handleSeeMore = () => setIsExpanded(true)
 
     const handleLoadMore = () => {
-        if (hasNextPage && !isFetchingNextPage && isSeeMoreClicked) {
+        if (hasNextPage && !isFetchingNextPage && isExpanded) {
             fetchNextPage()
         }
     }
+
+    const renderItem = ({ item }: any) => <ActivityItem data={item} />
 
     const renderFooter = () =>
         isFetchingNextPage ? (
@@ -46,31 +45,31 @@ function LatestActivity() {
             </View>
         ) : null
 
-    const renderEmptyComponent = () => <Text style={styles.emptyText}>No activity yet</Text>
+    const renderEmpty = () => <Text style={styles.emptyText}>No activity yet</Text>
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.sectionTitle}>Latest Activity</Text>
-                {!isSeeMoreClicked && activities.length > 0 && hasNextPage && (
+                {!isExpanded && activities.length > 0 && hasNextPage && (
                     <TouchableOpacity onPress={handleSeeMore}>
                         <Text style={styles.seeMoreText}>See more</Text>
                     </TouchableOpacity>
                 )}
             </View>
 
-            {isLoading && !isSeeMoreClicked ? (
+            {isLoading && !isExpanded ? (
                 <Loader />
             ) : (
                 <FlatList
                     data={activities}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => <ActivityItem data={item} />}
+                    renderItem={renderItem}
                     onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.5}
-                    keyboardShouldPersistTaps='handled'
+                    onEndReachedThreshold={0.2}
                     ListFooterComponent={renderFooter}
-                    ListEmptyComponent={renderEmptyComponent}
+                    ListEmptyComponent={renderEmpty}
+                    keyboardShouldPersistTaps='handled'
                 />
             )}
         </View>
@@ -95,19 +94,19 @@ const styles = StyleSheet.create({
         color: '#1D1617'
     },
     seeMoreText: {
-        color: '#ADA4A5',
         fontSize: 12,
-        fontWeight: '500'
+        fontWeight: '500',
+        color: '#ADA4A5'
     },
     loadingWrapper: {
         alignItems: 'center',
         paddingVertical: 12
     },
     emptyText: {
-        textAlign: 'center',
         marginTop: 20,
+        textAlign: 'center',
         fontSize: 15,
-        fontWeight: 400,
+        fontWeight: '400',
         color: '#ADA4A5'
     }
 })

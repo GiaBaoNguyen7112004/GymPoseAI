@@ -1,4 +1,4 @@
-import { BaseQueryConfig, ViewModeType } from './utils.type'
+import { BaseQueryConfig, PaginationMeta, ResponseApi, ViewModeType } from './utils.type'
 
 export interface workoutHistory {
     id: string
@@ -33,3 +33,5 @@ export interface QueryConfigWorkoutHistory extends BaseQueryConfig {
     category?: categories
     viewMode?: ViewModeType
 }
+
+export type ResponseAPIWorkoutHistoryPage = ResponseApi<workoutHistory[], PaginationMeta>

@@ -1,13 +1,20 @@
-export interface Notification<Data> {
+import { PaginationMeta, ResponseApi } from './utils.type'
+
+export interface Notification {
     id: string
     type: NotificationType
     title: string
     description: string
     created_at: string
-    content: Data
     is_read: boolean
+    metadata?: NotificationMetadata
 }
 
-export type NotificationType = 'SUMMARY' | 'REMINDER' | 'SYSTEM' | 'ADMIN'
+export interface NotificationMetadata {
+    workout_id?: string
+    exercise_id?: string
+    activity_id?: string
+}
+export type NotificationType = 'workout' | 'activity' | 'admin' | 'exercise' | 'system'
 
-export interface NotificationForWorkoutHistory {}
+export type ResponseAPINotificationPage = ResponseApi<Notification[], PaginationMeta>

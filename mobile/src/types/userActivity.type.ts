@@ -1,3 +1,5 @@
+import { PaginationMeta, ResponseApi } from './utils.type'
+
 export type ActivityType = 'drinking' | 'calorie_consumption'
 
 export interface UserActivity {
@@ -6,3 +8,5 @@ export interface UserActivity {
     name: string
     time: string
 }
+
+export type ResponseAPIActivityPage = ResponseApi<UserActivity[], PaginationMeta>
