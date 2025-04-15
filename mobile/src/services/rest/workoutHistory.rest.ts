@@ -1,21 +1,22 @@
 import http from '@/src/services/core/httpClient'
 import { URL_GET_WORKOUT_HISTORY } from '@env'
-import { PaginationMeta, ResponseApi, ViewModeType } from '@/src/types/utils.type'
+import { ResponseApi, ViewModeType } from '@/src/types/utils.type'
 import {
     pose_error,
     QueryConfigWorkoutHistory,
+    ResponseAPIWorkoutHistoryPage,
     workoutHistory,
     workoutHistoryOfDay
 } from '@/src/types/workoutHistory.type'
 
 const workoutHistoryApi = {
     getWorkoutHistory({ params, user_id }: { params: QueryConfigWorkoutHistory; user_id: string }) {
-        return http.get<ResponseApi<workoutHistory[], PaginationMeta>>(`${URL_GET_WORKOUT_HISTORY}/${user_id}`, {
+        return http.get<ResponseAPIWorkoutHistoryPage>(`${URL_GET_WORKOUT_HISTORY}/${user_id}`, {
             params
         })
     },
     getWorkoutSummaryById({ id }: { id: string }) {
-        return http.get<ResponseApi<workoutHistory, PaginationMeta>>(`${URL_GET_WORKOUT_HISTORY}/${id}/abc`)
+        return http.get<ResponseApi<workoutHistory, any>>(`${URL_GET_WORKOUT_HISTORY}/${id}/abc`)
     },
     getWorkoutHistoryByViewMode({ id, viewMode }: { id: string; viewMode: ViewModeType }) {
         return http.get<ResponseApi<workoutHistoryOfDay[], any>>(`${URL_GET_WORKOUT_HISTORY}/${id}/${viewMode}`)

@@ -29,6 +29,8 @@ const styles = StyleSheet.create({
     workoutIconBackground: {
         borderRadius: 999,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#F7F8F8'
     }
 })

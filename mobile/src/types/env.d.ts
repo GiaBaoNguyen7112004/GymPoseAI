@@ -16,4 +16,5 @@ declare module '@env' {
     export const URL_RESET_PASSWORD: string
     export const URL_RESEND_OTP_FORGOT_PASSWORD: string
     export const URL_ACTIVITY: string
+    export const URL_NOTIFICATION: string
 }

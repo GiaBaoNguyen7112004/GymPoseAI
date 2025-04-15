@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, ViewStyle, TextStyle, StyleProp } from 'react-native'
+import { Text, View, StyleSheet, ViewStyle, TextStyle, StyleProp, TextProps } from 'react-native'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { LinearGradient } from 'expo-linear-gradient'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'

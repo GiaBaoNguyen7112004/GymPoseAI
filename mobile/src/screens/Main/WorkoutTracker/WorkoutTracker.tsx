@@ -18,6 +18,7 @@ import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 import CategoryCard from '@/src/components/CategoryCard'
 import { Category } from '@/src/types/exercises.type'
 import { categoriesApi, workoutHistoryApi } from '@/src/services/rest'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: '#fff',
@@ -38,6 +39,7 @@ const chartConfig: AbstractChartConfig = {
 const lineChartColor = (opacity = 1) => `rgba(255, 255, 255, ${opacity})`
 
 function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
+    const insets = useSafeAreaInsets()
     const { profile } = useContext(AppContext)
 
     const { data: workoutQuery } = useQuery({
@@ -71,7 +73,7 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
     )
 
     const handleCategoryPress = (category: Category) => {
-        navigation.navigate('CategoryDetail', { category: category })
+        navigation.navigate('CategoryDetail', { category_id: category.id })
     }
 
     const renderCategoryItem = useCallback(({ item }: { item: Category }) => {
@@ -120,7 +122,7 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
                                 renderItem={renderCategoryItem}
                                 keyExtractor={(item) => item.id.toString()}
                                 showsVerticalScrollIndicator={false}
-                                contentContainerStyle={{ flexGrow: 1, paddingBottom: 90 }}
+                                contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
                             />
                         </View>
                     </BottomSheetView>

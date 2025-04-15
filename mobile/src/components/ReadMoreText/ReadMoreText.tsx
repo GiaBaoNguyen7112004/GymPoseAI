@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import {
     Text,
+    View,
+    TouchableOpacity,
     StyleProp,
     TextStyle,
-    Pressable,
     NativeSyntheticEvent,
     TextLayoutEventData,
-    View,
     StyleSheet
 } from 'react-native'
-import TextGradient from '../TextGradient'
 
 interface ReadMoreTextProps {
     text: string
@@ -27,8 +26,7 @@ const ReadMoreText = ({
     textStyle,
     readMoreStyle,
     readMoreText = 'Read More...',
-    readLessText = 'Read Less',
-    lineHeight
+    readLessText = 'Read Less'
 }: ReadMoreTextProps) => {
     const [showMoreButton, setShowMoreButton] = useState(false)
     const [textShown, setTextShown] = useState(false)
@@ -40,35 +38,45 @@ const ReadMoreText = ({
         setNumLines(textShown ? undefined : numberOfLines)
     }, [textShown, numberOfLines])
 
-    const onTextLayout = useCallback(
-        (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-            if (e.nativeEvent.lines.length > numberOfLines && !textShown) {
-                setShowMoreButton(true)
-                setNumLines(numberOfLines)
-            }
-        },
-        [numberOfLines, textShown]
-    )
+    const onTextLayout = (e: NativeSyntheticEvent<TextLayoutEventData>) => {
+        const { lines } = e.nativeEvent
+        if (lines.length > numberOfLines) {
+            setShouldShowReadMore(true)
+        }
+    }
+
+    const toggleExpanded = () => setExpanded(!expanded)
+
     return (
-        <View style={styles.textContainer}>
-            <Text onTextLayout={onTextLayout} numberOfLines={numLines} style={textStyle} ellipsizeMode={undefined}>
-                {text}
+        <View>
+            <Text
+                ref={textRef}
+                numberOfLines={expanded ? undefined : numberOfLines}
+                onTextLayout={onTextLayout}
+                style={[styles.contentText, textStyle]}
+            >
+                {content}
             </Text>
-            {showMoreButton && (
-                <Text onPress={toggleTextShown} style={[styles.readMore, { bottom: textShown ? -1 * lineHeight : 0 }]}>
-                    <TextGradient
-                        text={textShown ? readLessText : readMoreText}
-                        textStyle={readMoreStyle || textStyle}
-                    />
-                </Text>
+
+            {shouldShowReadMore && (
+                <TouchableOpacity onPress={toggleExpanded}>
+                    <Text style={styles.readMoreText}>{expanded ? readLessText : readMoreText}</Text>
+                </TouchableOpacity>
             )}
         </View>
     )
 }
 
-export default ReadMoreText
-
 const styles = StyleSheet.create({
-    textContainer: { position: 'relative' },
-    readMore: { position: 'absolute', right: 0, backgroundColor: '#FFF', paddingLeft: 10 }
+    contentText: {
+        fontSize: 16,
+        color: '#4A4A4A'
+    },
+    readMoreText: {
+        color: '#8C9EFF',
+        fontWeight: '600',
+        marginTop: 4
+    }
 })
+
+export default ReadMoreText

@@ -1,3 +1,3 @@
-// import BottomSheetMoreInfo from './BottomSheetMoreInfo'
+import BottomSheetMoreInfo from './BottomSheetMoreInfo'
 
-// export default BottomSheetMoreInfo
+export default BottomSheetMoreInfo

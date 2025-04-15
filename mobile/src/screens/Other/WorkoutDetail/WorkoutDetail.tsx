@@ -48,13 +48,11 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
 
                     {/* Description */}
                     <View style={styles.descriptionContainer}>
-                        <Text style={styles.sectionTitle}>Descriptions</Text>
                         <ReadMoreText
                             text={workoutData?.description || 'No description available.'}
+                            numberOfLines={4}
                             textStyle={styles.descriptionText}
-                            numberOfLines={5}
-                            readMoreStyle={styles.readMoreText}
-                            lineHeight={18}
+                            readMoreStyle={styles.readMoreStyle}
                         />
                     </View>
 
@@ -107,7 +105,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     content: {
-        padding: 20
+        padding: 20,
+        paddingBottom: 40
     },
     videoContainer: {
         borderRadius: 12,
@@ -146,11 +145,11 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontWeight: '400'
     },
-    readMoreText: {
+    readMoreStyle: {
         fontSize: 12,
         color: '#7B6F72',
         lineHeight: 18,
-        fontWeight: '600'
+        fontWeight: '500'
     },
     howToContainer: {
         marginBottom: 24

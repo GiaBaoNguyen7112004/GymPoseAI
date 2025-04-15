@@ -1,23 +1,34 @@
 import { useContext, useMemo, useState } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, FlatList, StatusBar } from 'react-native'
+import {
+    View,
+    Text,
+    StyleSheet,
+    SafeAreaView,
+    ScrollView,
+    TouchableOpacity,
+    FlatList,
+    RefreshControl
+} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
+import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
+
 import NavigationBar from '@/src/components/NavigationBar'
-import { RootStackScreenProps } from '@/src/navigation/types'
-import { categories, QueryConfigWorkoutHistory, workoutHistory } from '@/src/types/workoutHistory.type'
-import { ViewModeType } from '@/src/components/WorkoutChart'
 import TabBar from './Components/TabBar'
 import FilterBar from './Components/FilterBar'
-import { PaginationMeta, ResponseApi } from '@/src/types/utils.type'
-import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
-import { AppContext } from '@/src/Contexts/App.context'
 import TrainingSessionCard from '@/src/components/TrainingSessionCard'
 import Loader from '@/src/components/Loader'
 import LoaderModal from '@/src/components/LoaderModal'
-import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
+
+import { AppContext } from '@/src/Contexts/App.context'
 import { workoutHistoryApi } from '@/src/services/rest'
+import { RootStackScreenProps } from '@/src/navigation/types'
+import { categories, QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/src/types/workoutHistory.type'
+import { ViewModeType } from '@/src/types/utils.type'
 
 function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
     const { profile } = useContext(AppContext)
+
     const [category, setCategory] = useState<categories>('full body')
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
     const [order, setOrder] = useState<'asc' | 'desc'>('asc')
@@ -34,8 +45,8 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
         [category, viewMode, order]
     )
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch } = useInfiniteQuery<
-        ResponseApi<workoutHistory[], PaginationMeta>,
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isFetching, refetch } = useInfiniteQuery<
+        ResponseAPIWorkoutHistoryPage,
         Error
     >({
         queryKey: ['workout-history-screen', category, viewMode, order],
@@ -57,62 +68,57 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
 
     const workouts = data?.pages.flatMap((page) => page.data) || []
 
-    const handleTabChange = (value: string) => {
-        setCategory(value as categories)
-    }
-    const handleViewModeChange = (value: string) => {
-        setViewMode(value as ViewModeType)
-    }
-    const handleOrderChange = () => {
-        setOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))
-    }
-    const goBackScreen = () => navigation.goBack()
+    const handleTabChange = (value: string) => setCategory(value as categories)
+    const handleViewModeChange = (value: string) => setViewMode(value as ViewModeType)
+    const handleOrderChange = () => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
     const handleWorkoutCardClick = (workoutId: string) => {
         navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
     }
+    const renderEmptyComponent = () => (
+        <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No workouts found.</Text>
+        </View>
+    )
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.header}>
                 <NavigationBar
-                    title={'Workout History'}
-                    callback={goBackScreen}
-                    buttonBackStyle={styles.buttonBackScreen}
+                    title='Workout History'
+                    callback={navigation.goBack}
+                    buttonBackStyle={styles.buttonBack}
                     headingStyle={styles.headerTitle}
                     iconColor='#FFF'
                 />
             </SafeAreaView>
+
             <View style={styles.mainContent}>
                 <View style={styles.sidebar}>
-                    {/* Tabs */}
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
                         <TabBar activeTab={category} onChangeTab={handleTabChange} />
                     </ScrollView>
-                    {/* Filters */}
+
                     <View style={styles.filters}>
-                        <TouchableOpacity style={styles.priceFilter} onPress={handleOrderChange}>
-                            <Text style={styles.priceFilterText}>Sort</Text>
+                        <TouchableOpacity style={styles.sortButton} onPress={handleOrderChange}>
+                            <Text style={styles.sortText}>Sort</Text>
                             <Ionicons
                                 name={order === 'asc' ? 'chevron-up' : 'chevron-down'}
                                 size={16}
                                 color='#93A7FE'
                             />
                         </TouchableOpacity>
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            style={styles.durationFiltersContainer}
-                        >
+
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.viewModeContainer}>
                             <FilterBar activeFilterProp={viewMode} onChangeFilter={handleViewModeChange} />
                         </ScrollView>
                     </View>
                 </View>
 
-                {/* Workout List */}
                 {isLoading && <LoaderModal title='Loading' />}
+
                 <FlatList
                     data={workouts}
-                    keyExtractor={(_, index) => index.toString()}
-                    contentContainerStyle={styles.packageList}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.listContent}
                     renderItem={({ item }) => (
                         <TrainingSessionCard item={item} onPress={() => handleWorkoutCardClick(item.id)} />
                     )}
@@ -123,10 +129,13 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
                     showsVerticalScrollIndicator={false}
                     ListFooterComponent={
                         isFetchingNextPage ? (
-                            <View style={styles.loadingWrapper}>
+                            <View style={styles.footerLoader}>
                                 <Loader />
                             </View>
                         ) : null
+                    }
+                    refreshControl={
+                        <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} />
                     }
                 />
             </View>
@@ -137,7 +146,10 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
 export default WorkoutHistoryCenter
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#92A3FD' },
+    container: {
+        flex: 1,
+        backgroundColor: '#92A3FD'
+    },
     header: {
         height: 100
     },
@@ -146,9 +158,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '700'
     },
-    buttonBackScreen: {
+    buttonBack: {
         backgroundColor: 'transparent',
         color: '#FFF'
+    },
+    mainContent: {
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+        borderTopLeftRadius: 25,
+        marginTop: 8,
+        paddingTop: 16
     },
     sidebar: {
         marginBottom: 6
@@ -160,40 +179,42 @@ const styles = StyleSheet.create({
         marginBottom: 4
     },
     filters: {
-        paddingVertical: 10,
-        paddingLeft: 16,
-        paddingRight: 0,
         flexDirection: 'row',
         alignItems: 'center',
+        paddingVertical: 10,
+        paddingLeft: 16,
         gap: 12,
         backgroundColor: '#FFF',
         width: WINDOW_WIDTH * 0.9,
         alignSelf: 'center',
         borderRadius: 8
     },
-    priceFilter: {
+    sortButton: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 4
     },
-    priceFilterText: {
+    sortText: {
         color: '#4b5563'
     },
-    durationFiltersContainer: {},
-    mainContent: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-        borderTopLeftRadius: 25,
-        marginTop: 8,
-        paddingTop: 16
-    },
-    packageList: {
+    viewModeContainer: {},
+    listContent: {
         paddingHorizontal: 16,
         paddingBottom: 16,
         gap: 16
     },
-    loadingWrapper: {
+    footerLoader: {
         alignItems: 'center',
         paddingVertical: 12
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    emptyText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#7B6F72'
     }
 })
