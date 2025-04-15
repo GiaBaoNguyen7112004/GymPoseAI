@@ -7,6 +7,7 @@ import GradientButton from '@/src/components/GradientButton'
 import TimeLine from './components/TimeLine'
 import { getYouTubeVideoId } from '@/src/utils/common.util'
 import { workoutApi } from '@/src/services/rest'
+import ReadMoreText from '@/src/components/ReadMoreText'
 
 function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetail'>) {
     const { workout_id } = route.params
@@ -48,9 +49,13 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
                     {/* Description */}
                     <View style={styles.descriptionContainer}>
                         <Text style={styles.sectionTitle}>Descriptions</Text>
-                        <Text style={styles.descriptionText} numberOfLines={5} ellipsizeMode='tail'>
-                            {workoutData?.description || 'No description available.'}
-                        </Text>
+                        <ReadMoreText
+                            text={workoutData?.description || 'No description available.'}
+                            textStyle={styles.descriptionText}
+                            numberOfLines={5}
+                            readMoreStyle={styles.readMoreText}
+                            lineHeight={18}
+                        />
                     </View>
 
                     {/* Steps */}
@@ -140,6 +145,12 @@ const styles = StyleSheet.create({
         color: '#7B6F72',
         lineHeight: 18,
         fontWeight: '400'
+    },
+    readMoreText: {
+        fontSize: 12,
+        color: '#7B6F72',
+        lineHeight: 18,
+        fontWeight: '600'
     },
     howToContainer: {
         marginBottom: 24
