@@ -6,8 +6,8 @@ import * as MediaLibrary from 'expo-media-library'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { SCREEN_HEIGHT, SCREEN_WIDTH, useStatusBarHeight } from '@/src/constants/devices.constant'
 import { PanGestureHandler, PanGestureHandlerGestureEvent, State } from 'react-native-gesture-handler'
-import { MainTabParamList } from '@/src/navigation/MainTabs'
 import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
+import { MainTabParamList } from '@/src/navigation/types'
 
 type StoryTakerRouteProp = RouteProp<MainTabParamList, 'StoryTaker'>
 
