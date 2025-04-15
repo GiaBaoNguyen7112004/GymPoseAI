@@ -3,12 +3,13 @@ package com.pbl5.gympose.security.config;
 import com.pbl5.gympose.security.filter.JwtAuthEntryPoint;
 import com.pbl5.gympose.security.filter.JwtAuthFilter;
 import com.pbl5.gympose.security.service.CustomUserDetailsService;
-import com.pbl5.gympose.utils.UrlMapping;
+import com.pbl5.gympose.utils.ApiPath;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -29,9 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
     public final String[] PUBLIC_ENDPOINT = {
-            UrlMapping.AUTHENTICATION + "/**",
-            UrlMapping.CATEGORIES + UrlMapping.CATEGORY_GET_ALL,
-            UrlMapping.CATEGORIES + UrlMapping.CATEGORY_GET_BY_ID
+            ApiPath.AUTH + "/**",
     };
 
     CustomUserDetailsService customUserDetailsService;
@@ -71,6 +70,9 @@ public class SecurityConfig {
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINT).permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPath.EXERCISES + "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPath.CATEGORIES + "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPath.CATEGORY_EXERCISES + "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

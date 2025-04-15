@@ -31,13 +31,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -78,13 +76,11 @@ public class JwtAuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-            List<String> roles = userPrincipal.getAuthorities()
-                    .stream().map(GrantedAuthority::getAuthority).toList();
             String email = userPrincipal.getUsername();
 
             boolean isRefreshToken = true;
-            String refreshToken = jwtUtils.generateToken(email, roles, isRefreshToken);
-            String accessToken = jwtUtils.generateToken(email, roles, !isRefreshToken);
+            String refreshToken = jwtUtils.generateToken(email, isRefreshToken);
+            String accessToken = jwtUtils.generateToken(email, !isRefreshToken);
 
             return new JwtLoginResponse(userMapper.toUserResponse(userService.findById(userPrincipal.getId())),
                     accessToken, refreshToken);
@@ -119,17 +115,13 @@ public class JwtAuthServiceImpl implements AuthService {
 
     @Override
     public void logout(LogoutRequest logoutRequest) {
-        String accessToken = logoutRequest.getAccessToken();
         String refreshToken = logoutRequest.getRefreshToken();
 
         boolean isRefreshToken = true;
-        Claims accessTokenClaims = jwtUtils.verifyToken(accessToken, !isRefreshToken);
         Claims refreshTokenClaims = jwtUtils.verifyToken(refreshToken, isRefreshToken);
 
         String prefix = CachePrefix.BLACK_LIST_TOKENS.getPrefix();
-        cacheService.set(prefix + jwtUtils.getJwtIdFromJWT(accessTokenClaims), 1,
-                jwtUtils.getTokenAvailableDuration(accessTokenClaims), TimeUnit.MILLISECONDS);
-        cacheService.set(prefix + jwtUtils.getJwtIdFromJWT(refreshTokenClaims), 1,
+        cacheService.set(prefix + jwtUtils.getJwtIdFromJWTClaims(refreshTokenClaims), 1,
                 jwtUtils.getTokenAvailableDuration(refreshTokenClaims), TimeUnit.MILLISECONDS);
     }
 }

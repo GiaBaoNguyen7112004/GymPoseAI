@@ -1,18 +1,24 @@
-package com.pbl5.gympose.payload.request;
+package com.pbl5.gympose.payload.response;
+
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @Getter
 @Setter
+@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LogoutRequest {
-    @NotBlank
-    String refreshToken;
+public class StepRespone {
+    UUID id;
+    String title;
+    String description;
+    String stepNumber;
 }

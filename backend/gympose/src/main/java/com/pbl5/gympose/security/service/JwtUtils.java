@@ -1,6 +1,5 @@
 package com.pbl5.gympose.security.service;
 
-import com.pbl5.gympose.cache.CachePrefix;
 import com.pbl5.gympose.cache.CacheService;
 import com.pbl5.gympose.config.AppProperties;
 import com.pbl5.gympose.exception.UnauthenticatedException;
@@ -16,21 +15,18 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
-    public static final String ROLES_CLAIM = "roles";
     public static final String USERNAME_CLAIM = "username";
     private final AppProperties appProperties;
     private final CacheService cacheService;
 
-    public String generateToken(String username, List<String> roles, boolean isRefreshToken) {
+    public String generateToken(String username, boolean isRefreshToken) {
         return Jwts.builder().setSubject(UUID.randomUUID().toString())
                 .claim(USERNAME_CLAIM, username)
-                .claim(ROLES_CLAIM, roles)
                 .setIssuedAt(new Date())
                 .setExpiration(isRefreshToken
                         ? new Date(new Date().getTime() + appProperties.getAuth().getAccessTokenExpirationMsec())
@@ -47,25 +43,21 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Base64.getDecoder().decode(appProperties.getAuth().getRefreshTokenSecret()));
     }
 
-    public String getUsernameFromJWT(Claims claims) {
+    public String getUsernameFromJWTClaims(Claims claims) {
         return claims.get(USERNAME_CLAIM, String.class);
     }
 
-    public String getJwtIdFromJWT(Claims claims) {
+    public String getJwtIdFromJWTClaims(Claims claims) {
         return claims.getSubject();
     }
 
     public Claims verifyToken(String token, boolean isRefreshToken) {
         try {
-            Claims claims = Jwts.parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(!isRefreshToken ? getAccessTokenSecretKey() : getRefreshTokenSecretKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            if (cacheService.hasKey(CachePrefix.BLACK_LIST_TOKENS.getPrefix() + getJwtIdFromJWT(claims))) {
-                throw new ExpiredJwtException(null, null, null);
-            }
-            return claims;
         } catch (ExpiredJwtException e) {
             throw new UnauthenticatedException(getExpiredErrorMessage(isRefreshToken));
         } catch (Exception e) {

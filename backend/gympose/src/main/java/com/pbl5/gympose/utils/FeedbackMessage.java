@@ -1,18 +1,26 @@
 package com.pbl5.gympose.utils;
 
 public final class FeedbackMessage {
-    //    Authentication
-    public static final String LOGIN_SUCCESS = "Login successfully";
-    public static final String SIGN_UP_SUCCESS = "Sign up successfully";
-    public static final String VERIFY_ACCOUNT_SUCCESS = "Verify account successfully";
-    public static final String LOGOUT_SUCCESS = "Logout successfully";
+    // Authentication
+    public static final String LOGGED_IN = "Logged in successfully";
+    public static final String SIGNED_UP = "Signed up successfully";
+    public static final String ACCOUNT_VERIFIED = "Account verified successfully";
+    public static final String LOGGED_OUT = "Logged out successfully";
 
-    //  Category
-    public static final String CATEGORY_CREATE_SUCCESS = "Create category successfully";
-    public static final String CATEGORY_GET_ALL_SUCCESS = "Get all category successfully";
-    public static final String CATEGORY_DELETE_SUCCESS = "Delete category successfully";
-    public static final String CATEGORY_UPDATE_SUCCESS = "Update category successfully";
-    public static final String CATEGORY_GET_SUCCESS = "Get category successfully";
+    // Category
+    public static final String CATEGORY_CREATED = "Category created successfully";
+    public static final String CATEGORIES_RETRIEVED = "Categories retrieved successfully";
+    public static final String CATEGORY_RETRIEVED = "Category retrieved successfully";
+    public static final String CATEGORY_UPDATED = "Category updated successfully";
+    public static final String CATEGORY_DELETED = "Category deleted successfully";
+
+    // Exercise
+    public static final String EXERCISE_CREATED = "Exercise created successfully";
+    public static final String EXERCISES_RETRIEVED = "Exercises retrieved successfully";
+    public static final String EXERCISE_RETRIEVED = "Exercise retrieved successfully";
+    public static final String EXERCISES_BY_CATEGORY_RETRIEVED = "Exercises by category retrieved successfully";
+    public static final String EXERCISE_DELETED = "Exercise deleted successfully";
+    public static final String EXERCISE_UPDATED = "Exercise updated successfully";
 
     private FeedbackMessage() {
     }
