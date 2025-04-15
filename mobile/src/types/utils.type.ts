@@ -1,5 +1,3 @@
-import { categories } from './workoutHistory.type'
-
 export interface ResponseApi<Data, MetaType> {
     status: string
     message: string
