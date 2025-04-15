@@ -1,29 +1,34 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MyIcon from '@/src/components/Icon'
+import AvatarWithIcon from '@/src/components/AvatarWithIcon'
 import { Notification } from '@/src/types/notification.type'
 import { formatRelativeTimeFromNow } from '@/src/utils/format.util'
+import { COLOR_BRANDS } from '@/src/constants/common.constants'
+import { IconName } from '@/src/constants/icon.constants'
+import { getAvatarWithIconNotify } from '@/src/utils/common.util'
 
 interface NotificationCardProps {
     itemData: Notification
+    onCardPress?: () => void
     onBtnMorePress: () => void
 }
 
-function NotificationCard({ itemData, onBtnMorePress }: NotificationCardProps) {
+function NotificationCard({ itemData, onCardPress, onBtnMorePress }: NotificationCardProps) {
+    const { icon, colors } = getAvatarWithIconNotify(itemData.type)
+    const containerStyle = [styles.container, !itemData.is_read && styles.unread]
     return (
-        <View style={[styles.container, !itemData.is_read && styles.unread]}>
-            <View style={styles.avatar}>
-                <MyIcon name='AbWorkout' size={25} />
-            </View>
+        <TouchableOpacity style={containerStyle} onPress={onCardPress} activeOpacity={0.9}>
+            <AvatarWithIcon size={45} colors={colors} icon={icon} />
             <View style={styles.content}>
                 <Text numberOfLines={1} ellipsizeMode='tail' style={styles.title}>
                     {itemData.title}
                 </Text>
                 <Text style={styles.time}>{formatRelativeTimeFromNow(itemData.created_at)}</Text>
             </View>
-            <TouchableOpacity onPress={onBtnMorePress} hitSlop={10}>
+            <TouchableOpacity onPress={onBtnMorePress} hitSlop={10} style={styles.moreBtn}>
                 <MyIcon name='moreIcon' size={14} />
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -34,27 +39,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 15,
-        paddingHorizontal: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#EEE'
+        paddingHorizontal: 30
     },
     unread: {
         backgroundColor: '#EBF8FF'
-    },
-    avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 999,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10
     },
     content: {
         flex: 1,
         marginLeft: 10
     },
     title: {
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: '500',
         lineHeight: 18,
         color: '#1D1617'
@@ -65,5 +60,9 @@ const styles = StyleSheet.create({
         lineHeight: 15,
         color: '#7B6F72',
         marginTop: 5
+    },
+    moreBtn: {
+        padding: 4,
+        zIndex: 1
     }
 })

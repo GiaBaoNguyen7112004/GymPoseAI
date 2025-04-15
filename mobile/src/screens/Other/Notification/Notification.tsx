@@ -1,20 +1,22 @@
 import { useRef, useCallback, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 
 import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
 import LoaderModal from '@/src/components/LoaderModal'
 import Loader from '@/src/components/Loader'
 import BottomSheetMoreInfo from './components/BottomSheetMoreInfo'
 import NotificationCard from './components/NotificationCard/NotificationCard'
+import Toast from 'react-native-toast-message'
 
 import { Notification, ResponseAPINotificationPage } from '@/src/types/notification.type'
 import { notificationApi } from '@/src/services/rest'
 import BottomSheet from '@gorhom/bottom-sheet'
+import { RootStackScreenProps } from '@/src/navigation/types'
 
-function NotificationScreen() {
+function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>) {
     const bottomSheetRef = useRef<BottomSheet>(null)
-    const [selectedNotification, setSelectedNotification] = useState<Notification | undefined>()
+    const [selectedNotification, setSelectedNotification] = useState<Notification>()
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isFetching, refetch } = useInfiniteQuery<
         ResponseAPINotificationPage,
@@ -27,28 +29,70 @@ function NotificationScreen() {
             })
             return response.data
         },
-        getNextPageParam: (lastPage) => {
-            const { current_page, total_page } = lastPage.meta
-            return current_page < total_page ? current_page + 1 : undefined
-        },
+        getNextPageParam: ({ meta }) => (meta.current_page < meta.total_page ? meta.current_page + 1 : undefined),
         initialPageParam: 1,
         staleTime: 3 * 60 * 1000
     })
 
     const notifications = data?.pages.flatMap((page) => page.data) || []
 
+    const deleteNotifyMutation = useMutation({
+        mutationFn: notificationApi.deleteNotification
+    })
+
+    const readNotifyMutation = useMutation({
+        mutationFn: notificationApi.readNotification
+    })
+
     const handlePressMore = useCallback((item: Notification) => {
         setSelectedNotification(item)
         bottomSheetRef.current?.expand()
     }, [])
 
-    const handleDeleteNotification = useCallback(() => {
-        console.log('Delete notification')
+    const handleCardNotificationPress = async (item: Notification) => {
+        await readNotifyMutation.mutateAsync({ id: item.id })
+        refetch()
+
+        switch (item.type) {
+            case 'activity':
+                navigation.navigate('ActivityTracker')
+                break
+            case 'workout':
+                navigation.navigate('WorkoutHistoryDetail', {
+                    workout_id: item.metadata?.workout_id as string
+                })
+                break
+            case 'exercise':
+                navigation.navigate('CategoryDetail', {
+                    category_id: item.metadata?.category_id as string,
+                    exercise_id: item.metadata?.exercise_id
+                })
+                break
+        }
+    }
+
+    const handleDeleteNotification = useCallback(async (id: string) => {
+        await deleteNotifyMutation.mutateAsync(
+            { id },
+            {
+                onSuccess: () => {
+                    Toast.show({ type: 'success', text1: 'Notification deleted' })
+                    refetch()
+                },
+                onError: () => {
+                    Toast.show({ type: 'error', text1: 'Notification deletion failed.' })
+                }
+            }
+        )
     }, [])
 
     const renderNotificationItem = useCallback(
         ({ item }: { item: Notification }) => (
-            <NotificationCard itemData={item} onBtnMorePress={() => handlePressMore(item)} />
+            <NotificationCard
+                itemData={item}
+                onBtnMorePress={() => handlePressMore(item)}
+                onCardPress={() => handleCardNotificationPress(item)}
+            />
         ),
         [handlePressMore]
     )
@@ -67,39 +111,42 @@ function NotificationScreen() {
         ) : null
 
     const handleEndReached = () => {
-        if (hasNextPage && !isFetchingNextPage) {
-            fetchNextPage()
-        }
+        if (hasNextPage && !isFetchingNextPage) fetchNextPage()
     }
 
     return (
-        <SafeAreaView style={styles.wrapperScreen}>
-            <NavigationBar title='Notifications' />
+        <View style={styles.wrapperScreen}>
+            <SafeAreaView style={styles.navBar}>
+                <NavigationBar title='Notifications' callback={navigation.goBack} />
+            </SafeAreaView>
 
-            {isLoading ? (
-                <LoaderModal title='Loading' />
-            ) : (
-                <FlatList
-                    data={notifications}
-                    renderItem={renderNotificationItem}
-                    keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={styles.notificationContainer}
-                    ListEmptyComponent={renderEmptyComponent}
-                    ListFooterComponent={renderFooter}
-                    onEndReached={handleEndReached}
-                    onEndReachedThreshold={0.2}
-                    refreshControl={
-                        <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} />
-                    }
-                />
-            )}
+            <View style={styles.content}>
+                {isLoading ? (
+                    <LoaderModal title='Loading' />
+                ) : (
+                    <FlatList
+                        data={notifications}
+                        renderItem={renderNotificationItem}
+                        keyExtractor={(item) => item.id.toString()}
+                        contentContainerStyle={styles.notificationContainer}
+                        ListEmptyComponent={renderEmptyComponent}
+                        ListFooterComponent={renderFooter}
+                        onEndReached={handleEndReached}
+                        onEndReachedThreshold={0.3}
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} />
+                        }
+                    />
+                )}
+            </View>
 
             <BottomSheetMoreInfo
                 ref={bottomSheetRef}
                 onDeleteNotification={handleDeleteNotification}
                 notificationData={selectedNotification}
             />
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -110,9 +157,14 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF'
     },
-    notificationContainer: {
-        marginTop: 30,
+    navBar: {
+        height: 90
+    },
+    content: {
         flex: 1
+    },
+    notificationContainer: {
+        paddingBottom: 16
     },
     emptyContainer: {
         flex: 1,

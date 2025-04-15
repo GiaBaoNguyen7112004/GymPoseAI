@@ -1,10 +1,10 @@
 import * as Notifications from 'expo-notifications'
 import { Path, UseFormSetError } from 'react-hook-form'
 import { ResponseApi } from '@/src/types/utils.type'
-import { isAxiosUnauthorizedError, isAxiosUnprocessableEntityError } from './common.util'
 
 import { FieldValues } from 'react-hook-form'
 import { Alert } from 'react-native'
+import { isAxiosUnauthorizedError, isAxiosUnprocessableEntityError } from './axiosError.utils'
 
 export default function handleFormError<T extends FieldValues>(error: unknown, setError: UseFormSetError<T>) {
     if (isAxiosUnprocessableEntityError<ResponseApi<T, any>>(error)) {

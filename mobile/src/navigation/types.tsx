@@ -17,7 +17,7 @@ export type RootStackParamList = {
     PrivacyPolicy: undefined
     WorkoutHistoryCenter: undefined
     WorkoutHistoryDetail: { workout_id: string }
-    CategoryDetail: { category: Category }
+    CategoryDetail: { category_id: string; exercise_id?: string }
     WorkoutDetail: { workout_id: string }
     ActivityTracker: undefined
 }

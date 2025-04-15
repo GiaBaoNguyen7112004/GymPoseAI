@@ -24,7 +24,7 @@ import { AppContext } from '@/src/Contexts/App.context'
 import { workoutHistoryApi } from '@/src/services/rest'
 import { RootStackScreenProps } from '@/src/navigation/types'
 import { categories, QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/src/types/workoutHistory.type'
-import { ViewModeType } from '@/src/components/WorkoutChart'
+import { ViewModeType } from '@/src/types/utils.type'
 
 function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
     const { profile } = useContext(AppContext)

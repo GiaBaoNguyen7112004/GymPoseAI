@@ -1,31 +1,76 @@
 import { Exercise } from '@/src/types/exercises.type'
 import { Ionicons } from '@expo/vector-icons'
-import React from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 
 interface WorkoutCardProps {
     itemData: Exercise
     onPress: () => void
+    isHighlighted?: boolean
 }
 
-function WorkoutCard({ itemData, onPress }: WorkoutCardProps) {
+function WorkoutCard({ itemData, onPress, isHighlighted }: WorkoutCardProps) {
+    const scaleValue = useRef(new Animated.Value(1)).current
+    const bgAnimValue = useRef(new Animated.Value(0)).current
+
+    useEffect(() => {
+        if (isHighlighted) {
+            Animated.parallel([
+                Animated.sequence([
+                    Animated.timing(scaleValue, {
+                        toValue: 1.05,
+                        duration: 250,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(scaleValue, {
+                        toValue: 1,
+                        duration: 250,
+                        useNativeDriver: true
+                    })
+                ]),
+                Animated.sequence([
+                    Animated.timing(bgAnimValue, {
+                        toValue: 1,
+                        duration: 250,
+                        useNativeDriver: false
+                    }),
+                    Animated.delay(250),
+                    Animated.timing(bgAnimValue, {
+                        toValue: 0,
+                        duration: 250,
+                        useNativeDriver: false
+                    })
+                ])
+            ]).start()
+        }
+    }, [isHighlighted])
+
+    const backgroundColor = bgAnimValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['#FFFFFF', '#E0F7FA'] // from white to highlight color
+    })
+
     return (
-        <TouchableOpacity style={styles.container} onPress={onPress}>
-            <View style={styles.content}>
-                <Image source={{ uri: itemData.thumbnail_url }} style={styles.image} resizeMode='cover' />
+        <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+            <TouchableOpacity onPress={onPress}>
+                <Animated.View style={[styles.container, { backgroundColor }]}>
+                    <View style={styles.content}>
+                        <Image source={{ uri: itemData.thumbnail_url }} style={styles.image} resizeMode='cover' />
 
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>{itemData.name}</Text>
-                    <Text style={styles.duration}>{itemData.duration_minutes} minutes</Text>
-                </View>
-            </View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.title}>{itemData.name}</Text>
+                            <Text style={styles.duration}>{itemData.duration_minutes} minutes</Text>
+                        </View>
+                    </View>
 
-            <View style={styles.arrowContainer}>
-                <View style={styles.arrowCircle}>
-                    <Ionicons name='chevron-forward' size={8} color='#ADA4A5' />
-                </View>
-            </View>
-        </TouchableOpacity>
+                    <View style={styles.arrowContainer}>
+                        <View style={styles.arrowCircle}>
+                            <Ionicons name='chevron-forward' size={8} color='#ADA4A5' />
+                        </View>
+                    </View>
+                </Animated.View>
+            </TouchableOpacity>
+        </Animated.View>
     )
 }
 
@@ -47,7 +92,8 @@ const styles = StyleSheet.create({
     image: {
         width: 60,
         height: 60,
-        borderRadius: 12
+        borderRadius: 12,
+        backgroundColor: '#92A3FD'
     },
     textContainer: {
         marginLeft: 10

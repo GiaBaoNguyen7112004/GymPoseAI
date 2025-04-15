@@ -14,6 +14,7 @@ export interface NotificationMetadata {
     workout_id?: string
     exercise_id?: string
     activity_id?: string
+    category_id?: string
 }
 export type NotificationType = 'workout' | 'activity' | 'admin' | 'exercise' | 'system'
 
