@@ -53,6 +53,7 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
                             numberOfLines={4}
                             textStyle={styles.descriptionText}
                             readMoreStyle={styles.readMoreStyle}
+                            lineHeight={18}
                         />
                     </View>
 

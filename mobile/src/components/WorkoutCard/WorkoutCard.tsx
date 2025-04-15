@@ -1,15 +1,16 @@
 import { Exercise } from '@/src/types/exercises.type'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef } from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Animated, StyleProp, ViewStyle } from 'react-native'
 
 interface WorkoutCardProps {
     itemData: Exercise
     onPress: () => void
     isHighlighted?: boolean
+    containerStyle?: StyleProp<ViewStyle>
 }
 
-function WorkoutCard({ itemData, onPress, isHighlighted }: WorkoutCardProps) {
+function WorkoutCard({ itemData, onPress, isHighlighted, containerStyle }: WorkoutCardProps) {
     const scaleValue = useRef(new Animated.Value(1)).current
     const bgAnimValue = useRef(new Animated.Value(0)).current
 
@@ -53,7 +54,7 @@ function WorkoutCard({ itemData, onPress, isHighlighted }: WorkoutCardProps) {
     return (
         <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
             <TouchableOpacity onPress={onPress}>
-                <Animated.View style={[styles.container, { backgroundColor }]}>
+                <Animated.View style={[styles.container, { backgroundColor }, containerStyle]}>
                     <View style={styles.content}>
                         <Image source={{ uri: itemData.thumbnail_url }} style={styles.image} resizeMode='cover' />
 

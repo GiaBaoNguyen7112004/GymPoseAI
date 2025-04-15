@@ -1,117 +1,69 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { StyleSheet, Text, View, FlatList, Keyboard, Animated, TouchableWithoutFeedback } from 'react-native'
-import { Pressable, TextInput } from 'react-native-gesture-handler'
+import { useState, useCallback } from 'react'
+import { StyleSheet, Text, View, FlatList, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import MyIcon from '@/src/components/Icon'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
 import useDebounce from '@/src/hooks/useDebounce'
+import { useQuery } from '@tanstack/react-query'
+import { searchApi } from '@/src/services/rest'
+import SearchBar from './Components/SearchBar'
+import { Exercise } from '@/src/types/exercises.type'
+import WorkoutCard from '@/src/components/WorkoutCard'
+import { HomeTabScreenProps } from '@/src/navigation/types'
+import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
 
-function Search() {
-    const [searchText, setSearchText] = useState('')
-    const [searchResults, setSearchResults] = useState<{ id: string; name: string }[]>([])
+function Search({ navigation }: HomeTabScreenProps<'Search'>) {
+    const [searchText, setSearchText] = useState<string>('')
     const debounceValue = useDebounce(searchText, 500)
-    const [isInputFocused, setIsInputFocused] = useState(false)
-    const shadowOpacity = useRef(new Animated.Value(0.07)).current
-    const workouts = [
-        { id: '1', name: 'Yoga for Beginners' },
-        { id: '2', name: 'Cardio Workout' },
-        { id: '3', name: 'Strength Training' },
-        { id: '4', name: 'Pilates Class' },
-        { id: '5', name: 'Full Body Workout' }
-    ]
 
-    useEffect(() => {
-        if (debounceValue) {
-            const filteredResults = workouts.filter((workout) =>
-                workout.name.toLowerCase().includes(debounceValue.toLowerCase())
-            )
-            setSearchResults(filteredResults)
-        } else {
-            setSearchResults([])
-        }
-    }, [debounceValue])
+    const { data, isLoading } = useQuery({
+        queryKey: ['search', debounceValue],
+        queryFn: () =>
+            searchApi.search({
+                params: {
+                    q: debounceValue,
+                    type: 'less'
+                }
+            }),
+        enabled: debounceValue.trim().length > 0
+    })
 
-    const handleSearch = (text: string) => {
-        if (text.startsWith(' ')) {
-            setSearchText('')
-        } else {
-            setSearchText(text)
-        }
-    }
-
-    const clearSearch = () => {
-        setSearchText('')
-    }
+    const exerciseList = data?.data.data || []
 
     const renderItem = useCallback(
-        ({ item }: { item: { id: string; name: string } }) => (
-            <View style={styles.resultItem}>
-                <Text>{item.name}</Text>
-            </View>
+        ({ item }: { item: Exercise }) => (
+            <WorkoutCard
+                itemData={item}
+                onPress={() => navigation.navigate('WorkoutDetail', { workout_id: item.id })}
+            />
         ),
-        []
+        [navigation]
     )
-    const getShadowStyle = useCallback(
-        (elevation: number) => {
-            return {
-                backgroundColor: '#fff',
-                shadowColor: 'rgb(29, 22, 23)',
-                shadowOffset: { width: 0, height: 10 },
-                shadowOpacity: shadowOpacity,
-                shadowRadius: 40,
-                elevation
-            }
-        },
-        [shadowOpacity]
+
+    const renderEmptyItem = () => (
+        <View style={styles.emptyResult}>
+            <Text style={styles.emptyResultText}>No results found.</Text>
+        </View>
     )
 
     return (
-        <TouchableWithoutFeedback
-            style={styles.wrapperScreen}
-            onPress={() => {
-                Keyboard.dismiss()
-                setIsInputFocused(false)
-            }}
-        >
-            <SafeAreaView style={styles.container}>
-                <Animated.View
-                    style={[
-                        styles.searchbar,
-                        getShadowStyle(isInputFocused ? 5 : 0),
-                        { backgroundColor: isInputFocused ? '#fff' : '#F7F8F8' }
-                    ]}
-                >
-                    <MyIcon name='searchGray' track='red' />
-                    <TextInput
-                        placeholder='Search workout'
-                        placeholderTextColor='#DDDADA'
-                        style={styles.search__input}
-                        value={searchText}
-                        onChangeText={handleSearch}
-                        autoFocus={true}
-                        onFocus={() => setIsInputFocused(true)}
-                        onBlur={() => setIsInputFocused(false)}
-                    />
-                    {searchText ? (
-                        <Pressable style={styles.btnClearSearch} onPress={clearSearch}>
-                            <Icon name='close' size={16} />
-                        </Pressable>
-                    ) : (
-                        <>
-                            <View style={styles.Standing_partition} />
-                            <MyIcon name={isInputFocused ? 'filterGradient' : 'filter'} />
-                        </>
-                    )}
-                </Animated.View>
-                <View style={styles.searchResults}>
-                    {searchResults.length > 0 ? (
-                        <FlatList data={searchResults} renderItem={renderItem} keyExtractor={(item) => item.id} />
-                    ) : searchText ? (
-                        <Text>No results found.</Text>
-                    ) : null}
-                </View>
-            </SafeAreaView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.wrapperScreen}>
+                <SafeAreaView style={styles.container}>
+                    <SearchBar isLoading={isLoading} onChange={setSearchText} />
+                    <View>
+                        <FlatList
+                            data={exerciseList}
+                            keyExtractor={(item) => item.id}
+                            renderItem={renderItem}
+                            keyboardShouldPersistTaps='handled'
+                            contentContainerStyle={[styles.searchResults, exerciseList.length === 0 && styles.flexFill]}
+                            ListEmptyComponent={renderEmptyItem}
+                            showsVerticalScrollIndicator={false}
+                            style={styles.searchContainer}
+                        />
+                    </View>
+                </SafeAreaView>
+            </View>
         </TouchableWithoutFeedback>
     )
 }
@@ -120,62 +72,33 @@ export default Search
 
 const styles = StyleSheet.create({
     wrapperScreen: {
-        width: SCREEN_WIDTH,
         flex: 1,
-        backgroundColor: '#FFF',
-        alignItems: 'center',
-        justifyContent: 'center'
+        backgroundColor: '#FFF'
     },
     container: {
-        width: '90%',
-        alignItems: 'center',
-        height: SCREEN_HEIGHT,
-        alignSelf: 'center'
+        flex: 1,
+        paddingHorizontal: 20,
+        alignItems: 'center'
     },
-    searchbar: {
-        width: '100%',
-        height: 50,
-        padding: 15,
-        backgroundColor: '#F7F8F8',
-        borderRadius: 16,
-        flexDirection: 'row',
-        alignItems: 'center',
-        columnGap: 10,
-        marginTop: 20
-    },
-    searchFocus: {
-        backgroundColor: '#fff',
-        shadowColor: 'rgb(29, 22, 23)',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.07,
-        shadowRadius: 40,
-        elevation: 5
-    },
-
-    search__input: {
-        flex: 1
-    },
-    Standing_partition: {
-        height: 20,
-        width: 0.5,
-        backgroundColor: '#DDDADA'
+    searchContainer: {
+        flex: 1,
+        width: SCREEN_WIDTH * 0.9,
+        marginTop: 15
     },
     searchResults: {
-        width: '100%',
-        marginTop: 20
+        gap: 10,
+        paddingBottom: 20
     },
-    btnClearSearch: {
-        width: 23,
-        height: 23,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#DDDADA',
-        borderRadius: 999
+    emptyResult: {
+        marginTop: 30,
+        alignItems: 'center'
     },
-    resultItem: {
-        width: '100%',
-        padding: 13,
-        borderBottomWidth: 1,
-        borderBottomColor: '#EEE'
+    emptyResultText: {
+        color: '#888',
+        fontSize: 14
+    },
+    flexFill: {
+        flex: 1,
+        justifyContent: 'center'
     }
 })
