@@ -29,6 +29,10 @@ public final class ErrorMessage {
     //Category
     public static final String CATEGORY_NOT_FOUND = "category_not_found";
 
+    //Exercise
+    public static final String EXERCISE_NOT_FOUND = "exercise_not_found";
+
+
     private ErrorMessage() {
     }
 }

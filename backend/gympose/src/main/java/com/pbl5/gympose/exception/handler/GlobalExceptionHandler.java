@@ -88,7 +88,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseData> handlingException(Exception ex) {
-        LogUtils.info(ex.getLocalizedMessage());
+        LogUtils.info(ex.getMessage());
+        LogUtils.info(ex.getClass().getName());
         ErrorResponse error = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .build();

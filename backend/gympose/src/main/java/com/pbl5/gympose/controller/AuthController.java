@@ -6,8 +6,8 @@ import com.pbl5.gympose.payload.request.LoginRequest;
 import com.pbl5.gympose.payload.request.LogoutRequest;
 import com.pbl5.gympose.payload.request.SignUpRequest;
 import com.pbl5.gympose.service.AuthService;
+import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
-import com.pbl5.gympose.utils.UrlMapping;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,39 +16,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(UrlMapping.AUTHENTICATION)
+@RequestMapping(ApiPath.AUTH)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
     AuthService authService;
 
-    @PostMapping(UrlMapping.SIGN_UP)
+    @PostMapping(ApiPath.SIGN_UP)
     public ResponseEntity<ResponseData> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         ResponseData responseData = ResponseData.success(authService.signUp(signUpRequest),
-                FeedbackMessage.SIGN_UP_SUCCESS);
+                FeedbackMessage.SIGNED_UP);
         return ResponseEntity.ok(responseData);
     }
 
-    @PostMapping(UrlMapping.LOGIN)
+    @PostMapping(ApiPath.LOGIN)
     public ResponseEntity<ResponseData> login(@RequestBody LoginRequest loginRequest) {
         ResponseData responseData = ResponseData.success(authService.login(loginRequest),
-                FeedbackMessage.LOGIN_SUCCESS);
+                FeedbackMessage.LOGGED_IN);
         return ResponseEntity.ok(responseData);
     }
 
-    @PatchMapping(UrlMapping.VERIFY_ACCOUNT)
+    @PatchMapping(ApiPath.VERIFY_ACCOUNT)
     public ResponseEntity<ResponseData> verifyAccount(@RequestBody AccountVerificationRequest
                                                               accountVerificationRequest) {
         authService.verifyAccount(accountVerificationRequest);
         ResponseData responseData = ResponseData
-                .successWithoutMetaAndData(FeedbackMessage.VERIFY_ACCOUNT_SUCCESS);
+                .successWithoutMetaAndData(FeedbackMessage.ACCOUNT_VERIFIED);
         return ResponseEntity.ok(responseData);
     }
 
-    @PostMapping(UrlMapping.LOGOUT)
+    @PostMapping(ApiPath.LOGOUT)
     public ResponseEntity<ResponseData> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
         authService.logout(logoutRequest);
-        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.LOGOUT_SUCCESS);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.LOGGED_OUT);
         return ResponseEntity.ok(responseData);
     }
 }

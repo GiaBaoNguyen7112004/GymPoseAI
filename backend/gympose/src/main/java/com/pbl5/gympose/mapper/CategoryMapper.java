@@ -23,7 +23,7 @@ public interface CategoryMapper {
             List<Exercise> exercises = category.getExercises();
             response.setExerciseCount(exercises.size());
             response.setDurationMinutes(exercises.stream().mapToInt(Exercise::getDurationMinutes).sum());
-//            response.setCaloriesBurned();
+            response.setCaloriesBurned(exercises.stream().mapToDouble(Exercise::getCaloriesBase).sum());
         }
     }
 }

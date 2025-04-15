@@ -24,8 +24,8 @@ public class Step {
     @Column(nullable = false, columnDefinition = "text")
     String description;
 
-    @Column(nullable = false)
-    Integer number;
+    @Column(nullable = false, name = "step_number")
+    Integer stepNumber;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "exercise_id")

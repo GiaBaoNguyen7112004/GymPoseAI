@@ -1,5 +1,6 @@
 package com.pbl5.gympose.service;
 
+import com.pbl5.gympose.entity.Category;
 import com.pbl5.gympose.payload.request.CategoryCreationRequest;
 import com.pbl5.gympose.payload.request.CategoryUpdatingRequest;
 import com.pbl5.gympose.payload.response.CategoryResponse;
@@ -21,4 +22,6 @@ public interface CategoryService {
 
     @PreAuthorize("hasRole('ADMIN')")
     void deleteCategoryById(UUID categoryId);
+
+    Category findById(UUID categoryId);
 }

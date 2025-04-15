@@ -59,3 +59,8 @@ user_already_existed:
 category_not_found:
   code: ERR.CAT0101
   message: Category was not found!
+
+#exercise
+exercise_not_found:
+  code: ERR.EXE0101
+  message: Exercise was not found!
