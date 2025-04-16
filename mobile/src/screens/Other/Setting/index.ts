@@ -1,1 +1,3 @@
-export { default as Settings } from './Setting'
+import Setting from './Setting'
+
+export default Setting

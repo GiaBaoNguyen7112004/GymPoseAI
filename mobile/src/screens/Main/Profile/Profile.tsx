@@ -1,217 +1,118 @@
 import React, { useRef, useState } from 'react'
-import GradientButton from '@/src/components/GradientButton'
-import Icon from '@/src/components/Icon'
-import NavigationBar from '@/src/components/NavigationBar'
-import TextGradient from '@/src/components/TextGradient'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import NavigationBar from '@/src/components/NavigationBar'
 import Switch from '@/src/components/Switch'
+import UserInfo from './Components/UserInfo'
+import SettingItem from './Components/SettingItem'
+import { MainTabScreenProps } from '@/src/navigation/types'
 
-function Profile() {
-    const _onBackScreen = () => {}
-
-    const [switchValue, setSwitchValue] = useState(false)
-
-    const handleSwitchChange = (newValue: boolean) => {
-        setSwitchValue(newValue)
-    }
+function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
+    const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
     const switchRef = useRef(null)
+
+    const handleNotificationToggle = (newValue: boolean) => {
+        setIsNotificationEnabled(newValue)
+    }
+
     return (
-        <SafeAreaView style={styles.container}>
-            <View>
-                <NavigationBar title='Profile' callback={_onBackScreen} />
-            </View>
-            <View style={styles.ProfileWrapper}>
-                <View style={styles.ProfileHeader}>
-                    <View style={styles.profile__avatar}>
-                        <Icon name='AbWorkout' size={34} />
+        <View style={styles.container}>
+            <SafeAreaView style={styles.navBar}>
+                <NavigationBar title='Profile' callback={navigation.goBack} />
+            </SafeAreaView>
+
+            <ScrollView style={styles.container}>
+                <UserInfo />
+
+                <View style={styles.settingWrapper}>
+                    {/* Account Section */}
+                    <View style={styles.settingSection}>
+                        <Text style={styles.settingTitle}>Account</Text>
+                        <SettingItem icon='profileGradientOutline' label='Personal Data' />
+                        <SettingItem icon='LockGradientOutline' label='Password and Security' />
                     </View>
-                    <View style={styles.profile__content}>
-                        <Text style={styles.profile_username}>Stefani Wong</Text>
-                        <Text style={styles.profile_bio}>Lose a Fat Program</Text>
+
+                    {/* Notification Section */}
+                    <View style={styles.settingSection}>
+                        <Text style={styles.settingTitle}>Notification</Text>
+                        <SettingItem
+                            icon='bellGradientOutline'
+                            label='Pop-up Notification'
+                            onPress={() => handleNotificationToggle(!isNotificationEnabled)}
+                            rightComponent={
+                                <Switch
+                                    value={isNotificationEnabled}
+                                    onValueChange={handleNotificationToggle}
+                                    ref={switchRef}
+                                />
+                            }
+                        />
                     </View>
-                    <GradientButton Square style={styles.Profile_btnEdit}>
-                        <Text style={styles.btnEdit__text}>Edit</Text>
-                    </GradientButton>
-                </View>
-                <View style={styles.profile__row}>
-                    <View style={styles.profile__boxValue}>
-                        <TextGradient text='180cm' textStyle={styles.profile__value} />
-                        <Text style={styles.profile__label}>Height</Text>
+
+                    {/* Other Section */}
+                    <View style={styles.settingSection}>
+                        <Text style={styles.settingTitle}>Other</Text>
+                        <SettingItem
+                            icon='messageGradientOutline'
+                            label='Contact Us'
+                            onPress={() => navigation.navigate('ContactUs')}
+                        />
+                        <SettingItem
+                            icon='shieldGradientOutline'
+                            label='Privacy Policy'
+                            onPress={() => navigation.navigate('PrivacyPolicy')}
+                        />
+                        <SettingItem
+                            icon='settingGradientOutline'
+                            label='Settings'
+                            onPress={() => navigation.navigate('Setting')}
+                        />
                     </View>
-                    <View style={styles.profile__boxValue}>
-                        <TextGradient text='65kg' textStyle={styles.profile__value} />
-                        <Text style={styles.profile__label}>Weight</Text>
-                    </View>
-                    <View style={styles.profile__boxValue}>
-                        <TextGradient text='22yo' textStyle={styles.profile__value} />
-                        <Text style={styles.profile__label}>Age</Text>
-                    </View>
                 </View>
-            </View>
-            <View style={styles.menuSettingWrapper}>
-                <View style={styles.menuSettingItem}>
-                    <Text style={styles.menuSetting__heading}>Account</Text>
-                    <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='profileGradientOutline' size={12} />
-                        <Text style={styles.setting__label}>Personal Data</Text>
-                        <Icon name='arrowRightGray' size={18} />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.menuSettingItem}>
-                    <Text style={styles.menuSetting__heading}>Notification</Text>
-                    <TouchableOpacity style={styles.menuSetting__btn} onPress={() => handleSwitchChange(!switchValue)}>
-                        <Icon name='bellGradientOutline' size={12} />
-                        <Text style={styles.setting__label}>Pop-up Notification</Text>
-                        <Switch value={switchValue} onValueChange={handleSwitchChange} ref={switchRef} />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.menuSettingItem}>
-                    <Text style={styles.menuSetting__heading}>Other</Text>
-                    <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='messageGradientOutline' size={12} />
-                        <Text style={styles.setting__label}>Contact Us</Text>
-                        <Icon name='arrowRightGray' size={18} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='shieldGradientOutline' size={12} />
-                        <Text style={styles.setting__label}>Privacy Policy</Text>
-                        <Icon name='arrowRightGray' size={18} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuSetting__btn}>
-                        <Icon name='settingGradientOutline' size={12} />
-                        <Text style={styles.setting__label}>Settings</Text>
-                        <Icon name='arrowRightGray' size={18} />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </SafeAreaView>
+            </ScrollView>
+        </View>
     )
 }
 
 export default Profile
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: '#FFF'
     },
-    ProfileWrapper: {
-        marginTop: 35,
-        rowGap: 15,
-        width: '90%',
-        alignSelf: 'center'
+    navBar: {
+        height: 70
     },
-    ProfileHeader: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    profile__avatar: {
-        width: 55,
-        height: 55,
-        borderRadius: 999,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#DFE5FE'
-    },
-    Profile_btnEdit: {
-        width: 83,
-        height: 30,
-        position: 'relative'
-    },
-    btnEdit__text: {
-        fontSize: 12,
-        lineHeight: 18,
-        fontWeight: '500',
-        color: '#fff',
-        textAlign: 'center',
-        position: 'absolute'
-    },
-    profile__content: {
-        marginLeft: 15,
-        flex: 1
-    },
-    profile_username: {
-        fontSize: 21,
-        fontWeight: '500',
-        color: '#1D1617'
-    },
-    profile_bio: {
-        fontSize: 12,
-        lineHeight: 18,
-        fontWeight: '400',
-        color: '#7B6F72'
-    },
-    profile__row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        columnGap: 15,
-        rowGap: 15
-    },
-    profile__boxValue: {
-        padding: 10,
-        flex: 1,
-        shadowColor: 'rgba(29, 22, 23, 0.07)',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 1,
-        shadowRadius: 40,
-        elevation: 10,
-        backgroundColor: '#fff',
-        height: 65,
-        alignItems: 'center',
-        borderRadius: 16
-    },
-    profile__value: {
-        fontSize: 14,
-        fontWeight: '500',
-        lineHeight: 21
-    },
-    profile__label: {
-        marginTop: 5,
-        fontSize: 12,
-        lineHeight: 18,
-        fontWeight: '400',
-        color: '#7B6F72'
-    },
-    menuSettingWrapper: {
+    settingWrapper: {
         marginTop: 30,
         rowGap: 15,
         alignSelf: 'center',
         width: '90%',
         flex: 1
     },
-    menuSettingItem: {
+    settingSection: {
         padding: 20,
+        backgroundColor: '#FFF',
+        borderRadius: 16,
+        minHeight: 99,
+        width: '100%',
         shadowColor: 'rgba(29, 22, 23, 0.07)',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 40,
-        elevation: 10,
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        minHeight: 99,
-        width: '100%'
+        elevation: 10
     },
-    menuSetting__heading: {
+    settingTitle: {
         fontSize: 16,
         fontWeight: '600',
         lineHeight: 24,
         color: '#1D1617',
         marginBottom: 10
     },
-    menuSetting__btn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-        paddingVertical: 5,
-        flexShrink: 0
-    },
-    setting__label: {
+    bottomSheetContainer: {
         flex: 1,
-        fontSize: 14,
-        lineHeight: 21,
-        fontWeight: '400',
-        color: '#7B6F72',
-        marginLeft: 10
+        padding: 36,
+        alignItems: 'center'
     }
 })

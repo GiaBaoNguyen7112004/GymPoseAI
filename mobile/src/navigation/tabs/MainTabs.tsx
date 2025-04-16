@@ -6,10 +6,10 @@ import StoryTaker from '@/src/screens/Main/StoryTaker/StoryTaker'
 import Search from '@/src/screens/Main/Search/Search'
 import MyIcon from '@/src/components/Icon'
 import Home from '@/src/screens/Main/Home/Home'
-import ProfileStack from './ProfileStack'
-import { MainTabParamList } from './types'
-import { IconName } from '../constants/icon.constants'
 import { LinearGradient } from 'expo-linear-gradient'
+import { MainTabParamList } from '../types'
+import Profile from '@/src/screens/Main/Profile'
+import { IconName } from '@/src/constants/icon.constants'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
@@ -64,7 +64,7 @@ const MainTabs = () => {
                 options={{
                     tabBarIcon: ({ focused }) => getTabBarIcon('profileLight', 'profileLightFilled', focused)
                 }}
-                component={ProfileStack}
+                component={Profile}
                 name='Profile'
             />
         </Tab.Navigator>

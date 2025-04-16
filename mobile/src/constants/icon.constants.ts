@@ -53,6 +53,7 @@ import stepDot from '@/src/assets/Icons/StepDot.svg'
 import glassOfWater from '@/src/assets/Icons/glassOfWaterIcon.svg'
 import boots from '@/src/assets/Icons/bootsIcon.svg'
 import humanDrinking from '@/src/assets/Icons/human-female-drinking.svg'
+import LockGradientOutline from '@/src/assets/Icons/LockGradientOutline.svg'
 
 export type IconName =
     | 'registerIcon'
@@ -109,6 +110,7 @@ export type IconName =
     | 'boots'
     | 'glassOfWater'
     | 'humanDrinking'
+    | 'LockGradientOutline'
 
 export const ICONS: { [key in IconName]: React.ComponentType<SvgProps> } = {
     registerIcon: registerIcon,
@@ -164,5 +166,6 @@ export const ICONS: { [key in IconName]: React.ComponentType<SvgProps> } = {
     stepDot: stepDot,
     boots: boots,
     glassOfWater: glassOfWater,
-    humanDrinking: humanDrinking
+    humanDrinking: humanDrinking,
+    LockGradientOutline: LockGradientOutline
 } as const
