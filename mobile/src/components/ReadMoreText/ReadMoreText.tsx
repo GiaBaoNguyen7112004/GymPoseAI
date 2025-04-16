@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Text, StyleProp, TextStyle, NativeSyntheticEvent, TextLayoutEventData, View, StyleSheet } from 'react-native'
 import TextGradient from '../TextGradient'
 
@@ -25,28 +25,29 @@ const ReadMoreText = ({
     const [textShown, setTextShown] = useState(false)
     const [numLines, setNumLines] = useState<number | undefined>(undefined)
 
-    const toggleTextShown = () => setTextShown((prev) => !prev)
-
-    useEffect(() => {
-        setNumLines(textShown ? undefined : numberOfLines)
-    }, [textShown, numberOfLines])
+    const toggleTextShown = () => {
+        setTextShown((prev) => !prev)
+        setNumLines((prev) => (prev === numberOfLines ? undefined : numberOfLines))
+    }
 
     const onTextLayout = useCallback(
         (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-            if (e.nativeEvent.lines.length > numberOfLines && !textShown) {
+            const totalLines = e.nativeEvent.lines.length
+            if (totalLines > numberOfLines && !textShown) {
                 setShowMoreButton(true)
                 setNumLines(numberOfLines)
             }
         },
         [numberOfLines, textShown]
     )
+
     return (
         <View style={styles.textContainer}>
-            <Text onTextLayout={onTextLayout} numberOfLines={numLines} style={textStyle} ellipsizeMode={undefined}>
+            <Text onTextLayout={onTextLayout} numberOfLines={numLines} style={textStyle} ellipsizeMode='tail'>
                 {text}
             </Text>
             {showMoreButton && (
-                <Text onPress={toggleTextShown} style={[styles.readMore, { bottom: textShown ? -1 * lineHeight : 0 }]}>
+                <Text onPress={toggleTextShown} style={[styles.readMore, { bottom: textShown ? -lineHeight : 0 }]}>
                     <TextGradient
                         text={textShown ? readLessText : readMoreText}
                         textStyle={readMoreStyle || textStyle}
@@ -57,9 +58,14 @@ const ReadMoreText = ({
     )
 }
 
-export default ReadMoreText
-
 const styles = StyleSheet.create({
     textContainer: { position: 'relative' },
-    readMore: { position: 'absolute', right: 0, backgroundColor: '#FFF', paddingLeft: 10 }
+    readMore: {
+        position: 'absolute',
+        right: 0,
+        backgroundColor: '#FFF',
+        paddingLeft: 10
+    }
 })
+
+export default ReadMoreText
