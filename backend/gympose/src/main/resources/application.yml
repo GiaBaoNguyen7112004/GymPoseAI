@@ -40,17 +40,17 @@ spring:
 #    path: ${LOG_PATH}
 app:
   auth:
-    access-token-secret: ${ACCESS_TOKEN_SECRET:Ckj2tdZqqx4zYqn0iSB9bUPIsckWdFoa/YIi1kzGWKc9qM5XCbRoPHmWhft9pZZCGeKYcAhgILzOu++4toDC0Gn9iDWTlRAlnQ8efRnVU8I=}
+    access-token-secret: ${ACCESS_TOKEN_SECRET}
     access-token-expiration-msec: 7200000
-    refresh-token-secret: ${REFRESH_TOKEN_SECRET:iq6GbB4ypM4UvmGQTu6fD+7IJvD07edYE/dyNOWO+23t6trHtj2QZ13U+YHDLOsdmIwDTVhTQOF5c3yHxDCKaw==4}
+    refresh-token-secret: ${REFRESH_TOKEN_SECRET}
     refresh-token-expiration-msec: 2592000000
   admin:
-    email: ${ADMIN_EMAIL:giabao7112004@gmail.com}
-    password: ${ADMIN_PASSWORD:giabao123123}
-    first-name: ${ADMIN_FIRST_NAME:ADMIN}
-    last-name: ${ADMIN_LAST_NAME:SYSTEM}
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
+    first-name: ${ADMIN_FIRST_NAME}
+    last-name: ${ADMIN_LAST_NAME}
 web-url: http://localhost:3000
 cloudinary:
-  cloud-name: ${CLOUD_NAME:dojlx0tjt}
-  api-key: ${API_KEY:951993561179684}
-  api-secret: ${API_SECRET:obBujclWNNSY85e8PfMt-DGcgRw}
+  cloud-name: ${CLOUD_NAME}
+  api-key: ${API_KEY}
+  api-secret: ${API_SECRET}
