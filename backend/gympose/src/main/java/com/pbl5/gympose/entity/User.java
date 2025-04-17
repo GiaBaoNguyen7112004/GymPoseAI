@@ -2,7 +2,6 @@ package com.pbl5.gympose.entity;
 
 import com.pbl5.gympose.enums.Gender;
 import com.pbl5.gympose.notification.Notification;
-import com.pbl5.gympose.security.domain.UserProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;

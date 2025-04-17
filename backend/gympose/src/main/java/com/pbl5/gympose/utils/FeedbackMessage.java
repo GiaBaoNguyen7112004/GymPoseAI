@@ -22,6 +22,11 @@ public final class FeedbackMessage {
     public static final String EXERCISE_DELETED = "Exercise deleted successfully";
     public static final String EXERCISE_UPDATED = "Exercise updated successfully";
 
+
+    // Image
+    public static final String IMAGE_UPLOADED = "Image uploaded successfully";
+    public static final String FOLDER_IMAGE_UPLOADED = "Folder image uploaded successfully";
+
     private FeedbackMessage() {
     }
 }

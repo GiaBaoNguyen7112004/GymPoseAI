@@ -1,14 +1,14 @@
 package com.pbl5.gympose.security.filter;
 
 import com.pbl5.gympose.exception.UnauthenticatedException;
-import com.pbl5.gympose.exception.handler.ErrorUtils;
-import com.pbl5.gympose.exception.message.ErrorMessage;
-import com.pbl5.gympose.exception.response.ErrorResponse;
+import com.pbl5.gympose.payload.general.ErrorResponse;
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.security.service.CustomUserDetailsService;
-import com.pbl5.gympose.security.service.JwtUtils;
+import com.pbl5.gympose.service.security.CustomUserDetailsService;
 import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.LogUtils;
+import com.pbl5.gympose.utils.exception.ErrorMessage;
+import com.pbl5.gympose.utils.exception.ErrorUtils;
+import com.pbl5.gympose.utils.jwt.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,6 +1,6 @@
 package com.pbl5.gympose;
 
-import com.pbl5.gympose.config.AppProperties;
+import com.pbl5.gympose.config.app.AppProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
