@@ -1,10 +1,11 @@
 package com.pbl5.gympose.exception.handler;
 
 import com.pbl5.gympose.exception.*;
-import com.pbl5.gympose.exception.message.ErrorMessage;
-import com.pbl5.gympose.exception.response.ErrorResponse;
+import com.pbl5.gympose.payload.general.ErrorResponse;
 import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.utils.LogUtils;
+import com.pbl5.gympose.utils.exception.ErrorMessage;
+import com.pbl5.gympose.utils.exception.ErrorUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

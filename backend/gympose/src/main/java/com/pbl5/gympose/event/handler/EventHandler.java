@@ -1,11 +1,11 @@
 package com.pbl5.gympose.event.handler;
 
-import com.pbl5.gympose.email.EmailService;
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.TokenType;
 import com.pbl5.gympose.event.UserRegistrationEvent;
 import com.pbl5.gympose.service.TokenService;
+import com.pbl5.gympose.service.email.EmailService;
 import com.pbl5.gympose.utils.CommonConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

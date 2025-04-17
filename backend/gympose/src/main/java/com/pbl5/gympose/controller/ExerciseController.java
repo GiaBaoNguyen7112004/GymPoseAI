@@ -4,6 +4,7 @@ import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.payload.request.ExerciseCreationRequest;
 import com.pbl5.gympose.payload.request.ExerciseUpdatingRequest;
 import com.pbl5.gympose.service.ExerciseService;
+import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -21,6 +23,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ExerciseController {
     ExerciseService exerciseService;
+    StorageService storageService;
 
     @PostMapping(ApiPath.CATEGORY_EXERCISES)
     public ResponseEntity<ResponseData> createExercise(@PathVariable(name = "category-id") UUID categoryId,
@@ -63,6 +66,13 @@ public class ExerciseController {
     public ResponseEntity<ResponseData> getAllExercises() {
         ResponseData responseData = ResponseData.success(exerciseService.getAllExercises(),
                 FeedbackMessage.EXERCISES_RETRIEVED);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_UPLOAD_IMAGE)
+    public ResponseEntity<ResponseData> uploadExerciseImage(@RequestParam MultipartFile file) {
+        ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "exercises"),
+                FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }
 }

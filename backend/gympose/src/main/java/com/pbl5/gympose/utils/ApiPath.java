@@ -17,6 +17,7 @@ public final class ApiPath {
     // EXERCISE
     public static final String EXERCISES = API + "/exercises";
     public static final String EXERCISE_BY_ID = "/{exercise-id}";
+    public static final String EXERCISE_UPLOAD_IMAGE = "/upload-image";
 
     //CATEGORY'S EXERCISES
     public static final String CATEGORY_EXERCISES = API + "/categories/{category-id}/exercises";

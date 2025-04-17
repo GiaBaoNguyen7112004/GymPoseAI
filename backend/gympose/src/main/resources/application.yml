@@ -50,3 +50,7 @@ app:
     first-name: ${ADMIN_FIRST_NAME:ADMIN}
     last-name: ${ADMIN_LAST_NAME:SYSTEM}
 web-url: http://localhost:3000
+cloudinary:
+  cloud-name: ${CLOUD_NAME:dojlx0tjt}
+  api-key: ${API_KEY:951993561179684}
+  api-secret: ${API_SECRET:obBujclWNNSY85e8PfMt-DGcgRw}

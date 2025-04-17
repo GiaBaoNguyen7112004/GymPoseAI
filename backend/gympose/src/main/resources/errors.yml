@@ -64,3 +64,19 @@ category_not_found:
 exercise_not_found:
   code: ERR.EXE0101
   message: Exercise was not found!
+
+#file
+file_delete_failed:
+  code: ERR.FIL0101
+  message: Delete file fail!
+file_size_exceeded:
+  code: ERR.FIL0102
+  message: File size exceeded!
+file_not_formatted:
+  code: ERR.FIL0103
+  message: File is not formatted!
+
+#image
+image_delete_failed:
+  code: ERR.IMG0101
+  message: Delete image failed !
