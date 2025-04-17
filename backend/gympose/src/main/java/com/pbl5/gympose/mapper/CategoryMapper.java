@@ -2,8 +2,8 @@ package com.pbl5.gympose.mapper;
 
 import com.pbl5.gympose.entity.Category;
 import com.pbl5.gympose.entity.Exercise;
-import com.pbl5.gympose.payload.request.CategoryUpdatingRequest;
-import com.pbl5.gympose.payload.response.CategoryResponse;
+import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
+import com.pbl5.gympose.payload.response.category.CategoryResponse;
 import org.mapstruct.*;
 
 import java.util.List;

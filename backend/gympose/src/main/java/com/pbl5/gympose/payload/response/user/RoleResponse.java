@@ -1,5 +1,4 @@
-package com.pbl5.gympose.payload.response;
-
+package com.pbl5.gympose.payload.response.user;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -8,17 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JwtLoginResponse extends LoginResponse {
-    String accessToken;
-    String refreshToken;
-
-    public JwtLoginResponse(UserResponse userResponse, String accessToken, String refreshToken) {
-        super(userResponse);
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-    }
+public class RoleResponse {
+    UUID id;
+    String name;
 }

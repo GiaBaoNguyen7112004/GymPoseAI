@@ -29,7 +29,7 @@ public class User extends AbstractEntity {
     @Column(nullable = false, unique = true)
     String email;
 
-    @Column(columnDefinition = "text", nullable = true)
+    @Column(columnDefinition = "text")
     String avatar;
 
     @Column(nullable = false)
@@ -51,7 +51,7 @@ public class User extends AbstractEntity {
     Double weight;
 
     LocalDateTime accountVerifiedAt;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Token> tokens;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

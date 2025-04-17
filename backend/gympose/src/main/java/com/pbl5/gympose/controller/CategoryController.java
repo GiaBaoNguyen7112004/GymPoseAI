@@ -1,8 +1,8 @@
 package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.payload.request.CategoryCreationRequest;
-import com.pbl5.gympose.payload.request.CategoryUpdatingRequest;
+import com.pbl5.gympose.payload.request.category.CategoryCreationRequest;
+import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
 import com.pbl5.gympose.service.CategoryService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class CategoryController {
     CategoryService categoryService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ResponseData> createCategory(@Valid @RequestBody CategoryCreationRequest categoryCreationRequest) {
         ResponseData responseData = ResponseData.success(categoryService.createCategory(categoryCreationRequest),
@@ -36,6 +38,7 @@ public class CategoryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(ApiPath.CATEGORY_BY_ID)
     public ResponseEntity<ResponseData> updateCategory(@PathVariable(name = "category-id") UUID categoryId,
                                                        @Valid @RequestBody CategoryUpdatingRequest categoryUpdatingRequest) {
@@ -51,6 +54,7 @@ public class CategoryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(ApiPath.CATEGORY_BY_ID)
     public ResponseEntity<ResponseData> deleteCategory(@PathVariable(name = "category-id") UUID categoryId) {
         categoryService.deleteCategoryById(categoryId);

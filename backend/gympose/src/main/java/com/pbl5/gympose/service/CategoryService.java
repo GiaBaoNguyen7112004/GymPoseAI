@@ -1,9 +1,9 @@
 package com.pbl5.gympose.service;
 
 import com.pbl5.gympose.entity.Category;
-import com.pbl5.gympose.payload.request.CategoryCreationRequest;
-import com.pbl5.gympose.payload.request.CategoryUpdatingRequest;
-import com.pbl5.gympose.payload.response.CategoryResponse;
+import com.pbl5.gympose.payload.request.category.CategoryCreationRequest;
+import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
+import com.pbl5.gympose.payload.response.category.CategoryResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

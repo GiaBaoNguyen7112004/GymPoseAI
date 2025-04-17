@@ -1,9 +1,9 @@
 package com.pbl5.gympose.service;
 
-import com.pbl5.gympose.payload.request.ExerciseCreationRequest;
-import com.pbl5.gympose.payload.request.ExerciseUpdatingRequest;
-import com.pbl5.gympose.payload.response.ExerciseDetailResponse;
-import com.pbl5.gympose.payload.response.ExerciseResponse;
+import com.pbl5.gympose.payload.request.exercise.ExerciseCreationRequest;
+import com.pbl5.gympose.payload.request.exercise.ExerciseUpdatingRequest;
+import com.pbl5.gympose.payload.response.exercise.ExerciseDetailResponse;
+import com.pbl5.gympose.payload.response.exercise.ExerciseResponse;
 
 import java.util.List;
 import java.util.UUID;

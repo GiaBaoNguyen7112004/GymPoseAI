@@ -3,16 +3,15 @@ package com.pbl5.gympose.service.impl;
 import com.pbl5.gympose.entity.Category;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.CategoryMapper;
-import com.pbl5.gympose.payload.request.CategoryCreationRequest;
-import com.pbl5.gympose.payload.request.CategoryUpdatingRequest;
-import com.pbl5.gympose.payload.response.CategoryResponse;
+import com.pbl5.gympose.payload.request.category.CategoryCreationRequest;
+import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
+import com.pbl5.gympose.payload.response.category.CategoryResponse;
 import com.pbl5.gympose.repository.CategoryRepository;
 import com.pbl5.gympose.service.CategoryService;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,6 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public CategoryResponse createCategory(CategoryCreationRequest categoryCreationRequest) {
         return categoryMapper
@@ -33,7 +31,6 @@ public class CategoryServiceImpl implements CategoryService {
                         .name(categoryCreationRequest.getName()).build()));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public CategoryResponse updateCategory(UUID categoryId, CategoryUpdatingRequest categoryUpdatingRequest) {
         Category category = categoryRepository.findById(categoryId)
@@ -53,7 +50,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryResponses(categoryRepository.findAll());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void deleteCategoryById(UUID categoryId) {
         categoryRepository.deleteById(categoryId);

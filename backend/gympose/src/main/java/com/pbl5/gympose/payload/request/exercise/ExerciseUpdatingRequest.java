@@ -1,24 +1,24 @@
-package com.pbl5.gympose.payload.response;
-
+package com.pbl5.gympose.payload.request.exercise;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StepRespone {
-    UUID id;
-    String title;
+public class ExerciseUpdatingRequest {
+    String thumbnailUrl;
+    String name;
     String description;
-    String stepNumber;
+    String mediaUrl;
+    Integer durationMinutes;
+    Double met;
+    List<StepCreationRequest> steps;
 }

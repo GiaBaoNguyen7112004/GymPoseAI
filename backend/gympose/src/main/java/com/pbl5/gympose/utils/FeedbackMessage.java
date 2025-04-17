@@ -25,7 +25,12 @@ public final class FeedbackMessage {
 
     // Image
     public static final String IMAGE_UPLOADED = "Image uploaded successfully";
-    public static final String FOLDER_IMAGE_UPLOADED = "Folder image uploaded successfully";
+
+    // Users
+    public static final String USER_PROFILE_RETRIEVED = "User profile retrieved successfully";
+    public static final String USERS_RETRIEVED = "Users retrieved successfully";
+    public static final String USER_DELETED = "User deleted successfully";
+    public static final String USER_UPDATED = "User updated successfully";
 
     private FeedbackMessage() {
     }

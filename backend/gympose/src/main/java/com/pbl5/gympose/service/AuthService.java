@@ -1,11 +1,11 @@
 package com.pbl5.gympose.service;
 
-import com.pbl5.gympose.payload.request.AccountVerificationRequest;
-import com.pbl5.gympose.payload.request.LoginRequest;
-import com.pbl5.gympose.payload.request.LogoutRequest;
-import com.pbl5.gympose.payload.request.SignUpRequest;
-import com.pbl5.gympose.payload.response.LoginResponse;
-import com.pbl5.gympose.payload.response.SignUpResponse;
+import com.pbl5.gympose.payload.request.auth.AccountVerificationRequest;
+import com.pbl5.gympose.payload.request.auth.LoginRequest;
+import com.pbl5.gympose.payload.request.auth.LogoutRequest;
+import com.pbl5.gympose.payload.request.auth.SignUpRequest;
+import com.pbl5.gympose.payload.response.auth.LoginResponse;
+import com.pbl5.gympose.payload.response.auth.SignUpResponse;
 
 public interface AuthService {
     SignUpResponse signUp(SignUpRequest signUpRequest);
