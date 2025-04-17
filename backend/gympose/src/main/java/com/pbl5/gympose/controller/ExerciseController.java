@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,6 +70,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responseData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadExerciseImage(@RequestParam MultipartFile file) {
         ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "exercises"),
