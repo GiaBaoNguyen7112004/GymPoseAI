@@ -1,4 +1,4 @@
-import { Exercise } from '@/src/types/exercises.type'
+import { Exercise } from '@/types/exercises.type'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef } from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, Animated, StyleProp, ViewStyle } from 'react-native'

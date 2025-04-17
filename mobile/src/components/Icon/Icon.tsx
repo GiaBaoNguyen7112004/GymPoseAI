@@ -1,4 +1,4 @@
-import { IconName, ICONS } from '@/src/constants/icon.constants'
+import { IconName, ICONS } from '@/constants/icon.constants'
 import { useMemo } from 'react'
 import { StyleProp } from 'react-native'
 

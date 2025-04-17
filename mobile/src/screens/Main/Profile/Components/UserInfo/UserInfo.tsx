@@ -1,46 +1,56 @@
-import { StyleSheet, Text, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import GradientButton from '@/src/components/GradientButton'
-import TextGradient from '@/src/components/TextGradient'
+import { Image, StyleSheet, Text, View } from 'react-native'
+import GradientButton from '@/components/GradientButton'
+import TextGradient from '@/components/TextGradient'
+import { useContext } from 'react'
+import { AppContext } from '@/Contexts/App.context'
 
-function UserInfo() {
+interface UserInfoProps {
+    editPress?: () => void
+}
+
+function UserInfo({ editPress }: UserInfoProps) {
+    const { profile } = useContext(AppContext)
+
+    const { first_name, last_name, height, weight, date_of_birth, avatar } = profile || {}
+
+    const age = date_of_birth && ~~((Date.now() - new Date(date_of_birth).getTime()) / 3.15576e10)
+
     return (
         <View style={styles.ProfileWrapper}>
             <View style={styles.ProfileHeader}>
-                <View style={styles.profile__avatar}>
-                    <MyIcon name='AbWorkout' size={34} />
-                </View>
+                <Image
+                    style={styles.profile__avatar}
+                    source={avatar ? { uri: avatar } : require('@/assets/images/defaultAvatar.png')}
+                />
                 <View style={styles.profile__content}>
-                    <Text style={styles.profile_username}>Stefani Wong</Text>
-                    <Text style={styles.profile_bio}>Lose a Fat Program</Text>
+                    <Text style={styles.profile_username}>{`${first_name ?? ''} ${last_name ?? ''}`.trim()}</Text>
+                    <Text style={styles.profile_bio}>Transform your body</Text>
                 </View>
-                <GradientButton Square style={styles.Profile_btnEdit}>
+                <GradientButton Square style={styles.Profile_btnEdit} onPress={editPress}>
                     <Text style={styles.btnEdit__text}>Edit</Text>
                 </GradientButton>
             </View>
+
             <View style={styles.profile__row}>
-                <View style={styles.profile__boxValue}>
-                    <TextGradient text='180cm' textStyle={styles.profile__value} />
-                    <Text style={styles.profile__label}>Height</Text>
-                </View>
-                <View style={styles.profile__boxValue}>
-                    <TextGradient text='65kg' textStyle={styles.profile__value} />
-                    <Text style={styles.profile__label}>Weight</Text>
-                </View>
-                <View style={styles.profile__boxValue}>
-                    <TextGradient text='22yo' textStyle={styles.profile__value} />
-                    <Text style={styles.profile__label}>Age</Text>
-                </View>
+                <ProfileValue label='Height' value={height ? `${height}cm` : '--'} />
+                <ProfileValue label='Weight' value={weight ? `${weight}kg` : '--'} />
+                <ProfileValue label='Age' value={age ? `${age}yo` : '--'} />
             </View>
         </View>
     )
 }
 
+const ProfileValue = ({ label, value }: { label: string; value: string }) => (
+    <View style={styles.profile__boxValue}>
+        <TextGradient text={value} textStyle={styles.profile__value} />
+        <Text style={styles.profile__label}>{label}</Text>
+    </View>
+)
+
 export default UserInfo
 
 const styles = StyleSheet.create({
     ProfileWrapper: {
-        marginTop: 35,
         rowGap: 15,
         width: '90%',
         alignSelf: 'center'
@@ -53,9 +63,9 @@ const styles = StyleSheet.create({
         width: 55,
         height: 55,
         borderRadius: 999,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#DFE5FE'
+        backgroundColor: '#DFE5FE',
+        borderWidth: 1,
+        borderColor: '#F7F8F8'
     },
     Profile_btnEdit: {
         width: 83,
@@ -75,9 +85,10 @@ const styles = StyleSheet.create({
         flex: 1
     },
     profile_username: {
-        fontSize: 21,
+        fontSize: 14,
         fontWeight: '500',
-        color: '#1D1617'
+        color: '#1D1617',
+        lineHeight: 21
     },
     profile_bio: {
         fontSize: 12,
@@ -88,9 +99,7 @@ const styles = StyleSheet.create({
     profile__row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        columnGap: 15,
-        rowGap: 15
+        columnGap: 15
     },
     profile__boxValue: {
         padding: 10,

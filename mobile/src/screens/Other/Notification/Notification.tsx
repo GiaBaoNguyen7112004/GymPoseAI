@@ -2,17 +2,17 @@ import { useRef, useCallback, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native'
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 
-import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
-import LoaderModal from '@/src/components/LoaderModal'
-import Loader from '@/src/components/Loader'
+import NavigationBar from '@/components/NavigationBar/NavigationBar'
+import LoaderModal from '@/components/LoaderModal'
+import Loader from '@/components/Loader'
 import BottomSheetMoreInfo from './components/BottomSheetMoreInfo'
 import NotificationCard from './components/NotificationCard/NotificationCard'
 import Toast from 'react-native-toast-message'
 
-import { Notification, ResponseAPINotificationPage } from '@/src/types/notification.type'
-import { notificationApi } from '@/src/services/rest'
+import { Notification, ResponseAPINotificationPage } from '@/types/notification.type'
+import { notificationApi } from '@/services/rest'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { RootStackScreenProps } from '@/src/navigation/types'
+import { RootStackScreenProps } from '@/navigation/types'
 
 function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>) {
     const bottomSheetRef = useRef<BottomSheet>(null)

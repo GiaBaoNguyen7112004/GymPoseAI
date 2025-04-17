@@ -1,15 +1,15 @@
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StyleSheet, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import TabBarComponent from '@/src/components/BottomTabBar/BottomTabBar'
-import MyIcon from '@/src/components/Icon'
-import Home from '@/src/screens/Main/Home/Home'
-import WorkoutTracker from '@/src/screens/Main/WorkoutTracker'
-import Search from '@/src/screens/Main/Search/Search'
-import StoryTaker from '@/src/screens/Main/StoryTaker/StoryTaker'
-import Profile from '@/src/screens/Main/Profile'
+import TabBarComponent from '@/components/BottomTabBar/BottomTabBar'
+import MyIcon from '@/components/Icon'
+import Home from '@/screens/Main/Home/Home'
+import WorkoutTracker from '@/screens/Main/WorkoutTracker'
+import Search from '@/screens/Main/Search/Search'
+import StoryTaker from '@/screens/Main/StoryTaker/StoryTaker'
+import Profile from '@/screens/Main/Profile'
 import { MainTabParamList } from './types'
-import { IconName } from '@/src/constants/icon.constants'
+import { IconName } from '@/constants/icon.constants'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 

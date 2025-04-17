@@ -1,9 +1,9 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import GradientButton from '@/src/components/GradientButton'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
-import { RootStackScreenProps } from '@/src/navigation/types'
+import GradientButton from '@/components/GradientButton'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
+import { RootStackScreenProps } from '@/navigation/types'
 import { WorkoutBenefitsList } from '../Components/WorkoutBenefitsList'
 
 export default function ConfirmYourGoal({ navigation }: RootStackScreenProps<'ConfirmYourGoal'>) {

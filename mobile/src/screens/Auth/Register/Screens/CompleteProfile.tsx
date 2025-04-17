@@ -10,21 +10,21 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-import MyIcon from '@/src/components/Icon'
-import GradientButton from '@/src/components/GradientButton'
-import DropdownInput from '@/src/components/DropdownInput'
-import DatePickerInput from '@/src/components/DatePickerInput'
-import TextInputCustom from '@/src/components/TextInput'
+import MyIcon from '@/components/Icon'
+import GradientButton from '@/components/GradientButton'
+import DropdownInput from '@/components/DropdownInput'
+import DatePickerInput from '@/components/DatePickerInput'
+import TextInputCustom from '@/components/TextInput'
 
-import { RootStackScreenProps } from '@/src/navigation/types'
-import { schema, SchemaType } from '@/src/utils/rules.util'
-import { DataGender } from '@/src/constants/dropdown.constant'
+import { RootStackScreenProps } from '@/navigation/types'
+import { schema, SchemaType } from '@/utils/rules.util'
+import { DataGender } from '@/constants/dropdown.constant'
 
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
 const formSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])

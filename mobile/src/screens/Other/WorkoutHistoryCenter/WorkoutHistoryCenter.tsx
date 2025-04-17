@@ -13,18 +13,18 @@ import { Ionicons } from '@expo/vector-icons'
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
 
-import NavigationBar from '@/src/components/NavigationBar'
+import NavigationBar from '@/components/NavigationBar'
 import TabBar from './Components/TabBar'
 import FilterBar from './Components/FilterBar'
-import TrainingSessionCard from '@/src/components/TrainingSessionCard'
-import Loader from '@/src/components/Loader'
-import LoaderModal from '@/src/components/LoaderModal'
+import TrainingSessionCard from '@/components/TrainingSessionCard'
+import Loader from '@/components/Loader'
+import LoaderModal from '@/components/LoaderModal'
 
-import { AppContext } from '@/src/Contexts/App.context'
-import { workoutHistoryApi } from '@/src/services/rest'
-import { RootStackScreenProps } from '@/src/navigation/types'
-import { categories, QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/src/types/workoutHistory.type'
-import { ViewModeType } from '@/src/types/utils.type'
+import { AppContext } from '@/Contexts/App.context'
+import { workoutHistoryApi } from '@/services/rest'
+import { RootStackScreenProps } from '@/navigation/types'
+import { categories, QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/types/workoutHistory.type'
+import { ViewModeType } from '@/types/utils.type'
 
 function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
     const { profile } = useContext(AppContext)

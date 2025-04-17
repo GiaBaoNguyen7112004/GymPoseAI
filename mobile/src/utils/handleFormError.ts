@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications'
 import { Path, UseFormSetError } from 'react-hook-form'
-import { ResponseApi } from '@/src/types/utils.type'
+import { ResponseApi } from '@/types/utils.type'
 
 import { FieldValues } from 'react-hook-form'
 import { Alert } from 'react-native'

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { formatDate } from '@/src/utils/format.util'
-import { TooltipDataType } from '@/src/components/WorkoutChart/Components/Tooltip'
-import { DataPoint } from '@/src/utils/chart.util'
-import { ViewModeType } from '@/src/types/utils.type'
+import { formatDate } from '@/utils/format.util'
+import { TooltipDataType } from '@/components/WorkoutChart/Components/Tooltip'
+import { DataPoint } from '@/utils/chart.util'
+import { ViewModeType } from '@/types/utils.type'
 
 export function useTooltip(chartData: DataPoint[], viewMode: ViewModeType) {
     const [tooltipData, setTooltipData] = useState<TooltipDataType | null>(null)

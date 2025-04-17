@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, TextInput, View, ActivityIndicator, Animated } from 'react-native'
-import MyIcon from '@/src/components/Icon'
+import MyIcon from '@/components/Icon'
 import { useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 

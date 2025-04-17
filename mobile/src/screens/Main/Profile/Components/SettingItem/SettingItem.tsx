@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import { IconName } from '@/src/constants/icon.constants'
+import MyIcon from '@/components/Icon'
+import { IconName } from '@/constants/icon.constants'
 
 interface SettingItemProps {
     icon: IconName

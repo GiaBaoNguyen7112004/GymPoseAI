@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, FlatList, View } from 'react-native'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { activityApi } from '@/src/services/rest'
-import Loader from '@/src/components/Loader'
+import { activityApi } from '@/services/rest'
+import Loader from '@/components/Loader'
 import ActivityItem from '../ActivityItem/ActivityItem'
 
-import { ResponseAPIActivityPage } from '@/src/types/userActivity.type'
+import { ResponseAPIActivityPage } from '@/types/userActivity.type'
 
 function LatestActivity() {
     const [isExpanded, setIsExpanded] = useState(false)

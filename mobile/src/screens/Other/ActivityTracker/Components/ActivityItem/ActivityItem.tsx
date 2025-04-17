@@ -1,7 +1,7 @@
-import AvatarWithIcon from '@/src/components/AvatarWithIcon'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
-import { UserActivity } from '@/src/types/userActivity.type'
-import { formatRelativeTimeFromNow } from '@/src/utils/format.util'
+import AvatarWithIcon from '@/components/AvatarWithIcon'
+import { COLOR_BRANDS } from '@/constants/common.constants'
+import { UserActivity } from '@/types/userActivity.type'
+import { formatRelativeTimeFromNow } from '@/utils/format.util'
 import { Feather } from '@expo/vector-icons'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 

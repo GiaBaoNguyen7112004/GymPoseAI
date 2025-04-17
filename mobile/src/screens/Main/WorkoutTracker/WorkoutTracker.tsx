@@ -7,17 +7,17 @@ import BottomSheet, {
     BottomSheetView,
     WINDOW_WIDTH
 } from '@gorhom/bottom-sheet'
-import NavigationBar from '@/src/components/NavigationBar'
+import NavigationBar from '@/components/NavigationBar'
 import { useQuery } from '@tanstack/react-query'
-import { AppContext } from '@/src/Contexts/App.context'
-import WorkoutChart from '@/src/components/WorkoutChart'
+import { AppContext } from '@/Contexts/App.context'
+import WorkoutChart from '@/components/WorkoutChart'
 import { LinearGradient } from 'expo-linear-gradient'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
+import { COLOR_BRANDS } from '@/constants/common.constants'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
-import CategoryCard from '@/src/components/CategoryCard'
-import { Category } from '@/src/types/exercises.type'
-import { categoriesApi, workoutHistoryApi } from '@/src/services/rest'
-import { MainTabScreenProps } from '@/src/navigation/types'
+import CategoryCard from '@/components/CategoryCard'
+import { Category } from '@/types/exercises.type'
+import { categoriesApi, workoutHistoryApi } from '@/services/rest'
+import { MainTabScreenProps } from '@/navigation/types'
 
 function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
     const { profile } = useContext(AppContext)

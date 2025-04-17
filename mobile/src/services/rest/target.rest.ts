@@ -1,7 +1,7 @@
-import http from '@/src/services/core/httpClient'
+import http from '@/services/core/httpClient'
 import { URL_TARGETS } from '@env'
-import { ResponseApi } from '@/src/types/utils.type'
-import { CaloriesTargetOfDay, TodayTargetResponseAPI, WeekTargetResponseAPI } from '@/src/types/target.type'
+import { ResponseApi } from '@/types/utils.type'
+import { CaloriesTargetOfDay, TodayTargetResponseAPI, WeekTargetResponseAPI } from '@/types/target.type'
 
 const targetApi = {
     getTodayCaloriesTarget({ id }: { id: string }) {

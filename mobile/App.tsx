@@ -15,6 +15,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppProvider } from './src/Contexts/App.context'
 import storage from './src/utils/StorageManager.util'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const prefix = Linking.createURL('/')
 
@@ -51,10 +52,12 @@ export default function App() {
         <GestureHandlerRootView>
             <QueryClientProvider client={queryClient}>
                 <AppProvider>
-                    <NavigationContainer linking={linking}>
-                        <RootStackNavigation />
-                        <Toast />
-                    </NavigationContainer>
+                    <BottomSheetModalProvider>
+                        <NavigationContainer linking={linking}>
+                            <RootStackNavigation />
+                            <Toast />
+                        </NavigationContainer>
+                    </BottomSheetModalProvider>
                 </AppProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>

@@ -1,7 +1,7 @@
-import http from '@/src/services/core/httpClient'
+import http from '@/services/core/httpClient'
 import { URL_CATEGORIES, URL_WORKOUTS } from '@env'
-import { ResponseApi } from '@/src/types/utils.type'
-import { Exercise } from '@/src/types/exercises.type'
+import { ResponseApi } from '@/types/utils.type'
+import { Exercise } from '@/types/exercises.type'
 
 const workoutApi = {
     getWorkoutByCategoryId({ id }: { id: string }) {

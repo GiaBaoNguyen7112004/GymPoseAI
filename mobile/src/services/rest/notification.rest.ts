@@ -1,7 +1,7 @@
-import { BaseQueryConfig } from '@/src/types/utils.type'
+import { BaseQueryConfig } from '@/types/utils.type'
 import http from '../core/httpClient'
 import { URL_NOTIFICATION } from '@env'
-import { ResponseAPINotificationPage } from '@/src/types/notification.type'
+import { ResponseAPINotificationPage } from '@/types/notification.type'
 
 const notificationApi = {
     getNotification({ params }: { params: BaseQueryConfig }) {

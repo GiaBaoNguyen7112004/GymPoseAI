@@ -10,15 +10,15 @@ import BottomSheet, {
     BottomSheetView
 } from '@gorhom/bottom-sheet'
 
-import NavigationBar from '@/src/components/NavigationBar'
-import MyIcon from '@/src/components/Icon'
-import WorkoutCard from '@/src/components/WorkoutCard'
+import NavigationBar from '@/components/NavigationBar'
+import MyIcon from '@/components/Icon'
+import WorkoutCard from '@/components/WorkoutCard'
 
-import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/src/constants/common.constants'
-import { RootStackScreenProps } from '@/src/navigation/types'
-import { Exercise } from '@/src/types/exercises.type'
-import { categories } from '@/src/types/workoutHistory.type'
-import { categoriesApi, workoutApi } from '@/src/services/rest'
+import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
+import { RootStackScreenProps } from '@/navigation/types'
+import { Exercise } from '@/types/exercises.type'
+import { categories } from '@/types/workoutHistory.type'
+import { categoriesApi, workoutApi } from '@/services/rest'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category_id, exercise_id } = route.params

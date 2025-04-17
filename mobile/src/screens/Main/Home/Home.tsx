@@ -1,21 +1,21 @@
-import GradientButton from '@/src/components/GradientButton'
-import MyIcon from '@/src/components/Icon'
-import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import GradientButton from '@/components/GradientButton'
+import MyIcon from '@/components/Icon'
+import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useContext } from 'react'
-import TrainingSessionCard from '@/src/components/TrainingSessionCard'
-import { HomeTabScreenProps } from '@/src/navigation/types'
+import TrainingSessionCard from '@/components/TrainingSessionCard'
 import { useQuery } from '@tanstack/react-query'
-import { AppContext } from '@/src/Contexts/App.context'
+import { AppContext } from '@/Contexts/App.context'
 import WaterIntake from './components/WaterIntake/WaterIntake'
 import BMIStats from './components/BMI'
 import WorkoutProgressChart from './components/WorkoutProgress'
 import CaloriesStats from './components/CaloriesStats'
-import { workoutHistoryApi } from '@/src/services/rest'
+import { workoutHistoryApi } from '@/services/rest'
+import { MainTabScreenProps } from '@/navigation/types'
 
-function Home({ navigation }: HomeTabScreenProps<'Home'>) {
+function Home({ navigation }: MainTabScreenProps<'Home'>) {
     const { profile } = useContext(AppContext)
 
     const { data: workoutHistoryResp } = useQuery({

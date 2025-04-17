@@ -1,11 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import AvatarWithIcon from '@/src/components/AvatarWithIcon'
-import { Notification } from '@/src/types/notification.type'
-import { formatRelativeTimeFromNow } from '@/src/utils/format.util'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
-import { IconName } from '@/src/constants/icon.constants'
-import { getAvatarWithIconNotify } from '@/src/utils/common.util'
+import MyIcon from '@/components/Icon'
+import AvatarWithIcon from '@/components/AvatarWithIcon'
+import { Notification } from '@/types/notification.type'
+import { formatRelativeTimeFromNow } from '@/utils/format.util'
+import { COLOR_BRANDS } from '@/constants/common.constants'
+import { IconName } from '@/constants/icon.constants'
+import { getAvatarWithIconNotify } from '@/utils/common.util'
 
 interface NotificationCardProps {
     itemData: Notification

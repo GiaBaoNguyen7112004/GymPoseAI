@@ -1,25 +1,25 @@
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
 import { useContext } from 'react'
-import { AppContext } from '@/src/Contexts/App.context'
+import { AppContext } from '@/Contexts/App.context'
 import { RootStackParamList } from './types'
 
 // Auth screens
-import WelcomeScreen from '@/src/screens/Auth/Welcome'
-import Login from '@/src/screens/Auth/Login'
-import { Register } from '@/src/screens/Auth/Register'
-import ForgotPassword from '@/src/screens/Auth/ForgotPassword'
+import WelcomeScreen from '@/screens/Auth/Welcome'
+import Login from '@/screens/Auth/Login'
+import { Register } from '@/screens/Auth/Register'
+import ForgotPassword from '@/screens/Auth/ForgotPassword'
 
 // Main tabs
 import MainTabs from './MainTabs'
 
 // App screens
-import Notification from '@/src/screens/Other/Notification'
-import WorkoutHistoryCenter from '@/src/screens/Other/WorkoutHistoryCenter'
-import WorkoutHistoryDetail from '@/src/screens/Other/WorkoutHistoryDetail'
-import CategoryDetail from '@/src/screens/Other/CategoryDetail'
-import WorkoutDetail from '@/src/screens/Other/WorkoutDetail'
-import ActivityTracker from '@/src/screens/Other/ActivityTracker'
-import Setting from '@/src/screens/Other/Setting'
+import Notification from '@/screens/Other/Notification'
+import WorkoutHistoryCenter from '@/screens/Other/WorkoutHistoryCenter'
+import WorkoutHistoryDetail from '@/screens/Other/WorkoutHistoryDetail'
+import CategoryDetail from '@/screens/Other/CategoryDetail'
+import WorkoutDetail from '@/screens/Other/WorkoutDetail'
+import ActivityTracker from '@/screens/Other/ActivityTracker'
+import Setting from '@/screens/Other/Setting'
 
 // Common screens
 import ContactUs from '../screens/Other/ContactUs'

@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react'
-import { User } from '@/src/types/user.type'
-import storage from '@/src/utils/StorageManager.util'
+import { User } from '@/types/user.type'
+import storage from '@/utils/StorageManager.util'
 interface AppContextInterface {
     isAuthenticated: boolean
     profile: User | null

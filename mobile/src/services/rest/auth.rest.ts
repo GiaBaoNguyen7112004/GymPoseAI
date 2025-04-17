@@ -1,5 +1,5 @@
-import http from '@/src/services/core/httpClient'
-import { AuthResponse, FindAccountResponse } from '@/src/types/auth.type'
+import http from '@/services/core/httpClient'
+import { AuthResponse, FindAccountResponse } from '@/types/auth.type'
 import {
     URL_LOGIN,
     URL_LOGOUT,
@@ -9,7 +9,7 @@ import {
     URL_RESET_PASSWORD,
     URL_RESEND_OTP_FORGOT_PASSWORD
 } from '@env'
-import { ResponseApi } from '@/src/types/utils.type'
+import { ResponseApi } from '@/types/utils.type'
 
 const authApi = {
     registerAccount(body: { first_name: string; last_name: string; email: string; password: string }) {
