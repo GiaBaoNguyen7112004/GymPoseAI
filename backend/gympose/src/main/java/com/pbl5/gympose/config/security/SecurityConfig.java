@@ -33,6 +33,13 @@ public class SecurityConfig {
             ApiPath.AUTH + "/**",
     };
 
+    public final String[] PUBLIC_GET_ENDPOINT = {
+            ApiPath.EXERCISES + "/**",
+            ApiPath.CATEGORIES + "/**",
+            ApiPath.CATEGORY_EXERCISES + "/**",
+            ApiPath.USERS + "/**",
+    };
+
     CustomUserDetailsService customUserDetailsService;
     JwtAuthFilter jwtAuthFilter;
 
@@ -69,10 +76,9 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(ApiPath.USERS + ApiPath.USER_PROFILE).authenticated()
                         .requestMatchers(PUBLIC_ENDPOINT).permitAll()
-                        .requestMatchers(HttpMethod.GET, ApiPath.EXERCISES + "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, ApiPath.CATEGORIES + "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, ApiPath.CATEGORY_EXERCISES + "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINT).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

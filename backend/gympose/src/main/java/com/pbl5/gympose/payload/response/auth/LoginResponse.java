@@ -1,24 +1,22 @@
-package com.pbl5.gympose.payload.response;
+package com.pbl5.gympose.payload.response.auth;
+
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.pbl5.gympose.payload.response.user.UserResponse;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.UUID;
-
 @Getter
 @Setter
-@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryResponse {
-    UUID id;
-    String name;
-    Integer exerciseCount;
-    Integer durationMinutes;
-    Double caloriesBurned;
+public class LoginResponse {
+    UserResponse user;
+
+    public LoginResponse(UserResponse user) {
+        this.user = user;
+    }
 }

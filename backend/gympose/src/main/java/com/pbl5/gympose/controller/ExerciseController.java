@@ -1,8 +1,8 @@
 package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.payload.request.ExerciseCreationRequest;
-import com.pbl5.gympose.payload.request.ExerciseUpdatingRequest;
+import com.pbl5.gympose.payload.request.exercise.ExerciseCreationRequest;
+import com.pbl5.gympose.payload.request.exercise.ExerciseUpdatingRequest;
 import com.pbl5.gympose.service.ExerciseService;
 import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
@@ -26,6 +26,7 @@ public class ExerciseController {
     ExerciseService exerciseService;
     StorageService storageService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.CATEGORY_EXERCISES)
     public ResponseEntity<ResponseData> createExercise(@PathVariable(name = "category-id") UUID categoryId,
                                                        @RequestBody @Valid ExerciseCreationRequest request) {
@@ -41,6 +42,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responseData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
     public ResponseEntity<ResponseData> deleteExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId) {
         exerciseService.deleteExerciseById(exerciseId);
@@ -55,6 +57,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responseData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
     public ResponseEntity<ResponseData> updateExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId,
                                                            @RequestBody ExerciseUpdatingRequest exerciseUpdatingRequest) {
@@ -71,7 +74,7 @@ public class ExerciseController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_UPLOAD_IMAGE)
+    @PostMapping(ApiPath.EXERCISES + ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadExerciseImage(@RequestParam MultipartFile file) {
         ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "exercises"),
                 FeedbackMessage.IMAGE_UPLOADED);

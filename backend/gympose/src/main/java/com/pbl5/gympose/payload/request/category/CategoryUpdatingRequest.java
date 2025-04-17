@@ -1,4 +1,4 @@
-package com.pbl5.gympose.payload.request;
+package com.pbl5.gympose.payload.request.category;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginRequest {
-    String email;
-    String password;
+public class CategoryUpdatingRequest {
+    String name;
 }

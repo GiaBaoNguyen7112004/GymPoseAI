@@ -1,10 +1,10 @@
 package com.pbl5.gympose.mapper;
 
 import com.pbl5.gympose.entity.Exercise;
-import com.pbl5.gympose.payload.request.ExerciseCreationRequest;
-import com.pbl5.gympose.payload.request.ExerciseUpdatingRequest;
-import com.pbl5.gympose.payload.response.ExerciseDetailResponse;
-import com.pbl5.gympose.payload.response.ExerciseResponse;
+import com.pbl5.gympose.payload.request.exercise.ExerciseCreationRequest;
+import com.pbl5.gympose.payload.request.exercise.ExerciseUpdatingRequest;
+import com.pbl5.gympose.payload.response.exercise.ExerciseDetailResponse;
+import com.pbl5.gympose.payload.response.exercise.ExerciseResponse;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,

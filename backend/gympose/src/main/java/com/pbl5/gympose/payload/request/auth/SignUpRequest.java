@@ -1,4 +1,4 @@
-package com.pbl5.gympose.payload.request;
+package com.pbl5.gympose.payload.request.auth;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

@@ -1,10 +1,10 @@
 package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.payload.request.AccountVerificationRequest;
-import com.pbl5.gympose.payload.request.LoginRequest;
-import com.pbl5.gympose.payload.request.LogoutRequest;
-import com.pbl5.gympose.payload.request.SignUpRequest;
+import com.pbl5.gympose.payload.request.auth.AccountVerificationRequest;
+import com.pbl5.gympose.payload.request.auth.LoginRequest;
+import com.pbl5.gympose.payload.request.auth.LogoutRequest;
+import com.pbl5.gympose.payload.request.auth.SignUpRequest;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
