@@ -1,4 +1,4 @@
-import { pose_error } from '@/src/types/workoutHistory.type'
+import { pose_error } from '@/types/workoutHistory.type'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
 

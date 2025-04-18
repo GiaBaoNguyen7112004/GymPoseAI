@@ -1,8 +1,8 @@
-import { StepOfExercise } from '@/src/types/exercises.type'
+import { StepOfExercise } from '@/types/exercises.type'
 import { StyleSheet, Text, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import TextGradient from '@/src/components/TextGradient'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
+import MyIcon from '@/components/Icon'
+import TextGradient from '@/components/TextGradient'
+import { COLOR_BRANDS } from '@/constants/common.constants'
 
 interface TimeLineProps {
     stepsData: StepOfExercise[]

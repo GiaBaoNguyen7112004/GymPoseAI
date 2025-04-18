@@ -4,10 +4,10 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, Animated, FlatList, Sc
 import { Camera, CameraView, FlashMode } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { SCREEN_HEIGHT, SCREEN_WIDTH, useStatusBarHeight } from '@/src/constants/devices.constant'
+import { SCREEN_HEIGHT, SCREEN_WIDTH, useStatusBarHeight } from '@/constants/devices.constant'
 import { PanGestureHandler, PanGestureHandlerGestureEvent, State } from 'react-native-gesture-handler'
-import NavigationBar from '@/src/components/NavigationBar/NavigationBar'
-import { MainTabParamList } from '@/src/navigation/types'
+import NavigationBar from '@/components/NavigationBar/NavigationBar'
+import { MainTabParamList } from '@/navigation/types'
 
 type StoryTakerRouteProp = RouteProp<MainTabParamList, 'StoryTaker'>
 

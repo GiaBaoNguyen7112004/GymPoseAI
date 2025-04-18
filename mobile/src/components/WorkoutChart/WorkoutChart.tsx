@@ -4,11 +4,11 @@ import { LineChart } from 'react-native-chart-kit'
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
 
 import Tooltip from './Components/Tooltip'
-import { workoutHistoryOfDay } from '@/src/types/workoutHistory.type'
-import { useTooltip } from '@/src/hooks/useTooltip'
-import { workoutHistoryLineChart } from '@/src/config/chart.config'
-import { calculateWorkoutHistoryChart, getChartWidth } from '@/src/utils/chart.util'
-import { ViewModeType } from '@/src/types/utils.type'
+import { workoutHistoryOfDay } from '@/types/workoutHistory.type'
+import { useTooltip } from '@/hooks/useTooltip'
+import { workoutHistoryLineChart } from '@/config/chart.config'
+import { calculateWorkoutHistoryChart, getChartWidth } from '@/utils/chart.util'
+import { ViewModeType } from '@/types/utils.type'
 
 interface WorkoutChartProps {
     workoutData: workoutHistoryOfDay[]

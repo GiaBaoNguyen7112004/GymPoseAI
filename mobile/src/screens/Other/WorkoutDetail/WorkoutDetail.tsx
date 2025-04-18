@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
 import YoutubePlayer from 'react-native-youtube-iframe'
 import Icon from 'react-native-vector-icons/Feather'
-import { RootStackScreenProps } from '@/src/navigation/types'
+import { RootStackScreenProps } from '@/navigation/types'
 import { useQuery } from '@tanstack/react-query'
-import GradientButton from '@/src/components/GradientButton'
+import GradientButton from '@/components/GradientButton'
 import TimeLine from './components/TimeLine'
-import { getYouTubeVideoId } from '@/src/utils/common.util'
-import { workoutApi } from '@/src/services/rest'
-import ReadMoreText from '@/src/components/ReadMoreText'
+import { getYouTubeVideoId } from '@/utils/common.util'
+import { workoutApi } from '@/services/rest'
+import ReadMoreText from '@/components/ReadMoreText'
 
 function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetail'>) {
     const { workout_id } = route.params

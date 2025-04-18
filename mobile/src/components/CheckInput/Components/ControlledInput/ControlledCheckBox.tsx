@@ -1,4 +1,4 @@
-import CustomCheckbox from '@/src/components/CheckInput/Components/CheckBox'
+import CustomCheckbox from '@/components/CheckInput/Components/CheckBox'
 import { useController, UseControllerProps } from 'react-hook-form'
 import { StyleSheet, Text, View } from 'react-native'
 

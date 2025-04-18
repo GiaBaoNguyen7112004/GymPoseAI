@@ -7,39 +7,19 @@ import BottomSheet, {
     BottomSheetView,
     WINDOW_WIDTH
 } from '@gorhom/bottom-sheet'
-import { HomeTabScreenProps } from '@/src/navigation/types'
-import NavigationBar from '@/src/components/NavigationBar'
+import NavigationBar from '@/components/NavigationBar'
 import { useQuery } from '@tanstack/react-query'
-import { AppContext } from '@/src/Contexts/App.context'
-import WorkoutChart from '@/src/components/WorkoutChart'
+import { AppContext } from '@/Contexts/App.context'
+import WorkoutChart from '@/components/WorkoutChart'
 import { LinearGradient } from 'expo-linear-gradient'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
+import { COLOR_BRANDS } from '@/constants/common.constants'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
-import CategoryCard from '@/src/components/CategoryCard'
-import { Category } from '@/src/types/exercises.type'
-import { categoriesApi, workoutHistoryApi } from '@/src/services/rest'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import CategoryCard from '@/components/CategoryCard'
+import { Category } from '@/types/exercises.type'
+import { categoriesApi, workoutHistoryApi } from '@/services/rest'
+import { MainTabScreenProps } from '@/navigation/types'
 
-const chartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientToOpacity: 0,
-    decimalPlaces: 0,
-    propsForHorizontalLabels: {
-        dx: -15
-    },
-    color: (opacity = 1) => `rgba(134, 174, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    propsForLabels: { fontSize: 12, fontWeight: '400', color: '#FFF' },
-    propsForDots: { r: '2.5', strokeWidth: '1', stroke: '#FFF', fill: '#92A3FD' },
-    propsForBackgroundLines: { strokeDasharray: '', strokeWidth: 1.2, stroke: '#F7F8F8' }
-}
-
-const lineChartColor = (opacity = 1) => `rgba(255, 255, 255, ${opacity})`
-
-function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
-    const insets = useSafeAreaInsets()
+function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
     const { profile } = useContext(AppContext)
 
     const { data: workoutQuery } = useQuery({
@@ -108,11 +88,11 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
                 <BottomSheet
                     ref={bottomSheetRef}
                     index={0}
-                    snapPoints={['72%']}
+                    snapPoints={['60%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
-                    style={{ marginTop: 100 }}
+                    enableDynamicSizing={false}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <View style={styles.trainingSection}>
@@ -122,7 +102,6 @@ function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
                                 renderItem={renderCategoryItem}
                                 keyExtractor={(item) => item.id.toString()}
                                 showsVerticalScrollIndicator={false}
-                                contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
                             />
                         </View>
                     </BottomSheetView>
@@ -170,3 +149,21 @@ const styles = StyleSheet.create({
         color: '#1D1617'
     }
 })
+
+const chartConfig: AbstractChartConfig = {
+    backgroundGradientFrom: '#fff',
+    backgroundGradientTo: '#fff',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    decimalPlaces: 0,
+    propsForHorizontalLabels: {
+        dx: -15
+    },
+    color: (opacity = 1) => `rgba(134, 174, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    propsForLabels: { fontSize: 12, fontWeight: '400', color: '#FFF' },
+    propsForDots: { r: '2.5', strokeWidth: '1', stroke: '#FFF', fill: '#92A3FD' },
+    propsForBackgroundLines: { strokeDasharray: '', strokeWidth: 1.2, stroke: '#F7F8F8' }
+}
+
+const lineChartColor = (opacity = 1) => `rgba(255, 255, 255, ${opacity})`

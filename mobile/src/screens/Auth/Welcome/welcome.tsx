@@ -1,11 +1,11 @@
 import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
-import GradientButton from '@/src/components/GradientButton'
-import MyIcon from '@/src/components/Icon'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
+import GradientButton from '@/components/GradientButton'
+import MyIcon from '@/components/Icon'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { RootStackScreenProps } from '@/src/navigation/types'
+import { RootStackScreenProps } from '@/navigation/types'
 import { useContext } from 'react'
-import { AppContext } from '@/src/Contexts/App.context'
+import { AppContext } from '@/Contexts/App.context'
 export default function WelcomeScreen({ navigation }: RootStackScreenProps<'Welcome'>) {
     const { profile } = useContext(AppContext)
     const handleGoToHome = () => {

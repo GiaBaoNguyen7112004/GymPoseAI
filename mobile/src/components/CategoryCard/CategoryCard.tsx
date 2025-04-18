@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import { Category } from '@/src/types/exercises.type'
-import { categories } from '@/src/types/workoutHistory.type'
-import { ICONS_CATEGORY_MAP } from '@/src/constants/common.constants'
+import MyIcon from '@/components/Icon'
+import { Category } from '@/types/exercises.type'
+import { categories } from '@/types/workoutHistory.type'
+import { ICONS_CATEGORY_MAP } from '@/constants/common.constants'
 import { useMemo } from 'react'
 
 interface CategoryCardProps {

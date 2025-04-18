@@ -4,12 +4,12 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 
-import GradientButton from '@/src/components/GradientButton'
-import TextGradient from '@/src/components/TextGradient'
-import OTPInput from '@/src/components/OTPInput'
-import { SCREEN_WIDTH } from '@/src/constants/devices.constant'
-import { schema, SchemaType } from '@/src/utils/rules.util'
-import { authApi } from '@/src/services/rest'
+import GradientButton from '@/components/GradientButton'
+import TextGradient from '@/components/TextGradient'
+import OTPInput from '@/components/OTPInput'
+import { SCREEN_WIDTH } from '@/constants/devices.constant'
+import { schema, SchemaType } from '@/utils/rules.util'
+import { authApi } from '@/services/rest'
 
 interface VerificationScreenProps {
     onSuccess: (otp: string) => void

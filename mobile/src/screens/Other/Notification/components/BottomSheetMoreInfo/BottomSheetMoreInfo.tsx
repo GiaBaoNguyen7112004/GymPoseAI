@@ -1,11 +1,11 @@
 import React, { forwardRef } from 'react'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import { Notification } from '@/src/types/notification.type'
+import MyIcon from '@/components/Icon'
+import { Notification } from '@/types/notification.type'
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types'
-import AvatarWithIcon from '@/src/components/AvatarWithIcon'
-import { getAvatarWithIconNotify } from '@/src/utils/common.util'
+import AvatarWithIcon from '@/components/AvatarWithIcon'
+import { getAvatarWithIconNotify } from '@/utils/common.util'
 
 interface BottomSheetMoreInfoProps {
     onDeleteNotification: (id: string) => void

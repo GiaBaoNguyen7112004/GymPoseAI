@@ -1,14 +1,14 @@
 import { View, StyleSheet, ScrollView } from 'react-native'
-import NavigationBar from '@/src/components/NavigationBar'
+import NavigationBar from '@/components/NavigationBar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TodayTarget from './Components/TodayTarget'
 import ActivityProgress from './Components/ActivityProgress'
 import LatestActivity from './Components/LatestActivity'
-import { RootStackScreenProps } from '@/src/navigation/types'
+import { RootStackScreenProps } from '@/navigation/types'
 import { useState } from 'react'
-import CustomModal from '@/src/components/CustomModal'
+import CustomModal from '@/components/CustomModal'
 import FormUpdateTodayTarget from './Components/FormUpdateTodayTarget'
-import { targetApi } from '@/src/services/rest'
+import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 
 function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>) {

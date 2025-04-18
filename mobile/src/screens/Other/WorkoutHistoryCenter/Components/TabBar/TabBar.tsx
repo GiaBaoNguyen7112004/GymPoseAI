@@ -1,4 +1,4 @@
-import { categories } from '@/src/types/workoutHistory.type'
+import { categories } from '@/types/workoutHistory.type'
 import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 

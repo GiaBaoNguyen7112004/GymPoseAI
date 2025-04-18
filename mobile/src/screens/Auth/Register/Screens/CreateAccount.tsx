@@ -8,16 +8,16 @@ import {
     KeyboardAvoidingView,
     Platform
 } from 'react-native'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/src/constants/devices.constant'
-import GradientButton from '@/src/components/GradientButton'
-import TextGradient from '@/src/components/TextGradient'
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
+import GradientButton from '@/components/GradientButton'
+import TextGradient from '@/components/TextGradient'
 import { Pressable } from 'react-native-gesture-handler'
-import { schema, SchemaType } from '@/src/utils/rules.util'
+import { schema, SchemaType } from '@/utils/rules.util'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import TextInputCustom from '@/src/components/TextInput'
-import CheckInput from '@/src/components/CheckInput'
-import { RootStackScreenProps } from '@/src/navigation/types'
+import TextInputCustom from '@/components/TextInput'
+import CheckInput from '@/components/CheckInput'
+import { RootStackScreenProps } from '@/navigation/types'
 
 type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'password' | 'policy'>
 

@@ -9,8 +9,8 @@ import {
     ImageStyle
 } from 'react-native'
 import { Dropdown, IDropdownRef } from 'react-native-element-dropdown'
-import Icon from '@/src/components/Icon/Icon'
-import { IconName } from '@/src/constants/icon.constants'
+import Icon from '@/components/Icon/Icon'
+import { IconName } from '@/constants/icon.constants'
 
 export interface DropdownItem {
     label: string

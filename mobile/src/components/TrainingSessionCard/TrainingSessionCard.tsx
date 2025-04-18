@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, StyleSheet, StyleProp, ViewStyle, Pressable } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import MyIcon from '@/src/components/Icon'
-import Progress from '@/src/components/Progress'
-import { workoutHistory } from '@/src/types/workoutHistory.type'
-import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/src/constants/common.constants'
+import MyIcon from '@/components/Icon'
+import Progress from '@/components/Progress'
+import { workoutHistory } from '@/types/workoutHistory.type'
+import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
 import AvatarWithIcon from '../AvatarWithIcon'
 
 interface TrainingSessionCardProps {

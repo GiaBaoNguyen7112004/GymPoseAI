@@ -1,4 +1,4 @@
-import { workoutSummaryProgressRingChart } from '@/src/config/chart.config'
+import { workoutSummaryProgressRingChart } from '@/config/chart.config'
 import { StyleSheet, View } from 'react-native'
 import { ProgressChart } from 'react-native-chart-kit'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'

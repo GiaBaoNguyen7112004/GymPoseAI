@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
 import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import MyIcon from '@/src/components/Icon'
-import { IconName } from '@/src/constants/icon.constants'
+import MyIcon from '@/components/Icon'
+import { IconName } from '@/constants/icon.constants'
 
 export interface ControllerInputProps extends Omit<TextInputProps, 'defaultValue'>, UseControllerProps {
     type: KeyboardTypeOptions | 'password'

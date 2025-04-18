@@ -3,12 +3,12 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 
-import GradientButton from '@/src/components/GradientButton'
-import TextInputCustom from '@/src/components/TextInput'
+import GradientButton from '@/components/GradientButton'
+import TextInputCustom from '@/components/TextInput'
 
-import { authApi } from '@/src/services/rest'
-import { schema, SchemaType } from '@/src/utils/rules.util'
-import handleFormError from '@/src/utils/handleFormError'
+import { authApi } from '@/services/rest'
+import { schema, SchemaType } from '@/utils/rules.util'
+import handleFormError from '@/utils/handleFormError'
 
 interface ChangePasswordScreenProps {
     email: string

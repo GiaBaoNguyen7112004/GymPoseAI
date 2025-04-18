@@ -9,12 +9,12 @@ import {
     Keyboard
 } from 'react-native'
 
-import NavigationBar from '@/src/components/NavigationBar'
+import NavigationBar from '@/components/NavigationBar'
 import FindAccountScreen from './Screens/FindAccountScreen'
 import VerificationScreen from './Screens/VerificationScreen'
 import NewPasswordScreen from './Screens/NewPasswordScreen'
 
-import { RootStackScreenProps } from '@/src/navigation/types'
+import { RootStackScreenProps } from '@/navigation/types'
 
 export interface ForgotPasswordPayload {
     email: string

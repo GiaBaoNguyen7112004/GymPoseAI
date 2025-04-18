@@ -3,19 +3,19 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import NavigationBar from '@/src/components/NavigationBar'
-import TextGradient from '@/src/components/TextGradient'
-import AvatarWithIcon from '@/src/components/AvatarWithIcon'
+import NavigationBar from '@/components/NavigationBar'
+import TextGradient from '@/components/TextGradient'
+import AvatarWithIcon from '@/components/AvatarWithIcon'
 import WorkoutHistoryProgressChart from './Components/WorkoutHistoryProgressChart'
 import FormFeedBack from './Components/FormFeedBack'
 import ActivityItem from './Components/ActivityItem'
 import StatItem from './Components/StatItem'
 
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
-import { RootStackScreenProps } from '@/src/navigation/types'
-import { formatDate } from '@/src/utils/format.util'
-import { workoutHistoryApi } from '@/src/services/rest'
-import { calculateWorkoutSummaryChart } from '@/src/utils/chart.util'
+import { COLOR_BRANDS } from '@/constants/common.constants'
+import { RootStackScreenProps } from '@/navigation/types'
+import { formatDate } from '@/utils/format.util'
+import { workoutHistoryApi } from '@/services/rest'
+import { calculateWorkoutSummaryChart } from '@/utils/chart.util'
 
 export default function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
     const { workout_id } = route.params

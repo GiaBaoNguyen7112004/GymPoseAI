@@ -1,7 +1,7 @@
-import GradientButton from '@/src/components/GradientButton'
-import Progress from '@/src/components/Progress'
-import TextGradient from '@/src/components/TextGradient'
-import { targetApi } from '@/src/services/rest'
+import GradientButton from '@/components/GradientButton'
+import Progress from '@/components/Progress'
+import TextGradient from '@/components/TextGradient'
+import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 import { StyleSheet, Text, View } from 'react-native'
 

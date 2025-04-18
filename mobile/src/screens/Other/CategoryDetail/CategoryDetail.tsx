@@ -10,16 +10,15 @@ import BottomSheet, {
     BottomSheetView
 } from '@gorhom/bottom-sheet'
 
-import NavigationBar from '@/src/components/NavigationBar'
-import MyIcon from '@/src/components/Icon'
-import WorkoutCard from '@/src/components/WorkoutCard'
+import NavigationBar from '@/components/NavigationBar'
+import MyIcon from '@/components/Icon'
+import WorkoutCard from '@/components/WorkoutCard'
 
-import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/src/constants/common.constants'
-import { RootStackScreenProps } from '@/src/navigation/types'
-import { Exercise } from '@/src/types/exercises.type'
-import { categories } from '@/src/types/workoutHistory.type'
-import { categoriesApi, workoutApi } from '@/src/services/rest'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
+import { RootStackScreenProps } from '@/navigation/types'
+import { Exercise } from '@/types/exercises.type'
+import { categories } from '@/types/workoutHistory.type'
+import { categoriesApi, workoutApi } from '@/services/rest'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category_id, exercise_id } = route.params
@@ -34,7 +33,6 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
         queryKey: ['category', category_id],
         queryFn: () => categoriesApi.getCategoriesById({ id: category_id })
     })
-    const insets = useSafeAreaInsets()
     const workoutList = data?.data.data || []
     const category = categoryRes?.data.data
     const IconThumbnailCategory = ICONS_CATEGORY_MAP.get(category?.name as categories) || 'movement1'
@@ -95,11 +93,11 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
 
                 <BottomSheet
                     index={2}
-                    snapPoints={['50%', '72%', '92%']}
+                    snapPoints={['50%', '72%', '82%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
-                    style={{ marginTop: 100 }}
+                    enableDynamicSizing={false}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <View style={styles.trainingSection}>
@@ -118,7 +116,6 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
                                 renderItem={renderCategoryItem}
                                 keyExtractor={(item) => item.id}
                                 showsVerticalScrollIndicator={false}
-                                contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
                                 onScrollToIndexFailed={(info) => {
                                     setTimeout(() => {
                                         exerciseListRef.current?.scrollToIndex({

@@ -1,9 +1,9 @@
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
+import { COLOR_BRANDS } from '@/constants/common.constants'
 import { LinearGradient } from 'expo-linear-gradient'
 import { StyleSheet, Text, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
+import MyIcon from '@/components/Icon'
 import { useContext } from 'react'
-import { AppContext } from '@/src/Contexts/App.context'
+import { AppContext } from '@/Contexts/App.context'
 
 function BMIStats() {
     const { profile } = useContext(AppContext)

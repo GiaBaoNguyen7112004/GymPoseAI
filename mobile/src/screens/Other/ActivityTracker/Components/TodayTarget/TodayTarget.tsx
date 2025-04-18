@@ -1,8 +1,8 @@
-import GradientButton from '@/src/components/GradientButton'
+import GradientButton from '@/components/GradientButton'
 import { AntDesign } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
-import MyIcon from '@/src/components/Icon'
-import TextGradient from '@/src/components/TextGradient'
+import MyIcon from '@/components/Icon'
+import TextGradient from '@/components/TextGradient'
 
 interface TodayTargetProps {
     updateTodayTargetPress: () => void

@@ -1,8 +1,8 @@
-import Progress from '@/src/components/Progress'
-import TextGradient from '@/src/components/TextGradient'
+import Progress from '@/components/Progress'
+import TextGradient from '@/components/TextGradient'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import MyIcon from '@/src/components/Icon'
+import MyIcon from '@/components/Icon'
 
 const DATA = [{ id: 1, value: 600, time: '6am - 8am' }]
 

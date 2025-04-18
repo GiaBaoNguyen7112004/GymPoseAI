@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import MyIcon from '@/src/components/Icon'
-import { IconName } from '@/src/constants/icon.constants'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
+import MyIcon from '@/components/Icon'
+import { IconName } from '@/constants/icon.constants'
+import { COLOR_BRANDS } from '@/constants/common.constants'
 import { StyleSheet } from 'react-native'
 interface AvatarWithIconProps {
     icon?: IconName
