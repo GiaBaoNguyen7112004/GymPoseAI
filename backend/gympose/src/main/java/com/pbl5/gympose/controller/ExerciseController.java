@@ -7,6 +7,8 @@ import com.pbl5.gympose.service.ExerciseService;
 import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +24,12 @@ import java.util.UUID;
 @RequestMapping
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Exercise API", description = "Exercise management")
 public class ExerciseController {
     ExerciseService exerciseService;
     StorageService storageService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.CATEGORY_EXERCISES)
     public ResponseEntity<ResponseData> createExercise(@PathVariable(name = "category-id") UUID categoryId,
@@ -42,6 +46,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
     public ResponseEntity<ResponseData> deleteExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId) {
@@ -57,6 +62,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
     public ResponseEntity<ResponseData> updateExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId,
@@ -73,6 +79,7 @@ public class ExerciseController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.EXERCISES + ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadExerciseImage(@RequestParam MultipartFile file) {

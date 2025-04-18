@@ -6,6 +6,7 @@ import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import com.pbl5.gympose.utils.exception.ErrorUtils;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Hidden
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)

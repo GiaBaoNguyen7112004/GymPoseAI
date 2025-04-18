@@ -8,6 +8,7 @@ import com.pbl5.gympose.payload.request.auth.SignUpRequest;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(ApiPath.AUTH)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Auth API", description = "Authentication")
 public class AuthController {
     AuthService authService;
 

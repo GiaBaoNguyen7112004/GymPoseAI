@@ -31,6 +31,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     public final String[] PUBLIC_ENDPOINT = {
             ApiPath.AUTH + "/**",
+            ApiPath.SWAGGER,
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/api-docs/**"
     };
 
     public final String[] PUBLIC_GET_ENDPOINT = {

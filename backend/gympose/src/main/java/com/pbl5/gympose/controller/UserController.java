@@ -7,6 +7,8 @@ import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,9 +23,11 @@ import java.util.UUID;
 @RequestMapping(ApiPath.USERS)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "User API", description = "User management")
 public class UserController {
     UserService userService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.USER_PROFILE)
     public ResponseEntity<ResponseData> getProfile(@CurrentUser UserPrincipal currentUser) {
         ResponseData responseData = ResponseData.success(userService.getProfile(currentUser.getId()),
@@ -38,6 +42,7 @@ public class UserController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(ApiPath.USER_BY_ID)
     public ResponseEntity<ResponseData> deleteUser(@PathVariable(name = "user-id") UUID userId) {
@@ -46,12 +51,14 @@ public class UserController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping(ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadAvatar(@RequestParam MultipartFile file) {
         ResponseData responseData = ResponseData.success(userService.uploadAvatar(file), FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping
     public ResponseEntity<ResponseData> updateUser(@CurrentUser UserPrincipal currentUser,
                                                    @RequestBody UserUpdatingRequest request) {
