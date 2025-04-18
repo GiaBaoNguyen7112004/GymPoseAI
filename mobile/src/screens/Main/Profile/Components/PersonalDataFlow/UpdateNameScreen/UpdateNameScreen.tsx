@@ -1,53 +1,29 @@
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    ScrollView,
-    KeyboardAvoidingView,
-    Platform,
-    TextInput,
-    Keyboard
-} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useEffect, useRef, useState } from 'react'
 
-import { FlowProps } from '../../PersonalDataFlow'
 import { schema, SchemaType } from '@/utils/rules.util'
 import TextInputCustomV2 from '@/components/TextInputV2'
 import GradientButton from '@/components/GradientButton'
+import { useKeyboard } from '@/hooks/useKeyboard'
+import useUserData from '@/hooks/useUserData'
+import { ScreenComponentProps } from '../routes.config'
 
 type FormData = Pick<SchemaType, 'first_name' | 'last_name'>
 const formSchema = schema.pick(['first_name', 'last_name'])
 
-interface NameFormScreenProps extends FlowProps {
-    first_name?: string
-    last_name?: string
-}
-
-const NameFormScreen: React.FC<NameFormScreenProps> = ({ onGoBack, first_name, last_name }) => {
+function UpdateNameScreen({ onGoBack }: ScreenComponentProps) {
+    const { isKeyboardVisible } = useKeyboard()
+    const { userData } = useUserData()
     const methods = useForm<FormData>({
         defaultValues: {
-            first_name,
-            last_name
+            first_name: userData?.first_name,
+            last_name: userData?.last_name
         },
         mode: 'onBlur',
         resolver: yupResolver(formSchema)
     })
-
-    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true))
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false))
-
-        return () => {
-            keyboardDidShowListener.remove()
-            keyboardDidHideListener.remove()
-        }
-    }, [])
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -149,4 +125,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default NameFormScreen
+export default UpdateNameScreen

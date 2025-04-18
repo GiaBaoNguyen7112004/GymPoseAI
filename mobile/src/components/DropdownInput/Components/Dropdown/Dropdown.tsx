@@ -76,8 +76,8 @@ function CustomDropdown({
                 }}
                 closeModalWhenSelectedItem
                 onBlur={onblur}
-                mode='auto'
-                dropdownPosition='auto'
+                mode='modal'
+                dropdownPosition='bottom'
                 iconStyle={iconStyle}
                 itemTextStyle={[itemTextStyle]}
             />

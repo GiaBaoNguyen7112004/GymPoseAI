@@ -8,6 +8,7 @@ export interface User {
     date_of_birth: string
     weight: number
     height: number
+    isProfileComplete: boolean
 }
 
 export type Gender = 'Male' | 'Female' | 'Other'

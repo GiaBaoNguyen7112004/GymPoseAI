@@ -1,70 +1,79 @@
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import NavigationBar from 'src/components/NavigationBar'
-import Switch from 'src/components/Switch'
+import { useMutation } from '@tanstack/react-query'
+
+import NavigationBar from '@/components/NavigationBar'
+import Switch from '@/components/Switch'
+import AnimatedBottomSheetLayout, { AnimatedBottomSheetLayoutRef } from '@/components/layouts/AnimatedBottomSheetLayout'
+
+import { MainTabScreenProps } from '@/navigation/types'
+import { AppContext } from '@/Contexts/App.context'
+import { authApi } from '@/services/rest'
+import { showErrorAlert } from '@/utils/alert.util'
+
 import UserInfo from './Components/UserInfo'
 import SettingItem from './Components/SettingItem'
-import { MainTabScreenProps } from '@/navigation/types'
-import AnimatedBottomSheetLayout, { AnimatedBottomSheetLayoutRef } from '@/components/layouts/AnimatedBottomSheetLayout'
 import PersonalDataFlow from './Components/PersonalDataFlow'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
-    const bottomSheetModalRef = useRef<AnimatedBottomSheetLayoutRef>(null)
-    const switchRef = useRef(null)
+    const { setAuthenticated } = useContext(AppContext)
+    const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
 
-    const handleNotificationToggle = (value: boolean) => {
+    const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
+
+    const handleToggleNotification = (value: boolean) => {
         setIsNotificationEnabled(value)
     }
 
-    const handleCloseBottomSheet = () => {
-        bottomSheetModalRef.current?.close()
+    const openEditProfile = () => {
+        bottomSheetRef.current?.open(<PersonalDataFlow onClose={() => bottomSheetRef.current?.close()} />)
     }
-    const handleEditProfilePress = () => {
-        bottomSheetModalRef.current?.open(<PersonalDataFlow onClose={handleCloseBottomSheet} />)
+
+    const handleLogout = async () => {
+        await logout(undefined, {
+            onSuccess: () => setAuthenticated(false),
+            onError: () => showErrorAlert('default')
+        })
     }
 
     return (
-        <AnimatedBottomSheetLayout ref={bottomSheetModalRef}>
-            <View style={styles.mainContentWrapper}>
+        <AnimatedBottomSheetLayout ref={bottomSheetRef}>
+            <View style={styles.mainContent}>
                 <SafeAreaView style={styles.navBar}>
                     <NavigationBar title='Profile' callback={navigation.goBack} />
                 </SafeAreaView>
 
                 <ScrollView style={styles.scrollView}>
-                    <UserInfo editPress={handleEditProfilePress} />
+                    <UserInfo editPress={openEditProfile} />
 
-                    <View style={styles.settingWrapper}>
-                        <View style={styles.settingSection}>
-                            <Text style={styles.settingTitle}>Account</Text>
+                    <View style={styles.sectionWrapper}>
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>Account</Text>
                             <SettingItem
                                 icon='profileGradientOutline'
                                 label='Personal Data'
-                                onPress={handleEditProfilePress}
+                                onPress={openEditProfile}
                             />
                             <SettingItem icon='LockGradientOutline' label='Password and Security' />
                         </View>
 
-                        <View style={styles.settingSection}>
-                            <Text style={styles.settingTitle}>Notification</Text>
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>Notification</Text>
                             <SettingItem
                                 icon='bellGradientOutline'
                                 label='Pop-up Notification'
-                                onPress={() => handleNotificationToggle(!isNotificationEnabled)}
+                                onPress={() => handleToggleNotification(!isNotificationEnabled)}
                                 rightComponent={
-                                    <Switch
-                                        value={isNotificationEnabled}
-                                        onValueChange={handleNotificationToggle}
-                                        ref={switchRef}
-                                    />
+                                    <Switch value={isNotificationEnabled} onValueChange={handleToggleNotification} />
                                 }
                             />
                         </View>
 
-                        <View style={styles.settingSection}>
-                            <Text style={styles.settingTitle}>Other</Text>
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>Other</Text>
                             <SettingItem
                                 icon='messageGradientOutline'
                                 label='Contact Us'
@@ -81,8 +90,9 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 onPress={() => navigation.navigate('Setting')}
                             />
                         </View>
-                        <TouchableOpacity style={styles.logoutBtn}>
-                            <Text style={styles.logoutBtnText}>Log out</Text>
+
+                        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+                            <Text style={styles.logoutText}>Log out</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -94,31 +104,25 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
 export default Profile
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    contentWrapper: {
-        flex: 1
-    },
     navBar: {
         justifyContent: 'center'
     },
     scrollView: {
         flex: 1
     },
-    mainContentWrapper: {
+    mainContent: {
         flex: 1,
         backgroundColor: '#FFF',
         borderRadius: 30
     },
-    settingWrapper: {
+    sectionWrapper: {
         marginTop: 30,
         rowGap: 15,
         alignSelf: 'center',
         width: '90%',
         flex: 1
     },
-    settingSection: {
+    section: {
         padding: 20,
         backgroundColor: '#FFF',
         borderRadius: 16,
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
         shadowRadius: 40,
         elevation: 10
     },
-    settingTitle: {
+    sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
         lineHeight: 24,
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    logoutBtnText: {
+    logoutText: {
         color: '#1D1617',
         fontSize: 14,
         fontWeight: '500'

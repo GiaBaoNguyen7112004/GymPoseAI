@@ -1,5 +1,5 @@
 import http from '@/services/core/httpClient'
-import { AuthResponse, FindAccountResponse } from '@/types/auth.type'
+import { AuthResponse, FindAccountResponse, RegisterReqBody } from '@/types/auth.type'
 import {
     URL_LOGIN,
     URL_LOGOUT,
@@ -10,9 +10,10 @@ import {
     URL_RESEND_OTP_FORGOT_PASSWORD
 } from '@env'
 import { ResponseApi } from '@/types/utils.type'
+import storage from '@/utils/StorageManager.util'
 
 const authApi = {
-    registerAccount(body: { first_name: string; last_name: string; email: string; password: string }) {
+    registerAccount(body: RegisterReqBody) {
         return http.post<AuthResponse>(URL_REGISTER, body)
     },
     login(body: { email: string; password: string }) {
@@ -20,7 +21,8 @@ const authApi = {
     },
 
     logout() {
-        return http.post(URL_LOGOUT)
+        const body = { refresh_token: storage.getRefreshToken() }
+        return http.post(URL_LOGOUT, { body })
     },
     findAccount(body: { email: string }) {
         return http.post<FindAccountResponse>(URL_FORGOT_PASSWORD, body)

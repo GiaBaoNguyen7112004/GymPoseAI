@@ -1,18 +1,20 @@
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { AppContext } from '@/Contexts/App.context'
 import { RootStackParamList } from './types'
+import { userApi } from '@/services/rest'
 
-// Auth screens
+// Auth Screens
 import WelcomeScreen from '@/screens/Auth/Welcome'
 import Login from '@/screens/Auth/Login'
 import { Register } from '@/screens/Auth/Register'
 import ForgotPassword from '@/screens/Auth/ForgotPassword'
 
-// Main tabs
+// Main Tabs
 import MainTabs from './MainTabs'
 
-// App screens
+// App Screens
 import Notification from '@/screens/Other/Notification'
 import WorkoutHistoryCenter from '@/screens/Other/WorkoutHistoryCenter'
 import WorkoutHistoryDetail from '@/screens/Other/WorkoutHistoryDetail'
@@ -21,22 +23,23 @@ import WorkoutDetail from '@/screens/Other/WorkoutDetail'
 import ActivityTracker from '@/screens/Other/ActivityTracker'
 import Setting from '@/screens/Other/Setting'
 
-// Common screens
-import ContactUs from '../screens/Other/ContactUs'
-import PrivacyPolicy from '../screens/Other/PrivacyPolicy/PrivacyPolicy'
+// Common Screens
+import ContactUs from '@/screens/Other/ContactUs'
+import PrivacyPolicy from '@/screens/Other/PrivacyPolicy/PrivacyPolicy'
+import useUserData from '@/hooks/useUserData'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootStackNavigation() {
     const { isAuthenticated } = useContext(AppContext)
 
-    const navigationOptions: StackNavigationOptions = {
+    const screenOptions: StackNavigationOptions = {
         headerShown: false,
         gestureEnabled: true
     }
 
     return (
-        <RootStack.Navigator screenOptions={navigationOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>
+        <RootStack.Navigator screenOptions={screenOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>
             {isAuthenticated ? (
                 <RootStack.Group>
                     <RootStack.Screen name='Welcome' component={WelcomeScreen} options={{ gestureEnabled: false }} />
@@ -48,16 +51,17 @@ function RootStackNavigation() {
                     <RootStack.Screen name='WorkoutDetail' component={WorkoutDetail} />
                     <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
                     <RootStack.Screen name='Setting' component={Setting} />
+                    <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
+                    <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
                 </RootStack.Group>
             ) : (
                 <RootStack.Group>
                     <RootStack.Screen name='Login' component={Login} />
                     <RootStack.Screen name='CreateAccount' component={Register.CreateAccount} />
-                    <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
-                    <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
                     <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
                 </RootStack.Group>
             )}
+
             <RootStack.Group navigationKey={isAuthenticated ? 'user' : 'guest'}>
                 <RootStack.Screen name='ContactUs' component={ContactUs} />
                 <RootStack.Screen name='PrivacyPolicy' component={PrivacyPolicy} />

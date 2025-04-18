@@ -69,7 +69,6 @@ class Http {
 
                 if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
                     const message = (error.response?.data as any)?.message || error.message
-                    console.log(message)
                     return Promise.reject(error)
                 }
                 return Promise.reject(error)

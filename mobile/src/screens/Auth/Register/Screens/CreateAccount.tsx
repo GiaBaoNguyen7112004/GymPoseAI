@@ -11,19 +11,28 @@ import {
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import GradientButton from '@/components/GradientButton'
 import TextGradient from '@/components/TextGradient'
-import { Pressable } from 'react-native-gesture-handler'
+import { Pressable, ScrollView } from 'react-native-gesture-handler'
 import { schema, SchemaType } from '@/utils/rules.util'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import TextInputCustom from '@/components/TextInput'
 import CheckInput from '@/components/CheckInput'
 import { RootStackScreenProps } from '@/navigation/types'
+import { useKeyboard } from '@/hooks/useKeyboard'
+import { useMutation } from '@tanstack/react-query'
+import { authApi } from '@/services/rest'
+import { omit } from 'lodash'
+import handleFormError from '@/utils/handleFormError'
+import { useContext } from 'react'
+import { AppContext } from '@/Contexts/App.context'
 
 type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'password' | 'policy'>
 
 const FormSchema = schema.pick(['email', 'password', 'first_name', 'last_name', 'policy'])
 
 function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
+    const { setProfile } = useContext(AppContext)
+    const { isKeyboardVisible } = useKeyboard()
     const { ...methods } = useForm<FormData>({
         defaultValues: {
             email: '',
@@ -35,25 +44,37 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
         resolver: yupResolver(FormSchema),
         mode: 'onBlur'
     })
+    const registerMutation = useMutation({
+        mutationFn: authApi.registerAccount
+    })
     const canSubmit = methods.formState.isValid
+
     const handleLogin = () => {
         navigation.navigate('Login')
     }
-    const handleRegister = () => {
-        navigation.replace('CompleteProfile')
-    }
+    const handleRegister = methods.handleSubmit(async (data) => {
+        const body = omit(data, 'policy')
+        await registerMutation.mutateAsync(body, {
+            onSuccess: (data) => {
+                const user = data.data.data.user
+                setProfile(user)
+            },
+            onError: (errors) => handleFormError<FormData>(errors, methods.setError)
+        })
+    })
 
     return (
         <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View style={styles.containerCenterScreen}>
-                    <View>
+                    <View style={{ flex: 1 }}>
                         <View style={styles.callToAction}>
                             <Text style={styles.callToAction__desc}>Hey there,</Text>
                             <Text style={styles.callToAction__heading}>Create an Account</Text>
                         </View>
-                        <FormProvider {...methods}>
-                            <View style={styles.registerForm}>
+
+                        <ScrollView style={styles.registerForm} enabled={isKeyboardVisible}>
+                            <FormProvider {...methods}>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
                                         type='default'
@@ -94,8 +115,8 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
                                         name='policy'
                                     />
                                 </View>
-                            </View>
-                        </FormProvider>
+                            </FormProvider>
+                        </ScrollView>
                     </View>
                     <View style={{ width: '100%', alignItems: 'center' }}>
                         <GradientButton
@@ -103,10 +124,7 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
                             activeOpacity={0.6}
                             Square
                             disabled={!canSubmit}
-                            style={{
-                                ...styles.btnRegister,
-                                opacity: canSubmit ? 1 : 0.6
-                            }}
+                            style={styles.btnRegister}
                         >
                             <Text style={{ fontSize: 16, color: '#fff', fontWeight: '500' }}>Register</Text>
                         </GradientButton>
@@ -124,7 +142,6 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFF',
-        height: SCREEN_HEIGHT,
         flex: 1
     },
     containerCenterScreen: {
@@ -155,7 +172,7 @@ const styles = StyleSheet.create({
     registerForm: {
         marginTop: 30,
         width: SCREEN_WIDTH * 0.9,
-        alignItems: 'center'
+        flex: 1
     },
     rowForm: {
         position: 'relative',
@@ -173,7 +190,7 @@ const styles = StyleSheet.create({
     },
 
     loginWrapper: {
-        marginTop: 30,
+        marginTop: 15,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'

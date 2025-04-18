@@ -13,5 +13,5 @@ export const useKeyboard = () => {
         }
     }, [])
 
-    return isKeyboardVisible
+    return { isKeyboardVisible }
 }

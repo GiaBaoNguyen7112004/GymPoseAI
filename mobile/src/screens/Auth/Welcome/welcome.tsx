@@ -1,42 +1,47 @@
-import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
 import GradientButton from '@/components/GradientButton'
 import MyIcon from '@/components/Icon'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { RootStackScreenProps } from '@/navigation/types'
-import { useContext } from 'react'
-import { AppContext } from '@/Contexts/App.context'
-export default function WelcomeScreen({ navigation }: RootStackScreenProps<'Welcome'>) {
-    const { profile } = useContext(AppContext)
-    const handleGoToHome = () => {
+import useUserData from '@/hooks/useUserData'
+
+const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
+    const { userData } = useUserData()
+
+    const navigateBasedOnProfileCompletion = () => {
+        const isComplete = userData?.isProfileComplete
         navigation.reset({
             index: 0,
-            routes: [{ name: 'MainTab' }]
+            routes: [{ name: isComplete ? 'MainTab' : 'CompleteProfile' }]
         })
     }
+
     return (
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-            <SafeAreaView style={{ flex: 1, height: SCREEN_HEIGHT }}>
-                <View style={[styles.container]}>
-                    <View style={styles.topWrapper}>
-                        <MyIcon name='welcomeIcon' size={277} style={styles.banner} />
-                        <View style={styles.textWrapper}>
-                            <Text style={styles.heading}>Welcome, {profile?.first_name}</Text>
-                            <Text style={[styles.desc]}>
-                                You are all set now, let’s reach your goals together with us
-                            </Text>
-                        </View>
+        <SafeAreaView style={styles.flex}>
+            <View style={styles.container}>
+                <View style={styles.topWrapper}>
+                    <MyIcon name='welcomeIcon' size={277} style={styles.banner} />
+                    <View style={styles.textWrapper}>
+                        <Text style={styles.heading}>Welcome, {userData?.first_name}</Text>
+                        <Text style={styles.desc}>You are all set now, let’s reach your goals together with us</Text>
                     </View>
-                    <GradientButton style={styles.btn} Square onPress={handleGoToHome}>
-                        <Text style={styles.textInnerBtn}>Go To Home</Text>
-                    </GradientButton>
                 </View>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+
+                <GradientButton style={styles.btn} Square onPress={navigateBasedOnProfileCompletion}>
+                    <Text style={styles.textInnerBtn}>Go To Home</Text>
+                </GradientButton>
+            </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+    flex: {
+        flex: 1,
+        height: SCREEN_HEIGHT
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -81,3 +86,5 @@ const styles = StyleSheet.create({
         flexShrink: 0
     }
 })
+
+export default WelcomeScreen

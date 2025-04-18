@@ -24,3 +24,10 @@ export type FindAccountResponse = ResponseApi<
     },
     any
 >
+
+export type RegisterReqBody = {
+    first_name: string
+    last_name: string
+    email: string
+    password: string
+}
