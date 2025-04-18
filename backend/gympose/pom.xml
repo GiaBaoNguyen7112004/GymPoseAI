@@ -32,7 +32,15 @@
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
     </properties>
+
     <dependencies>
+        <!--        swagger-->
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version> <!-- Dùng bản 2.x cho Spring Boot 3+ -->
+        </dependency>
         <!--        tika for check mime type-->
         <dependency>
             <groupId>org.apache.tika</groupId>

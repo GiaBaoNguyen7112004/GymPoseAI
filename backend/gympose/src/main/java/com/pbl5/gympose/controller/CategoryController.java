@@ -6,6 +6,8 @@ import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
 import com.pbl5.gympose.service.CategoryService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,11 @@ import java.util.UUID;
 @RequestMapping(ApiPath.CATEGORIES)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Category API", description = "Category management")
 public class CategoryController {
     CategoryService categoryService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ResponseData> createCategory(@Valid @RequestBody CategoryCreationRequest categoryCreationRequest) {
@@ -38,6 +42,7 @@ public class CategoryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(ApiPath.CATEGORY_BY_ID)
     public ResponseEntity<ResponseData> updateCategory(@PathVariable(name = "category-id") UUID categoryId,
@@ -54,6 +59,7 @@ public class CategoryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(ApiPath.CATEGORY_BY_ID)
     public ResponseEntity<ResponseData> deleteCategory(@PathVariable(name = "category-id") UUID categoryId) {

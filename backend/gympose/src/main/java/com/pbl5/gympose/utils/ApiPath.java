@@ -29,6 +29,8 @@ public final class ApiPath {
     public static final String USER_BY_ID = "/{user-id}";
     public static final String USER_PROFILE = "/profile";
 
+    // SWAGGER
+    public static final String SWAGGER = "/swagger-ui.html";
 
     private ApiPath() {
     }
