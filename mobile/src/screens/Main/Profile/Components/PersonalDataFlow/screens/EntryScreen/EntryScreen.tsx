@@ -7,11 +7,20 @@ interface ProfileScreenProps extends FlowProps {
     userInfo: User | null
 }
 
-const ProfileScreen = ({ onNavigate, userInfo }: ProfileScreenProps) => {
+const MenuItem = ({ title, onPress, isLast }: { title: string; onPress: () => void; isLast?: boolean }) => (
+    <TouchableOpacity style={[styles.menuItem, isLast && styles.menuItemLast]} onPress={onPress}>
+        <Text style={styles.menuText}>{title}</Text>
+        <Ionicons name='chevron-forward' size={20} color='#888' />
+    </TouchableOpacity>
+)
+
+const ProfileScreen = ({ onNavigate, userInfo, onGoBack }: ProfileScreenProps) => {
+    const fullName = `${userInfo?.first_name ?? ''} ${userInfo?.last_name ?? ''}`.trim()
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onGoBack}>
                     <Ionicons name='close' size={24} color='black' />
                 </TouchableOpacity>
             </View>
@@ -21,9 +30,7 @@ const ProfileScreen = ({ onNavigate, userInfo }: ProfileScreenProps) => {
                     source={userInfo?.avatar ? { uri: userInfo.avatar } : require('@/assets/images/defaultAvatar.png')}
                     style={styles.profileImage}
                 />
-                <Text style={styles.profileName}>
-                    {`${userInfo?.first_name ?? ''} ${userInfo?.last_name ?? ''}`.trim()}
-                </Text>
+                <Text style={styles.profileName}>{fullName}</Text>
                 <Text style={styles.profilePlatform}>FitnessX</Text>
             </View>
 
@@ -36,19 +43,14 @@ const ProfileScreen = ({ onNavigate, userInfo }: ProfileScreenProps) => {
     )
 }
 
-const MenuItem = ({ title, onPress, isLast }: { title: string; onPress: () => void; isLast?: boolean }) => (
-    <TouchableOpacity style={[styles.menuItem, isLast && { borderBottomWidth: 0 }]} onPress={onPress}>
-        <Text style={styles.menuText}>{title}</Text>
-        <Ionicons name='chevron-forward' size={20} color='#888' />
-    </TouchableOpacity>
-)
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#FFF'
     },
     header: {
-        paddingVertical: 20
+        paddingVertical: 20,
+        paddingHorizontal: 16
     },
     profileSection: {
         alignItems: 'center'
@@ -72,9 +74,10 @@ const styles = StyleSheet.create({
         color: '#ADA4A5'
     },
     menuContainer: {
-        backgroundColor: 'white',
+        backgroundColor: '#FFF',
         borderRadius: 10,
         marginTop: 16,
+        marginHorizontal: 16,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#DDDADA'
@@ -86,6 +89,9 @@ const styles = StyleSheet.create({
         padding: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#DDDADA'
+    },
+    menuItemLast: {
+        borderBottomWidth: 0
     },
     menuText: {
         fontSize: 16,

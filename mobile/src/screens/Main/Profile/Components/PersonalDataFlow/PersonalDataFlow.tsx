@@ -1,19 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, SafeAreaView, View, SafeAreaViewBase } from 'react-native'
 import EntryScreen from './screens/EntryScreen'
-import NameFormScreen from './screens/NameFormScreen'
-import { useQuery } from '@tanstack/react-query'
+import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query'
 import { AppContext } from '@/Contexts/App.context'
 import { userApi } from '@/services/rest'
+import UpdateProfileNameScreen from './screens/UpdateProfileNameScreen'
+import PreviewAvatarScreen from './screens/PreviewAvatarScreen'
+import { AxiosResponse } from 'axios'
+import { ResponseApi } from '@/types/utils.type'
+import { User } from '@/types/user.type'
 
 export type Flow = 'entry' | 'editProfile' | 'editName' | 'changeAvatar'
 
 export type FlowProps = {
     onNavigate: (flow: Flow) => void
     onGoBack?: () => void
+    refetch?: (options?: RefetchOptions) => Promise<QueryObserverResult<AxiosResponse<ResponseApi<User, any>>, Error>>
 }
 
-const PersonalDataFlow = () => {
+interface PersonalDataFlowProps {
+    onClose: () => void
+}
+const PersonalDataFlow = ({ onClose }: PersonalDataFlowProps) => {
     const [flowStack, setFlowStack] = useState<Flow[]>(['entry'])
 
     const currentFlow = flowStack[flowStack.length - 1]
@@ -46,10 +54,10 @@ const PersonalDataFlow = () => {
     const renderCurrentFlow = () => {
         switch (currentFlow) {
             case 'entry':
-                return <EntryScreen userInfo={userInfo} onNavigate={navigateTo} />
+                return <EntryScreen userInfo={userInfo} onNavigate={navigateTo} onGoBack={onClose} />
             case 'editName':
                 return (
-                    <NameFormScreen
+                    <UpdateProfileNameScreen
                         refetch={refetch}
                         onNavigate={navigateTo}
                         onGoBack={goBack}
@@ -57,6 +65,8 @@ const PersonalDataFlow = () => {
                         last_name={userInfo?.last_name}
                     />
                 )
+            case 'changeAvatar':
+                return <PreviewAvatarScreen onNavigate={navigateTo} onGoBack={goBack} />
             default:
                 return null
         }
@@ -69,7 +79,6 @@ export default PersonalDataFlow
 
 const styles = StyleSheet.create({
     wrapper: {
-        paddingHorizontal: 20,
         flex: 1
     }
 })

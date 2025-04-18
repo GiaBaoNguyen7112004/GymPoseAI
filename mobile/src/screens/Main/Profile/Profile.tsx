@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import NavigationBar from 'src/components/NavigationBar'
 import Switch from 'src/components/Switch'
@@ -19,8 +19,11 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
         setIsNotificationEnabled(value)
     }
 
+    const handleCloseBottomSheet = () => {
+        bottomSheetModalRef.current?.close()
+    }
     const handleEditProfilePress = () => {
-        bottomSheetModalRef.current?.open(<PersonalDataFlow />)
+        bottomSheetModalRef.current?.open(<PersonalDataFlow onClose={handleCloseBottomSheet} />)
     }
 
     return (
@@ -36,7 +39,11 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                     <View style={styles.settingWrapper}>
                         <View style={styles.settingSection}>
                             <Text style={styles.settingTitle}>Account</Text>
-                            <SettingItem icon='profileGradientOutline' label='Personal Data' />
+                            <SettingItem
+                                icon='profileGradientOutline'
+                                label='Personal Data'
+                                onPress={handleEditProfilePress}
+                            />
                             <SettingItem icon='LockGradientOutline' label='Password and Security' />
                         </View>
 
@@ -74,6 +81,9 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 onPress={() => navigation.navigate('Setting')}
                             />
                         </View>
+                        <TouchableOpacity style={styles.logoutBtn}>
+                            <Text style={styles.logoutBtnText}>Log out</Text>
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>
@@ -126,5 +136,18 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: '#1D1617',
         marginBottom: 10
+    },
+    logoutBtn: {
+        backgroundColor: '#DDDADA',
+        height: 40,
+        borderRadius: 12,
+        marginBottom: 20,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    logoutBtnText: {
+        color: '#1D1617',
+        fontSize: 14,
+        fontWeight: '500'
     }
 })
