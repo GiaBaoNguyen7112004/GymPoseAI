@@ -44,82 +44,80 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
     }
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-            <SafeAreaView style={styles.container}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                    <View style={styles.containerCenterScreen}>
-                        <View>
-                            <View style={styles.callToAction}>
-                                <Text style={styles.callToAction__desc}>Hey there,</Text>
-                                <Text style={styles.callToAction__heading}>Create an Account</Text>
-                            </View>
-                            <FormProvider {...methods}>
-                                <View style={styles.registerForm}>
-                                    <View style={styles.rowForm}>
-                                        <TextInputCustom
-                                            type='default'
-                                            icon='profileIcon'
-                                            autoCapitalize='none'
-                                            placeholder='First Name'
-                                            name='first_name'
-                                        />
-                                    </View>
-                                    <View style={styles.rowForm}>
-                                        <TextInputCustom
-                                            type='default'
-                                            icon='profileIcon'
-                                            autoCapitalize='none'
-                                            placeholder='Last Name'
-                                            name='last_name'
-                                        />
-                                    </View>
-                                    <View style={styles.rowForm}>
-                                        <TextInputCustom
-                                            type='default'
-                                            icon='messageIcon'
-                                            placeholder='Email'
-                                            name='email'
-                                        />
-                                    </View>
-                                    <View style={styles.rowForm}>
-                                        <TextInputCustom
-                                            type='password'
-                                            icon='lockIcon'
-                                            placeholder='Password'
-                                            name='password'
-                                        />
-                                    </View>
-                                    <View style={styles.rowForm}>
-                                        <CheckInput
-                                            label=' By continuing you accept our Privacy Policy and Term of Use'
-                                            name='policy'
-                                        />
-                                    </View>
+        <SafeAreaView style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <View style={styles.containerCenterScreen}>
+                    <View>
+                        <View style={styles.callToAction}>
+                            <Text style={styles.callToAction__desc}>Hey there,</Text>
+                            <Text style={styles.callToAction__heading}>Create an Account</Text>
+                        </View>
+                        <FormProvider {...methods}>
+                            <View style={styles.registerForm}>
+                                <View style={styles.rowForm}>
+                                    <TextInputCustom
+                                        type='default'
+                                        icon='profileIcon'
+                                        autoCapitalize='none'
+                                        placeholder='First Name'
+                                        name='first_name'
+                                    />
                                 </View>
-                            </FormProvider>
-                        </View>
-                        <View style={{ width: '100%', alignItems: 'center' }}>
-                            <GradientButton
-                                onPress={handleRegister}
-                                activeOpacity={0.6}
-                                Square
-                                disabled={!canSubmit}
-                                style={{
-                                    ...styles.btnRegister,
-                                    opacity: canSubmit ? 1 : 0.6
-                                }}
-                            >
-                                <Text style={{ fontSize: 16, color: '#fff', fontWeight: '500' }}>Register</Text>
-                            </GradientButton>
-                            <Pressable style={styles.loginWrapper} onPress={handleLogin}>
-                                <Text style={styles.callToAction__desc}>Already have an account?</Text>
-                                <TextGradient style={styles.strongText} text='  Login' />
-                            </Pressable>
-                        </View>
+                                <View style={styles.rowForm}>
+                                    <TextInputCustom
+                                        type='default'
+                                        icon='profileIcon'
+                                        autoCapitalize='none'
+                                        placeholder='Last Name'
+                                        name='last_name'
+                                    />
+                                </View>
+                                <View style={styles.rowForm}>
+                                    <TextInputCustom
+                                        type='default'
+                                        icon='messageIcon'
+                                        placeholder='Email'
+                                        name='email'
+                                    />
+                                </View>
+                                <View style={styles.rowForm}>
+                                    <TextInputCustom
+                                        type='password'
+                                        icon='lockIcon'
+                                        placeholder='Password'
+                                        name='password'
+                                    />
+                                </View>
+                                <View style={styles.rowForm}>
+                                    <CheckInput
+                                        label=' By continuing you accept our Privacy Policy and Term of Use'
+                                        name='policy'
+                                    />
+                                </View>
+                            </View>
+                        </FormProvider>
                     </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+                    <View style={{ width: '100%', alignItems: 'center' }}>
+                        <GradientButton
+                            onPress={handleRegister}
+                            activeOpacity={0.6}
+                            Square
+                            disabled={!canSubmit}
+                            style={{
+                                ...styles.btnRegister,
+                                opacity: canSubmit ? 1 : 0.6
+                            }}
+                        >
+                            <Text style={{ fontSize: 16, color: '#fff', fontWeight: '500' }}>Register</Text>
+                        </GradientButton>
+                        <Pressable style={styles.loginWrapper} onPress={handleLogin}>
+                            <Text style={styles.callToAction__desc}>Already have an account?</Text>
+                            <TextGradient style={styles.strongText} text='  Login' />
+                        </Pressable>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
     )
 }
 
