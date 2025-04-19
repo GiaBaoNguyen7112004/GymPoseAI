@@ -1,36 +1,54 @@
 import { useState } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
-import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native'
+import {
+    KeyboardTypeOptions,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextInput,
+    TextInputProps,
+    TouchableOpacity,
+    View,
+    ViewStyle
+} from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyIcon from '@/components/Icon'
 import { IconName } from '@/constants/icon.constants'
 
 export interface ControllerInputProps extends Omit<TextInputProps, 'defaultValue'>, UseControllerProps {
     type: KeyboardTypeOptions | 'password'
-    icon: IconName
+    icon?: IconName
+    containerStyle?: StyleProp<ViewStyle>
 }
 
-function ControlledInput({ type = 'default', icon, name, rules, defaultValue, ...inputProps }: ControllerInputProps) {
+function ControlledInput({
+    type = 'default',
+    icon,
+    name,
+    rules,
+    defaultValue,
+    style,
+    containerStyle,
+    ...inputProps
+}: ControllerInputProps) {
     const { field, fieldState } = useController({ name, rules, defaultValue })
     const errorMessage = fieldState.error?.message
-    const isPassword = type == 'password'
+    const isPassword = type === 'password'
     const [isHidePassword, setHidePassword] = useState<boolean>(isPassword)
-    const toggleHidePassword = () => {
-        setHidePassword((prev) => !prev)
-    }
+    const toggleHidePassword = () => setHidePassword((prev) => !prev)
 
     return (
-        <View style={styles.inputWrapper}>
-            <MyIcon name={icon} size={18} style={styles.icon} />
+        <View style={[styles.inputWrapper, containerStyle, !!errorMessage && { borderColor: '#FF0000' }]}>
+            {icon && <MyIcon name={icon} size={18} style={styles.icon} />}
             <TextInput
                 secureTextEntry={isHidePassword}
-                style={styles.input}
+                style={[styles.input, style, icon ? {} : { paddingLeft: 4 }]}
                 {...inputProps}
                 placeholderTextColor='#ADA4A5'
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value?.toString() ?? ''}
-                keyboardType={type != 'password' ? type : 'default'}
+                keyboardType={type !== 'password' ? type : 'default'}
             />
             {isPassword && (
                 <TouchableOpacity style={styles.hidePasswordIcon} onPress={toggleHidePassword}>
@@ -41,7 +59,7 @@ function ControlledInput({ type = 'default', icon, name, rules, defaultValue, ..
                     />
                 </TouchableOpacity>
             )}
-            {errorMessage && <Text style={styles.error_msg}> {errorMessage}</Text>}
+            {errorMessage && <Text style={styles.error_msg}>{errorMessage}</Text>}
         </View>
     )
 }

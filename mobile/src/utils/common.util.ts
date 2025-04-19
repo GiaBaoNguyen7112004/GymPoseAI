@@ -1,3 +1,4 @@
+import { Linking } from 'react-native'
 import { COLOR_BRANDS } from '../constants/common.constants'
 import { IconName } from '../constants/icon.constants'
 import { NotificationType } from '../types/notification.type'
@@ -17,4 +18,8 @@ export function getAvatarWithIconNotify(type: NotificationType) {
         icon: iconName,
         colors: iconColor
     }
+}
+
+export const openLink = (url: string) => {
+    Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err))
 }

@@ -33,6 +33,6 @@ export type RegisterReqBody = {
 }
 
 export type ChangePasswordRedBody = {
+    old_password: string
     password: string
-    newPassword: string
 }

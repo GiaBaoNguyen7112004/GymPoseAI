@@ -1,7 +1,7 @@
 import http from '@/services/core/httpClient'
 import storage from '@/utils/StorageManager.util'
 
-import { AuthResponse, ChangePasswordRedBody, FindAccountResponse, RegisterReqBody } from '@/types/auth.type'
+import { AuthResponse, FindAccountResponse, RegisterReqBody } from '@/types/auth.type'
 
 import { ResponseApi } from '@/types/utils.type'
 
@@ -12,8 +12,7 @@ import {
     URL_FORGOT_PASSWORD,
     URL_VERIFY_OTP,
     URL_RESET_PASSWORD,
-    URL_RESEND_OTP_FORGOT_PASSWORD,
-    URL_CHANGE_PASSWORD
+    URL_RESEND_OTP_FORGOT_PASSWORD
 } from '@env'
 
 const authApi = {
@@ -45,10 +44,6 @@ const authApi = {
 
     resetPassword(body: { email: string; password: string; otp: string }) {
         return http.post<ResponseApi<any, any>>(URL_RESET_PASSWORD, body)
-    },
-
-    changePassword(body: ChangePasswordRedBody) {
-        return http.put<ResponseApi<any, any>>(URL_CHANGE_PASSWORD, body)
     }
 }
 
