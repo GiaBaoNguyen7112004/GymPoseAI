@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import WorkoutChart, { ViewModeType } from '@/components/WorkoutChart'
+import WorkoutChart from '@/components/WorkoutChart'
 import CustomDropdown from '@/components/DropdownInput/Components/Dropdown'
 import { useQuery } from '@tanstack/react-query'
 import { ViewModeDropdown } from '@/constants/dropdown.constant'
 import { workoutHistoryApi } from '@/services/rest'
+import { ViewModeType } from '@/types/utils.type'
 
 interface WorkoutProgressProps {
     user_id: string
@@ -33,8 +34,6 @@ function WorkoutProgressChart({ user_id }: WorkoutProgressProps) {
                     textStyle={styles.viewModeText}
                     iconStyle={styles.viewModeIcon}
                     onChange={handleChangeViewMode}
-                    itemTextStyle={styles.dropDownItemStyle}
-                    containerDropdownStyle={styles.dropDownContainerStyle}
                 />
             </View>
             <WorkoutChart viewMode={viewMode} workoutData={workoutHistoryData} />

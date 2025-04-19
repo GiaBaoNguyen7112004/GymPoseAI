@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
     },
     containerList: {
         borderRadius: 14,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        minWidth: 300
     },
     dropdown: {
         flex: 1

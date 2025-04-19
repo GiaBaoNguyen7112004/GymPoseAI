@@ -1,4 +1,4 @@
-import { BaseQueryConfig } from '@/types/utils.type'
+import { BaseQueryConfig, ResponseApi } from '@/types/utils.type'
 import http from '../core/httpClient'
 import { URL_NOTIFICATION } from '@env'
 import { ResponseAPINotificationPage } from '@/types/notification.type'
@@ -13,7 +13,7 @@ const notificationApi = {
         return http.put(`${URL_NOTIFICATION}/${id}/read`)
     },
     deleteNotification({ id }: { id: string }) {
-        return http.delete(`${URL_NOTIFICATION}/${id}/delete`)
+        return http.delete<ResponseApi<any, any>>(`${URL_NOTIFICATION}/${id}/delete`)
     }
 }
 

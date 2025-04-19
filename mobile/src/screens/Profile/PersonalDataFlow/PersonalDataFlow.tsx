@@ -19,10 +19,15 @@ const PersonalDataFlow = ({ onClose }: PersonalDataFlowProps) => {
     const goBack = () => {
         setFlowStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))
     }
+    const goToTop = () => {
+        setFlowStack(['entry'])
+    }
 
     return (
         <View style={styles.wrapper}>
-            {ScreenComponent && <ScreenComponent onNavigate={navigateTo} onGoBack={goBack} onClose={onClose} />}
+            {ScreenComponent && (
+                <ScreenComponent onNavigate={navigateTo} onGoBack={goBack} onClose={onClose} goToTop={goToTop} />
+            )}
         </View>
     )
 }

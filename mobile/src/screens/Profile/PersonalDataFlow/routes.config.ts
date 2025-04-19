@@ -4,4 +4,5 @@ export type ScreenComponentProps = {
     onNavigate?: (flow: Flow) => void
     onGoBack?: () => void
     onClose?: () => void
+    goToTop?: () => void
 }

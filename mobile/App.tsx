@@ -23,6 +23,8 @@ import { AppProvider } from './src/Contexts/App.context'
 
 // Utils
 import storage from './src/utils/StorageManager.util'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { toastFitnessXConfig } from './src/config/toast.config'
 
 // Khởi tạo linking
 const prefix = Linking.createURL('/')
@@ -67,9 +69,9 @@ export default function App() {
                         <NavigationContainer linking={linking}>
                             <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
                             <RootStackNavigation />
-                            <Toast />
                         </NavigationContainer>
                     </BottomSheetModalProvider>
+                    <Toast config={toastFitnessXConfig} />
                 </AppProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>

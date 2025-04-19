@@ -31,3 +31,8 @@ export type RegisterReqBody = {
     email: string
     password: string
 }
+
+export type ChangePasswordRedBody = {
+    old_password: string
+    password: string
+}

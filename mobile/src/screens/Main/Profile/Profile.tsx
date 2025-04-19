@@ -14,7 +14,8 @@ import { showErrorAlert } from '@/utils/alert.util'
 
 import UserInfo from './Components/UserInfo'
 import SettingItem from './Components/SettingItem'
-import PersonalDataFlow from './Components/PersonalDataFlow'
+import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
+import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity/PasswordAndSecurity'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { setAuthenticated } = useContext(AppContext)
@@ -31,11 +32,13 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const openEditProfile = () => {
         bottomSheetRef.current?.open(<PersonalDataFlow onClose={() => bottomSheetRef.current?.close()} />)
     }
-
+    const openPasswordAndSecurity = () => {
+        bottomSheetRef.current?.open(<PasswordAndSecurity onClose={() => bottomSheetRef.current?.close()} />)
+    }
     const handleLogout = async () => {
         await logout(undefined, {
             onSuccess: () => setAuthenticated(false),
-            onError: () => showErrorAlert('default')
+            onError: (errors) => showErrorAlert('default')
         })
     }
 
@@ -57,7 +60,11 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 label='Personal Data'
                                 onPress={openEditProfile}
                             />
-                            <SettingItem icon='LockGradientOutline' label='Password and Security' />
+                            <SettingItem
+                                icon='LockGradientOutline'
+                                label='Password and Security'
+                                onPress={openPasswordAndSecurity}
+                            />
                         </View>
 
                         <View style={styles.section}>

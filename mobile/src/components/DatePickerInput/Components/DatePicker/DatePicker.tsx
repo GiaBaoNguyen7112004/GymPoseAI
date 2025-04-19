@@ -11,33 +11,28 @@ interface DatePickerProps {
 }
 
 function DatePicker({ label, value, onChange, onBlur }: DatePickerProps) {
-    const [isShowDatePicker, setShowDatePicker] = useState<boolean>(false)
-    const [datePicked, setDatePicked] = useState<Date | null>(null)
-    const handleToggleShowDatePicker = () => {
-        setShowDatePicker((pre) => !pre)
+    const [isVisible, setIsVisible] = useState(false)
+
+    const handleConfirm = (selectedDate: Date) => {
+        onChange(selectedDate)
+        setIsVisible(false)
+        onBlur?.()
     }
 
-    const onConfirmPickedDate = (dateValue: Date) => {
-        setDatePicked(dateValue)
-        onChange(dateValue)
-        setShowDatePicker(false)
-        if (onBlur) onBlur()
-    }
     return (
         <>
-            <Pressable onPress={handleToggleShowDatePicker}>
-                {datePicked ? (
-                    <Text>{moment(datePicked).format('DD/MM/YYYY')}</Text>
-                ) : (
-                    <Text style={styles.label}>{label}</Text>
-                )}
+            <Pressable onPress={() => setIsVisible(true)}>
+                <Text style={value ? undefined : styles.label}>
+                    {value ? moment(value).format('DD/MM/YYYY') : label}
+                </Text>
             </Pressable>
+
             <DateTimePickerModal
-                isVisible={isShowDatePicker}
+                isVisible={isVisible}
                 mode='date'
-                onConfirm={onConfirmPickedDate}
-                onCancel={handleToggleShowDatePicker}
                 date={value}
+                onConfirm={handleConfirm}
+                onCancel={() => setIsVisible(false)}
             />
         </>
     )
@@ -46,5 +41,10 @@ function DatePicker({ label, value, onChange, onBlur }: DatePickerProps) {
 export default DatePicker
 
 const styles = StyleSheet.create({
-    label: { color: '#ADA4A5', fontSize: 14, fontWeight: '400', lineHeight: 18 }
+    label: {
+        color: '#ADA4A5',
+        fontSize: 14,
+        fontWeight: '400',
+        lineHeight: 18
+    }
 })
