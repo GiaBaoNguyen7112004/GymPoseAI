@@ -89,7 +89,11 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
                     />
                 )}
 
-                <TouchableOpacity activeOpacity={1} style={styles.bottomHelp}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.bottomHelp}
+                    onPress={() => navigation.navigate('ContactUs')}
+                >
                     <Text style={{ color: '#318bfb' }}>Need more help?</Text>
                 </TouchableOpacity>
             </SafeAreaView>

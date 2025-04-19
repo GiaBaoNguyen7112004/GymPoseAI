@@ -39,7 +39,7 @@ export type MainTabParamList = {
     Home: undefined
     WorkoutTracker: undefined
     Search: undefined
-    StoryTaker: undefined
+    BlueToothScan: undefined
     Profile: undefined
 }
 

@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '50%',
         left: '50%',
-        transform: [{ translateX: -25 }, { translateY: -10 }],
+        transform: [{ translateX: '-50%' }, { translateY: -10 }],
         backgroundColor: '#FFF',
         paddingHorizontal: 10
     },

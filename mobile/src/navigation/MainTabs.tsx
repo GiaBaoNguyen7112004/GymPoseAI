@@ -1,15 +1,15 @@
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StyleSheet, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import TabBarComponent from '@/components/BottomTabBar/BottomTabBar'
+import TabBarComponent from '@/components/BottomTabBar'
 import MyIcon from '@/components/Icon'
 import Home from '@/screens/Main/Home/Home'
 import WorkoutTracker from '@/screens/Main/WorkoutTracker'
 import Search from '@/screens/Main/Search/Search'
-import StoryTaker from '@/screens/Main/StoryTaker/StoryTaker'
-import Profile from '@/screens/Main/Profile'
 import { MainTabParamList } from './types'
 import { IconName } from '@/constants/icon.constants'
+import Profile from '@/screens/Main/Profile'
+import BlueToothScan from '@/screens/Main/BlueToothScan'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
@@ -43,8 +43,8 @@ const MainTabs = () => {
                 }}
             />
             <Tab.Screen
-                name='StoryTaker'
-                component={StoryTaker}
+                name='BlueToothScan'
+                component={BlueToothScan}
                 options={{
                     tabBarIcon: renderTabIcon('cameraIcon', 'cameraIconFilled'),
                     tabBarStyle: { display: 'none' }
