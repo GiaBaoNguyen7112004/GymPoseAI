@@ -8,10 +8,9 @@ import { searchApi } from '@/services/rest'
 import SearchBar from './Components/SearchBar'
 import { Exercise } from '@/types/exercises.type'
 import WorkoutCard from '@/components/WorkoutCard'
-import { HomeTabScreenProps } from '@/navigation/types'
-import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet'
+import { MainTabScreenProps } from '@/navigation/types'
 
-function Search({ navigation }: HomeTabScreenProps<'Search'>) {
+function Search({ navigation }: MainTabScreenProps<'Search'>) {
     const [searchText, setSearchText] = useState<string>('')
     const debounceValue = useDebounce(searchText, 500)
 

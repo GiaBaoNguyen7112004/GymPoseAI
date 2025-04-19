@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
         borderColor: '#DDDADA'
     },
     input: {
-        flex: 1
+        flex: 1,
+        color: '#1D1617'
     },
     divider: {
         height: 20,
