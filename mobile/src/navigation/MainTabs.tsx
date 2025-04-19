@@ -1,5 +1,5 @@
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import TabBarComponent from '@/components/BottomTabBar'
 import MyIcon from '@/components/Icon'
@@ -10,21 +10,33 @@ import { MainTabParamList } from './types'
 import { IconName } from '@/constants/icon.constants'
 import Profile from '@/screens/Main/Profile'
 import BlueToothScan from '@/screens/Main/BlueToothScan'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
 const MainTabs = () => {
+    const { bottom } = useSafeAreaInsets()
     return (
-        <Tab.Navigator initialRouteName='Home' tabBar={TabBarComponent} screenOptions={defaultTabOptions}>
+        <Tab.Navigator
+            initialRouteName='Home'
+            tabBar={(props) => <TabBarComponent {...props} containerStyle={{ height: 80 }} />}
+            screenOptions={defaultTabOptions}
+        >
             <Tab.Screen
                 name='Home'
                 component={Home}
-                options={{ tabBarIcon: renderTabIcon('homeIcon', 'homeIconFilled') }}
+                options={{
+                    tabBarIcon: renderTabIcon('homeIcon', 'homeIconFilled'),
+                    tabBarButton: renderTabButton
+                }}
             />
             <Tab.Screen
                 name='WorkoutTracker'
                 component={WorkoutTracker}
-                options={{ tabBarIcon: renderTabIcon('activity', 'activityFilled') }}
+                options={{
+                    tabBarIcon: renderTabIcon('activity', 'activityFilled'),
+                    tabBarButton: renderTabButton
+                }}
             />
             <Tab.Screen
                 name='Search'
@@ -39,7 +51,8 @@ const MainTabs = () => {
                         >
                             <MyIcon name='searchIcon' size={23} />
                         </LinearGradient>
-                    )
+                    ),
+                    tabBarButton: renderTabButton
                 }}
             />
             <Tab.Screen
@@ -47,13 +60,16 @@ const MainTabs = () => {
                 component={BlueToothScan}
                 options={{
                     tabBarIcon: renderTabIcon('cameraIcon', 'cameraIconFilled'),
-                    tabBarStyle: { display: 'none' }
+                    tabBarButton: renderTabButton
                 }}
             />
             <Tab.Screen
                 name='Profile'
                 component={Profile}
-                options={{ tabBarIcon: renderTabIcon('profileLight', 'profileLightFilled') }}
+                options={{
+                    tabBarIcon: renderTabIcon('profileLight', 'profileLightFilled'),
+                    tabBarButton: renderTabButton
+                }}
             />
         </Tab.Navigator>
     )
@@ -72,17 +88,20 @@ const defaultTabOptions: BottomTabNavigationOptions = {
 
 const renderTabIcon = (iconName: IconName, iconActive: IconName, iconSize = 23) => {
     return ({ focused }: { focused: boolean }) => {
-        if (focused) {
-            return (
-                <View style={styles.activeIconContainer}>
-                    <MyIcon name={iconActive} size={iconSize} />
-                    <MyIcon name='dotGradient' size={4} style={styles.dotIndicator} />
-                </View>
-            )
-        }
-        return <MyIcon name={iconName} size={iconSize} />
+        return (
+            <View style={styles.activeIconContainer}>
+                <MyIcon name={focused ? iconActive : iconName} size={iconSize} />
+                {focused && <MyIcon name='dotGradient' size={4} style={styles.dotIndicator} />}
+            </View>
+        )
     }
 }
+
+const renderTabButton = ({ onPress, ...rest }: any) => (
+    <TouchableWithoutFeedback onPress={onPress}>
+        <View {...rest} />
+    </TouchableWithoutFeedback>
+)
 
 const styles = StyleSheet.create({
     activeIconContainer: {

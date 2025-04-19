@@ -1,8 +1,8 @@
 import React from 'react'
-import { View } from 'react-native'
+import { StyleProp, View, ViewStyle } from 'react-native'
 import { BottomTabBar, BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
-// layout is stored as module variable
 let tabBarLayout = {
     x: 0,
     y: 0,
@@ -10,21 +10,21 @@ let tabBarLayout = {
     height: 0
 }
 
-// there is exported way to get current tabbar height
 export function getTabBarHeight() {
     return tabBarLayout.height
 }
+interface TabBarComponentProps extends BottomTabBarProps {
+    containerStyle?: StyleProp<ViewStyle>
+}
 
-// there is simple tab bar component used when creating navigator that will update this layout
-export default function TabBarComponent(props: BottomTabBarProps) {
+export default function TabBarComponent({ containerStyle, ...bottomBarProps }: TabBarComponentProps) {
     return (
-        <View
-            collapsable={false}
+        <TouchableWithoutFeedback
             onLayout={(event) => {
                 tabBarLayout = event.nativeEvent.layout
             }}
         >
-            <BottomTabBar {...props} />
-        </View>
+            <BottomTabBar {...bottomBarProps} style={containerStyle} />
+        </TouchableWithoutFeedback>
     )
 }

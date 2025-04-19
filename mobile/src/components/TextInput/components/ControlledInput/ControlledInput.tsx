@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         color: '#FF0000',
         fontSize: 12,
         position: 'absolute',
-        bottom: -14,
+        bottom: -18,
         left: 10
     }
 })
