@@ -1,4 +1,13 @@
+import React from 'react'
+import { View, ActivityIndicator, StatusBar } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import Toast from 'react-native-toast-message'
 import * as Linking from 'expo-linking'
+
+// Font Poppins
 import {
     useFonts,
     Poppins_300Light,
@@ -7,18 +16,21 @@ import {
     Poppins_600SemiBold,
     Poppins_700Bold
 } from '@expo-google-fonts/poppins'
-import Toast from 'react-native-toast-message'
-import { ActivityIndicator, View } from 'react-native'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+
+// Navigation & Contexts
 import RootStackNavigation from './src/navigation/RootStackNavigation'
-import { NavigationContainer } from '@react-navigation/native'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppProvider } from './src/Contexts/App.context'
+
+// Utils
 import storage from './src/utils/StorageManager.util'
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
+// Khởi tạo linking
 const prefix = Linking.createURL('/')
+const linking = {
+    prefixes: [prefix]
+}
 
+// Khởi tạo queryClient
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
@@ -27,11 +39,10 @@ const queryClient = new QueryClient({
     }
 })
 
+// Load local storage
 storage.load()
+
 export default function App() {
-    const linking = {
-        prefixes: [prefix]
-    }
     const [fontsLoaded] = useFonts({
         Poppins_Light: Poppins_300Light,
         Poppins_Regular: Poppins_400Regular,
@@ -49,11 +60,12 @@ export default function App() {
     }
 
     return (
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={{ flex: 1 }}>
             <QueryClientProvider client={queryClient}>
                 <AppProvider>
                     <BottomSheetModalProvider>
                         <NavigationContainer linking={linking}>
+                            <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
                             <RootStackNavigation />
                             <Toast />
                         </NavigationContainer>
