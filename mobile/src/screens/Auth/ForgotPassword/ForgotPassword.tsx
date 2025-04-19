@@ -46,11 +46,6 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
             return { ...prev, otp }
         })
     }
-
-    const handleGotoLoginWithFitnessX = () => {
-        navigation.navigate('Login')
-    }
-
     const handleRegister = () => {
         navigation.navigate('CreateAccount')
     }
@@ -71,7 +66,9 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
                     <FindAccountScreen
                         onSuccess={handleFindAccountSuccess}
                         email={formData.email}
-                        handleGotoLogin={handleGotoLoginWithFitnessX}
+                        handleGotoLogin={() => {
+                            navigation.navigate('Login')
+                        }}
                     />
                 )}
                 {screenStep === 2 && (
@@ -85,7 +82,9 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
                     <NewPasswordScreen
                         email={formData.email}
                         otp={formData.otp}
-                        onSuccess={handleGotoLoginWithFitnessX}
+                        onSuccess={() => {
+                            navigation.goBack()
+                        }}
                     />
                 )}
 

@@ -85,7 +85,12 @@ function UpdateProfileDetailScreen({ onGoBack, goToTop }: ScreenComponentProps) 
                                 </View>
                                 <View style={styles.rowForm}>
                                     <View style={{ flex: 1 }}>
-                                        <TextInputCustom name='weight' icon='weightScaleIcon' type='numeric' />
+                                        <TextInputCustom
+                                            name='weight'
+                                            icon='weightScaleIcon'
+                                            type='numeric'
+                                            returnKeyType='next'
+                                        />
                                     </View>
                                     <LinearGradient
                                         colors={['#C58BF2', '#EEA4CE']}
@@ -98,7 +103,12 @@ function UpdateProfileDetailScreen({ onGoBack, goToTop }: ScreenComponentProps) 
                                 </View>
                                 <View style={styles.rowForm}>
                                     <View style={{ flex: 1 }}>
-                                        <TextInputCustom name='height' icon='swapIcon' type='numeric' />
+                                        <TextInputCustom
+                                            name='height'
+                                            icon='swapIcon'
+                                            type='numeric'
+                                            returnKeyType='done'
+                                        />
                                     </View>
                                     <LinearGradient
                                         colors={['#C58BF2', '#EEA4CE']}

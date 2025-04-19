@@ -5,6 +5,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
@@ -25,153 +26,135 @@ import TextInputCustom from '@/components/TextInput'
 import { RootStackScreenProps } from '@/navigation/types'
 import { schema, SchemaType } from '@/utils/rules.util'
 import { DataGender } from '@/constants/dropdown.constant'
+import { useKeyboard } from '@/hooks/useKeyboard'
+import useUserData from '@/hooks/useUserData'
+import { userApi } from '@/services/rest'
+import { useMutation } from '@tanstack/react-query'
+import { Gender } from '@/types/user.type'
+import showToast from '@/utils/toast.util'
+import handleFormError from '@/utils/handleFormError'
 
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
 const formSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
 
 function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>) {
-    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-
+    const { isKeyboardVisible } = useKeyboard()
+    const { userData, refetch } = useUserData()
     const methods = useForm<FormData>({
         resolver: yupResolver(formSchema),
         mode: 'onBlur'
     })
-
+    const { mutate: updateProfileMutate, isPending } = useMutation({
+        mutationFn: userApi.updateProfile
+    })
     const canSubmit = methods.formState.isValid
-
-    const onSubmit = () => navigation.replace('ConfirmYourGoal')
-
-    // Keyboard visibility listener
     useEffect(() => {
-        const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true))
-        const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false))
-        return () => {
-            showSub.remove()
-            hideSub.remove()
+        methods.setValue('date_of_birth', userData?.date_of_birth ? new Date(userData.date_of_birth) : new Date())
+        methods.setValue('gender', userData?.gender as Gender)
+        methods.setValue('height', userData?.height ?? 0)
+        methods.setValue('weight', userData?.weight ?? 0)
+    }, [userData?.date_of_birth, userData?.weight, userData?.height, userData?.gender])
+    const onSubmit = methods.handleSubmit((data) => {
+        const body = {
+            ...data,
+            date_of_birth: data.date_of_birth.toISOString(),
+            gender: data.gender as Gender
         }
-    }, [])
-
-    // Animations
-    const bannerOpacity = useRef(new Animated.Value(1)).current
-    const bannerTranslateY = useRef(new Animated.Value(0)).current
-    const formTranslateY = useRef(new Animated.Value(0)).current
-    const bannerScale = useRef(new Animated.Value(1)).current
-
-    useEffect(() => {
-        Animated.parallel([
-            Animated.timing(bannerOpacity, {
-                toValue: isKeyboardVisible ? 0.5 : 1,
-                duration: 250,
-                useNativeDriver: true
-            }),
-            Animated.timing(bannerTranslateY, {
-                toValue: isKeyboardVisible ? -278 : 0,
-                duration: 300,
-                useNativeDriver: true
-            }),
-            Animated.timing(formTranslateY, {
-                toValue: isKeyboardVisible ? -278 : 0,
-                duration: 300,
-                useNativeDriver: true
-            }),
-            Animated.timing(bannerScale, {
-                toValue: isKeyboardVisible ? 0.7 : 1,
-                duration: 300,
-                useNativeDriver: true
-            })
-        ]).start()
-    }, [isKeyboardVisible])
+        updateProfileMutate(body, {
+            onSuccess: (res) => {
+                const message = res.data.message
+                showToast({ title: message })
+                navigation.replace('ConfirmYourGoal')
+                refetch()
+            },
+            onError: (errors) => handleFormError<FormData>(errors, methods.setError)
+        })
+    })
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-            <SafeAreaView style={styles.container}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={{ flex: 1 }}>
-                        <View style={styles.centerContainer}>
-                            <Animated.View
-                                style={[
-                                    {
-                                        opacity: bannerOpacity,
-                                        transform: [{ translateY: bannerTranslateY }, { scale: bannerScale }]
-                                    }
-                                ]}
-                            >
-                                <MyIcon name='registerIcon' size={278} width={375} style={styles.banner} />
-                            </Animated.View>
-
-                            <Animated.View style={{ transform: [{ translateY: formTranslateY }] }}>
-                                <View style={styles.callToAction}>
-                                    <Text style={styles.heading}>Let’s complete your profile</Text>
-                                    <Text style={styles.subHeading}>It will help us to know more about you!</Text>
-                                </View>
-
-                                <FormProvider {...methods}>
-                                    <View style={styles.formContainer}>
-                                        <View style={styles.rowForm}>
-                                            <DropdownInput
-                                                data={DataGender}
-                                                iconSource='twoUserIcon'
-                                                placeholder='Gender'
-                                                name='gender'
-                                            />
-                                        </View>
-
-                                        <View style={styles.rowForm}>
-                                            <DatePickerInput
-                                                icon='calendarIcon'
-                                                name='date_of_birth'
-                                                label='Date of birth'
-                                            />
-                                        </View>
-
-                                        <View style={styles.rowForm}>
-                                            <View style={{ flex: 1 }}>
-                                                <TextInputCustom name='weight' icon='weightScaleIcon' type='numeric' />
-                                            </View>
-                                            <LinearGradient
-                                                colors={['#C58BF2', '#EEA4CE']}
-                                                start={{ x: 0.8, y: 0 }}
-                                                end={{ x: 0, y: 1 }}
-                                                style={styles.unitBox}
-                                            >
-                                                <Text style={styles.unitText}>KG</Text>
-                                            </LinearGradient>
-                                        </View>
-
-                                        <View style={styles.rowForm}>
-                                            <View style={{ flex: 1 }}>
-                                                <TextInputCustom name='height' icon='swapIcon' type='numeric' />
-                                            </View>
-                                            <LinearGradient
-                                                colors={['#C58BF2', '#EEA4CE']}
-                                                start={{ x: 0.8, y: 0 }}
-                                                end={{ x: 0, y: 1 }}
-                                                style={styles.unitBox}
-                                            >
-                                                <Text style={styles.unitText}>CM</Text>
-                                            </LinearGradient>
-                                        </View>
-
-                                        <GradientButton
-                                            Square
-                                            disabled={!canSubmit}
-                                            onPress={onSubmit}
-                                            style={[styles.submitBtn, { opacity: canSubmit ? 1 : 0.6 }]}
-                                        >
-                                            <Text style={styles.submitText}>Next</Text>
-                                            <MyIcon name='arrowRightIcon' />
-                                        </GradientButton>
-                                    </View>
-                                </FormProvider>
-                            </Animated.View>
+        <SafeAreaView style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={{ flex: 1 }}>
+                    <View style={styles.centerContainer}>
+                        <View style={styles.callToAction}>
+                            <Text style={styles.heading}>Let’s complete your profile</Text>
+                            <Text style={styles.subHeading}>It will help us to know more about you!</Text>
                         </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
 
-            {/* Optional loading state */}
-            {/* loading && <Loader title='Register' /> */}
-        </KeyboardAvoidingView>
+                        <FormProvider {...methods}>
+                            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                                <ScrollView style={styles.formContainer} scrollEnabled={isKeyboardVisible}>
+                                    <View style={styles.rowForm}>
+                                        <DropdownInput
+                                            data={DataGender}
+                                            iconSource='twoUserIcon'
+                                            placeholder='Gender'
+                                            name='gender'
+                                        />
+                                    </View>
+
+                                    <View style={styles.rowForm}>
+                                        <DatePickerInput
+                                            icon='calendarIcon'
+                                            name='date_of_birth'
+                                            label='Date of birth'
+                                        />
+                                    </View>
+
+                                    <View style={styles.rowForm}>
+                                        <View style={{ flex: 1 }}>
+                                            <TextInputCustom
+                                                name='weight'
+                                                icon='weightScaleIcon'
+                                                type='numeric'
+                                                returnKeyType='next'
+                                            />
+                                        </View>
+                                        <LinearGradient
+                                            colors={['#C58BF2', '#EEA4CE']}
+                                            start={{ x: 0.8, y: 0 }}
+                                            end={{ x: 0, y: 1 }}
+                                            style={styles.unitBox}
+                                        >
+                                            <Text style={styles.unitText}>KG</Text>
+                                        </LinearGradient>
+                                    </View>
+
+                                    <View style={styles.rowForm}>
+                                        <View style={{ flex: 1 }}>
+                                            <TextInputCustom
+                                                name='height'
+                                                icon='swapIcon'
+                                                type='numeric'
+                                                returnKeyType='done'
+                                            />
+                                        </View>
+                                        <LinearGradient
+                                            colors={['#C58BF2', '#EEA4CE']}
+                                            start={{ x: 0.8, y: 0 }}
+                                            end={{ x: 0, y: 1 }}
+                                            style={styles.unitBox}
+                                        >
+                                            <Text style={styles.unitText}>CM</Text>
+                                        </LinearGradient>
+                                    </View>
+                                </ScrollView>
+                                <GradientButton
+                                    Square
+                                    disabled={!canSubmit}
+                                    isLoading={isPending}
+                                    onPress={onSubmit}
+                                    style={styles.submitBtn}
+                                >
+                                    <Text style={styles.submitText}>Next</Text>
+                                    <MyIcon name='arrowRightIcon' />
+                                </GradientButton>
+                            </View>
+                        </FormProvider>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
     )
 }
 
@@ -208,8 +191,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         marginTop: 30,
-        width: SCREEN_WIDTH * 0.9,
-        alignItems: 'center'
+        width: SCREEN_WIDTH * 0.9
     },
     rowForm: {
         width: '100%',

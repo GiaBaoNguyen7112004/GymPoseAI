@@ -1,14 +1,5 @@
-import {
-    Keyboard,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableWithoutFeedback,
-    View,
-    KeyboardAvoidingView,
-    Platform
-} from 'react-native'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
+import { Keyboard, SafeAreaView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import GradientButton from '@/components/GradientButton'
 import TextGradient from '@/components/TextGradient'
 import { Pressable, ScrollView } from 'react-native-gesture-handler'
@@ -31,7 +22,7 @@ type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'passwor
 const FormSchema = schema.pick(['email', 'password', 'first_name', 'last_name', 'policy'])
 
 function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
-    const { setProfile } = useContext(AppContext)
+    const { setProfile, setAuthenticated } = useContext(AppContext)
     const { isKeyboardVisible } = useKeyboard()
     const { ...methods } = useForm<FormData>({
         defaultValues: {
@@ -58,6 +49,7 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
             onSuccess: (data) => {
                 const user = data.data.data.user
                 setProfile(user)
+                setAuthenticated(true)
             },
             onError: (errors) => handleFormError<FormData>(errors, methods.setError)
         })

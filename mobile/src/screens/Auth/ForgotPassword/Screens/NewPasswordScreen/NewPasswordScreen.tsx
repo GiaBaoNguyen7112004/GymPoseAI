@@ -9,6 +9,7 @@ import TextInputCustom from '@/components/TextInput'
 import { authApi } from '@/services/rest'
 import { schema, SchemaType } from '@/utils/rules.util'
 import handleFormError from '@/utils/handleFormError'
+import showToast from '@/utils/toast.util'
 
 interface ChangePasswordScreenProps {
     email: string
@@ -31,12 +32,16 @@ function ChangePasswordScreen({ email, otp, onSuccess }: ChangePasswordScreenPro
 
     const { mutate, isPending } = useMutation({
         mutationFn: authApi.resetPassword,
-        onSuccess: onSuccess,
+        onSuccess: (res) => {
+            const message = res.data.message
+            showToast({ title: message })
+            onSuccess()
+        },
         onError: (error) => handleFormError<FormData>(error, setError)
     })
 
     const onSubmit = handleSubmit((data) => {
-        mutate({ email, otp, password: data.password })
+        mutate({ email, otp, password: data.password }, {})
     })
 
     return (
