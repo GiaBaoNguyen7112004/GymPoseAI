@@ -9,22 +9,49 @@ import GradientButton from '@/components/GradientButton'
 import { useKeyboard } from '@/hooks/useKeyboard'
 import useUserData from '@/hooks/useUserData'
 import { ScreenComponentProps } from '../routes.config'
+import { useMutation } from '@tanstack/react-query'
+import { userApi } from '@/services/rest'
+import { useEffect } from 'react'
+import showToast from '@/utils/toast.util'
+import { showErrorAlert } from '@/utils/alert.util'
 
 type FormData = Pick<SchemaType, 'first_name' | 'last_name'>
 const formSchema = schema.pick(['first_name', 'last_name'])
 
-function UpdateNameScreen({ onGoBack }: ScreenComponentProps) {
+function UpdateNameScreen({ onGoBack, goToTop }: ScreenComponentProps) {
     const { isKeyboardVisible } = useKeyboard()
-    const { userData } = useUserData()
+    const { userData, refetch } = useUserData()
     const methods = useForm<FormData>({
         defaultValues: {
-            first_name: userData?.first_name,
-            last_name: userData?.last_name
+            first_name: '',
+            last_name: ''
         },
         mode: 'onBlur',
         resolver: yupResolver(formSchema)
     })
 
+    useEffect(() => {
+        methods.setValue('first_name', userData?.first_name || '')
+        methods.setValue('last_name', userData?.last_name || '')
+    }, [userData?.first_name, userData?.last_name])
+
+    const { mutate: updateNameMutate, isPending } = useMutation({
+        mutationFn: userApi.updateProfile
+    })
+
+    const onSubmit = methods.handleSubmit((data) => {
+        updateNameMutate(data, {
+            onSuccess: (res) => {
+                const message = res.data.message
+                if (goToTop) goToTop()
+                refetch()
+                showToast({ title: message })
+            },
+            onError: () => {
+                showErrorAlert('default')
+            }
+        })
+    })
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
             <View style={styles.container}>
@@ -64,11 +91,8 @@ function UpdateNameScreen({ onGoBack }: ScreenComponentProps) {
                                 Square
                                 style={styles.reviewButton}
                                 disabled={!methods.formState.isValid}
-                                onPress={methods.handleSubmit((data) => {
-                                    // Xử lý dữ liệu form ở đây
-                                    console.log(data)
-                                    // Có thể thêm hàm callback nếu cần
-                                })}
+                                onPress={onSubmit}
+                                isLoading={isPending}
                             >
                                 <Text style={styles.reviewButtonText}>Save</Text>
                             </GradientButton>

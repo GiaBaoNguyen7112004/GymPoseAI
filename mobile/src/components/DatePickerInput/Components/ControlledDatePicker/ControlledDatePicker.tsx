@@ -1,9 +1,9 @@
-import { IconName } from '@/components/Icon/Icon'
 import { useController, UseControllerProps } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
 import MyIcon from '@/components/Icon'
 import { Text } from 'react-native'
 import DatePicker from '@/components/DatePickerInput/Components/DatePicker'
+import { IconName } from '@/constants/icon.constants'
 
 export interface ControlledDatePickerProps extends UseControllerProps {
     label: string

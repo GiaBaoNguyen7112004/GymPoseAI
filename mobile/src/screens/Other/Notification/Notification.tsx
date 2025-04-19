@@ -1,17 +1,19 @@
 import { useRef, useCallback, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native'
+import BottomSheet from '@gorhom/bottom-sheet'
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 
 import NavigationBar from '@/components/NavigationBar/NavigationBar'
 import LoaderModal from '@/components/LoaderModal'
 import Loader from '@/components/Loader'
-import BottomSheetMoreInfo from './components/BottomSheetMoreInfo'
 import NotificationCard from './components/NotificationCard/NotificationCard'
-import Toast from 'react-native-toast-message'
+import BottomSheetMoreInfo from './components/BottomSheetMoreInfo'
+
+import { notificationApi } from '@/services/rest'
+import { showErrorAlert } from '@/utils/alert.util'
+import showToast from '@/utils/toast.util'
 
 import { Notification, ResponseAPINotificationPage } from '@/types/notification.type'
-import { notificationApi } from '@/services/rest'
-import BottomSheet from '@gorhom/bottom-sheet'
 import { RootStackScreenProps } from '@/navigation/types'
 
 function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>) {
@@ -24,10 +26,8 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
     >({
         queryKey: ['notification'],
         queryFn: async ({ pageParam = 1 }) => {
-            const response = await notificationApi.getNotification({
-                params: { page: pageParam as number, limit: 10 }
-            })
-            return response.data
+            const res = await notificationApi.getNotification({ params: { page: pageParam as number, limit: 10 } })
+            return res.data
         },
         getNextPageParam: ({ meta }) => (meta.current_page < meta.total_page ? meta.current_page + 1 : undefined),
         initialPageParam: 1,
@@ -36,13 +36,8 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
 
     const notifications = data?.pages.flatMap((page) => page.data) || []
 
-    const deleteNotifyMutation = useMutation({
-        mutationFn: notificationApi.deleteNotification
-    })
-
-    const readNotifyMutation = useMutation({
-        mutationFn: notificationApi.readNotification
-    })
+    const deleteNotifyMutation = useMutation({ mutationFn: notificationApi.deleteNotification })
+    const readNotifyMutation = useMutation({ mutationFn: notificationApi.readNotification })
 
     const handlePressMore = useCallback((item: Notification) => {
         setSelectedNotification(item)
@@ -53,19 +48,20 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
         await readNotifyMutation.mutateAsync({ id: item.id })
         refetch()
 
-        switch (item.type) {
+        const { type, metadata } = item
+        switch (type) {
             case 'activity':
                 navigation.navigate('ActivityTracker')
                 break
             case 'workout':
                 navigation.navigate('WorkoutHistoryDetail', {
-                    workout_id: item.metadata?.workout_id as string
+                    workout_id: metadata?.workout_id as string
                 })
                 break
             case 'exercise':
                 navigation.navigate('CategoryDetail', {
-                    category_id: item.metadata?.category_id as string,
-                    exercise_id: item.metadata?.exercise_id
+                    category_id: metadata?.category_id as string,
+                    exercise_id: metadata?.exercise_id
                 })
                 break
         }
@@ -75,13 +71,12 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
         await deleteNotifyMutation.mutateAsync(
             { id },
             {
-                onSuccess: () => {
-                    Toast.show({ type: 'success', text1: 'Notification deleted' })
+                onSuccess: (res) => {
+                    bottomSheetRef.current?.close()
+                    showToast({ title: res.data.message })
                     refetch()
                 },
-                onError: () => {
-                    Toast.show({ type: 'error', text1: 'Notification deletion failed.' })
-                }
+                onError: () => showErrorAlert('default')
             }
         )
     }, [])

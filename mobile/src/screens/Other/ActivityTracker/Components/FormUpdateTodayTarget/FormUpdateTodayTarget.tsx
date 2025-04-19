@@ -2,12 +2,12 @@ import GradientButton from '@/components/GradientButton'
 import TextInputCustom from '@/components/TextInput'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { targetApi } from '@/services/rest'
-import handleFormError from '@/utils/handleFormError'
+import { showErrorAlert } from '@/utils/alert.util'
 import { targetSchema, TargetSchemaType } from '@/utils/rules.util'
+import showToast from '@/utils/toast.util'
 import { Ionicons } from '@expo/vector-icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text, TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import Toast from 'react-native-toast-message'
@@ -36,15 +36,12 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel }: Fo
     const onUpdateForm = methods.handleSubmit((data) => {
         onUpdate()
         updateTargetMutation.mutate(data, {
-            onSuccess: () => {
-                Toast.show({
-                    type: 'success',
-                    text1: 'Target Updated',
-                    text2: 'Your daily target has been successfully updated.'
-                })
+            onSuccess: (res) => {
+                const message = res.data.message || 'Target Updated'
+                showToast({ title: message })
             },
             onError: () => {
-                Alert.alert('Oops!', 'We couldn’t update your target. Give it another try.', [{ text: 'OK' }])
+                showErrorAlert('default')
             }
         })
     })

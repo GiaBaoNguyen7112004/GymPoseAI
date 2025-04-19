@@ -5,10 +5,21 @@ import { Ionicons } from '@expo/vector-icons'
 import { ImageEditor, ImageData } from 'expo-crop-image'
 import GradientButton from '@/components/GradientButton'
 import { ScreenComponentProps } from '../routes.config'
+import { useMutation } from '@tanstack/react-query'
+import { uploadApi, userApi } from '@/services/rest'
+import showToast from '@/utils/toast.util'
+import { showErrorAlert } from '@/utils/alert.util'
+import useUserData from '@/hooks/useUserData'
+import { uploadImageFromUri } from '@/utils/upload.util'
 
-export default function PreviewAvatarScreen({ onGoBack }: ScreenComponentProps) {
+export default function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
+    const { refetch } = useUserData()
     const [avatarUri, setAvatarUri] = useState<string | null>(null)
     const [isEditorVisible, setEditorVisible] = useState(false)
+
+    const { mutateAsync: updateAvatarMutateAsync, isPending: isUpdatingAvatar } = useMutation({
+        mutationFn: userApi.updateProfile
+    })
 
     const requestPermissionAndPickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -27,11 +38,24 @@ export default function PreviewAvatarScreen({ onGoBack }: ScreenComponentProps) 
         avatarUri ? setEditorVisible(true) : requestPermissionAndPickImage()
     }
 
-    const handleSavePress = () => {
-        if (avatarUri) {
-            console.log('Avatar saved:', avatarUri)
-            const formData = new FormData()
-            // append avatar to formData if needed
+    const handleSavePress = async () => {
+        if (!avatarUri) return
+
+        try {
+            const imageUrl = await uploadImageFromUri(avatarUri)
+
+            if (!imageUrl) {
+                showErrorAlert('default')
+                return
+            }
+
+            const res = await updateAvatarMutateAsync({ avatar: imageUrl })
+            showToast({ title: res.data.message })
+            refetch()
+            goToTop?.()
+        } catch (error) {
+            console.error(error)
+            showErrorAlert('default')
         }
     }
 
@@ -74,7 +98,12 @@ export default function PreviewAvatarScreen({ onGoBack }: ScreenComponentProps) 
                 </View>
 
                 <View style={styles.bottomSection}>
-                    <GradientButton style={styles.saveButton} Square onPress={handleSavePress}>
+                    <GradientButton
+                        style={styles.saveButton}
+                        Square
+                        onPress={handleSavePress}
+                        isLoading={isUpdatingAvatar}
+                    >
                         <Text style={styles.saveText}>Save</Text>
                     </GradientButton>
                 </View>

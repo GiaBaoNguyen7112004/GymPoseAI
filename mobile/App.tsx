@@ -16,6 +16,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppProvider } from './src/Contexts/App.context'
 import storage from './src/utils/StorageManager.util'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { toastFitnessXConfig } from './src/config/toast.config'
 
 const prefix = Linking.createURL('/')
 
@@ -55,9 +56,9 @@ export default function App() {
                     <BottomSheetModalProvider>
                         <NavigationContainer linking={linking}>
                             <RootStackNavigation />
-                            <Toast />
                         </NavigationContainer>
                     </BottomSheetModalProvider>
+                    <Toast config={toastFitnessXConfig} />
                 </AppProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>

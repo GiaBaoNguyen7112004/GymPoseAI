@@ -18,4 +18,5 @@ declare module '@env' {
     export const URL_ACTIVITY: string
     export const URL_NOTIFICATION: string
     export const URL_SEARCH: string
+    export const URL_UPLOAD_IMAGE: string
 }
