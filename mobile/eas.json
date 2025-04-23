@@ -1,0 +1,43 @@
+{
+    "cli": {
+        "version": ">=3.0.0"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal",
+            "env": {
+                "API_URL": "http://192.168.1.3:5000",
+                "URL_REGISTER": "/api/v1/auth/register",
+                "URL_LOGIN": "/api/v1/auth/login",
+                "URL_LOGOUT": "/api/v1/auth/logout",
+                "URL_REFRESH_TOKEN": "/api/v1/auth/refresh-token",
+                "URL_VERIFY_OTP": "/api/v1/auth/verify-reset-otp",
+                "URL_RESET_PASSWORD": "/api/v1/auth/reset-password",
+                "URL_RESEND_OTP_FORGOT_PASSWORD": "/api/v1/auth/resend-reset-otp",
+                "URL_FORGOT_PASSWORD": "/api/v1/auth/request-password-reset",
+                "URL_CHANGE_PASSWORD": "/api/v1/auth/change-password",
+                "URL_GET_WORKOUT_HISTORY": "/api/v1/workouts/history",
+                "URL_USER": "/api/v1/users",
+                "URL_TARGETS": "/api/v1/targets",
+                "URL_CATEGORIES": "/api/v1/categories",
+                "URL_WORKOUTS": "/api/v1/workouts",
+                "URL_ACTIVITY": "/api/v1/activity",
+                "URL_NOTIFICATION": "/api/v1/notification",
+                "URL_SEARCH": "/api/v1/search",
+                "URL_UPLOAD_IMAGE": "/api/v1/upload/image"
+            },
+            "android": {
+                "resourceClass": "medium"
+            },
+            "ios": {
+                "resourceClass": "medium",
+                "simulator": true
+            }
+        },
+        "preview": {
+            "distribution": "internal"
+        },
+        "production": {}
+    }
+}

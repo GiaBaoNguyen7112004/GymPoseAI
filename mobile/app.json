@@ -3,9 +3,9 @@
         "scheme": "GymPoseAI",
         "name": "GymPoseAI",
         "slug": "GymPoseAI",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "orientation": "portrait",
-        "icon": "./src/assets/images/icon.png",
+        "icon": "./src/assets/images/logo.png",
         "userInterfaceStyle": "automatic",
         "newArchEnabled": true,
         "ios": {
@@ -24,7 +24,7 @@
                 "NOTIFICATIONS"
             ],
             "adaptiveIcon": {
-                "foregroundImage": "./src/assets/images/icon.png",
+                "foregroundImage": "./src/assets/images/logo.png",
                 "backgroundColor": "#ffffff"
             },
             "permissions": [
@@ -32,23 +32,23 @@
                 "android.permission.WRITE_EXTERNAL_STORAGE",
                 "android.permission.CAMERA",
                 "android.permission.RECORD_AUDIO",
-                "android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE",
-                "android.permission.CAMERA",
-                "android.permission.RECORD_AUDIO"
+                "android.permission.MODIFY_AUDIO_SETTINGS",
+                "android.permission.BLUETOOTH",
+                "android.permission.BLUETOOTH_ADMIN",
+                "android.permission.BLUETOOTH_CONNECT"
             ],
             "package": "com.taplamit.GymPoseAI"
         },
         "web": {
             "bundler": "metro",
             "output": "static",
-            "favicon": "./src/assets/images/favicon.png"
+            "favicon": "./src/assets/images/logo.png"
         },
         "plugins": [
             [
                 "expo-splash-screen",
                 {
-                    "image": "./src/assets/images/splash-icon.png",
+                    "image": "./src/assets/images/icon.png",
                     "imageWidth": 200,
                     "resizeMode": "cover",
                     "backgroundColor": "#ffffff"
@@ -59,14 +59,6 @@
                 {
                     "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
                     "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos."
-                }
-            ],
-            [
-                "expo-camera",
-                {
-                    "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-                    "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-                    "recordAudioAndroid": true
                 }
             ],
             [
@@ -84,6 +76,11 @@
                 }
             ],
             ["expo-image-picker"]
-        ]
+        ],
+        "extra": {
+            "eas": {
+                "projectId": "237cb4c2-14e4-427d-867a-bcfcbce60d21"
+            }
+        }
     }
 }
