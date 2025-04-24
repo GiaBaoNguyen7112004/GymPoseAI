@@ -3,6 +3,11 @@ server:
   servlet:
     context-path: /gym-pose
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -13,9 +18,9 @@ spring:
   thymeleaf:
     mode: HTML
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:postgresql://localhost:5433/gympose}
-    username: ${DBMS_USERNAME:postgres}
-    password: ${DBMS_PASSWORD:giabao123123}
+    url: ${DBMS_CONNECTION}
+    username: ${DBMS_USERNAME}
+    password: ${DBMS_PASSWORD}
     hikari:
       max-lifetime: 60000
   jpa:
@@ -25,8 +30,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME:giabao7112004@gmail.com}
-    password: ${EMAIL_PASSWORD:gisb quje jpua taef}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     properties:
       mail:
         smtp:

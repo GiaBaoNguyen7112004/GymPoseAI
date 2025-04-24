@@ -35,7 +35,8 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/api-docs/**"
+            "/api-docs/**",
+            "/v3/api-docs.yaml"
     };
 
     public final String[] PUBLIC_GET_ENDPOINT = {
