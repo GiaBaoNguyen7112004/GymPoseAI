@@ -1,10 +1,9 @@
 import http from '../core/httpClient'
-import { URL_SEARCH } from '@env'
 import { ResponseApiSearch, SearchParams } from '@/types/search.type'
 
 const searchApi = {
     search({ params }: { params: SearchParams }) {
-        return http.get<ResponseApiSearch>(`${URL_SEARCH}`, {
+        return http.get<ResponseApiSearch>(`${process.env.EXPO_PUBLIC_URL_SEARCH}`, {
             params
         })
     }

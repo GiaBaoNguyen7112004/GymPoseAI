@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
 
-import { API_URL, URL_LOGIN, URL_LOGOUT, URL_REGISTER } from '@env'
-
 import storage from '@/utils/StorageManager.util'
 import { AuthResponse } from '@/types/auth.type'
 import { refreshToken } from './refreshToken'
@@ -17,7 +15,7 @@ class Http {
         this.refreshTokenRequest = null
 
         this.instance = axios.create({
-            baseURL: API_URL,
+            baseURL: process.env.EXPO_PUBLIC_API_URL,
             timeout: 10000,
             headers: { 'Content-Type': 'application/json' }
         })
@@ -46,7 +44,7 @@ class Http {
         const { url } = response.config
         const data = response.data as AuthResponse
 
-        if (url === URL_LOGIN || url === URL_REGISTER) {
+        if (url === process.env.EXPO_PUBLIC_URL_LOGIN || url === process.env.EXPO_PUBLIC_URL_REGISTER) {
             const { access_token, refresh_token, user } = data.data
             this.accessToken = access_token
             storage.saveAccessToken(access_token)
@@ -54,7 +52,7 @@ class Http {
             storage.saveProfile(user)
         }
 
-        if (url === URL_LOGOUT) {
+        if (url === process.env.EXPO_PUBLIC_URL_LOGOUT) {
             storage.clearStorage()
         }
 

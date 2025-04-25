@@ -5,45 +5,35 @@ import { AuthResponse, FindAccountResponse, RegisterReqBody } from '@/types/auth
 
 import { ResponseApi } from '@/types/utils.type'
 
-import {
-    URL_REGISTER,
-    URL_LOGIN,
-    URL_LOGOUT,
-    URL_FORGOT_PASSWORD,
-    URL_VERIFY_OTP,
-    URL_RESET_PASSWORD,
-    URL_RESEND_OTP_FORGOT_PASSWORD
-} from '@env'
-
 const authApi = {
     registerAccount(body: RegisterReqBody) {
-        return http.post<AuthResponse>(URL_REGISTER, body)
+        return http.post<AuthResponse>(process.env.EXPO_PUBLIC_URL_REGISTER, body)
     },
 
     login(body: { email: string; password: string }) {
-        return http.post<AuthResponse>(URL_LOGIN, body)
+        return http.post<AuthResponse>(process.env.EXPO_PUBLIC_URL_LOGIN, body)
     },
 
     logout() {
-        return http.post(URL_LOGOUT, {
+        return http.post(process.env.EXPO_PUBLIC_URL_LOGOUT, {
             body: { refresh_token: storage.getRefreshToken() }
         })
     },
 
     findAccount(body: { email: string }) {
-        return http.post<FindAccountResponse>(URL_FORGOT_PASSWORD, body)
+        return http.post<FindAccountResponse>(process.env.EXPO_PUBLIC_URL_FORGOT_PASSWORD, body)
     },
 
     verifyOtpForgotPassword(body: { email: string; otp: string }) {
-        return http.post<ResponseApi<any, any>>(URL_VERIFY_OTP, body)
+        return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_VERIFY_OTP, body)
     },
 
     resentOTPForgotPassword(body: { email: string }) {
-        return http.post<ResponseApi<any, any>>(URL_RESEND_OTP_FORGOT_PASSWORD, body)
+        return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_RESEND_OTP_FORGOT_PASSWORD, body)
     },
 
     resetPassword(body: { email: string; password: string; otp: string }) {
-        return http.post<ResponseApi<any, any>>(URL_RESET_PASSWORD, body)
+        return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_RESET_PASSWORD, body)
     }
 }
 

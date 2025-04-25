@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios'
 
-import { URL_REFRESH_TOKEN } from '@env'
-
 import storage from '@/utils/StorageManager.util'
 import { RefreshTokenResponse } from '@/types/auth.type'
 
@@ -14,7 +12,7 @@ export const refreshToken = async (): Promise<string> => {
     }
 
     try {
-        const res = await axios.post<RefreshTokenResponse>(URL_REFRESH_TOKEN, { refresh_token })
+        const res = await axios.post<RefreshTokenResponse>(process.env.EXPO_PUBLIC_URL_REFRESH_TOKEN, { refresh_token })
         const { access_token, refresh_token: new_refresh_token } = res.data.data
         storage.saveAccessToken(access_token)
         storage.saveRefreshToken(new_refresh_token)

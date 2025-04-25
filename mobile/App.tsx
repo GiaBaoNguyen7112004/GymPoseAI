@@ -59,7 +59,6 @@ export default function App() {
             </View>
         )
     }
-
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <QueryClientProvider client={queryClient}>
