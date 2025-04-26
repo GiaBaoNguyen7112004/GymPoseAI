@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
 import YoutubePlayer from 'react-native-youtube-iframe'
 import Icon from 'react-native-vector-icons/Feather'
@@ -17,6 +18,8 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
         queryFn: () => workoutApi.getWorkoutById({ id: workout_id })
     })
 
+    const [isScrolled, setIsScrolled] = useState(false)
+
     const workoutData = data?.data?.data
     const workoutIdYoutube = getYouTubeVideoId(
         workoutData?.media_url || 'https://youtu.be/irfw1gQ0foQ?si=HDvPCvOcnmu9XJ79'
@@ -24,29 +27,32 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
 
     return (
         <View style={styles.container}>
-            <SafeAreaView style={styles.navBar}>
-                {/* Header */}
+            <SafeAreaView style={[styles.navBar, isScrolled && styles.navBarScrolled]}>
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
                         <Icon name='x' size={18} color='#333' />
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                {/* Content */}
+            <ScrollView
+                style={styles.scrollView}
+                showsVerticalScrollIndicator={false}
+                onScroll={(event) => {
+                    const offsetY = event.nativeEvent.contentOffset.y
+                    setIsScrolled(offsetY > 5)
+                }}
+                scrollEventThrottle={16}
+            >
                 <View style={styles.content}>
-                    {/* Video */}
                     <View style={styles.videoContainer}>
                         <YoutubePlayer height={300} videoId={workoutIdYoutube as string} />
                     </View>
 
-                    {/* Title */}
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>{workoutData?.name || 'Workout'}</Text>
                         <Text style={styles.subtitle}>{workoutData?.duration_minutes || 0} minutes</Text>
                     </View>
 
-                    {/* Description */}
                     <View style={styles.descriptionContainer}>
                         <ReadMoreText
                             text={workoutData?.description || 'No description available.'}
@@ -57,7 +63,6 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
                         />
                     </View>
 
-                    {/* Steps */}
                     <View style={styles.howToContainer}>
                         <View style={styles.howToHeader}>
                             <Text style={styles.sectionTitle}>How To Do It</Text>
@@ -68,7 +73,6 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
                         </View>
                     </View>
 
-                    {/* Start Button */}
                     <GradientButton Square containerStyle={styles.buttonSubmit}>
                         <Text style={styles.textInnerButtonSubmit}>Start</Text>
                     </GradientButton>
@@ -85,7 +89,16 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF'
     },
-    navBar: { height: 85 },
+    navBar: {
+        height: 60,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        backgroundColor: '#FFF'
+    },
+    navBarScrolled: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5'
+    },
     scrollView: {
         flex: 1,
         backgroundColor: '#FFF'

@@ -12,7 +12,7 @@ function BMIStats() {
         <View>
             <View style={styles.bmiShadow}>
                 <LinearGradient
-                    colors={COLOR_BRANDS.secondary}
+                    colors={COLOR_BRANDS.primary}
                     start={{ x: 0.4, y: 0 }}
                     end={{ x: 0.2, y: 1 }}
                     style={styles.bmiInner}

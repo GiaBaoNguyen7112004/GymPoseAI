@@ -88,7 +88,7 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
                 <BottomSheet
                     ref={bottomSheetRef}
                     index={0}
-                    snapPoints={['60%']}
+                    snapPoints={['50%', '90%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
@@ -121,7 +121,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     header: {
-        zIndex: 100
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     headerTitle: {
         color: '#FFF',

@@ -153,7 +153,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF'
     },
     navBar: {
-        height: 90
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5'
     },
     content: {
         flex: 1

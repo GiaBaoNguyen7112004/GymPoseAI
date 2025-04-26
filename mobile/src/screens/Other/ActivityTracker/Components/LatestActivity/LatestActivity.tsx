@@ -62,6 +62,7 @@ function LatestActivity() {
                 <Loader />
             ) : (
                 <FlatList
+                    scrollEnabled={false}
                     data={activities}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}

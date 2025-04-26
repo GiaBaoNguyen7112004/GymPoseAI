@@ -30,7 +30,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF'
     },
     header: {
-        height: 85
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#DDDADA'
     },
     container: {
         padding: 20,

@@ -1,6 +1,6 @@
 // Tooltip.tsx
+import { ViewModeType } from '@/types/utils.type'
 import { View, Text, StyleSheet } from 'react-native'
-import { ViewModeType } from '../../WorkoutChart'
 
 export type TooltipDataType = {
     visible: boolean
@@ -62,11 +62,13 @@ const styles = StyleSheet.create({
         padding: 12,
         zIndex: 10,
         borderRadius: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowColor: 'rgba(29, 22, 23, 0.3)',
+        shadowOffset: { width: 1, height: 10 },
+        shadowOpacity: 1,
+        shadowRadius: 20,
+
+        // Android shadow
+        elevation: 8,
         width: 130,
         maxHeight: 85
     },

@@ -1,5 +1,14 @@
-import React from 'react'
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState } from 'react'
+import {
+    View,
+    Text,
+    StyleSheet,
+    SafeAreaView,
+    TouchableOpacity,
+    ScrollView,
+    NativeSyntheticEvent,
+    NativeScrollEvent
+} from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { RootStackScreenProps } from '@/navigation/types'
 import { FontAwesome5 } from '@expo/vector-icons'
@@ -9,12 +18,24 @@ import SocialButton from './Components/SocialButton'
 import { openLink } from '@/utils/common.util'
 
 function ContactUsScreen({ navigation }: RootStackScreenProps<'ContactUs'>) {
+    const [isScrolled, setIsScrolled] = useState(false)
+
+    const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offsetY = e.nativeEvent.contentOffset.y
+        setIsScrolled(offsetY > 0)
+    }
+
     return (
         <View style={styles.screensWrapper}>
-            <SafeAreaView style={styles.header}>
+            <SafeAreaView style={[styles.header, isScrolled && styles.headerScrolled]}>
                 <NavigationBar title='Contact & About Us' callback={navigation.goBack} />
             </SafeAreaView>
-            <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={styles.container}
+                showsVerticalScrollIndicator={false}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+            >
                 <Text style={styles.title}>FitnessX</Text>
                 <Text style={styles.tagline}>Train smart. Live healthy.</Text>
                 <View style={styles.divider} />
@@ -79,8 +100,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF'
     },
     header: {
-        height: 85,
-        backgroundColor: '#FFF'
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: 'transparent',
+        backgroundColor: '#FFFFFF'
+    },
+    headerScrolled: {
+        borderBottomColor: '#DDDADA'
     },
     container: {
         flex: 1,

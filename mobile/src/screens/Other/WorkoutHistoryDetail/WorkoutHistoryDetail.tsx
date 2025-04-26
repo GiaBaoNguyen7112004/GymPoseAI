@@ -124,17 +124,25 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
 
 const card = {
     backgroundColor: '#fff',
-    shadowColor: 'rgba(29, 22, 23, 0.1)',
-    shadowOffset: { width: 0, height: 10 },
+    shadowColor: 'rgba(29, 22, 23, 0.3)',
+    shadowOffset: { width: 1, height: 10 },
     shadowOpacity: 1,
-    shadowRadius: 40,
-    elevation: 10
+    shadowRadius: 20,
+
+    // Android shadow
+    elevation: 8
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#FFF' },
     scrollView: { flex: 1, backgroundColor: '#FFF' },
-    navbar: { height: 90 },
+    navbar: {
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5'
+    },
     section: { marginTop: 20, paddingHorizontal: 16 },
     sectionTitle: {
         fontSize: 16,

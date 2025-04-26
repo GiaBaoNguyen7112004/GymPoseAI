@@ -91,7 +91,7 @@ export default function WorkoutGoalCarousel() {
 const styles = StyleSheet.create({
     container: {
         alignSelf: 'center',
-        height: ITEM_HEIGHT + 80,
+        height: ITEM_HEIGHT + 10,
         justifyContent: 'center'
     },
     itemWrapper: {

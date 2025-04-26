@@ -104,11 +104,13 @@ const styles = StyleSheet.create({
     profile__boxValue: {
         padding: 10,
         flex: 1,
-        shadowColor: 'rgba(29, 22, 23, 0.07)',
-        shadowOffset: { width: 0, height: 10 },
+        shadowColor: 'rgba(29, 22, 23, 0.5)',
+        shadowOffset: { width: 2, height: 10 },
         shadowOpacity: 1,
-        shadowRadius: 40,
-        elevation: 10,
+        shadowRadius: 20,
+
+        // Android shadow
+        elevation: 8,
         backgroundColor: '#fff',
         height: 65,
         alignItems: 'center',

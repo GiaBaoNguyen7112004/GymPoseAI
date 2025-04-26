@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
     bottomSection: {
         borderTopWidth: 1,
         borderTopColor: '#DDDADA',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        paddingBottom: 20
     },
     header: {
         alignItems: 'flex-start',

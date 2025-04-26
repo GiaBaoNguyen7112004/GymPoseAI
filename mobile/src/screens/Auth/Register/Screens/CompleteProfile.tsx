@@ -214,11 +214,12 @@ const styles = StyleSheet.create({
     submitBtn: {
         marginTop: 30,
         width: WINDOW_WIDTH * 0.9,
-        shadowColor: 'red',
-        shadowOffset: { width: 0, height: 1000 },
+        shadowColor: 'rgba(149, 173, 254, 0.30)',
+        shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 22,
-        elevation: 10
+        elevation: 10,
+        marginBottom: 20
     },
     submitText: {
         color: '#FFF',

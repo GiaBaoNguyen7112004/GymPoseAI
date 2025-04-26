@@ -90,6 +90,7 @@ export default CustomDropdown
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        flex: 1,
         height: 48,
         flexShrink: 0,
         borderRadius: 5,

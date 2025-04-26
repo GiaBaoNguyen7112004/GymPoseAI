@@ -173,7 +173,8 @@ const styles = StyleSheet.create({
     formBottom: {
         borderTopWidth: 1,
         borderTopColor: '#DDDADA',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        paddingBottom: 20
     },
     reviewButton: {
         marginTop: 20

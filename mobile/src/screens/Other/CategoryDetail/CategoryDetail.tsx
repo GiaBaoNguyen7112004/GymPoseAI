@@ -92,8 +92,8 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
                 </View>
 
                 <BottomSheet
-                    index={2}
-                    snapPoints={['50%', '72%', '82%']}
+                    index={0}
+                    snapPoints={['72%', '90%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
@@ -143,7 +143,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     header: {
-        zIndex: 100
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     headerTitle: {
         color: '#FFF',

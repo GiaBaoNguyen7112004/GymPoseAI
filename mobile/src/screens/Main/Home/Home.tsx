@@ -236,11 +236,15 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRadius: 20,
         backgroundColor: '#fff',
-        shadowColor: 'rgba(29, 36, 42, 0.05)',
-        shadowOffset: { width: 0, height: 10 },
+
+        shadowColor: 'rgba(29, 22, 23, 0.3)',
+        shadowOffset: { width: 1, height: 10 },
         shadowOpacity: 1,
-        shadowRadius: 40,
-        elevation: 10
+        shadowRadius: 20,
+        maxHeight: 150,
+
+        // Android shadow
+        elevation: 8
     },
     workoutProgressWrapper: {
         marginTop: 33,
@@ -261,7 +265,8 @@ const styles = StyleSheet.create({
         rowGap: 15,
         alignContent: 'center',
         justifyContent: 'center',
-        width: SCREEN_WIDTH
+        width: SCREEN_WIDTH,
+        paddingBottom: 20
     },
     workoutItem: {
         width: SCREEN_WIDTH * 0.9,

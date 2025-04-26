@@ -12,7 +12,7 @@ interface CaloriesStatsProps {
 function CaloriesStats({ user_id }: CaloriesStatsProps) {
     const { data } = useQuery({
         queryKey: ['calories', user_id],
-        queryFn: () => targetApi.getTargetOfDate({ id: user_id }),
+        queryFn: () => targetApi.getTodayCaloriesTarget({ id: user_id }),
         staleTime: 1000 * 60 * 5
     })
 
@@ -27,10 +27,11 @@ function CaloriesStats({ user_id }: CaloriesStatsProps) {
             <Text style={styles.stats__title}>Calories</Text>
             <TextGradient textStyle={styles.stats__value} text={`${burned} kCal`} />
             <View style={styles.calories_chart}>
-                <Progress.Circle progress={progress} size={66} />
-                <GradientButton rounded containerStyle={styles.calories__btn}>
-                    <Text style={styles.calories__btn_text}>{left}kCal left</Text>
-                </GradientButton>
+                <Progress.Circle progress={progress} size={66}>
+                    <GradientButton rounded containerStyle={styles.calories__btn}>
+                        <Text style={styles.calories__btn_text}>{left}kCal left</Text>
+                    </GradientButton>
+                </Progress.Circle>
             </View>
         </View>
     )
@@ -51,7 +52,6 @@ const styles = StyleSheet.create({
         lineHeight: 18
     },
     stats__value: {
-        marginTop: 5,
         fontSize: 14,
         color: '#1D1617',
         fontWeight: '700',
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     },
     calories__btn: {
         width: 48,
-        position: 'absolute'
+        height: 48
     },
     calories__btn_text: {
         textAlign: 'center',

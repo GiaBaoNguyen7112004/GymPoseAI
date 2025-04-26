@@ -18,6 +18,7 @@ export interface DataPoint {
 /** Calculate progress chart data for activity tracking */
 export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): ChartData {
     const progressData = new Array(7).fill(0)
+    const backgroundData = new Array(7).fill(100)
 
     stats.forEach(({ calories, water }) => {
         const dayIndex = new Date(calories.date).getDay()
@@ -30,6 +31,7 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
 
         const averageProgress = (caloriesProgress + waterProgress) / 2
         progressData[dayIndex] = Math.round(averageProgress)
+        backgroundData[dayIndex] = 100 - progressData[dayIndex]
     })
 
     const colorPalette = [
@@ -41,13 +43,17 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
         (opacity = 1) => '#A5B4FC',
         (opacity = 1) => '#D8B4FE'
     ]
-
+    const backgroundColorPalette = new Array(7).fill((opacity = 1) => 'rgba(165, 120, 90, 0.2)')
     return {
         labels: WEEKDAYS,
         datasets: [
             {
                 data: progressData,
                 colors: colorPalette
+            },
+            {
+                data: backgroundData,
+                colors: backgroundColorPalette
             }
         ]
     }

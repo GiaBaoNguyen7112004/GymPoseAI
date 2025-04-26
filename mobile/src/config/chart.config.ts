@@ -55,7 +55,7 @@ const activityTrackerBarChartConfig: AbstractChartConfig = {
     backgroundGradientTo: '#FFFFFF',
     decimalPlaces: 0,
     color: (opacity, index) => {
-        return index !== undefined && opacity === 1 ? (index % 2 === 0 ? '#D8B4FE' : '#A5B4FC') : 'rgba(0, 0, 0, 0.1)'
+        return 'rgba(0, 0, 0, 0.1)'
     },
     labelColor: () => '#7B6F72',
     style: {},

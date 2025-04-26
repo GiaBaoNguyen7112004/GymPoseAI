@@ -15,13 +15,14 @@ import VerificationScreen from './Screens/VerificationScreen'
 import NewPasswordScreen from './Screens/NewPasswordScreen'
 
 import { RootStackScreenProps } from '@/navigation/types'
+import { useStatusBarHeight } from '@/constants/devices.constant'
 
 export interface ForgotPasswordPayload {
     email: string
     otp: string
 }
-
 const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) => {
+    const statusBarHeight = useStatusBarHeight()
     const [screenStep, setScreenStep] = useState<1 | 2 | 3>(1)
     const [formData, setFormData] = useState<ForgotPasswordPayload>({ email: '', otp: '' })
 
@@ -58,7 +59,7 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.container}>
-                <View style={styles.navigationBar}>
+                <View style={[styles.navigationBar, { marginTop: statusBarHeight }]}>
                     <NavigationBar title={getScreenName()} callback={handleBackScreen} />
                 </View>
 
@@ -107,9 +108,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flex: 1
     },
-    navigationBar: {
-        marginTop: 5
-    },
+    navigationBar: {},
     bottomHelp: {
         height: 50,
         justifyContent: 'center',

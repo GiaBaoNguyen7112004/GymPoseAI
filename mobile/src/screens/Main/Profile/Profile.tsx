@@ -1,5 +1,13 @@
 import { useContext, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    NativeSyntheticEvent,
+    NativeScrollEvent
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMutation } from '@tanstack/react-query'
 
@@ -22,6 +30,7 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
 
     const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
 
@@ -42,14 +51,19 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
         })
     }
 
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offsetY = event.nativeEvent.contentOffset.y
+        setIsScrolled(offsetY > 0)
+    }
+
     return (
         <AnimatedBottomSheetLayout ref={bottomSheetRef}>
             <View style={styles.mainContent}>
-                <SafeAreaView style={styles.navBar}>
+                <SafeAreaView style={[styles.navBar, isScrolled && styles.navBarScrolled]}>
                     <NavigationBar title='Profile' callback={navigation.goBack} />
                 </SafeAreaView>
 
-                <ScrollView style={styles.scrollView}>
+                <ScrollView style={styles.scrollView} onScroll={handleScroll} scrollEventThrottle={16}>
                     <UserInfo editPress={openEditProfile} />
 
                     <View style={styles.sectionWrapper}>
@@ -112,7 +126,15 @@ export default Profile
 
 const styles = StyleSheet.create({
     navBar: {
-        justifyContent: 'center'
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: 'transparent'
+    },
+    navBarScrolled: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5'
     },
     scrollView: {
         flex: 1
@@ -135,11 +157,13 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         minHeight: 99,
         width: '100%',
-        shadowColor: 'rgba(29, 22, 23, 0.07)',
-        shadowOffset: { width: 0, height: 10 },
+        shadowColor: 'rgba(29, 22, 23, 0.5)',
+        shadowOffset: { width: 2, height: 10 },
         shadowOpacity: 1,
-        shadowRadius: 40,
-        elevation: 10
+        shadowRadius: 20,
+
+        // Android shadow
+        elevation: 8
     },
     sectionTitle: {
         fontSize: 16,

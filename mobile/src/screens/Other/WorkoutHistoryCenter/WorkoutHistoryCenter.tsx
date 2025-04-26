@@ -151,7 +151,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#92A3FD'
     },
     header: {
-        height: 100
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     headerTitle: {
         color: '#FFF',

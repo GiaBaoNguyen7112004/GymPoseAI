@@ -62,11 +62,15 @@ const styles = StyleSheet.create({
         color: '#1D1617'
     },
     chartBoxShadow: {
-        shadowColor: 'rgba(29, 22, 23, 0.1)',
-        shadowOffset: { width: 0, height: 10 },
+        backgroundColor: 'white',
+        shadowColor: 'rgba(29, 22, 23, 0.3)',
+        shadowOffset: { width: 1, height: 10 },
         shadowOpacity: 1,
-        shadowRadius: 40,
-        elevation: 10
+        shadowRadius: 20,
+
+        // Android shadow
+        elevation: 8,
+        borderRadius: 20
     },
     chartContainer: {
         backgroundColor: '#fff',

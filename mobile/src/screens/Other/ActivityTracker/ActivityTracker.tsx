@@ -27,7 +27,7 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 <NavigationBar title='Activity Tracker' callback={navigation.goBack} />
             </SafeAreaView>
 
-            <View style={styles.content}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 <View style={styles.todayTargetCard}>
                     <TodayTarget
                         caloriesVal={todayTargetData?.calories || 0}
@@ -39,10 +39,11 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 <View style={styles.activityProgressCard}>
                     <ActivityProgress />
                 </View>
+
                 <View style={styles.latestActivityCard}>
                     <LatestActivity />
                 </View>
-            </View>
+            </ScrollView>
 
             <CustomModal visible={modalUpdateTargetVisible}>
                 <FormUpdateTodayTarget
@@ -61,28 +62,23 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF'
     },
-    content: {
-        paddingHorizontal: 20,
-        flex: 1
-    },
     header: {
-        height: 85
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5'
     },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: '700'
+    scrollContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 30,
+        flexGrow: 1
     },
     todayTargetCard: {
         marginVertical: 30
     },
     activityProgressCard: {
         marginBottom: 30
-    },
-    activityProgressHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 18
     },
     latestActivityCard: {
         flex: 1
@@ -101,26 +97,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5
-    },
-    button: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
-    },
-    buttonOpen: {
-        backgroundColor: '#F194FF'
-    },
-    buttonClose: {
-        backgroundColor: '#2196F3'
-    },
-    textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: 'center'
     }
 })
 

@@ -17,9 +17,7 @@ function ActivityItem({ data }: ActivityItemProps) {
                 <Text style={styles.activityTitle}>{data.name}</Text>
                 <Text style={styles.activityTime}>{formatRelativeTimeFromNow(data.time)}</Text>
             </View>
-            <TouchableOpacity>
-                <Feather name='more-vertical' size={20} color='#9CA3AF' />
-            </TouchableOpacity>
+            <TouchableOpacity>{/* <Feather name='more-vertical' size={20} color='#9CA3AF' /> */}</TouchableOpacity>
         </View>
     )
 }

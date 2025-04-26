@@ -26,7 +26,7 @@ function ControlledInput({
     rules,
     defaultValue,
     label,
-    noBorderBottom,
+    noBorderBottom = false,
     ...rest
 }: ControllerInputProps) {
     const { field } = useController({ name, rules, defaultValue })
@@ -67,8 +67,8 @@ function ControlledInput({
             <View
                 style={[
                     styles.inputWrapper,
-                    isFocused && !noBorderBottom && styles.inputWrapperFocused,
-                    noBorderBottom && { borderBottomColor: '#F7F8F8' }
+                    noBorderBottom && { borderBottomColor: '#F7F8F8' },
+                    isFocused && !noBorderBottom && styles.inputWrapperFocused
                 ]}
             >
                 <TouchableWithoutFeedback onPress={() => inputRef.current?.focus()}>
@@ -113,11 +113,13 @@ const styles = StyleSheet.create({
         height: 56,
         paddingHorizontal: 15,
         borderWidth: 1,
-        borderColor: '#F7F8F8',
         backgroundColor: '#F7F8F8',
         flexDirection: 'row',
         alignItems: 'center',
         position: 'relative',
+        borderRightColor: '#F7F8F8',
+        borderLeftColor: '#F7F8F8',
+        borderTopColor: '#F7F8F8',
         borderBottomColor: '#DDDADA'
     },
     inputWrapperFocused: {
