@@ -116,6 +116,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
                                 renderItem={renderCategoryItem}
                                 keyExtractor={(item) => item.id}
                                 showsVerticalScrollIndicator={false}
+                                scrollEnabled={true}
                                 onScrollToIndexFailed={(info) => {
                                     setTimeout(() => {
                                         exerciseListRef.current?.scrollToIndex({

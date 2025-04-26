@@ -1,49 +1,32 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, FlatList, View } from 'react-native'
-
-import { useInfiniteQuery } from '@tanstack/react-query'
+// LatestActivity.js - Component trong scrollview chính
+import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { useQuery } from '@tanstack/react-query'
 import { activityApi } from '@/services/rest'
 import Loader from '@/components/Loader'
 import ActivityItem from '../ActivityItem/ActivityItem'
 
-import { ResponseAPIActivityPage } from '@/types/userActivity.type'
-
 function LatestActivity() {
-    const [isExpanded, setIsExpanded] = useState(false)
+    const navigation = useNavigation()
 
-    const queryConfig = useInfiniteQuery<ResponseAPIActivityPage, Error>({
-        queryKey: ['latest-activity'],
-        queryFn: async ({ pageParam = 1 }) => {
+    // Chỉ lấy trang đầu tiên với số lượng items giới hạn
+    const { data, isLoading } = useQuery({
+        queryKey: ['latest-activity-preview'],
+        queryFn: async () => {
             const response = await activityApi.getDailyActivity({
-                params: { page: pageParam as number, limit: 5 }
+                params: { page: 1, limit: 3 }
             })
             return response.data
         },
-        getNextPageParam: ({ meta }) => (meta.current_page < meta.total_page ? meta.current_page + 1 : undefined),
-        initialPageParam: 1,
         staleTime: 60 * 1000
     })
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = queryConfig
+    const activities = data?.data || []
 
-    const activities = data?.pages.flatMap((page) => page.data) || []
-
-    const handleSeeMore = () => setIsExpanded(true)
-
-    const handleLoadMore = () => {
-        if (hasNextPage && !isFetchingNextPage && isExpanded) {
-            fetchNextPage()
-        }
+    const handleSeeMore = () => {
+        navigation.navigate('ActivityList')
     }
-
-    const renderItem = ({ item }: any) => <ActivityItem data={item} />
-
-    const renderFooter = () =>
-        isFetchingNextPage ? (
-            <View style={styles.loadingWrapper}>
-                <Loader />
-            </View>
-        ) : null
 
     const renderEmpty = () => <Text style={styles.emptyText}>No activity yet</Text>
 
@@ -51,27 +34,23 @@ function LatestActivity() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.sectionTitle}>Latest Activity</Text>
-                {!isExpanded && activities.length > 0 && hasNextPage && (
+                {activities.length > 0 && (
                     <TouchableOpacity onPress={handleSeeMore}>
                         <Text style={styles.seeMoreText}>See more</Text>
                     </TouchableOpacity>
                 )}
             </View>
 
-            {isLoading && !isExpanded ? (
+            {isLoading ? (
                 <Loader />
+            ) : activities.length > 0 ? (
+                <View>
+                    {activities.map((item) => (
+                        <ActivityItem key={item.id.toString()} data={item} />
+                    ))}
+                </View>
             ) : (
-                <FlatList
-                    scrollEnabled={false}
-                    data={activities}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderItem}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.2}
-                    ListFooterComponent={renderFooter}
-                    ListEmptyComponent={renderEmpty}
-                    keyboardShouldPersistTaps='handled'
-                />
+                renderEmpty()
             )}
         </View>
     )
@@ -98,10 +77,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '500',
         color: '#ADA4A5'
-    },
-    loadingWrapper: {
-        alignItems: 'center',
-        paddingVertical: 12
     },
     emptyText: {
         marginTop: 20,

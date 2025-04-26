@@ -27,6 +27,7 @@ import Setting from '@/screens/Other/Setting'
 import ContactUs from '@/screens/Other/ContactUs'
 import PrivacyPolicy from '@/screens/Other/PrivacyPolicy/PrivacyPolicy'
 import useUserData from '@/hooks/useUserData'
+import ActivityListScreen from '@/screens/Other/ActivityListScreen'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -54,6 +55,7 @@ function RootStackNavigation() {
                     <RootStack.Screen name='Setting' component={Setting} />
                     <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
                     <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
+                    <RootStack.Screen name='ActivityList' component={ActivityListScreen} />
                 </RootStack.Group>
             ) : (
                 <RootStack.Group>

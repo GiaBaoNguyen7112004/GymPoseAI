@@ -11,7 +11,7 @@ interface UserInfoProps {
 function UserInfo({ editPress }: UserInfoProps) {
     const { profile } = useContext(AppContext)
 
-    const { first_name, last_name, height, weight, date_of_birth, avatar } = profile || {}
+    const { first_name, last_name, height, weight, date_of_birth, avatar, email } = profile || {}
 
     const age = date_of_birth && ~~((Date.now() - new Date(date_of_birth).getTime()) / 3.15576e10)
 
@@ -24,7 +24,7 @@ function UserInfo({ editPress }: UserInfoProps) {
                 />
                 <View style={styles.profile__content}>
                     <Text style={styles.profile_username}>{`${first_name ?? ''} ${last_name ?? ''}`.trim()}</Text>
-                    <Text style={styles.profile_bio}>Transform your body</Text>
+                    <Text style={styles.profile_bio}>{email}</Text>
                 </View>
                 <GradientButton Square style={styles.Profile_btnEdit} onPress={editPress}>
                     <Text style={styles.btnEdit__text}>Edit</Text>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-const FILTERS = ['weekly', 'monthly', 'yearly', 'daily'] as const
+const FILTERS = ['weekly', 'monthly', 'yearly'] as const
 type Filter = (typeof FILTERS)[number]
 
 interface FilterBarProps {

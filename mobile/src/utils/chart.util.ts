@@ -34,7 +34,8 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
         backgroundData[dayIndex] = 100 - progressData[dayIndex]
     })
 
-    const colorPalette = [
+    // Màu cho phần đã hoàn thành (progress)
+    const progressColorPalette = [
         (opacity = 1) => '#D8B4FE',
         (opacity = 1) => '#A5B4FC',
         (opacity = 1) => '#D8B4FE',
@@ -43,13 +44,16 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
         (opacity = 1) => '#A5B4FC',
         (opacity = 1) => '#D8B4FE'
     ]
-    const backgroundColorPalette = new Array(7).fill((opacity = 1) => 'rgba(165, 120, 90, 0.2)')
+
+    // Màu nâu cho phần chưa hoàn thành (background)
+    const backgroundColorPalette = new Array(7).fill((opacity = 1) => 'rgba(165, 120, 90, 0.6)')
+
     return {
         labels: WEEKDAYS,
         datasets: [
             {
                 data: progressData,
-                colors: colorPalette
+                colors: progressColorPalette
             },
             {
                 data: backgroundData,

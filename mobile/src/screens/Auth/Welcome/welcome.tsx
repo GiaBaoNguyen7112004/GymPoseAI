@@ -12,7 +12,6 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
 
     const navigateBasedOnProfileCompletion = () => {
         const isComplete = userData?.isProfileComplete
-        console.log('isComplete', isComplete)
         navigation.reset({
             index: 0,
             routes: [{ name: isComplete ? 'MainTab' : 'CompleteProfile' }]

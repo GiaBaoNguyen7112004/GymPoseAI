@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
         maxHeight: 80,
         borderRadius: 16,
         backgroundColor: '#fff',
-        shadowColor: 'rgba(29, 22, 23, 0.3)',
+        shadowColor: 'rgba(29, 22, 23, 0.2)',
         shadowOffset: { width: 1, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 20,
 
         // Android shadow
-        elevation: 8,
+        elevation: 3,
         flexDirection: 'row',
         alignItems: 'center',
         columnGap: 10,

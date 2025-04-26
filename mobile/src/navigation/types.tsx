@@ -26,6 +26,7 @@ export type RootStackParamList = {
     ActivityTracker: undefined
     Setting: undefined
     ProfileManager: undefined
+    ActivityList: undefined
 
     // Common information screens
     ContactUs: undefined

@@ -26,11 +26,13 @@ import { RootStackScreenProps } from '@/navigation/types'
 import { categories, QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/types/workoutHistory.type'
 import { ViewModeType } from '@/types/utils.type'
 
+type ViewMode = 'weekly' | 'monthly' | 'yearly'
+
 function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
     const { profile } = useContext(AppContext)
 
     const [category, setCategory] = useState<categories>('full body')
-    const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
+    const [viewMode, setViewMode] = useState<ViewMode>('weekly')
     const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
     const queryConfig = useMemo<QueryConfigWorkoutHistory>(
@@ -69,7 +71,7 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
     const workouts = data?.pages.flatMap((page) => page.data) || []
 
     const handleTabChange = (value: string) => setCategory(value as categories)
-    const handleViewModeChange = (value: string) => setViewMode(value as ViewModeType)
+    const handleViewModeChange = (value: string) => setViewMode(value as ViewMode)
     const handleOrderChange = () => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
     const handleWorkoutCardClick = (workoutId: string) => {
         navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
@@ -81,6 +83,7 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
     )
     return (
         <View style={styles.container}>
+            {isLoading && <LoaderModal title='Loading' />}
             <SafeAreaView style={styles.header}>
                 <NavigationBar
                     title='Workout History'
@@ -113,8 +116,6 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
                     </View>
                 </View>
 
-                {isLoading && <LoaderModal title='Loading' />}
-
                 <FlatList
                     data={workouts}
                     keyExtractor={(item) => item.id}
@@ -122,6 +123,7 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
                     renderItem={({ item }) => (
                         <TrainingSessionCard item={item} onPress={() => handleWorkoutCardClick(item.id)} />
                     )}
+                    ListEmptyComponent={renderEmptyComponent}
                     onEndReached={() => {
                         if (hasNextPage && !isFetchingNextPage) fetchNextPage()
                     }}

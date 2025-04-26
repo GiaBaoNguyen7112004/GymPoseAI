@@ -27,7 +27,11 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 <NavigationBar title='Activity Tracker' callback={navigation.goBack} />
             </SafeAreaView>
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled={true}
+            >
                 <View style={styles.todayTargetCard}>
                     <TodayTarget
                         caloriesVal={todayTargetData?.calories || 0}

@@ -88,17 +88,18 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
                 <BottomSheet
                     ref={bottomSheetRef}
                     index={0}
-                    snapPoints={['50%', '90%']}
+                    snapPoints={['55%', '90%']}
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
-                    enableContentPanningGesture={false}
                     enableDynamicSizing={false}
+                    enableContentPanningGesture={true}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <View style={styles.trainingSection}>
                             <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
                             <BottomSheetFlatList
                                 data={categoriesData}
+                                scrollEnabled={true}
                                 renderItem={renderCategoryItem}
                                 keyExtractor={(item) => item.id.toString()}
                                 showsVerticalScrollIndicator={false}
