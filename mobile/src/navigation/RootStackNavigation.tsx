@@ -1,4 +1,4 @@
-import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
+import { createStackNavigator, StackNavigationOptions, TransitionPresets } from '@react-navigation/stack'
 import { useContext, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { AppContext } from '@/Contexts/App.context'
@@ -35,7 +35,8 @@ function RootStackNavigation() {
 
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
-        gestureEnabled: true
+        gestureEnabled: true,
+        ...TransitionPresets.SlideFromRightIOS
     }
 
     return (

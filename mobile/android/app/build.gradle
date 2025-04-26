@@ -123,17 +123,6 @@ android {
     }
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
-    },
-    flavorDimensions "env",
-    productFlavors {
-        production {
-            dimension "env"
-            applicationId 'com.taplamit.GymPoseAI'
-        }
-        development {
-            dimension "env"
-            applicationId 'com.taplamit.GymPoseAI.dev'
-        }
     }
 
 }

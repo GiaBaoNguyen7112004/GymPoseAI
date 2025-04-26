@@ -140,7 +140,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingVertical: 20
     },
     callToAction: {
         marginTop: 30,
@@ -174,8 +175,8 @@ const styles = StyleSheet.create({
     btnRegister: {
         marginTop: 7.5,
         width: SCREEN_WIDTH * 0.9,
-        shadowColor: 'green',
-        shadowOffset: { width: 0, height: 1000 },
+        shadowColor: 'rgba(149, 173, 254, 0.30)',
+        shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 22,
         elevation: 10

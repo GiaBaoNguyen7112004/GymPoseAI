@@ -1,19 +1,18 @@
 {
     "cli": {
-        "version": ">=3.0.0"
+        "version": ">=3.0.0",
+        "appVersionSource": "remote"
     },
     "build": {
         "development": {
+            "autoIncrement": true,
             "developmentClient": true,
             "distribution": "internal",
             "env": {
                 "APP_VARIANT": "development"
             },
             "android": {
-                "resourceClass": "medium",
-                "android": {
-                    "gradleCommand": ":app:assembleDevelopmentDebug"
-                }
+                "resourceClass": "medium"
             },
             "ios": {
                 "resourceClass": "medium",
@@ -21,12 +20,11 @@
             }
         },
         "preview": {
-            "distribution": "internal"
+            "distribution": "internal",
+            "autoIncrement": true
         },
         "production": {
-            "android": {
-                "gradleCommand": ":app:bundleProductionRelease"
-            }
+            "autoIncrement": true
         }
     }
 }
