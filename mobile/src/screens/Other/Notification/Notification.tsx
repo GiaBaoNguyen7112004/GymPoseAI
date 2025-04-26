@@ -1,5 +1,5 @@
 import { useRef, useCallback, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View, FlatList, RefreshControl, Image } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 
@@ -94,6 +94,11 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
 
     const renderEmptyComponent = () => (
         <View style={styles.emptyContainer}>
+            <Image
+                source={require('@/assets/images/notification.png')}
+                style={styles.emptyImage}
+                resizeMode='contain'
+            />
             <Text style={styles.emptyText}>You have no notifications</Text>
         </View>
     )
@@ -163,17 +168,25 @@ const styles = StyleSheet.create({
         flex: 1
     },
     notificationContainer: {
-        paddingBottom: 16
+        paddingBottom: 16,
+        flexGrow: 1
     },
     emptyContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: 16
+    },
+    emptyImage: {
+        width: 150,
+        height: 150,
+        marginBottom: 20
     },
     emptyText: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#7B6F72'
+        color: '#7B6F72',
+        textAlign: 'center'
     },
     loadingWrapper: {
         alignItems: 'center',

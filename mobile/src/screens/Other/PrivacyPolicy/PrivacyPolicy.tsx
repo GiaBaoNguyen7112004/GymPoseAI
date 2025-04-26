@@ -1,16 +1,18 @@
-import React from 'react'
 import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { RootStackScreenProps } from '@/navigation/types'
 import { PRIVACY_SECTIONS } from '@/constants/privacy.constants'
+import useScrollListener from '@/hooks/useScrollListener'
 
 function PrivacyPolicyScreen({ navigation }: RootStackScreenProps<'PrivacyPolicy'>) {
+    const { isScrolled, handleScroll } = useScrollListener()
+
     return (
         <View style={styles.safeArea}>
-            <SafeAreaView style={styles.header}>
+            <SafeAreaView style={[styles.header, isScrolled && styles.headerScrolled]}>
                 <NavigationBar title='Privacy policy' callback={navigation.goBack} />
             </SafeAreaView>
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView contentContainerStyle={styles.container} onScroll={handleScroll} scrollEventThrottle={16}>
                 <Text style={styles.title}>Privacy Policy</Text>
 
                 {PRIVACY_SECTIONS.map((section, index) => (
@@ -34,6 +36,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomWidth: 1,
+        borderBottomColor: 'transparent',
+        backgroundColor: '#FFF'
+    },
+    headerScrolled: {
         borderBottomColor: '#DDDADA'
     },
     container: {

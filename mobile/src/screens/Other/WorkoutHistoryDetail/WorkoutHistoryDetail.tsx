@@ -16,6 +16,7 @@ import { RootStackScreenProps } from '@/navigation/types'
 import { formatDate } from '@/utils/format.util'
 import { workoutHistoryApi } from '@/services/rest'
 import { calculateWorkoutSummaryChart } from '@/utils/chart.util'
+import useScrollListener from '@/hooks/useScrollListener'
 
 export default function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
     const { workout_id } = route.params
@@ -41,13 +42,13 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
 
     const progressData = useMemo(() => calculateWorkoutSummaryChart(workout), [workout])
 
+    const { isScrolled, handleScroll } = useScrollListener()
     return (
         <View style={styles.container}>
-            <SafeAreaView style={styles.navbar}>
+            <SafeAreaView style={[styles.navbar, isScrolled && styles.navbarWithBorder]}>
                 <NavigationBar title='Summary' callback={navigation.goBack} />
             </SafeAreaView>
-            <ScrollView style={styles.scrollView}>
-                {/* Workout Summary */}
+            <ScrollView style={styles.scrollView} onScroll={handleScroll} scrollEventThrottle={16}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Workout Summary</Text>
 
@@ -94,12 +95,10 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
                     </View>
                 </View>
 
-                {/* Feedback Form */}
                 <View style={styles.section}>
                     <FormFeedBack pose_errors={poseErrors} />
                 </View>
 
-                {/* Tips */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Improvement Tips</Text>
                     <View style={styles.card}>
@@ -128,19 +127,21 @@ const card = {
     shadowOffset: { width: 1, height: 10 },
     shadowOpacity: 1,
     shadowRadius: 20,
-
-    // Android shadow
     elevation: 8
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#FFF' },
-    scrollView: { flex: 1, backgroundColor: '#FFF' },
+    scrollView: { flex: 1, backgroundColor: '#FFF ' },
     navbar: {
         height: 60,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#FFF',
         borderBottomWidth: 1,
+        borderBottomColor: 'transparent'
+    },
+    navbarWithBorder: {
         borderBottomColor: '#E5E5E5'
     },
     section: { marginTop: 20, paddingHorizontal: 16 },
@@ -150,7 +151,6 @@ const styles = StyleSheet.create({
         color: '#1D1617',
         marginBottom: 18
     },
-
     cardTop: {
         ...card,
         borderTopLeftRadius: 16,
@@ -174,7 +174,6 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         color: '#7B6F72'
     },
-
     activityRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -184,7 +183,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-
     cardBottom: {
         ...card,
         marginTop: 3,
@@ -194,7 +192,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-
     card: {
         ...card,
         borderRadius: 12,

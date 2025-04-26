@@ -92,7 +92,7 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableDynamicSizing={false}
-                    enableContentPanningGesture={true}
+                    enableContentPanningGesture={false}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <View style={styles.trainingSection}>
@@ -103,6 +103,8 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
                                 renderItem={renderCategoryItem}
                                 keyExtractor={(item) => item.id.toString()}
                                 showsVerticalScrollIndicator={false}
+                                keyboardShouldPersistTaps='handled'
+                                bounces={false}
                             />
                         </View>
                     </BottomSheetView>

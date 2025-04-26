@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TodayTarget from './Components/TodayTarget'
@@ -13,6 +13,8 @@ import { useQuery } from '@tanstack/react-query'
 
 function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>) {
     const [modalUpdateTargetVisible, setModalUpdateTargetVisible] = useState<boolean>(false)
+    const [showHeaderBorder, setShowHeaderBorder] = useState(false)
+
     const toggleModalUpdateTarget = () => {
         setModalUpdateTargetVisible((prev) => !prev)
         refetch()
@@ -21,9 +23,14 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
     const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getTodayTarget })
     const todayTargetData = data?.data.data
 
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offsetY = event.nativeEvent.contentOffset.y
+        setShowHeaderBorder(offsetY > 5) // Khi cuộn xuống 5px thì hiện border
+    }
+
     return (
         <View style={styles.container}>
-            <SafeAreaView style={styles.header}>
+            <SafeAreaView style={[styles.header, showHeaderBorder && styles.headerWithBorder]}>
                 <NavigationBar title='Activity Tracker' callback={navigation.goBack} />
             </SafeAreaView>
 
@@ -31,6 +38,8 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
                 nestedScrollEnabled={true}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
             >
                 <View style={styles.todayTargetCard}>
                     <TodayTarget
@@ -69,7 +78,9 @@ const styles = StyleSheet.create({
     header: {
         height: 60,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
+    },
+    headerWithBorder: {
         borderBottomWidth: 1,
         borderBottomColor: '#E5E5E5'
     },
@@ -86,21 +97,6 @@ const styles = StyleSheet.create({
     },
     latestActivityCard: {
         flex: 1
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
     }
 })
 

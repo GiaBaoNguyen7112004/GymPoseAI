@@ -1,14 +1,5 @@
-import React, { useState } from 'react'
-import {
-    View,
-    Text,
-    StyleSheet,
-    SafeAreaView,
-    TouchableOpacity,
-    ScrollView,
-    NativeSyntheticEvent,
-    NativeScrollEvent
-} from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { RootStackScreenProps } from '@/navigation/types'
 import { FontAwesome5 } from '@expo/vector-icons'
@@ -16,14 +7,10 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { SOCIAL_LINKS, CONTACT, STORE_LINKS, APP } from '@/constants/contactUs'
 import SocialButton from './Components/SocialButton'
 import { openLink } from '@/utils/common.util'
+import useScrollListener from '@/hooks/useScrollListener'
 
 function ContactUsScreen({ navigation }: RootStackScreenProps<'ContactUs'>) {
-    const [isScrolled, setIsScrolled] = useState(false)
-
-    const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offsetY = e.nativeEvent.contentOffset.y
-        setIsScrolled(offsetY > 0)
-    }
+    const { isScrolled, handleScroll } = useScrollListener()
 
     return (
         <View style={styles.screensWrapper}>

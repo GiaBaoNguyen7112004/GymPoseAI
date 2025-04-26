@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     profile__boxValue: {
         padding: 10,
         flex: 1,
-        shadowColor: 'rgba(29, 22, 23, 0.5)',
+        shadowColor: 'rgba(29, 22, 23, 0.2)',
         shadowOffset: { width: 2, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 20,

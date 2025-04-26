@@ -1,13 +1,5 @@
 import { useContext, useRef, useState } from 'react'
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    NativeSyntheticEvent,
-    NativeScrollEvent
-} from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMutation } from '@tanstack/react-query'
 
@@ -25,14 +17,17 @@ import SettingItem from './Components/SettingItem'
 import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
 import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity/PasswordAndSecurity'
 
+import useScrollListener from '@/hooks/useScrollListener'
+
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { setAuthenticated } = useContext(AppContext)
     const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
-    const [isScrolled, setIsScrolled] = useState(false)
 
     const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
+
+    const { isScrolled, handleScroll } = useScrollListener()
 
     const handleToggleNotification = (value: boolean) => {
         setIsNotificationEnabled(value)
@@ -47,13 +42,8 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const handleLogout = async () => {
         await logout(undefined, {
             onSuccess: () => setAuthenticated(false),
-            onError: (errors) => showErrorAlert('default')
+            onError: () => showErrorAlert('default')
         })
-    }
-
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offsetY = event.nativeEvent.contentOffset.y
-        setIsScrolled(offsetY > 0)
     }
 
     return (
@@ -157,12 +147,10 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         minHeight: 99,
         width: '100%',
-        shadowColor: 'rgba(29, 22, 23, 0.5)',
+        shadowColor: 'rgba(29, 22, 23, 0.2)',
         shadowOffset: { width: 2, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 20,
-
-        // Android shadow
         elevation: 8
     },
     sectionTitle: {
