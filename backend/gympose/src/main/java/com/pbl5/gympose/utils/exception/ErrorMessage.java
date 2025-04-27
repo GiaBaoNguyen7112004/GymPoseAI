@@ -40,6 +40,9 @@ public final class ErrorMessage {
     //IMAGE
     public static final String IMAGE_DELETE_FAILED = "image_delete_failed";
 
+    //WORKOUT_SUMMARY
+    public static final String WORKOUT_SUMMARY_NOT_FOUND = "workout_summary_not_found";
+
     private ErrorMessage() {
     }
 }

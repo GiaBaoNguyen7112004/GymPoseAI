@@ -29,6 +29,12 @@ public final class ApiPath {
     public static final String USER_BY_ID = "/{user-id}";
     public static final String USER_PROFILE = "/profile";
 
+    // WORKOUT SUMMARY
+    public static final String WORKOUT_SUMMARY = API + "/workout-summary";
+    public static final String WORKOUT_SUMMARY_BY_ID = "/{workout-summary-id}";
+    public static final String WORKOUT_SUMMARY_HISTORY = "/history";
+    public static final String WORKOUT_STATISTICS = "/statistics";
+
     // SWAGGER
     public static final String SWAGGER = "/swagger-ui.html";
 

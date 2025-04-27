@@ -1,6 +1,5 @@
 package com.pbl5.gympose.entity;
 
-import com.pbl5.gympose.utils.CommonConstant;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "exercises")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Exercise {
+public class Exercise extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
@@ -42,10 +41,6 @@ public class Exercise {
     @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<Step> steps;
 
-    @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<WorkoutHistory> workoutHistories;
-
-    public Double getCaloriesBase() {
-        return this.met * CommonConstant.DEFAULT_WEIGHT * this.durationMinutes / 60.0;
-    }
+    @OneToMany(mappedBy = "exercise")
+    List<WorkoutSummary> workoutSummaries;
 }

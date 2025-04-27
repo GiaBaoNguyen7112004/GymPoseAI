@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "steps")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Step {
+public class Step extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;

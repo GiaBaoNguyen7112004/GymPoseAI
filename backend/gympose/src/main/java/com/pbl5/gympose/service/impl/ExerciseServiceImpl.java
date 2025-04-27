@@ -83,4 +83,9 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void deleteExerciseById(UUID exerciseId) {
         exerciseRepository.deleteById(exerciseId);
     }
+
+    @Override
+    public Exercise findById(UUID id) {
+        return exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.EXERCISE_NOT_FOUND));
+    }
 }

@@ -80,3 +80,8 @@ file_not_formatted:
 image_delete_failed:
   code: ERR.IMG0101
   message: Delete image failed !
+
+#workout_summary
+workout_summary_not_found:
+  code: ERR.WSU0101
+  message: Workout summary not found!

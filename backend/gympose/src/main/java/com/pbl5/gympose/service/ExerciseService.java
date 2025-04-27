@@ -1,5 +1,6 @@
 package com.pbl5.gympose.service;
 
+import com.pbl5.gympose.entity.Exercise;
 import com.pbl5.gympose.payload.request.exercise.ExerciseCreationRequest;
 import com.pbl5.gympose.payload.request.exercise.ExerciseUpdatingRequest;
 import com.pbl5.gympose.payload.response.exercise.ExerciseDetailResponse;
@@ -20,4 +21,6 @@ public interface ExerciseService {
     ExerciseDetailResponse updateExerciseById(UUID exerciseId, ExerciseUpdatingRequest exerciseUpdatingRequest);
 
     void deleteExerciseById(UUID exerciseId);
+
+    Exercise findById(UUID id);
 }

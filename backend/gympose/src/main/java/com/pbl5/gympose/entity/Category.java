@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "categories")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Category {
+public class Category extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
