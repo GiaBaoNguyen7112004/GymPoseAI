@@ -32,11 +32,12 @@ public class SecurityConfig {
     public final String[] PUBLIC_ENDPOINT = {
             ApiPath.AUTH + "/**",
             ApiPath.SWAGGER,
+            ApiPath.JWT + "/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/api-docs/**",
-            "/v3/api-docs.yaml"
+            "/v3/api-docs.yaml",
     };
 
     public final String[] PUBLIC_GET_ENDPOINT = {

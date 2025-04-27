@@ -39,6 +39,10 @@ public final class ApiPath {
     public static final String NOTIFICATIONS = API + "/notifications";
     public static final String NOTIFICATION_BY_ID = "/{notification-id}";
 
+    //JWT
+    public static final String JWT = API + "/jwt";
+    public static final String JWT_REFRESH = "/refresh";
+
     // SWAGGER
     public static final String SWAGGER = "/swagger-ui.html";
 
