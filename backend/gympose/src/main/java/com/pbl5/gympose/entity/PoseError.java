@@ -13,14 +13,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "pose_errors")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PoseError {
+public class PoseError extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
     String aiResult;
+    Integer repIndex;
 
     @ManyToOne
-    @JoinColumn(name = "workout_history_id", nullable = false)
-    WorkoutHistory workoutHistory;
+    @JoinColumn(name = "workout_summary_id", nullable = true)
+    WorkoutSummary workoutSummary;
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "user_providers")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserProvider {
+public class UserProvider extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;

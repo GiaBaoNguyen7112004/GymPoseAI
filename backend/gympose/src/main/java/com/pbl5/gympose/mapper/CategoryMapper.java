@@ -4,6 +4,7 @@ import com.pbl5.gympose.entity.Category;
 import com.pbl5.gympose.entity.Exercise;
 import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
 import com.pbl5.gympose.payload.response.category.CategoryResponse;
+import com.pbl5.gympose.utils.WorkoutUtil;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -23,7 +24,8 @@ public interface CategoryMapper {
             List<Exercise> exercises = category.getExercises();
             response.setExerciseCount(exercises.size());
             response.setDurationMinutes(exercises.stream().mapToInt(Exercise::getDurationMinutes).sum());
-            response.setCaloriesBurned(exercises.stream().mapToDouble(Exercise::getCaloriesBase).sum());
+            response.setCaloriesBurned(exercises.stream()
+                    .mapToDouble(exercise -> WorkoutUtil.getCaloriesBase(null, exercise)).sum());
         }
     }
 }

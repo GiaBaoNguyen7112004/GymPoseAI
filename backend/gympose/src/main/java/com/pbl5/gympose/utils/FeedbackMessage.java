@@ -32,6 +32,12 @@ public final class FeedbackMessage {
     public static final String USER_DELETED = "User deleted successfully";
     public static final String USER_UPDATED = "User updated successfully";
 
+    //Workout summary
+    public static final String WORKOUT_SUMMARY_RETRIEVED = "Workout summary retrieved successfully";
+    public static final String POSE_ERRORS_RETRIEVED = "Pose errors retrieved successfully";
+    public static final String WORKOUT_SUMMARY_CREATED = "Workout summary created successfully";
+    public static final String WORKOUT_STATISTICS_RETRIEVED = "Workout statistics retrieved successfully";
+
     private FeedbackMessage() {
     }
 }

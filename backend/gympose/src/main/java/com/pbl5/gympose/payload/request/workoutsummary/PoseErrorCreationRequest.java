@@ -1,4 +1,5 @@
-package com.pbl5.gympose.payload.response.user;
+package com.pbl5.gympose.payload.request.workoutsummary;
+
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -7,15 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    UUID id;
-    String email;
-    String firstName;
-    Boolean isEnabled = false;
+public class PoseErrorCreationRequest {
+    String aiResult;
+    String repIndex;
 }

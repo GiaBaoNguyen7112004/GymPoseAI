@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -63,13 +63,13 @@ public class User extends AbstractEntity {
     private List<Role> roles;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<WorkoutHistory> workoutHistories;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Notification> notifications;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<UserProvider> userProviders;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<WorkoutSummary> workoutSummaries;
 
     public int getAge() {
         return LocalDate.now().getYear() - this.getDateOfBirth().getYear();
