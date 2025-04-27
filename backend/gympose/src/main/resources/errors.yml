@@ -28,6 +28,9 @@ unauthorized:
 
 
 #token
+token_not_found:
+  code: ERR.TOK0000
+  message: Token not found!
 invalid_access_token:
   code: ERR.TOK0101
   message: Invalid access token!
@@ -46,7 +49,12 @@ invalid_account_verification_token:
 expired_account_verification_token:
   code: ERR.TOK0302
   message: Expired account verification token!
-
+invalid_otp:
+  code: ERR.TOK0401
+  message: Invalid otp !
+expired_otp:
+  code: ERR.TOK0402
+  message: Expired otp!
 #user
 user_not_found:
   code: ERR.USE0101

@@ -50,6 +50,28 @@ public class SendingEmailService {
     }
 
     @Async("emailTaskExecutor")
+    public void sendOtpEmailFromTemplate(
+            String email,
+            String templateName,
+            String otp,
+            String titleKey,
+            String additionText,
+            String language) {
+        Context context = new Context();
+        Locale locale = new Locale(language);
+
+        context.setLocale(locale);
+        if (Objects.nonNull(otp)) {
+            context.setVariable("otp", otp);
+        }
+        context.setVariable("additionText", additionText);
+        String subject = messageSource.getMessage(titleKey, null, "Default Subject", locale);
+        String detail = springTemplateEngine.process(templateName, context);
+
+        this.sendMail(email, subject, detail);
+    }
+
+    @Async("emailTaskExecutor")
     public void sendEmailFromTemplate(
             String email,
             String templateName,
@@ -128,4 +150,6 @@ public class SendingEmailService {
             LogUtils.error(e.getMessage());
         }
     }
+
+
 }

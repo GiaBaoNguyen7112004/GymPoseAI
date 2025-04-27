@@ -1,18 +1,18 @@
 package com.pbl5.gympose.service.impl;
 
 import com.pbl5.gympose.entity.Role;
+import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.enums.CachePrefix;
 import com.pbl5.gympose.enums.RoleName;
+import com.pbl5.gympose.event.RequestResetPasswordEvent;
+import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
 import com.pbl5.gympose.event.UserRegistrationEvent;
 import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.exception.UnauthenticatedException;
 import com.pbl5.gympose.mapper.UserMapper;
-import com.pbl5.gympose.payload.request.auth.AccountVerificationRequest;
-import com.pbl5.gympose.payload.request.auth.LoginRequest;
-import com.pbl5.gympose.payload.request.auth.LogoutRequest;
-import com.pbl5.gympose.payload.request.auth.SignUpRequest;
+import com.pbl5.gympose.payload.request.auth.*;
 import com.pbl5.gympose.payload.response.auth.JwtLoginResponse;
 import com.pbl5.gympose.payload.response.auth.LoginResponse;
 import com.pbl5.gympose.payload.response.auth.SignUpResponse;
@@ -51,6 +51,7 @@ public class JwtAuthServiceImpl implements AuthService {
     ApplicationEventPublisher eventPublisher;
     TokenService tokenService;
     CacheService cacheService;
+
 
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
@@ -123,5 +124,35 @@ public class JwtAuthServiceImpl implements AuthService {
         String prefix = CachePrefix.BLACK_LIST_TOKENS.getPrefix();
         cacheService.set(prefix + jwtUtils.getJwtIdFromJWTClaims(refreshTokenClaims), 1,
                 jwtUtils.getTokenAvailableDuration(refreshTokenClaims), TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void requestResetPassword(RequestResetPasswordRequest resetPasswordRequest) {
+        User user = userService.findByEmail(resetPasswordRequest.getEmail());
+        eventPublisher.publishEvent(new RequestResetPasswordEvent(user));
+    }
+
+    @Override
+    public boolean verifyOTP(OtpVerificationRequest otpVerificationRequest) {
+        User user = userService.findByEmail(otpVerificationRequest.getEmail());
+        return tokenService.verifyOTP(user.getId(), otpVerificationRequest.getOtp());
+    }
+
+    @Transactional
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userService.findByEmail(request.getEmail());
+        Token token = tokenService.findToken(request.getOtp());
+        if (tokenService.verifyOTP(user.getId(), request.getOtp())) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            userService.save(user);
+            tokenService.deleteToken(token.getToken());
+        } else throw new BadRequestException(ErrorMessage.INVALID_OTP);
+    }
+
+    @Override
+    public void resendResetPassword(RequestResetPasswordRequest resetPasswordRequest) {
+        User user = userService.findByEmail(resetPasswordRequest.getEmail());
+        eventPublisher.publishEvent(new ResendRequestResetPasswordEvent(user));
     }
 }

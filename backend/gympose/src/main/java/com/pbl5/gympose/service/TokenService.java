@@ -4,10 +4,20 @@ import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.TokenType;
 
+import java.util.UUID;
+
 public interface TokenService {
     Token findToken(String token);
+
+    Token findOtp(UUID userId);
 
     Token createToken(User user, TokenType type);
 
     void deleteToken(String token);
+
+    Token findByTokenAndUserId(UUID userId, String token);
+
+    boolean verifyOTP(UUID userId, String token);
+
+    Token save(Token token);
 }

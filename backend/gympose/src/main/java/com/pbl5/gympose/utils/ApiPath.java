@@ -9,6 +9,10 @@ public final class ApiPath {
     public static final String LOGIN = "/login";
     public static final String VERIFY_ACCOUNT = "/verify-account";
     public static final String LOGOUT = "/logout";
+    public static final String REQUEST_PASSWORD_RESET = "/request-password-reset";
+    public static final String VERIFY_OTP = "/verify-reset-otp";
+    public static final String RESET_PASSWORD = "/reset-password";
+    public static final String RESEND_RESET_PASSWORD = "resend-reset-otp";
 
     // CATEGORY
     public static final String CATEGORIES = API + "/categories";
