@@ -35,6 +35,7 @@ public class NotificationController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ResponseEntity<ResponseData> getUserNotifications(@RequestParam(name = "sort", defaultValue = "created_at") String sortBy,
                                                              @RequestParam(name = "order", defaultValue = "desc") String order,
@@ -48,6 +49,7 @@ public class NotificationController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping(ApiPath.NOTIFICATION_BY_ID)
     public ResponseEntity<ResponseData> readNotification(@PathVariable(name = "notification-id") UUID notificationId) {
         notificationService.readNotification(notificationId);
@@ -55,6 +57,7 @@ public class NotificationController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping(ApiPath.NOTIFICATION_BY_ID)
     public ResponseEntity<ResponseData> deleteNotification(@PathVariable(name = "notification-id") UUID notificationId) {
         notificationService.deleteById(notificationId);

@@ -44,6 +44,9 @@ public final class FeedbackMessage {
     public static final String NOTIFICATION_READ = "Notification read successfully";
     public static final String NOTIFICATION_DELETED = "Notification deleted successfully";
 
+    //JWT
+    public static final String JWT_REFRESHED = "JWT refreshed successfully";
+
     private FeedbackMessage() {
     }
 }
