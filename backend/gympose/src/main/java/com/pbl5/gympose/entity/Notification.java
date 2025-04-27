@@ -1,11 +1,13 @@
-package com.pbl5.gympose.notification;
+package com.pbl5.gympose.entity;
 
-import com.pbl5.gympose.entity.AbstractEntity;
-import com.pbl5.gympose.entity.User;
+import com.pbl5.gympose.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -17,25 +19,23 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Notification extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
     UUID id;
 
     @Enumerated(EnumType.STRING)
     NotificationType type;
 
-    @Column(nullable = false)
     String title;
 
-    @Column(nullable = false)
     String description;
 
-    @Column(nullable = false)
-    String data;
+    Boolean isRead = false;
 
-    @Column(nullable = false)
-    Boolean isRead;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> metaData;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     User user;
 }

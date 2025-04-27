@@ -34,6 +34,12 @@
     </properties>
 
     <dependencies>
+        <!--        jsonb-->
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-60</artifactId> <!-- tuỳ version Hibernate của bạn -->
+            <version>2.21.1</version> <!-- lấy version mới nhất -->
+        </dependency>
         <!--        rabbit mq-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -17,7 +17,7 @@ public class ResponseData {
 
     Object data;
 
-    Object error;
+    Object errors;
 
     Object meta;
 
@@ -36,6 +36,6 @@ public class ResponseData {
     }
 
     public static ResponseData error(Object error) {
-        return ResponseData.builder().status(CommonConstant.FAILURE).error(error).build();
+        return ResponseData.builder().status(CommonConstant.FAILURE).errors(error).build();
     }
 }

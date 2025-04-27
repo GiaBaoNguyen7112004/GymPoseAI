@@ -28,6 +28,7 @@ import java.util.UUID;
 public class WorkoutSummaryController {
     WorkoutSummaryService workoutSummaryService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<ResponseData> createWorkoutSummary(@RequestBody WorkoutSummaryCreationRequest request) {
         ResponseData responseData = ResponseData.success(workoutSummaryService
@@ -53,6 +54,7 @@ public class WorkoutSummaryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID)
     public ResponseEntity<ResponseData> getWorkoutPoseErros(@PathVariable(name = "workout-summary-id") UUID id) {
         ResponseData responseData = ResponseData.success(workoutSummaryService.getPoseErrors(id),
@@ -60,6 +62,7 @@ public class WorkoutSummaryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_STATISTICS)
     public ResponseEntity<ResponseData> getWorkoutStatistics(@CurrentUser UserPrincipal userPrincipal,
                                                              @RequestParam(name = "viewMode", defaultValue = "weekly") String viewMode) {

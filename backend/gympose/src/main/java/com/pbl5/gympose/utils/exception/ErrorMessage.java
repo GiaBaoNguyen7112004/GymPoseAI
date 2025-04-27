@@ -43,6 +43,9 @@ public final class ErrorMessage {
     //WORKOUT_SUMMARY
     public static final String WORKOUT_SUMMARY_NOT_FOUND = "workout_summary_not_found";
 
+    //NOTIFICATION
+    public static final String NOTIFICATION_NOT_FOUND = "notification_not_found";
+
     private ErrorMessage() {
     }
 }

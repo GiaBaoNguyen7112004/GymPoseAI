@@ -85,3 +85,8 @@ image_delete_failed:
 workout_summary_not_found:
   code: ERR.WSU0101
   message: Workout summary not found!
+
+#Notification
+notification_not_found:
+  code: ERR.NOT0101
+  message: Notification not found!

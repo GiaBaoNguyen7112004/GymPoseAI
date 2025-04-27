@@ -35,6 +35,10 @@ public final class ApiPath {
     public static final String WORKOUT_SUMMARY_HISTORY = "/history";
     public static final String WORKOUT_STATISTICS = "/statistics";
 
+    // NOTIFICATION
+    public static final String NOTIFICATIONS = API + "/notifications";
+    public static final String NOTIFICATION_BY_ID = "/{notification-id}";
+
     // SWAGGER
     public static final String SWAGGER = "/swagger-ui.html";
 
