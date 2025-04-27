@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Random;
 
 public final class CommonFunction {
     private CommonFunction() {
@@ -18,6 +19,12 @@ public final class CommonFunction {
             LogUtils.error(e.getMessage());
             return null;
         }
+    }
+
+    public static int getRandomFourDigitNumber() {
+        Random random = new Random();
+        // Sinh số ngẫu nhiên từ 1000 đến 9999
+        return 1000 + random.nextInt(9000); // 9000 vì 9999 - 1000 + 1 = 9000
     }
 
     public static LocalDateTime getFromDate(String viewMode) {

@@ -14,12 +14,14 @@ public final class ErrorMessage {
     public static final String INTERNAL_SERVER_ERROR = "internal_server_error";
 
     //Token
+    public static final String TOKEN_NOT_FOUND = "token_not_found";
     public static final String INVALID_ACCESS_TOKEN = "invalid_access_token";
     public static final String EXPIRED_ACCESS_TOKEN = "expired_access_token";
     public static final String INVALID_REFRESH_TOKEN = "invalid_refresh_token";
     public static final String EXPIRED_REFRESH_TOKEN = "expired_refresh_token";
     public static final String INVALID_ACCOUNT_VERIFICATION_TOKEN = "invalid_account_verification_token";
-    public static final String EXPIRED_ACCOUNT_VERIFICATION_TOKEN = "expired_account_verification_token";
+    public static final String INVALID_OTP = "invalid_otp";
+    public static final String EXPIRED_OTP = "expired_otp";
 
     //User
     public static final String USER_NOT_FOUND = "user_not_found";

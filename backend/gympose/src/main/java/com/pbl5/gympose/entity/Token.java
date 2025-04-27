@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -23,7 +24,7 @@ public class Token extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     TokenType type;
-
+    LocalDateTime expireTime;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;

@@ -6,8 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -31,10 +29,9 @@ public class EmailService {
     }
 
     public void sendMailForgetPassword(
-            String email, UUID resetPasswordToken, String language) {
-        String url = webUrl + "/password/reset?email=" + email + "&token=" + resetPasswordToken;
-        sendingEmailService.sendEmailFromTemplate(
-                email, "mail/resetPassword", url, "email.reset.password.subject", null, language);
+            String email, String resetPasswordToken, String language) {
+        sendingEmailService.sendOtpEmailFromTemplate(
+                email, "mail/resetPasswordEmail", resetPasswordToken, "email.reset.password.subject", null, language);
     }
 
     public void sendMailDeleteAccount(String email, String code, String language) {

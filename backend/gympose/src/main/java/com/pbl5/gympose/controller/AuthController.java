@@ -1,10 +1,7 @@
 package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.payload.request.auth.AccountVerificationRequest;
-import com.pbl5.gympose.payload.request.auth.LoginRequest;
-import com.pbl5.gympose.payload.request.auth.LogoutRequest;
-import com.pbl5.gympose.payload.request.auth.SignUpRequest;
+import com.pbl5.gympose.payload.request.auth.*;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
@@ -51,6 +48,35 @@ public class AuthController {
     public ResponseEntity<ResponseData> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
         authService.logout(logoutRequest);
         ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.LOGGED_OUT);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping(ApiPath.REQUEST_PASSWORD_RESET)
+    public ResponseEntity<ResponseData> requestPasswordReset(@Valid @RequestBody RequestResetPasswordRequest request) {
+        authService.requestResetPassword(request);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.REQUEST_RESET_PASSWORD);
+        return ResponseEntity.ok(responseData);
+    }
+
+
+    @PostMapping(ApiPath.VERIFY_OTP)
+    public ResponseEntity<ResponseData> verifyOTP(@Valid @RequestBody OtpVerificationRequest request) {
+        ResponseData responseData = ResponseData.success(authService.verifyOTP(request),
+                FeedbackMessage.REQUEST_RESET_PASSWORD);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping(ApiPath.RESET_PASSWORD)
+    public ResponseEntity<ResponseData> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.RESET_PASSWORD);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping(ApiPath.RESEND_RESET_PASSWORD)
+    public ResponseEntity<ResponseData> resendResetPassword(@Valid @RequestBody RequestResetPasswordRequest request) {
+        authService.resendResetPassword(request);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.RESEND_RESET_PASSWORD);
         return ResponseEntity.ok(responseData);
     }
 }

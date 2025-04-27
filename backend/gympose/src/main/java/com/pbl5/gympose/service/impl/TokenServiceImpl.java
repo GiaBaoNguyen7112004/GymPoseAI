@@ -3,16 +3,19 @@ package com.pbl5.gympose.service.impl;
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.TokenType;
+import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.exception.InternalServerException;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.repository.TokenRepository;
 import com.pbl5.gympose.service.TokenService;
+import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,7 +27,13 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Token findToken(String token) {
         return tokenRepository.findByToken(token)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.INVALID_ACCOUNT_VERIFICATION_TOKEN));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.TOKEN_NOT_FOUND));
+    }
+
+    @Override
+    public Token findOtp(UUID userId) {
+        return tokenRepository.findByTypeAndUser_Id(TokenType.RESET_PASSWORD, userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.TOKEN_NOT_FOUND));
     }
 
     @Override
@@ -40,7 +49,8 @@ public class TokenServiceImpl implements TokenService {
             case RESET_PASSWORD -> {
                 Token token = new Token();
                 token.setType(TokenType.RESET_PASSWORD);
-                token.setToken(UUID.randomUUID().toString());
+                token.setToken(String.valueOf(CommonFunction.getRandomFourDigitNumber()));
+                token.setExpireTime(LocalDateTime.now().plusMinutes(5));
                 token.setUser(user);
                 return tokenRepository.save(token);
             }
@@ -48,6 +58,7 @@ public class TokenServiceImpl implements TokenService {
                 Token token = new Token();
                 token.setType(TokenType.DELETE_ACCOUNT);
                 token.setToken(UUID.randomUUID().toString());
+                token.setExpireTime(LocalDateTime.now().plusMinutes(5));
                 token.setUser(user);
                 return tokenRepository.save(token);
             }
@@ -58,5 +69,26 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void deleteToken(String token) {
         tokenRepository.deleteTokenByToken(token);
+    }
+
+    @Override
+    public Token findByTokenAndUserId(UUID userId, String token) {
+        return tokenRepository.findByTokenAndUserId(token, userId).orElseThrow(()
+                -> new NotFoundException(ErrorMessage.TOKEN_NOT_FOUND));
+    }
+
+    @Override
+    public boolean verifyOTP(UUID userId, String token) {
+        Token tokenEntity = findByTokenAndUserId(userId, token);
+        if (tokenEntity == null)
+            throw new BadRequestException(ErrorMessage.INVALID_OTP);
+        if (tokenEntity.getExpireTime().isBefore(LocalDateTime.now()))
+            throw new BadRequestException(ErrorMessage.EXPIRED_OTP);
+        return true;
+    }
+
+    @Override
+    public Token save(Token token) {
+        return tokenRepository.save(token);
     }
 }
