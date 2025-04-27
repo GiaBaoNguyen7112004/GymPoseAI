@@ -17,6 +17,7 @@ import { formatDate } from '@/utils/format.util'
 import { workoutHistoryApi } from '@/services/rest'
 import { calculateWorkoutSummaryChart } from '@/utils/chart.util'
 import useScrollListener from '@/hooks/useScrollListener'
+import LoaderModal from '@/components/LoaderModal'
 
 export default function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
     const { workout_id } = route.params
@@ -26,9 +27,10 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
         queryFn: () => workoutHistoryApi.getWorkoutSummaryById({ id: workout_id })
     })
 
-    const { data: errorsRes } = useQuery({
+    const { data: errorsRes, isLoading } = useQuery({
         queryKey: ['errors_of_workout', workout_id],
-        queryFn: () => workoutHistoryApi.getErrorsOfWorkoutById({ id: workout_id })
+        queryFn: () => workoutHistoryApi.getErrorsOfWorkoutById({ id: workout_id }),
+        staleTime: 1000 * 60 * 5
     })
 
     const workout = workoutRes?.data.data
@@ -43,8 +45,10 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
     const progressData = useMemo(() => calculateWorkoutSummaryChart(workout), [workout])
 
     const { isScrolled, handleScroll } = useScrollListener()
+
     return (
         <View style={styles.container}>
+            {isLoading && <LoaderModal title='Loading' />}
             <SafeAreaView style={[styles.navbar, isScrolled && styles.navbarWithBorder]}>
                 <NavigationBar title='Summary' callback={navigation.goBack} />
             </SafeAreaView>
@@ -65,14 +69,14 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
                             <View>
                                 <ActivityItem
                                     label='Calories Burned'
-                                    value={`${workout?.calories_burned}`}
-                                    unit={`/ ${workout?.calories_base} CAL`}
+                                    value={`${workout?.calories_burned || 0}`}
+                                    unit={`/ ${workout?.calories_base || 0} CAL`}
                                     color={(progressData as any).colors?.[1]}
                                 />
                                 <ActivityItem
                                     label='Exercise Time'
-                                    value={`${workoutDuration}`}
-                                    unit={`/ ${workout?.duration_minutes} MIN`}
+                                    value={`${workoutDuration || 0}`}
+                                    unit={`/ ${workout?.duration_minutes || 0} MIN`}
                                     color={(progressData as any).colors[0]}
                                 />
                                 <ActivityItem
@@ -91,7 +95,7 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
 
                     <View style={styles.cardBottom}>
                         <StatItem label='Total Reps' value={workout?.reps_count || 0} />
-                        <StatItem label='Form Errors' value={poseErrors.length} />
+                        <StatItem label='Form Errors' value={poseErrors.length || 0} />
                     </View>
                 </View>
 

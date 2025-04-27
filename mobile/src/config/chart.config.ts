@@ -23,7 +23,7 @@ const lineChartConfig: AbstractChartConfig = {
     propsForBackgroundLines: {
         strokeDasharray: '',
         strokeWidth: 1.2,
-        stroke: '#DDDADA'
+        stroke: '#F7F8F8'
     }
 }
 

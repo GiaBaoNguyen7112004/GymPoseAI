@@ -1,7 +1,7 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StyleProp, TextStyle } from 'react-native'
-import Icon from '../Icon'
+import React, { useCallback } from 'react'
+import { StyleSheet, Text, View, Pressable, StyleProp, TextStyle } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+
 export interface NavigationBarProps {
     title: string
     callback?: () => any
@@ -9,15 +9,17 @@ export interface NavigationBarProps {
     buttonBackStyle?: StyleProp<TextStyle>
     iconColor?: string
 }
-const NavigationBar = ({ callback, title, headingStyle, buttonBackStyle, iconColor }: NavigationBarProps) => {
-    const _onCallBack = () => {
+
+const NavigationBar: React.FC<NavigationBarProps> = ({ callback, title, headingStyle, buttonBackStyle, iconColor }) => {
+    const handleBackPress = useCallback(() => {
         if (callback) callback()
-    }
+    }, [callback])
+
     return (
         <View style={styles.navigationBar}>
-            <TouchableOpacity onPress={_onCallBack} style={[styles.btnBack, buttonBackStyle]}>
+            <Pressable onPress={handleBackPress} style={[styles.btnBack, buttonBackStyle]}>
                 <Ionicons name='chevron-back' size={20} color={iconColor} />
-            </TouchableOpacity>
+            </Pressable>
             <Text style={[styles.title, headingStyle]}>{title}</Text>
         </View>
     )

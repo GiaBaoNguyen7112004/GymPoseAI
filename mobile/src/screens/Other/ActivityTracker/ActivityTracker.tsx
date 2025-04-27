@@ -10,11 +10,11 @@ import CustomModal from '@/components/CustomModal'
 import FormUpdateTodayTarget from './Components/FormUpdateTodayTarget'
 import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
+import useScrollListener from '@/hooks/useScrollListener'
 
 function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>) {
     const [modalUpdateTargetVisible, setModalUpdateTargetVisible] = useState<boolean>(false)
-    const [showHeaderBorder, setShowHeaderBorder] = useState(false)
-
+    const { isScrolled, handleScroll } = useScrollListener()
     const toggleModalUpdateTarget = () => {
         setModalUpdateTargetVisible((prev) => !prev)
         refetch()
@@ -23,14 +23,9 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
     const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getTodayTarget })
     const todayTargetData = data?.data.data
 
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offsetY = event.nativeEvent.contentOffset.y
-        setShowHeaderBorder(offsetY > 5) // Khi cuộn xuống 5px thì hiện border
-    }
-
     return (
         <View style={styles.container}>
-            <SafeAreaView style={[styles.header, showHeaderBorder && styles.headerWithBorder]}>
+            <SafeAreaView style={[styles.header, isScrolled && styles.headerWithBorder]}>
                 <NavigationBar title='Activity Tracker' callback={navigation.goBack} />
             </SafeAreaView>
 
@@ -78,10 +73,11 @@ const styles = StyleSheet.create({
     header: {
         height: 60,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: 'transparent'
     },
     headerWithBorder: {
-        borderBottomWidth: 1,
         borderBottomColor: '#E5E5E5'
     },
     scrollContent: {

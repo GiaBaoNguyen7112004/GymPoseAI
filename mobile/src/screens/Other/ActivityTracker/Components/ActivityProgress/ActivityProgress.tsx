@@ -6,17 +6,21 @@ import { useMemo } from 'react'
 import { Dimensions } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart } from 'react-native-chart-kit'
+import BarChartSkeleton from '@/components/BarChartSkeleton'
 
 const screenWidth = Dimensions.get('window').width - 80 + 32
+
 function ActivityProgress() {
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['activity'],
         queryFn: targetApi.getWeeklyStatisticsTarget
     })
+
     const chartData = useMemo(() => {
         const activityData = data?.data.data
         return calculateActivityProgressChart(activityData || [])
     }, [data])
+
     return (
         <View style={styles.activityProgressCard}>
             <View style={styles.activityProgressHeader}>
@@ -24,20 +28,24 @@ function ActivityProgress() {
             </View>
             <View style={styles.chartBoxShadow}>
                 <View style={styles.chartContainer}>
-                    <BarChart
-                        yAxisLabel=''
-                        yAxisSuffix=''
-                        data={chartData}
-                        width={screenWidth}
-                        height={170}
-                        chartConfig={activityTrackerBarChart.activityTrackerBarChartConfig}
-                        style={styles.chart}
-                        fromZero
-                        showBarTops={false}
-                        withCustomBarColorFromData={true}
-                        flatColor={true}
-                        withHorizontalLabels={false}
-                    />
+                    {isLoading ? (
+                        <BarChartSkeleton />
+                    ) : (
+                        <BarChart
+                            yAxisLabel=''
+                            yAxisSuffix=''
+                            data={chartData}
+                            width={screenWidth}
+                            height={170}
+                            chartConfig={activityTrackerBarChart.activityTrackerBarChartConfig}
+                            style={styles.chart}
+                            fromZero
+                            showBarTops={false}
+                            withCustomBarColorFromData={true}
+                            flatColor={true}
+                            withHorizontalLabels={false}
+                        />
+                    )}
                 </View>
             </View>
         </View>
@@ -67,8 +75,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 20,
-
-        // Android shadow
         elevation: 8,
         borderRadius: 20
     },

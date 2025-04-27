@@ -9,13 +9,15 @@ import TimeLine from './components/TimeLine'
 import { getYouTubeVideoId } from '@/utils/common.util'
 import { workoutApi } from '@/services/rest'
 import ReadMoreText from '@/components/ReadMoreText'
+import LoaderModal from '@/components/LoaderModal'
 
 function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetail'>) {
     const { workout_id } = route.params
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['workout', workout_id],
-        queryFn: () => workoutApi.getWorkoutById({ id: workout_id })
+        queryFn: () => workoutApi.getWorkoutById({ id: workout_id }),
+        staleTime: 1000 * 60 * 10
     })
 
     const [isScrolled, setIsScrolled] = useState(false)
@@ -27,6 +29,7 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
 
     return (
         <View style={styles.container}>
+            {isLoading && <LoaderModal title='Loading' />}
             <SafeAreaView style={[styles.navBar, isScrolled && styles.navBarScrolled]}>
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>

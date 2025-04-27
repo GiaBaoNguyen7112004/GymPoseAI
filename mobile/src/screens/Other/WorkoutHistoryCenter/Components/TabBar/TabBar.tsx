@@ -43,24 +43,32 @@ const styles = StyleSheet.create({
     tabs: {
         width: '100%',
         flexDirection: 'row',
-        gap: 6
+        gap: 8
     },
     tab: {
         borderRadius: 9999,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 35,
-        paddingHorizontal: 10
+        height: 40,
+        paddingHorizontal: 15,
+        shadowColor: 'rgba(29, 22, 23, 0.1)',
+        shadowOffset: { width: 1, height: 10 },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        backgroundColor: '#fff',
+
+        // Android shadow
+        elevation: 11
     },
     activeTab: {
-        backgroundColor: 'rgba(149, 173, 254, 0.30)'
+        backgroundColor: 'rgba(149, 173, 254, 0.10)'
     },
     tabText: {
         fontSize: 14,
         fontWeight: '500'
     },
     activeTabText: {
-        color: '#93A7FE',
+        color: '#5A76FA',
         fontWeight: '600'
     }
 })

@@ -1,16 +1,20 @@
-// LatestActivity.js - Component trong scrollview chính
 import React from 'react'
+
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
 import { useNavigation } from '@react-navigation/native'
+
 import { useQuery } from '@tanstack/react-query'
+
 import { activityApi } from '@/services/rest'
-import Loader from '@/components/Loader'
+
+import ActivityCartSkeleton from '@/components/ActivityCartSkeleton' // Import component skeleton
+
 import ActivityItem from '../ActivityItem/ActivityItem'
 
 function LatestActivity() {
     const navigation = useNavigation()
 
-    // Chỉ lấy trang đầu tiên với số lượng items giới hạn
     const { data, isLoading } = useQuery({
         queryKey: ['latest-activity-preview'],
         queryFn: async () => {
@@ -42,7 +46,11 @@ function LatestActivity() {
             </View>
 
             {isLoading ? (
-                <Loader />
+                <View>
+                    <ActivityCartSkeleton />
+                    <ActivityCartSkeleton />
+                    <ActivityCartSkeleton />
+                </View>
             ) : activities.length > 0 ? (
                 <View>
                     {activities.map((item) => (

@@ -7,7 +7,8 @@ import {
     ScrollView,
     TouchableOpacity,
     FlatList,
-    RefreshControl
+    RefreshControl,
+    Image
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
@@ -26,13 +27,11 @@ import { RootStackScreenProps } from '@/navigation/types'
 import { categories, QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/types/workoutHistory.type'
 import { ViewModeType } from '@/types/utils.type'
 
-type ViewMode = 'weekly' | 'monthly' | 'yearly'
-
 function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
     const { profile } = useContext(AppContext)
 
     const [category, setCategory] = useState<categories>('full body')
-    const [viewMode, setViewMode] = useState<ViewMode>('weekly')
+    const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
     const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
     const queryConfig = useMemo<QueryConfigWorkoutHistory>(
@@ -71,16 +70,19 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
     const workouts = data?.pages.flatMap((page) => page.data) || []
 
     const handleTabChange = (value: string) => setCategory(value as categories)
-    const handleViewModeChange = (value: string) => setViewMode(value as ViewMode)
+    const handleViewModeChange = (value: string) => setViewMode(value as ViewModeType)
     const handleOrderChange = () => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
     const handleWorkoutCardClick = (workoutId: string) => {
         navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
     }
+
     const renderEmptyComponent = () => (
         <View style={styles.emptyContainer}>
+            <Image source={require('@/assets/images/workout.png')} style={styles.emptyImage} resizeMode='contain' />
             <Text style={styles.emptyText}>No workouts found.</Text>
         </View>
     )
+
     return (
         <View style={styles.container}>
             {isLoading && <LoaderModal title='Loading' />}
@@ -119,7 +121,7 @@ function WorkoutHistoryCenter({ navigation }: RootStackScreenProps<'WorkoutHisto
                 <FlatList
                     data={workouts}
                     keyExtractor={(item) => item.id}
-                    contentContainerStyle={styles.listContent}
+                    contentContainerStyle={workouts.length === 0 ? styles.listContentEmpty : styles.listContent}
                     renderItem={({ item }) => (
                         <TrainingSessionCard item={item} onPress={() => handleWorkoutCardClick(item.id)} />
                     )}
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#92A3FD'
     },
     header: {
-        height: 60,
+        height: 70,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
     mainContent: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        borderTopLeftRadius: 25,
+        borderTopLeftRadius: 40,
         marginTop: 8,
         paddingTop: 16
     },
@@ -183,15 +185,16 @@ const styles = StyleSheet.create({
         marginBottom: 4
     },
     filters: {
+        marginTop: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: 12,
         paddingLeft: 16,
         gap: 12,
         backgroundColor: '#FFF',
         width: WINDOW_WIDTH * 0.9,
         alignSelf: 'center',
-        borderRadius: 8
+        borderRadius: 10
     },
     sortButton: {
         flexDirection: 'row',
@@ -204,21 +207,32 @@ const styles = StyleSheet.create({
     viewModeContainer: {},
     listContent: {
         paddingHorizontal: 16,
-        paddingBottom: 16,
+        paddingVertical: 30,
         gap: 16
+    },
+    listContentEmpty: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingBottom: 16
     },
     footerLoader: {
         alignItems: 'center',
         paddingVertical: 12
     },
     emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     emptyText: {
         fontSize: 16,
-        fontWeight: '500',
-        color: '#7B6F72'
+        fontWeight: '400',
+        color: '#ADA4A5'
+    },
+    emptyImage: {
+        width: 150,
+        height: 150,
+        marginBottom: 16
     }
 })

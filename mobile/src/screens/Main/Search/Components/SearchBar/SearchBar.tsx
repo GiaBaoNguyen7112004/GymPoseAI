@@ -8,7 +8,7 @@ import Animated, {
     Easing
 } from 'react-native-reanimated'
 import MyIcon from '@/components/Icon'
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -18,7 +18,7 @@ interface SearchBarProps {
     onFocusChange?: (isFocused: boolean) => void
 }
 
-function SearchBar({ isLoading, onChange, onFocusChange }: SearchBarProps) {
+const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) => {
     const [searchText, setSearchText] = useState('')
     const [isInputFocused, setIsInputFocused] = useState(false)
     const placeholderOpacity = useSharedValue(1)
@@ -37,14 +37,17 @@ function SearchBar({ isLoading, onChange, onFocusChange }: SearchBarProps) {
         [placeholderOpacity]
     )
 
-    const handleChangeText = useCallback((text: string) => {
-        if (text.startsWith(' ')) {
-            setSearchText('')
-        } else {
-            setSearchText(text)
-            onChange(text.trim())
-        }
-    }, [])
+    const handleChangeText = useCallback(
+        (text: string) => {
+            if (text.startsWith(' ')) {
+                setSearchText('')
+            } else {
+                setSearchText(text)
+                onChange(text.trim())
+            }
+        },
+        [onChange]
+    )
 
     const handleSubmitEditing = useCallback(() => {
         onChange(searchText.trim())
@@ -70,7 +73,7 @@ function SearchBar({ isLoading, onChange, onFocusChange }: SearchBarProps) {
         Keyboard.dismiss()
         setIsInputFocused(false)
         onFocusChange?.(false)
-    }, [onChange, onFocusChange])
+    }, [onFocusChange])
 
     const renderRightIcon = useMemo(() => {
         if (!searchText) {
@@ -137,7 +140,7 @@ function SearchBar({ isLoading, onChange, onFocusChange }: SearchBarProps) {
             </View>
         </View>
     )
-}
+})
 
 export default SearchBar
 

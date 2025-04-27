@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, ActivityIndicator, Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useMutation } from '@tanstack/react-query'
 
@@ -24,6 +24,7 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
 
     const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
 
@@ -39,11 +40,26 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const openPasswordAndSecurity = () => {
         bottomSheetRef.current?.open(<PasswordAndSecurity onClose={() => bottomSheetRef.current?.close()} />)
     }
+
     const handleLogout = async () => {
-        await logout(undefined, {
-            onSuccess: () => setAuthenticated(false),
-            onError: () => showErrorAlert('default')
-        })
+        if (isLoggingOut) return
+        setIsLoggingOut(true)
+
+        try {
+            await logout(undefined, {
+                onSuccess: () => {
+                    setAuthenticated(false)
+                    setIsLoggingOut(false)
+                },
+                onError: () => {
+                    showErrorAlert('default')
+                    setIsLoggingOut(false)
+                }
+            })
+        } catch (error) {
+            showErrorAlert('default')
+            setIsLoggingOut(false)
+        }
     }
 
     return (
@@ -102,9 +118,13 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                             />
                         </View>
 
-                        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-                            <Text style={styles.logoutText}>Log out</Text>
-                        </TouchableOpacity>
+                        <Pressable style={styles.logoutBtn} onPress={handleLogout} disabled={isLoggingOut}>
+                            {isLoggingOut ? (
+                                <ActivityIndicator size='small' color='#555' />
+                            ) : (
+                                <Text style={styles.logoutText}>Log out</Text>
+                            )}
+                        </Pressable>
                     </View>
                 </ScrollView>
             </View>
@@ -127,7 +147,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E5E5E5'
     },
     scrollView: {
-        flex: 1
+        flex: 1,
+        paddingTop: 10
     },
     mainContent: {
         flex: 1,
@@ -147,7 +168,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         minHeight: 99,
         width: '100%',
-        shadowColor: 'rgba(29, 22, 23, 0.2)',
+        shadowColor: 'rgba(29, 22, 23, 0.3)',
         shadowOffset: { width: 2, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 20,
@@ -161,16 +182,17 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     logoutBtn: {
-        backgroundColor: '#DDDADA',
-        height: 40,
+        backgroundColor: '#F5F5F5',
+        height: 44,
         borderRadius: 12,
-        marginBottom: 20,
+        marginTop: 10,
+        marginBottom: 40,
         alignItems: 'center',
         justifyContent: 'center'
     },
     logoutText: {
-        color: '#1D1617',
-        fontSize: 14,
+        color: '#555',
+        fontSize: 15,
         fontWeight: '500'
     }
 })

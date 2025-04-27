@@ -1,7 +1,6 @@
 import { memo } from 'react'
-import { TouchableOpacity, StyleSheet, ViewStyle, GestureResponderEvent, View } from 'react-native'
+import { Pressable, StyleSheet, ViewStyle, GestureResponderEvent, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { TouchableOpacityProps } from 'react-native-gesture-handler'
 import { StyleProp } from 'react-native'
 import Loader from '../Loader'
 
@@ -17,7 +16,7 @@ interface ButtonProps {
     [key: string]: any
 }
 
-const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
+const GradientButton: React.FC<ButtonProps> = ({
     onPress,
     children,
     Square = false,
@@ -33,7 +32,12 @@ const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
     const isDisabled = disabled || isLoading
 
     return (
-        <TouchableOpacity onPress={onPress} disabled={isDisabled} style={containerStyle} {...props}>
+        <Pressable
+            onPress={onPress}
+            disabled={isDisabled}
+            style={({ pressed }) => [containerStyle, pressed && !isDisabled ? styles.pressed : null]}
+            {...props}
+        >
             <LinearGradient
                 colors={gradientColors as [string, string, ...string[]]}
                 start={{ x: 1, y: 0.5 }}
@@ -53,7 +57,7 @@ const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
                     </View>
                 )}
             </LinearGradient>
-        </TouchableOpacity>
+        </Pressable>
     )
 }
 
@@ -82,6 +86,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute'
+    },
+    pressed: {
+        opacity: 0.7
     }
 })
 

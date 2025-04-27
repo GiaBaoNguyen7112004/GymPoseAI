@@ -16,6 +16,7 @@ import { COLOR_BRANDS } from '@/constants/common.constants'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 import CategoryCard from '@/components/CategoryCard'
 import { Category } from '@/types/exercises.type'
+import CategoryCardSkeleton from '@/components/CategoryCardSkeleton'
 import { categoriesApi, workoutHistoryApi } from '@/services/rest'
 import { MainTabScreenProps } from '@/navigation/types'
 
@@ -29,7 +30,7 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
     })
     const workoutHistoryData = workoutQuery?.data.data || []
 
-    const { data: categoriesQuery } = useQuery({
+    const { data: categoriesQuery, isLoading: categoriesLoading } = useQuery({
         queryKey: ['categories'],
         queryFn: () => categoriesApi.getCategories(),
         staleTime: 1000 * 60 * 10
@@ -59,6 +60,10 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
     const renderCategoryItem = useCallback(({ item }: { item: Category }) => {
         return <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />
     }, [])
+
+    const renderSkeletons = () => {
+        return [1, 2].map((_, index) => <CategoryCardSkeleton key={index} />)
+    }
 
     return (
         <LinearGradient
@@ -97,15 +102,19 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <View style={styles.trainingSection}>
                             <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
-                            <BottomSheetFlatList
-                                data={categoriesData}
-                                scrollEnabled={true}
-                                renderItem={renderCategoryItem}
-                                keyExtractor={(item) => item.id.toString()}
-                                showsVerticalScrollIndicator={false}
-                                keyboardShouldPersistTaps='handled'
-                                bounces={false}
-                            />
+                            {categoriesLoading ? (
+                                renderSkeletons()
+                            ) : (
+                                <BottomSheetFlatList
+                                    data={categoriesData}
+                                    scrollEnabled={true}
+                                    renderItem={renderCategoryItem}
+                                    keyExtractor={(item) => item.id.toString()}
+                                    showsVerticalScrollIndicator={false}
+                                    keyboardShouldPersistTaps='handled'
+                                    bounces={false}
+                                />
+                            )}
                         </View>
                     </BottomSheetView>
                 </BottomSheet>

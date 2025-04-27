@@ -13,7 +13,7 @@ import BottomSheet, {
 import NavigationBar from '@/components/NavigationBar'
 import MyIcon from '@/components/Icon'
 import WorkoutCard from '@/components/WorkoutCard'
-
+import ExerciseCartSkeleton from '@/components/ExerciseCartSkeleton'
 import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
 import { RootStackScreenProps } from '@/navigation/types'
 import { Exercise } from '@/types/exercises.type'
@@ -23,7 +23,7 @@ import { categoriesApi, workoutApi } from '@/services/rest'
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category_id, exercise_id } = route.params
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['workout-category', category_id],
         queryFn: () => workoutApi.getWorkoutByCategoryId({ id: category_id }),
         staleTime: 30000
@@ -33,6 +33,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
         queryKey: ['category', category_id],
         queryFn: () => categoriesApi.getCategoriesById({ id: category_id })
     })
+
     const workoutList = data?.data.data || []
     const category = categoryRes?.data.data
     const IconThumbnailCategory = ICONS_CATEGORY_MAP.get(category?.name as categories) || 'movement1'
@@ -71,6 +72,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
             }
         }
     }, [exercise_id, workoutList])
+
     return (
         <LinearGradient
             colors={COLOR_BRANDS.primary}
@@ -110,22 +112,32 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
                             </View>
 
                             <Text style={[styles.trainingTitle, styles.exerciseTitle]}>Exercises</Text>
-                            <BottomSheetFlatList
-                                ref={exerciseListRef}
-                                data={workoutList}
-                                renderItem={renderCategoryItem}
-                                keyExtractor={(item) => item.id}
-                                showsVerticalScrollIndicator={false}
-                                scrollEnabled={true}
-                                onScrollToIndexFailed={(info) => {
-                                    setTimeout(() => {
-                                        exerciseListRef.current?.scrollToIndex({
-                                            index: info.index,
-                                            animated: true
-                                        })
-                                    }, 500)
-                                }}
-                            />
+
+                            {isLoading ? (
+                                <View style={styles.exerciseListSkeleton}>
+                                    <ExerciseCartSkeleton />
+                                    <ExerciseCartSkeleton />
+                                    <ExerciseCartSkeleton />
+                                    <ExerciseCartSkeleton />
+                                </View>
+                            ) : (
+                                <BottomSheetFlatList
+                                    ref={exerciseListRef}
+                                    data={workoutList}
+                                    renderItem={renderCategoryItem}
+                                    keyExtractor={(item) => item.id}
+                                    showsVerticalScrollIndicator={false}
+                                    scrollEnabled={true}
+                                    onScrollToIndexFailed={(info) => {
+                                        setTimeout(() => {
+                                            exerciseListRef.current?.scrollToIndex({
+                                                index: info.index,
+                                                animated: true
+                                            })
+                                        }, 500)
+                                    }}
+                                />
+                            )}
                         </View>
                     </BottomSheetView>
                 </BottomSheet>
@@ -179,6 +191,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         color: '#1D1617',
         textTransform: 'capitalize'
+    },
+    exerciseListSkeleton: {
+        width: '90%'
     },
     trainingDesc: {
         fontSize: 12,

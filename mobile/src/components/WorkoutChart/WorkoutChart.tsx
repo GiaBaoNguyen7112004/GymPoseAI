@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
 
@@ -9,6 +9,7 @@ import { useTooltip } from '@/hooks/useTooltip'
 import { workoutHistoryLineChart } from '@/config/chart.config'
 import { calculateWorkoutHistoryChart, getChartWidth } from '@/utils/chart.util'
 import { ViewModeType } from '@/types/utils.type'
+import LineChartSkeleton from '../LineChartSkeleton'
 
 interface WorkoutChartProps {
     workoutData: workoutHistoryOfDay[]
@@ -17,16 +18,14 @@ interface WorkoutChartProps {
     lineChartColor?: (opacity: number) => string
 }
 
-export default function WorkoutChart({
+const WorkoutChart = ({
     workoutData,
     viewMode,
     chartConfig = workoutHistoryLineChart.lineChartConfig,
     lineChartColor = workoutHistoryLineChart.lineChartColor
-}: WorkoutChartProps) {
+}: WorkoutChartProps) => {
     const chartData = useMemo(() => calculateWorkoutHistoryChart(workoutData, viewMode), [workoutData, viewMode])
-
     const chartWidth = useMemo(() => getChartWidth(viewMode, chartData.length), [viewMode, chartData])
-
     const { tooltipData, handleDataPointClick } = useTooltip(chartData, viewMode)
 
     const chartContent: LineChartData = {
@@ -40,16 +39,10 @@ export default function WorkoutChart({
         ]
     }
 
-    if (workoutData.length === 0) {
-        return (
-            <View style={styles.noDataContainer}>
-                <Text style={styles.noDataText}>No workout data available</Text>
-            </View>
-        )
-    }
-
-    return (
-        <View style={styles.container}>
+    const renderChart =
+        workoutData.length === 0 ? (
+            <LineChartSkeleton />
+        ) : (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartContainer}>
                 <LineChart
                     data={chartContent}
@@ -68,8 +61,9 @@ export default function WorkoutChart({
                 />
                 {tooltipData?.visible && <Tooltip viewMode={viewMode} tooltipData={tooltipData} />}
             </ScrollView>
-        </View>
-    )
+        )
+
+    return <View style={styles.container}>{renderChart}</View>
 }
 
 const styles = StyleSheet.create({
@@ -92,3 +86,5 @@ const styles = StyleSheet.create({
         fontSize: 16
     }
 })
+
+export default WorkoutChart

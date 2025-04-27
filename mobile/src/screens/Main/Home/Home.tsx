@@ -14,17 +14,19 @@ import WorkoutProgressChart from './components/WorkoutProgress'
 import CaloriesStats from './components/CaloriesStats'
 import { workoutHistoryApi } from '@/services/rest'
 import { MainTabScreenProps } from '@/navigation/types'
+import WorkoutCardSkeleton from '@/components/TrainingSessionCardSkeleton'
 
 function Home({ navigation }: MainTabScreenProps<'Home'>) {
     const { profile } = useContext(AppContext)
 
-    const { data: workoutHistoryResp } = useQuery({
+    const { data: workoutHistoryResp, isLoading: isLoadingWorkout } = useQuery({
         queryKey: ['workout-history'],
         queryFn: () =>
             workoutHistoryApi.getWorkoutHistory({
-                params: { page: 1, limit: 3, sort_by: 'createAt' },
+                params: { page: 1, limit: 3, sort_by: 'createAt', viewMode: 'daily' },
                 user_id: profile?.id || ''
-            })
+            }),
+        staleTime: 1000 * 60 * 5
     })
 
     const workoutHistoryData = workoutHistoryResp?.data.data
@@ -51,7 +53,7 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                             {profile?.first_name + ' ' + profile?.last_name}
                         </Text>
                     </View>
-                    <TouchableOpacity style={styles.headerButton} onPress={handleNotificationClick}>
+                    <TouchableOpacity activeOpacity={0.7} style={styles.headerButton} onPress={handleNotificationClick}>
                         <MyIcon name='notificationIcon' size={18} />
                     </TouchableOpacity>
                 </View>
@@ -107,8 +109,13 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.workoutList}>
-                        {workoutHistoryData &&
-                            workoutHistoryData.length > 0 &&
+                        {isLoadingWorkout ? (
+                            <View style={styles.workoutsSkeleton}>
+                                <WorkoutCardSkeleton />
+                                <WorkoutCardSkeleton />
+                                <WorkoutCardSkeleton />
+                            </View>
+                        ) : workoutHistoryData && workoutHistoryData.length > 0 ? (
                             workoutHistoryData.map((workout) => (
                                 <TrainingSessionCard
                                     item={workout}
@@ -116,7 +123,10 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                                     key={workout.id}
                                     onPress={() => handleWorkoutCardClick(workout.id)}
                                 />
-                            ))}
+                            ))
+                        ) : (
+                            <Text style={styles.noWorkoutText}>You haven't completed any workouts today.</Text>
+                        )}
                     </View>
                 </View>
             </SafeAreaView>
@@ -268,8 +278,17 @@ const styles = StyleSheet.create({
         width: SCREEN_WIDTH,
         paddingBottom: 20
     },
+    workoutsSkeleton: { width: SCREEN_WIDTH * 0.9, alignSelf: 'center' },
     workoutItem: {
         width: SCREEN_WIDTH * 0.9,
         height: 80
+    },
+    noWorkoutText: {
+        fontSize: 14,
+        color: '#ADA4A5',
+        fontWeight: '400',
+        textAlign: 'center',
+        marginTop: 10,
+        marginBottom: 50
     }
 })

@@ -1,9 +1,7 @@
 import { createStackNavigator, StackNavigationOptions, TransitionPresets } from '@react-navigation/stack'
-import { useContext, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useContext } from 'react'
 import { AppContext } from '@/Contexts/App.context'
 import { RootStackParamList } from './types'
-import { userApi } from '@/services/rest'
 
 // Auth Screens
 import WelcomeScreen from '@/screens/Auth/Welcome'
@@ -26,7 +24,6 @@ import Setting from '@/screens/Other/Setting'
 // Common Screens
 import ContactUs from '@/screens/Other/ContactUs'
 import PrivacyPolicy from '@/screens/Other/PrivacyPolicy/PrivacyPolicy'
-import useUserData from '@/hooks/useUserData'
 import ActivityListScreen from '@/screens/Other/ActivityListScreen'
 
 const RootStack = createStackNavigator<RootStackParamList>()

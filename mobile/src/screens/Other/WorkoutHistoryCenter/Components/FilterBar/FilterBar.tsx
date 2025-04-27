@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-const FILTERS = ['weekly', 'monthly', 'yearly'] as const
+const FILTERS = ['daily', 'weekly', 'monthly', 'yearly'] as const
 type Filter = (typeof FILTERS)[number]
 
 interface FilterBarProps {
@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
         borderColor: '#93A7FE'
     },
     filterButtonText: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#4b5563'
     },
     activeFilterButtonText: {
-        color: '#93A7FE'
+        color: '#5A76FA'
     }
 })
