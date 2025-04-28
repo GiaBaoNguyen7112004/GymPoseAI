@@ -13,6 +13,7 @@ import { omit } from 'lodash'
 import useUserData from '@/hooks/useUserData'
 import TextInputCustom from '@/components/TextInput'
 import handleFormError from '@/utils/handleFormError'
+import React, { useCallback, memo } from 'react'
 
 type FormData = Pick<SchemaType, 'password' | 'old_password' | 'confirm_password'>
 const formSchema = schema.pick(['password', 'old_password', 'confirm_password'])
@@ -39,16 +40,19 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
         mutationFn: userApi.changePassword
     })
 
-    const onSubmit = methods.handleSubmit((data) => {
-        const body = omit(data, 'confirm_password')
-        changePasswordMutate(body, {
-            onSuccess: (res) => {
-                onClose()
-                showToast({ title: res.data.message })
-            },
-            onError: (errors) => handleFormError<FormData>(errors, methods.setError)
-        })
-    })
+    const onSubmit = useCallback(
+        methods.handleSubmit((data) => {
+            const body = omit(data, 'confirm_password')
+            changePasswordMutate(body, {
+                onSuccess: (res) => {
+                    onClose()
+                    showToast({ title: res.data.message })
+                },
+                onError: (errors) => handleFormError<FormData>(errors, methods.setError)
+            })
+        }),
+        []
+    )
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -186,4 +190,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PasswordAndSecurity
+export default memo(PasswordAndSecurity)

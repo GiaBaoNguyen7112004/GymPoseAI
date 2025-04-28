@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
@@ -25,19 +25,23 @@ const WorkoutChart = ({
     lineChartColor = workoutHistoryLineChart.lineChartColor
 }: WorkoutChartProps) => {
     const chartData = useMemo(() => calculateWorkoutHistoryChart(workoutData, viewMode), [workoutData, viewMode])
-    const chartWidth = useMemo(() => getChartWidth(viewMode, chartData.length), [viewMode, chartData])
+    const chartWidth = useMemo(() => getChartWidth(viewMode, chartData.length), [viewMode, chartData.length])
+
     const { tooltipData, handleDataPointClick } = useTooltip(chartData, viewMode)
 
-    const chartContent: LineChartData = {
-        labels: chartData.map((item) => item.label),
-        datasets: [
-            {
-                data: chartData.map((item) => item.progress),
-                color: lineChartColor,
-                strokeWidth: 3
-            }
-        ]
-    }
+    const chartContent: LineChartData = useMemo(
+        () => ({
+            labels: chartData.map((item) => item.label),
+            datasets: [
+                {
+                    data: chartData.map((item) => item.progress),
+                    color: lineChartColor,
+                    strokeWidth: 3
+                }
+            ]
+        }),
+        [chartData, lineChartColor]
+    )
 
     const renderChart =
         workoutData.length === 0 ? (
@@ -87,4 +91,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default WorkoutChart
+export default memo(WorkoutChart)

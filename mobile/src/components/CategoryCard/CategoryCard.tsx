@@ -3,7 +3,7 @@ import MyIcon from '@/components/Icon'
 import { Category } from '@/types/exercises.type'
 import { categories } from '@/types/workoutHistory.type'
 import { ICONS_CATEGORY_MAP } from '@/constants/common.constants'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 
 interface CategoryCardProps {
     onPress?: () => void
@@ -43,7 +43,7 @@ function CategoryCard({ onPress, itemData }: CategoryCardProps) {
     )
 }
 
-export default CategoryCard
+export default memo(CategoryCard)
 
 const styles = StyleSheet.create({
     exerciseCard: {

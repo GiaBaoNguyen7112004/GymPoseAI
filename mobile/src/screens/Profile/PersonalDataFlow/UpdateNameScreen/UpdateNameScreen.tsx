@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -11,7 +11,7 @@ import useUserData from '@/hooks/useUserData'
 import { ScreenComponentProps } from '../routes.config'
 import { useMutation } from '@tanstack/react-query'
 import { userApi } from '@/services/rest'
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 import showToast from '@/utils/toast.util'
 import { showErrorAlert } from '@/utils/alert.util'
 
@@ -26,7 +26,6 @@ function UpdateNameScreen({ onGoBack, goToTop }: ScreenComponentProps) {
             first_name: '',
             last_name: ''
         },
-        mode: 'onBlur',
         resolver: yupResolver(formSchema)
     })
 
@@ -45,7 +44,7 @@ function UpdateNameScreen({ onGoBack, goToTop }: ScreenComponentProps) {
                 const message = res.data.message
                 if (goToTop) goToTop()
                 refetch()
-                showToast({ title: message })
+                showToast({ title: message, position: 'bottom' })
             },
             onError: () => {
                 showErrorAlert('default')
@@ -53,54 +52,56 @@ function UpdateNameScreen({ onGoBack, goToTop }: ScreenComponentProps) {
         })
     })
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={onGoBack}>
-                        <Ionicons name='chevron-back' size={24} color='black' />
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Name</Text>
-                    <View style={{ width: 24 }} />
-                </View>
-
-                <FormProvider {...methods}>
-                    <View style={styles.formContainer}>
-                        <View style={styles.formInputs}>
-                            <ScrollView keyboardShouldPersistTaps='handled' scrollEnabled={isKeyboardVisible}>
-                                <View style={styles.inputsWrapper}>
-                                    <TextInputCustomV2
-                                        label='first name'
-                                        name='first_name'
-                                        type='default'
-                                        placeholder='first name'
-                                        returnKeyType='next'
-                                    />
-                                    <TextInputCustomV2
-                                        label='last name'
-                                        name='last_name'
-                                        type='default'
-                                        placeholder='last name'
-                                        noBorderBottom
-                                        returnKeyType='done'
-                                    />
-                                </View>
-                            </ScrollView>
-                        </View>
-                        <View style={styles.formBottom}>
-                            <GradientButton
-                                Square
-                                style={styles.reviewButton}
-                                disabled={!methods.formState.isValid}
-                                onPress={onSubmit}
-                                isLoading={isPending}
-                            >
-                                <Text style={styles.reviewButtonText}>Save</Text>
-                            </GradientButton>
-                        </View>
-                    </View>
-                </FormProvider>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={onGoBack}>
+                    <Ionicons name='chevron-back' size={24} color='black' />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Name</Text>
+                <View style={{ width: 24 }} />
             </View>
-        </KeyboardAvoidingView>
+
+            <FormProvider {...methods}>
+                <View style={styles.formContainer}>
+                    <View style={styles.formInputs}>
+                        <ScrollView
+                            keyboardShouldPersistTaps='handled'
+                            scrollEnabled={isKeyboardVisible}
+                            style={styles.formScrollView}
+                        >
+                            <View style={styles.inputsWrapper}>
+                                <TextInputCustomV2
+                                    label='first name'
+                                    name='first_name'
+                                    type='default'
+                                    placeholder='first name'
+                                    returnKeyType='next'
+                                />
+                                <TextInputCustomV2
+                                    label='last name'
+                                    name='last_name'
+                                    type='default'
+                                    placeholder='last name'
+                                    noBorderBottom
+                                    returnKeyType='done'
+                                />
+                            </View>
+                        </ScrollView>
+                    </View>
+                    <View style={styles.formBottom}>
+                        <GradientButton
+                            Square
+                            style={styles.reviewButton}
+                            disabled={!methods.formState.isValid}
+                            onPress={onSubmit}
+                            isLoading={isPending}
+                        >
+                            <Text style={styles.reviewButtonText}>Save</Text>
+                        </GradientButton>
+                    </View>
+                </View>
+            </FormProvider>
+        </View>
     )
 }
 
@@ -124,8 +125,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     formInputs: {
-        flex: 1
+        flex: 1,
+        flexGrow: 1
     },
+    formScrollView: { flex: 1 },
     inputsWrapper: {
         borderRadius: 10,
         marginTop: 16,
@@ -150,4 +153,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default UpdateNameScreen
+export default memo(UpdateNameScreen)

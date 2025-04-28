@@ -1,7 +1,7 @@
 import { Exercise } from '@/types/exercises.type'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef } from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity, Animated, StyleProp, ViewStyle } from 'react-native'
+import { View, Text, Image, StyleSheet, Pressable, Animated, StyleProp, ViewStyle } from 'react-native'
 
 interface WorkoutCardProps {
     itemData: Exercise
@@ -48,12 +48,12 @@ function WorkoutCard({ itemData, onPress, isHighlighted, containerStyle }: Worko
 
     const backgroundColor = bgAnimValue.interpolate({
         inputRange: [0, 1],
-        outputRange: ['#FFFFFF', '#E0F7FA'] // from white to highlight color
+        outputRange: ['#FFFFFF', '#E0F7FA']
     })
 
     return (
         <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-            <TouchableOpacity onPress={onPress}>
+            <Pressable onPress={onPress}>
                 <Animated.View style={[styles.container, { backgroundColor }, containerStyle]}>
                     <View style={styles.content}>
                         <Image source={{ uri: itemData.thumbnail_url }} style={styles.image} resizeMode='cover' />
@@ -70,7 +70,7 @@ function WorkoutCard({ itemData, onPress, isHighlighted, containerStyle }: Worko
                         </View>
                     </View>
                 </Animated.View>
-            </TouchableOpacity>
+            </Pressable>
         </Animated.View>
     )
 }

@@ -1,14 +1,14 @@
-import { Pressable, StyleSheet, TextInput, View, ActivityIndicator, Keyboard, Text } from 'react-native'
+import React, { useState, useEffect, useCallback, memo, useMemo } from 'react'
+import { StyleSheet, TextInput, View, ActivityIndicator, Keyboard, Text, Pressable } from 'react-native'
 import Animated, {
     FadeInRight,
     FadeOutRight,
     useAnimatedStyle,
-    useSharedValue,
     withTiming,
-    Easing
+    Easing,
+    useSharedValue
 } from 'react-native-reanimated'
 import MyIcon from '@/components/Icon'
-import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -21,21 +21,6 @@ interface SearchBarProps {
 const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) => {
     const [searchText, setSearchText] = useState('')
     const [isInputFocused, setIsInputFocused] = useState(false)
-    const placeholderOpacity = useSharedValue(1)
-
-    useEffect(() => {
-        placeholderOpacity.value = withTiming(isInputFocused ? 0 : 1, {
-            duration: 400,
-            easing: Easing.inOut(Easing.ease)
-        })
-    }, [isInputFocused])
-
-    const animatedPlaceholderStyle = useAnimatedStyle(
-        () => ({
-            opacity: placeholderOpacity.value
-        }),
-        [placeholderOpacity]
-    )
 
     const handleChangeText = useCallback(
         (text: string) => {
@@ -107,7 +92,7 @@ const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) 
                     <MyIcon name='searchGray' width={16} />
                     <View style={{ flex: 1 }}>
                         <TextInput
-                            placeholder=''
+                            placeholder='search for workouts...'
                             placeholderTextColor='#ADA4A5'
                             style={styles.input}
                             value={searchText}
@@ -117,11 +102,6 @@ const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) 
                             returnKeyType='search'
                             onSubmitEditing={handleSubmitEditing}
                         />
-                        {!searchText && (
-                            <Animated.Text style={[styles.placeholder, animatedPlaceholderStyle]}>
-                                Search workout
-                            </Animated.Text>
-                        )}
                     </View>
                     {renderRightIcon}
                 </View>
@@ -146,7 +126,8 @@ export default SearchBar
 
 const styles = StyleSheet.create({
     wrapper: {
-        width: '100%'
+        width: '100%',
+        pointerEvents: 'box-none'
     },
     inputWrapper: {
         flexDirection: 'row',
@@ -168,17 +149,6 @@ const styles = StyleSheet.create({
         color: '#1D1617',
         fontSize: 16,
         paddingVertical: 0
-    },
-    placeholder: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        justifyContent: 'center',
-        fontSize: 16,
-        color: '#ADA4A5',
-        textAlignVertical: 'center',
-        lineHeight: 44
     },
     divider: {
         width: 0.5,

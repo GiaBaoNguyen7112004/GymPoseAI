@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Keyboard } from 'react-native'
 import { Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 interface CustomModalProps {
@@ -16,7 +16,7 @@ function CustomModal({ children, visible }: CustomModalProps) {
     )
 }
 
-export default CustomModal
+export default memo(CustomModal)
 
 const styles = StyleSheet.create({
     centeredView: {

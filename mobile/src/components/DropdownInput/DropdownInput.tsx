@@ -1,5 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import ControlledDropdown, { ControlledDropdownProps } from './Components/ControlledDropdown'
+import { memo } from 'react'
 
 function DropdownInput(props: ControlledDropdownProps) {
     const { name } = props
@@ -12,4 +13,4 @@ function DropdownInput(props: ControlledDropdownProps) {
     return <ControlledDropdown {...props} />
 }
 
-export default DropdownInput
+export default memo(DropdownInput)

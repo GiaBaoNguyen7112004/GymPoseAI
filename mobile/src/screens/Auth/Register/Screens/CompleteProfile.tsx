@@ -42,7 +42,7 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
     const { userData, refetch } = useUserData()
     const methods = useForm<FormData>({
         resolver: yupResolver(formSchema),
-        mode: 'onBlur'
+        mode: 'onChange'
     })
     const { mutate: updateProfileMutate, isPending } = useMutation({
         mutationFn: userApi.updateProfile
@@ -63,7 +63,7 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
         updateProfileMutate(body, {
             onSuccess: (res) => {
                 const message = res.data.message
-                showToast({ title: message })
+                showToast({ title: message, position: 'top' })
                 navigation.replace('ConfirmYourGoal')
                 refetch()
             },
@@ -104,10 +104,14 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
                                     <View style={styles.rowForm}>
                                         <View style={{ flex: 1 }}>
                                             <TextInputCustom
+                                                {...methods.register('weight')}
                                                 name='weight'
                                                 icon='weightScaleIcon'
                                                 type='numeric'
                                                 returnKeyType='next'
+                                                onSubmitEditing={() => {
+                                                    methods.setFocus('height')
+                                                }}
                                             />
                                         </View>
                                         <LinearGradient
@@ -123,10 +127,12 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
                                     <View style={styles.rowForm}>
                                         <View style={{ flex: 1 }}>
                                             <TextInputCustom
+                                                {...methods.register('height')}
                                                 name='height'
                                                 icon='swapIcon'
                                                 type='numeric'
                                                 returnKeyType='done'
+                                                onSubmitEditing={onSubmit}
                                             />
                                         </View>
                                         <LinearGradient
@@ -168,9 +174,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: SCREEN_WIDTH,
         alignItems: 'center'
-    },
-    banner: {
-        flexShrink: 1
     },
     callToAction: {
         marginTop: 30,

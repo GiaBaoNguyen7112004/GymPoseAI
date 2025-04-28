@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState, useCallback } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Flow } from './routes.config'
 import { screenMap } from './screenMap'
@@ -9,19 +9,23 @@ interface PersonalDataFlowProps {
 
 const PersonalDataFlow = ({ onClose }: PersonalDataFlowProps) => {
     const [flowStack, setFlowStack] = useState<Flow[]>(['entry'])
-    const currentFlow = flowStack.at(-1)!
+
+    const currentFlow = flowStack[flowStack.length - 1]
     const ScreenComponent = screenMap[currentFlow]
 
-    const navigateTo = (flow: Flow) => {
+    const navigateTo = useCallback((flow: Flow) => {
         setFlowStack((prev) => [...prev, flow])
-    }
+    }, [])
 
-    const goBack = () => {
-        setFlowStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))
-    }
-    const goToTop = () => {
+    const goBack = useCallback(() => {
+        if (flowStack.length > 1) {
+            setFlowStack((prev) => prev.slice(0, -1))
+        }
+    }, [flowStack])
+
+    const goToTop = useCallback(() => {
         setFlowStack(['entry'])
-    }
+    }, [])
 
     return (
         <View style={styles.wrapper}>
@@ -32,7 +36,7 @@ const PersonalDataFlow = ({ onClose }: PersonalDataFlowProps) => {
     )
 }
 
-export default PersonalDataFlow
+export default memo(PersonalDataFlow)
 
 const styles = StyleSheet.create({
     wrapper: {

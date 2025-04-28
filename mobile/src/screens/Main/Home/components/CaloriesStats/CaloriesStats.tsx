@@ -3,6 +3,7 @@ import Progress from '@/components/Progress'
 import TextGradient from '@/components/TextGradient'
 import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
+import { memo, useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface CaloriesStatsProps {
@@ -12,24 +13,24 @@ interface CaloriesStatsProps {
 function CaloriesStats({ user_id }: CaloriesStatsProps) {
     const { data } = useQuery({
         queryKey: ['calories', user_id],
-        queryFn: () => targetApi.getTodayCaloriesTarget({ id: user_id }),
-        staleTime: 1000 * 60 * 5
+        queryFn: async () => targetApi.getTodayCaloriesTarget({ id: user_id }),
+        staleTime: 1000 * 60 * 5,
+        enabled: !!user_id
     })
 
-    const target = data?.data?.data
-    const burned = target?.calories_burned ?? 0
-    const goal = target?.calories_target ?? 1
-    const progress = burned / goal
-    const left = Math.max(goal - burned, 0)
+    const { calories_burned = 0, calories_target = 1 } = data?.data?.data ?? {}
+
+    const progress = useMemo(() => calories_burned / calories_target, [calories_burned, calories_target])
+    const left = useMemo(() => Math.max(calories_target - calories_burned, 0), [calories_burned, calories_target])
 
     return (
-        <View style={styles.stats__calories}>
-            <Text style={styles.stats__title}>Calories</Text>
-            <TextGradient textStyle={styles.stats__value} text={`${burned} kCal`} />
-            <View style={styles.calories_chart}>
+        <View style={styles.container}>
+            <Text style={styles.title}>Calories</Text>
+            <TextGradient textStyle={styles.value} text={`${calories_burned} kCal`} />
+            <View style={styles.chartContainer}>
                 <Progress.Circle progress={progress} size={66}>
-                    <GradientButton rounded containerStyle={styles.calories__btn}>
-                        <Text style={styles.calories__btn_text}>{left}kCal left</Text>
+                    <GradientButton rounded containerStyle={styles.button}>
+                        <Text style={styles.buttonText}>{left}kCal left</Text>
                     </GradientButton>
                 </Progress.Circle>
             </View>
@@ -37,40 +38,40 @@ function CaloriesStats({ user_id }: CaloriesStatsProps) {
     )
 }
 
-export default CaloriesStats
+export default memo(CaloriesStats)
 
 const styles = StyleSheet.create({
-    stats__calories: {
+    container: {
+        width: '100%',
         paddingHorizontal: 20,
-        paddingTop: 24,
-        width: '100%'
+        paddingTop: 24
     },
-    stats__title: {
+    title: {
         fontSize: 12,
         color: '#1D1617',
         fontWeight: '500',
         lineHeight: 18
     },
-    stats__value: {
+    value: {
         fontSize: 14,
         color: '#1D1617',
         fontWeight: '700',
         lineHeight: 21
     },
-    calories_chart: {
-        position: 'relative',
+    chartContainer: {
+        marginTop: 6,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 6
+        position: 'relative'
     },
-    calories__btn: {
+    button: {
         width: 48,
         height: 48
     },
-    calories__btn_text: {
-        textAlign: 'center',
+    buttonText: {
         position: 'absolute',
         width: 36,
+        textAlign: 'center',
         fontSize: 8,
         lineHeight: 12,
         fontWeight: '400',

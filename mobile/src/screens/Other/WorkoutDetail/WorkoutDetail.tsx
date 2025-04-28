@@ -10,8 +10,10 @@ import { getYouTubeVideoId } from '@/utils/common.util'
 import { workoutApi } from '@/services/rest'
 import ReadMoreText from '@/components/ReadMoreText'
 import LoaderModal from '@/components/LoaderModal'
+import useScrollListener from '@/hooks/useScrollListener'
 
 function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetail'>) {
+    const { handleScroll, isScrolled } = useScrollListener()
     const { workout_id } = route.params
 
     const { data, isLoading } = useQuery({
@@ -19,8 +21,6 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
         queryFn: () => workoutApi.getWorkoutById({ id: workout_id }),
         staleTime: 1000 * 60 * 10
     })
-
-    const [isScrolled, setIsScrolled] = useState(false)
 
     const workoutData = data?.data?.data
     const workoutIdYoutube = getYouTubeVideoId(
@@ -40,10 +40,7 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
             <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
-                onScroll={(event) => {
-                    const offsetY = event.nativeEvent.contentOffset.y
-                    setIsScrolled(offsetY > 5)
-                }}
+                onScroll={handleScroll}
                 scrollEventThrottle={16}
             >
                 <View style={styles.content}>
@@ -96,10 +93,11 @@ const styles = StyleSheet.create({
         height: 60,
         alignItems: 'flex-start',
         justifyContent: 'center',
-        backgroundColor: '#FFF'
+        backgroundColor: '#FFF',
+        borderBottomWidth: 1,
+        borderBottomColor: 'transparent'
     },
     navBarScrolled: {
-        borderBottomWidth: 1,
         borderBottomColor: '#E5E5E5'
     },
     scrollView: {

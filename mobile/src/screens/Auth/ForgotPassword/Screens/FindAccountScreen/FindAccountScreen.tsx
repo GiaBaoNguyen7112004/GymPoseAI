@@ -50,7 +50,13 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
             <FormProvider {...methods}>
                 <View style={styles.formWrapper}>
                     <View style={styles.inputWrapper}>
-                        <TextInputCustom name='email' type='default' icon='messageIcon' />
+                        <TextInputCustom
+                            name='email'
+                            type='default'
+                            icon='messageIcon'
+                            returnKeyType='done'
+                            onSubmitEditing={handleFindAccount}
+                        />
                     </View>
 
                     <GradientButton

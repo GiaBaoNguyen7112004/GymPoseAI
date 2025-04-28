@@ -1,7 +1,6 @@
 import { memo } from 'react'
-import { Pressable, StyleSheet, ViewStyle, GestureResponderEvent, View } from 'react-native'
+import { Pressable, StyleSheet, GestureResponderEvent, View, StyleProp, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { StyleProp } from 'react-native'
 import Loader from '../Loader'
 
 interface ButtonProps {
@@ -13,6 +12,7 @@ interface ButtonProps {
     disabled?: boolean
     isLoading?: boolean
     rounded?: boolean
+    containerStyle?: StyleProp<ViewStyle>
     [key: string]: any
 }
 
@@ -21,8 +21,8 @@ const GradientButton: React.FC<ButtonProps> = ({
     children,
     Square = false,
     linerColors = ['#92A3FD', '#9DCEFF'],
-    disabled,
-    isLoading,
+    disabled = false,
+    isLoading = false,
     style,
     containerStyle,
     rounded = false,
@@ -35,7 +35,7 @@ const GradientButton: React.FC<ButtonProps> = ({
         <Pressable
             onPress={onPress}
             disabled={isDisabled}
-            style={({ pressed }) => [containerStyle, pressed && !isDisabled ? styles.pressed : null]}
+            style={({ pressed }) => [containerStyle, pressed && !isDisabled && styles.pressed]}
             {...props}
         >
             <LinearGradient
@@ -47,7 +47,7 @@ const GradientButton: React.FC<ButtonProps> = ({
                     style,
                     Square && styles.square,
                     rounded && styles.rounded,
-                    { opacity: !isDisabled ? 1 : 0.6 }
+                    { opacity: isDisabled ? 0.6 : 1 }
                 ]}
             >
                 {children}
@@ -76,11 +76,6 @@ const styles = StyleSheet.create({
     rounded: {
         borderRadius: 999,
         aspectRatio: 1 / 1
-    },
-    contentWrapper: {
-        position: 'relative',
-        justifyContent: 'center',
-        alignItems: 'center'
     },
     loaderWrapper: {
         justifyContent: 'center',

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import Loader from '../Loader'
 
 interface Props {
-    title: string
+    title?: string
 }
 
 function LoaderModal({ title }: Props) {
@@ -10,7 +10,7 @@ function LoaderModal({ title }: Props) {
         <View style={styles.loadingWrapper}>
             <View style={styles.loading}>
                 <Loader />
-                <Text style={{ fontWeight: '500' }}>{title}...</Text>
+                {title && <Text style={{ fontWeight: '500' }}>{title}...</Text>}
             </View>
         </View>
     )

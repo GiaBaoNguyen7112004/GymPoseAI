@@ -1,5 +1,6 @@
 // Tooltip.tsx
 import { ViewModeType } from '@/types/utils.type'
+import { memo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
 export type TooltipDataType = {
@@ -22,7 +23,7 @@ interface Props {
 const PARENT_HEIGHT = 172
 const TOOLTIP_MAX_HEIGHT = 70
 
-export default function Tooltip({ viewMode, tooltipData }: Props) {
+function Tooltip({ viewMode, tooltipData }: Props) {
     const tooltipHeight = TOOLTIP_MAX_HEIGHT
     const adjustedTop = Math.min(tooltipData.y, PARENT_HEIGHT - tooltipHeight)
     return (
@@ -115,3 +116,5 @@ const styles = StyleSheet.create({
         borderRadius: 3
     }
 })
+
+export default memo(Tooltip)

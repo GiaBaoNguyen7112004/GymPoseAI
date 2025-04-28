@@ -1,20 +1,21 @@
 import GradientButton from '@/components/GradientButton'
 import MyIcon from '@/components/Icon'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useContext } from 'react'
-import TrainingSessionCard from '@/components/TrainingSessionCard'
+import { useCallback, useContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { AppContext } from '@/Contexts/App.context'
+
+import TrainingSessionCard from '@/components/TrainingSessionCard'
+import WorkoutCardSkeleton from '@/components/TrainingSessionCardSkeleton'
 import WaterIntake from './components/WaterIntake/WaterIntake'
 import BMIStats from './components/BMI'
 import WorkoutProgressChart from './components/WorkoutProgress'
 import CaloriesStats from './components/CaloriesStats'
 import { workoutHistoryApi } from '@/services/rest'
+import { AppContext } from '@/Contexts/App.context'
 import { MainTabScreenProps } from '@/navigation/types'
-import WorkoutCardSkeleton from '@/components/TrainingSessionCardSkeleton'
 
 function Home({ navigation }: MainTabScreenProps<'Home'>) {
     const { profile } = useContext(AppContext)
@@ -31,37 +32,79 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
 
     const workoutHistoryData = workoutHistoryResp?.data.data
 
-    const handleNotificationClick = () => {
+    // Handlers
+    const handleNotificationClick = useCallback(() => {
         navigation.navigate('Notification')
-    }
-    const handleSeeMoreWorkoutHistory = () => {
+    }, [navigation])
+
+    const handleSeeMoreWorkoutHistory = useCallback(() => {
         navigation.navigate('WorkoutHistoryCenter')
-    }
-    const handleWorkoutCardClick = (workoutId: string) => {
-        navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
-    }
-    const handleCheckTodayTarget = () => {
+    }, [navigation])
+
+    const handleWorkoutCardClick = useCallback(
+        (workoutId: string) => {
+            navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
+        },
+        [navigation]
+    )
+
+    const handleCheckTodayTarget = useCallback(() => {
         navigation.navigate('ActivityTracker')
+    }, [navigation])
+
+    // Render Workout History
+    const renderWorkoutHistory = () => {
+        if (isLoadingWorkout) {
+            return (
+                <View style={styles.workoutsSkeleton}>
+                    <WorkoutCardSkeleton />
+                    <WorkoutCardSkeleton />
+                    <WorkoutCardSkeleton />
+                </View>
+            )
+        }
+
+        return (
+            <FlatList
+                data={workoutHistoryData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <TrainingSessionCard
+                        item={item}
+                        style={styles.workoutItem}
+                        onPress={() => handleWorkoutCardClick(item.id)}
+                    />
+                )}
+                ListEmptyComponent={<Text style={styles.noWorkoutText}>You haven't completed any workouts today.</Text>}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 20 }}
+                scrollEnabled={false}
+            />
+        )
     }
+
     return (
-        <ScrollView style={styles.safeArea} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+        <ScrollView style={styles.safeArea} showsVerticalScrollIndicator={false}>
             <SafeAreaView style={styles.container}>
+                {/* Header */}
                 <View style={styles.header}>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.headerText}>Welcome Back,</Text>
-                        <Text style={styles.headerHeading} numberOfLines={1} ellipsizeMode='tail'>
+                        <Text style={styles.headerHeading} numberOfLines={1}>
                             {profile?.first_name + ' ' + profile?.last_name}
                         </Text>
                     </View>
-                    <TouchableOpacity activeOpacity={0.7} style={styles.headerButton} onPress={handleNotificationClick}>
+                    <TouchableOpacity style={styles.headerButton} onPress={handleNotificationClick}>
                         <MyIcon name='notificationIcon' size={18} />
                     </TouchableOpacity>
                 </View>
 
+                {/* BMI */}
                 <View style={styles.bmiWrapper}>
-                    {/* BMI Stats */}
                     <BMIStats />
                 </View>
+
+                {/* Today Target */}
                 <View style={styles.scheduleWrapper}>
                     <View style={styles.ScheduleAction}>
                         <Text style={styles.scheduleAction__title}>Today Target</Text>
@@ -70,25 +113,18 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                         </GradientButton>
                     </View>
                 </View>
+
+                {/* Activity Status */}
                 <View style={styles.activityWrapper}>
                     <View style={styles.activityStatus}>
                         <Text style={styles.title}>Activity Status</Text>
                         <View style={styles.stats}>
                             <View style={styles.stats__BoxLeft}>
-                                {/* Water Intake bar */}
                                 <WaterIntake />
                             </View>
                             <View style={styles.stats__boxRight}>
-                                <View
-                                    style={[
-                                        styles.stats__squareBox,
-                                        {
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }
-                                    ]}
-                                >
-                                    <MyIcon name='sleepGraph' width={'100%'} size={110} />
+                                <View style={styles.stats__squareBox}>
+                                    <MyIcon name='sleepGraph' width='100%' size={110} />
                                 </View>
                                 <View style={styles.stats__squareBox}>
                                     <CaloriesStats user_id={profile?.id || ''} />
@@ -97,10 +133,13 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                         </View>
                     </View>
                 </View>
+
+                {/* Workout Progress */}
                 <View style={styles.workoutProgressWrapper}>
-                    {/* workout chart */}
                     <WorkoutProgressChart user_id={profile?.id || ''} />
                 </View>
+
+                {/* Workout History */}
                 <View style={styles.workoutHistoryWrapper}>
                     <View style={styles.workoutProgressHeader}>
                         <Text style={styles.title}>Latest Workout</Text>
@@ -108,26 +147,7 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                             <Text style={styles.subtitle_gray}>See more</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.workoutList}>
-                        {isLoadingWorkout ? (
-                            <View style={styles.workoutsSkeleton}>
-                                <WorkoutCardSkeleton />
-                                <WorkoutCardSkeleton />
-                                <WorkoutCardSkeleton />
-                            </View>
-                        ) : workoutHistoryData && workoutHistoryData.length > 0 ? (
-                            workoutHistoryData.map((workout) => (
-                                <TrainingSessionCard
-                                    item={workout}
-                                    style={styles.workoutItem}
-                                    key={workout.id}
-                                    onPress={() => handleWorkoutCardClick(workout.id)}
-                                />
-                            ))
-                        ) : (
-                            <Text style={styles.noWorkoutText}>You haven't completed any workouts today.</Text>
-                        )}
-                    </View>
+                    <View style={styles.workoutList}>{renderWorkoutHistory()}</View>
                 </View>
             </SafeAreaView>
         </ScrollView>

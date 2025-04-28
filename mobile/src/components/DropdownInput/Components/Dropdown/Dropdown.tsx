@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { memo, useRef, useCallback, useState } from 'react'
 import {
     StyleSheet,
     TouchableOpacity,
@@ -50,19 +50,33 @@ function CustomDropdown({
     containerDropdownStyle
 }: CustomDropdownProps) {
     const dropdownRef = useRef<IDropdownRef>(null)
-    const showDropdown = () => {
+
+    const showDropdown = useCallback(() => {
         dropdownRef.current?.open()
-    }
+    }, [])
+
+    const handleChange = useCallback(
+        (item: DropdownItem) => {
+            if (onChange) {
+                onChange(item.value)
+            }
+        },
+        [onChange]
+    )
+
     return (
         <TouchableOpacity style={[styles.container, containerStyle]} onPress={showDropdown}>
             {iconSource && <Icon name={iconSource} size={18} style={styles.icon} />}
+
             <Dropdown
                 ref={dropdownRef}
-                containerStyle={[styles.containerList, containerDropdownStyle]}
-                itemContainerStyle={[styles.item, itemStyle]}
-                style={[styles.dropdown, dropdownStyle]}
-                placeholderStyle={[styles.placeholderStyle, textStyle]}
-                selectedTextStyle={[styles.selectedTextStyle, textStyle]}
+                containerStyle={
+                    containerDropdownStyle ? [styles.containerList, containerDropdownStyle] : styles.containerList
+                }
+                itemContainerStyle={itemStyle ? [styles.item, itemStyle] : styles.item}
+                style={dropdownStyle ? [styles.dropdown, dropdownStyle] : styles.dropdown}
+                placeholderStyle={textStyle ? [styles.placeholderStyle, textStyle] : styles.placeholderStyle}
+                selectedTextStyle={textStyle ? [styles.selectedTextStyle, textStyle] : styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
                 data={data}
                 maxHeight={300}
@@ -71,21 +85,21 @@ function CustomDropdown({
                 placeholder={placeholder}
                 searchPlaceholder='Search...'
                 value={value}
-                onChange={(item: DropdownItem) => {
-                    if (onChange) onChange(item.value)
-                }}
+                onChange={handleChange}
                 closeModalWhenSelectedItem
-                onBlur={onblur}
+                onBlur={() => {
+                    if (onblur) onblur()
+                }}
                 mode='modal'
                 dropdownPosition='bottom'
                 iconStyle={iconStyle}
-                itemTextStyle={[itemTextStyle]}
+                itemTextStyle={itemTextStyle}
             />
         </TouchableOpacity>
     )
 }
 
-export default CustomDropdown
+export default memo(CustomDropdown)
 
 const styles = StyleSheet.create({
     container: {

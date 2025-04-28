@@ -3,22 +3,43 @@ import { Ionicons } from '@expo/vector-icons'
 import useUserData from '@/hooks/useUserData'
 import { SettingMenu } from '@/components/SettingMenu'
 import { Flow, ScreenComponentProps } from '../routes.config'
+import { memo, useCallback, useMemo } from 'react'
 
 const ProfileScreen = ({ onClose, onNavigate }: ScreenComponentProps) => {
     const { userData } = useUserData()
 
-    const avatarSource = userData?.avatar ? { uri: userData.avatar } : require('@/assets/images/defaultAvatar.png')
+    const avatarSource = useMemo(() => {
+        return userData?.avatar ? { uri: userData.avatar } : require('@/assets/images/defaultAvatar.png')
+    }, [userData?.avatar])
 
-    const fullName = `${userData?.first_name ?? ''} ${userData?.last_name ?? ''}`.trim()
+    const fullName = useMemo(() => {
+        return `${userData?.first_name ?? ''} ${userData?.last_name ?? ''}`.trim()
+    }, [userData?.first_name, userData?.last_name])
 
-    const handleNavigate = (flow: Flow) => {
-        if (onNavigate) onNavigate(flow)
-    }
+    const handleClose = useCallback(() => {
+        if (onClose) onClose()
+    }, [onClose])
+
+    const handleNavigate = useCallback(
+        (flow: Flow) => {
+            if (onNavigate) onNavigate(flow)
+        },
+        [onNavigate]
+    )
+
+    const menuItems = useMemo(
+        () => [
+            { title: 'Name', flow: 'editName' },
+            { title: 'Profile', flow: 'editProfile' },
+            { title: 'Avatar', flow: 'changeAvatar', isLast: true }
+        ],
+        []
+    )
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={onClose}>
+                <TouchableOpacity onPress={handleClose}>
                     <Ionicons name='close' size={24} color='black' />
                 </TouchableOpacity>
             </View>
@@ -31,16 +52,21 @@ const ProfileScreen = ({ onClose, onNavigate }: ScreenComponentProps) => {
 
             <View style={styles.menuContainer}>
                 <SettingMenu.MenuWrapper>
-                    <SettingMenu.MenuItem title='Name' onPress={() => handleNavigate('editName')} />
-                    <SettingMenu.MenuItem title='Profile' onPress={() => handleNavigate('editProfile')} />
-                    <SettingMenu.MenuItem title='Avatar' onPress={() => handleNavigate('changeAvatar')} isLast />
+                    {menuItems.map((item) => (
+                        <SettingMenu.MenuItem
+                            key={item.flow}
+                            title={item.title}
+                            onPress={() => handleNavigate(item.flow as Flow)}
+                            isLast={item.isLast}
+                        />
+                    ))}
                 </SettingMenu.MenuWrapper>
             </View>
         </View>
     )
 }
 
-export default ProfileScreen
+export default memo(ProfileScreen)
 
 const styles = StyleSheet.create({
     container: {

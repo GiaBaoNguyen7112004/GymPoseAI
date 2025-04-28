@@ -1,5 +1,5 @@
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, Pressable, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import TabBarComponent from '@/components/BottomTabBar'
 import MyIcon from '@/components/Icon'
@@ -82,7 +82,8 @@ const defaultTabOptions: BottomTabNavigationOptions = {
     tabBarShowLabel: false,
     tabBarStyle: {
         backgroundColor: 'white',
-        paddingTop: 18
+        paddingTop: 18,
+        paddingBottom: 18
     }
 }
 
@@ -97,10 +98,10 @@ const renderTabIcon = (iconName: IconName, iconActive: IconName, iconSize = 23) 
     }
 }
 
-const renderTabButton = ({ onPress, ...rest }: any) => (
-    <TouchableWithoutFeedback onPress={onPress}>
-        <View {...rest} />
-    </TouchableWithoutFeedback>
+const renderTabButton = ({ onPress, style, ...rest }: any) => (
+    <Pressable onPress={onPress} style={styles.tabButton}>
+        <View style={style} {...rest} />
+    </Pressable>
 )
 
 const styles = StyleSheet.create({
@@ -124,5 +125,10 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
         elevation: 10
+    },
+    tabButton: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })

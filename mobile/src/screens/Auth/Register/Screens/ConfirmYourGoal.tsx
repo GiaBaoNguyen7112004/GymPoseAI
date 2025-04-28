@@ -8,7 +8,9 @@ import { WorkoutBenefitsList } from '../Components/WorkoutBenefitsList'
 
 export default function ConfirmYourGoal({ navigation }: RootStackScreenProps<'ConfirmYourGoal'>) {
     const handleConfirm = () => {
-        navigation.replace('MainTab')
+        navigation.replace('MainTab', {
+            screen: 'Home'
+        })
     }
 
     const renderHeader = () => (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Ionicons } from '@expo/vector-icons'
@@ -12,7 +12,7 @@ import { showErrorAlert } from '@/utils/alert.util'
 import useUserData from '@/hooks/useUserData'
 import { uploadImageFromUri } from '@/utils/upload.util'
 
-export default function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
+function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
     const { refetch } = useUserData()
     const [avatarUri, setAvatarUri] = useState<string | null>(null)
     const [isEditorVisible, setEditorVisible] = useState(false)
@@ -197,3 +197,5 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     }
 })
+
+export default memo(PreviewAvatarScreen)

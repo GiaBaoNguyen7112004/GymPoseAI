@@ -15,7 +15,7 @@ export type RootStackParamList = {
 
     // Main app entry points
     Welcome: undefined
-    MainTab: undefined
+    MainTab: { screen: string }
 
     // Feature-specific screens
     Notification: undefined

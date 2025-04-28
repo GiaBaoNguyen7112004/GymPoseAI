@@ -13,7 +13,6 @@ import { RootStackScreenProps } from '@/navigation/types'
 import { authApi } from '@/services/rest'
 
 import MyIcon from '@/components/Icon'
-import Loader from '@/components/LoaderModal'
 import GradientButton from '@/components/GradientButton'
 import TextGradient from '@/components/TextGradient'
 import TextInputCustom from '@/components/TextInput'
@@ -26,8 +25,7 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
 
     const methods = useForm<FormData>({
         defaultValues: { email: '', password: '' },
-        resolver: yupResolver(formSchema),
-        mode: 'onBlur'
+        resolver: yupResolver(formSchema)
     })
 
     const { handleSubmit, setError, formState } = methods
@@ -45,12 +43,9 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
             onError: (error) => handleFormError<FormData>(error, setError)
         })
     })
-
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={styles.screenWrapper}>
-                {loginMutation.isPending && <Loader title='Logging in' />}
-
                 <View style={styles.container}>
                     {/* Top Section */}
                     <View style={styles.containerTop}>
@@ -63,19 +58,27 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
                             <View style={styles.loginForm}>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
+                                        {...methods.register('email')}
                                         icon='messageIcon'
                                         type='default'
                                         autoCapitalize='none'
                                         placeholder='Email'
                                         name='email'
+                                        returnKeyType='next'
+                                        onSubmitEditing={() => {
+                                            methods.setFocus('password')
+                                        }}
                                     />
                                 </View>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
+                                        {...methods.register('password')}
                                         icon='lockIcon'
                                         type='password'
                                         placeholder='Password'
                                         name='password'
+                                        returnKeyType='done'
+                                        onSubmitEditing={onSubmit}
                                     />
                                 </View>
                                 <Text style={styles.linkText} onPress={() => navigation.push('ForgotPassword')}>
@@ -87,7 +90,13 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
 
                     {/* Bottom Section */}
                     <View style={styles.containerBottom}>
-                        <GradientButton style={styles.btnLogin} disabled={!formState.isValid} onPress={onSubmit} Square>
+                        <GradientButton
+                            style={styles.btnLogin}
+                            disabled={!formState.isValid}
+                            onPress={onSubmit}
+                            Square
+                            isLoading={loginMutation.isPending}
+                        >
                             <MyIcon name='loginIcon' />
                             <Text style={styles.btnText}>Login</Text>
                         </GradientButton>

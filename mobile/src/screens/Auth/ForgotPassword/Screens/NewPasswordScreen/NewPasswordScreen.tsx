@@ -23,7 +23,7 @@ const FormSchema = schema.pick(['password'])
 function ChangePasswordScreen({ email, otp, onSuccess }: ChangePasswordScreenProps) {
     const methods = useForm<FormData>({
         defaultValues: { password: '' },
-        mode: 'onBlur',
+        mode: 'onChange',
         resolver: yupResolver(FormSchema)
     })
 
@@ -34,7 +34,7 @@ function ChangePasswordScreen({ email, otp, onSuccess }: ChangePasswordScreenPro
         mutationFn: authApi.resetPassword,
         onSuccess: (res) => {
             const message = res.data.message
-            showToast({ title: message })
+            showToast({ title: message, position: 'top' })
             onSuccess()
         },
         onError: (error) => handleFormError<FormData>(error, setError)
@@ -53,7 +53,14 @@ function ChangePasswordScreen({ email, otp, onSuccess }: ChangePasswordScreenPro
                     account.
                 </Text>
 
-                <TextInputCustom name='password' icon='lockIcon' type='password' autoFocus />
+                <TextInputCustom
+                    name='password'
+                    icon='lockIcon'
+                    type='password'
+                    autoFocus
+                    returnKeyType='done'
+                    onSubmitEditing={onSubmit}
+                />
 
                 <GradientButton
                     Square

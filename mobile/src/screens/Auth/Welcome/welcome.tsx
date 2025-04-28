@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -6,16 +7,26 @@ import MyIcon from '@/components/Icon'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { RootStackScreenProps } from '@/navigation/types'
 import useUserData from '@/hooks/useUserData'
+import useNavigationState from '@/hooks/useNavigationState'
 
 const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
+    const { isNavigating } = useNavigationState(navigation)
     const { userData } = useUserData()
 
+    const isProfileComplete = useMemo(() => Boolean(userData?.isProfileComplete), [userData])
+
+    const navigateToNextScreen = (isProfileComplete: boolean) => {
+        if (isProfileComplete) {
+            navigation.navigate('MainTab', {
+                screen: 'Home'
+            })
+        } else {
+            navigation.navigate('CompleteProfile')
+        }
+    }
+
     const navigateBasedOnProfileCompletion = () => {
-        const isComplete = userData?.isProfileComplete
-        navigation.reset({
-            index: 0,
-            routes: [{ name: isComplete ? 'MainTab' : 'CompleteProfile' }]
-        })
+        navigateToNextScreen(isProfileComplete)
     }
 
     return (
@@ -29,7 +40,12 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
                     </View>
                 </View>
 
-                <GradientButton style={styles.btn} Square onPress={navigateBasedOnProfileCompletion}>
+                <GradientButton
+                    style={styles.btn}
+                    Square
+                    onPress={navigateBasedOnProfileCompletion}
+                    isLoading={isNavigating}
+                >
                     <Text style={styles.textInnerBtn}>Go To Home</Text>
                 </GradientButton>
             </View>

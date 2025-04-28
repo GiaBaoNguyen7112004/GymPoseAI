@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { memo, useCallback } from 'react'
 import { StyleSheet, Text, View, Pressable, StyleProp, TextStyle } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -25,7 +25,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ callback, title, headingS
     )
 }
 
-export default NavigationBar
+export default memo(NavigationBar)
 
 const styles = StyleSheet.create({
     navigationBar: {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
 import WorkoutChart from '@/components/WorkoutChart'
@@ -6,6 +6,7 @@ import CustomDropdown from '@/components/DropdownInput/Components/Dropdown'
 import { ViewModeDropdown } from '@/constants/dropdown.constant'
 import { workoutHistoryApi } from '@/services/rest'
 import { ViewModeType } from '@/types/utils.type'
+import useDebounce from '@/hooks/useDebounce'
 
 interface WorkoutProgressProps {
     user_id: string
@@ -13,34 +14,42 @@ interface WorkoutProgressProps {
 
 function WorkoutProgressChart({ user_id }: WorkoutProgressProps) {
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
+    const debouncedViewMode = useDebounce(viewMode, 1000)
 
     const { data } = useQuery({
-        queryKey: ['workoutHistory', viewMode, user_id],
+        queryKey: ['workoutHistory', debouncedViewMode, user_id],
         queryFn: () =>
             workoutHistoryApi.getWorkoutHistoryByViewMode({
                 id: user_id,
-                viewMode
+                viewMode: debouncedViewMode
             }),
-        staleTime: 1000 * 60 * 5
+        staleTime: 1000 * 60 * 5,
+        enabled: !!user_id
     })
 
     const workoutHistoryData = data?.data.data || []
+
+    const handleViewModeChange = useCallback((val: string) => {
+        setViewMode(val as ViewModeType)
+    }, [])
+
+    const dropdownData = useMemo(() => ViewModeDropdown, [])
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Workout Progress</Text>
                 <CustomDropdown
-                    data={ViewModeDropdown}
+                    data={dropdownData}
                     containerStyle={styles.dropdown}
                     value={viewMode}
                     textStyle={styles.dropdownText}
                     iconStyle={styles.dropdownIcon}
-                    onChange={(val: string) => setViewMode(val as ViewModeType)}
+                    onChange={handleViewModeChange}
                 />
             </View>
 
-            <WorkoutChart viewMode={viewMode} workoutData={workoutHistoryData} />
+            <WorkoutChart viewMode={debouncedViewMode} workoutData={workoutHistoryData} />
         </View>
     )
 }
@@ -81,4 +90,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default WorkoutProgressChart
+export default memo(WorkoutProgressChart)

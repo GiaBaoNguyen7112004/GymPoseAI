@@ -16,6 +16,7 @@ import { omit } from 'lodash'
 import handleFormError from '@/utils/handleFormError'
 import { useContext } from 'react'
 import { AppContext } from '@/Contexts/App.context'
+import showToast from '@/utils/toast.util'
 
 type FormData = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'password' | 'policy'>
 
@@ -32,8 +33,7 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
             password: '',
             policy: false
         },
-        resolver: yupResolver(FormSchema),
-        mode: 'onBlur'
+        resolver: yupResolver(FormSchema)
     })
     const registerMutation = useMutation({
         mutationFn: authApi.registerAccount
@@ -48,8 +48,10 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
         await registerMutation.mutateAsync(body, {
             onSuccess: (data) => {
                 const user = data.data.data.user
+                const message = data.data.message
                 setProfile(user)
                 setAuthenticated(true)
+                showToast({ title: message, position: 'top' })
             },
             onError: (errors) => handleFormError<FormData>(errors, methods.setError)
         })
@@ -69,36 +71,54 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
                             <FormProvider {...methods}>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
+                                        {...methods.register('first_name')}
                                         type='default'
                                         icon='profileIcon'
                                         autoCapitalize='none'
                                         placeholder='First Name'
                                         name='first_name'
+                                        returnKeyType='next'
+                                        onSubmitEditing={() => {
+                                            methods.setFocus('last_name')
+                                        }}
                                     />
                                 </View>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
+                                        {...methods.register('last_name')}
                                         type='default'
                                         icon='profileIcon'
                                         autoCapitalize='none'
                                         placeholder='Last Name'
                                         name='last_name'
+                                        returnKeyType='next'
+                                        onSubmitEditing={() => {
+                                            methods.setFocus('email')
+                                        }}
                                     />
                                 </View>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
+                                        {...methods.register('email')}
                                         type='default'
                                         icon='messageIcon'
                                         placeholder='Email'
                                         name='email'
+                                        returnKeyType='next'
+                                        onSubmitEditing={() => {
+                                            methods.setFocus('password')
+                                        }}
                                     />
                                 </View>
                                 <View style={styles.rowForm}>
                                     <TextInputCustom
+                                        {...methods.register('password')}
                                         type='password'
                                         icon='lockIcon'
                                         placeholder='Password'
                                         name='password'
+                                        returnKeyType='done'
+                                        onSubmitEditing={handleRegister}
                                     />
                                 </View>
                                 <View style={styles.rowForm}>
@@ -117,6 +137,7 @@ function CreateAccount({ navigation }: RootStackScreenProps<'CreateAccount'>) {
                             Square
                             disabled={!canSubmit}
                             style={styles.btnRegister}
+                            isLoading={registerMutation.isPending}
                         >
                             <Text style={{ fontSize: 16, color: '#fff', fontWeight: '500' }}>Register</Text>
                         </GradientButton>

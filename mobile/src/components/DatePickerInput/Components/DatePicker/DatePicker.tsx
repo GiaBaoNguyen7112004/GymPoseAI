@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { useState } from 'react'
+import { memo, useState, useCallback, useMemo } from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
@@ -13,18 +13,27 @@ interface DatePickerProps {
 function DatePicker({ label, value, onChange, onBlur }: DatePickerProps) {
     const [isVisible, setIsVisible] = useState(false)
 
-    const handleConfirm = (selectedDate: Date) => {
-        onChange(selectedDate)
-        setIsVisible(false)
-        onBlur?.()
-    }
+    const handleConfirm = useCallback(
+        (selectedDate: Date) => {
+            onChange(selectedDate)
+            setIsVisible(false)
+            onBlur?.()
+        },
+        [onChange, onBlur]
+    )
+
+    const formattedDate = useMemo(() => {
+        return value ? moment(value).format('DD/MM/YYYY') : label
+    }, [value, label])
+
+    const handlePress = useCallback(() => {
+        setIsVisible(true)
+    }, [])
 
     return (
         <>
-            <Pressable onPress={() => setIsVisible(true)}>
-                <Text style={value ? undefined : styles.label}>
-                    {value ? moment(value).format('DD/MM/YYYY') : label}
-                </Text>
+            <Pressable onPress={handlePress}>
+                <Text style={value ? undefined : styles.label}>{formattedDate}</Text>
             </Pressable>
 
             <DateTimePickerModal
@@ -38,7 +47,7 @@ function DatePicker({ label, value, onChange, onBlur }: DatePickerProps) {
     )
 }
 
-export default DatePicker
+export default memo(DatePicker)
 
 const styles = StyleSheet.create({
     label: {

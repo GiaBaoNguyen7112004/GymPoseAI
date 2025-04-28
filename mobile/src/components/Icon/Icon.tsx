@@ -1,5 +1,5 @@
 import { IconName, ICONS } from '@/constants/icon.constants'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { StyleProp } from 'react-native'
 
 interface IconProps {
@@ -31,4 +31,4 @@ const Icon: React.FC<IconProps> = ({ name, size = 24, width, height, fill, strok
     )
 }
 
-export default Icon
+export default memo(Icon)
