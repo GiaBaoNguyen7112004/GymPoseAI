@@ -6,8 +6,8 @@ import com.pbl5.gympose.entity.WorkoutSummary;
 import java.time.Duration;
 import java.util.Objects;
 
-public class WorkoutUtil {
-    private WorkoutUtil() {
+public class WorkoutUtils {
+    private WorkoutUtils() {
     }
 
     public static Double getCaloriesBase(Double userWeight, Exercise exercise) {

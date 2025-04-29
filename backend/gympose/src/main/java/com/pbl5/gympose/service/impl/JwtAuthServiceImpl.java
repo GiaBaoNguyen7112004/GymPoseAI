@@ -6,6 +6,7 @@ import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.enums.CachePrefix;
 import com.pbl5.gympose.enums.RoleName;
+import com.pbl5.gympose.event.AccountVerificationEvent;
 import com.pbl5.gympose.event.RequestResetPasswordEvent;
 import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
 import com.pbl5.gympose.event.UserRegistrationEvent;
@@ -51,6 +52,7 @@ public class JwtAuthServiceImpl implements AuthService {
     ApplicationEventPublisher eventPublisher;
     TokenService tokenService;
     CacheService cacheService;
+    ApplicationEventPublisher applicationEventPublisher;
 
 
     @Override
@@ -111,7 +113,8 @@ public class JwtAuthServiceImpl implements AuthService {
         user.setIsEnabled(true);
         user.setAccountVerifiedAt(LocalDateTime.now());
         tokenService.deleteToken(accountVerificationRequest.getAccountVerificationToken());
-        userService.save(user);
+
+        applicationEventPublisher.publishEvent(new AccountVerificationEvent(userService.save(user)));
     }
 
     @Override

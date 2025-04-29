@@ -3,14 +3,16 @@ package com.pbl5.gympose.event.handler;
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.TokenType;
+import com.pbl5.gympose.event.AccountVerificationEvent;
 import com.pbl5.gympose.event.RequestResetPasswordEvent;
 import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
 import com.pbl5.gympose.event.UserRegistrationEvent;
+import com.pbl5.gympose.service.TargetService;
 import com.pbl5.gympose.service.TokenService;
 import com.pbl5.gympose.service.email.EmailService;
 import com.pbl5.gympose.utils.CommonConstant;
 import com.pbl5.gympose.utils.CommonFunction;
-import com.pbl5.gympose.utils.TokenUtil;
+import com.pbl5.gympose.utils.TokenUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +28,7 @@ import java.time.LocalDateTime;
 public class EventHandler {
     EmailService emailService;
     TokenService tokenService;
+    TargetService targetService;
 
     @EventListener
     private void handleUserRegistrationEvent(UserRegistrationEvent event) {
@@ -49,8 +52,14 @@ public class EventHandler {
         User user = event.getUser();
         Token token = tokenService.findOtp(user.getId());
         token.setToken(String.valueOf(CommonFunction.getRandomFourDigitNumber()));
-        token.setExpireTime(LocalDateTime.now().plusMinutes(TokenUtil.OTP_EXPIRATION_MINUTES));
+        token.setExpireTime(LocalDateTime.now().plusMinutes(TokenUtils.OTP_EXPIRATION_MINUTES));
         tokenService.save(token);
         emailService.sendMailForgetPassword(user.getEmail(), token.getToken(), CommonConstant.LANGUAGE_CODE);
+    }
+
+    @EventListener
+    private void handleAccountVerificationEvent(AccountVerificationEvent event) {
+        User user = event.getUser();
+        targetService.createUserTarget(user.getId());
     }
 }
