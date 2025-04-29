@@ -4,6 +4,8 @@ import com.pbl5.gympose.payload.request.auth.*;
 import com.pbl5.gympose.payload.response.auth.LoginResponse;
 import com.pbl5.gympose.payload.response.auth.SignUpResponse;
 
+import java.util.UUID;
+
 public interface AuthService {
     SignUpResponse signUp(SignUpRequest signUpRequest);
 
@@ -20,4 +22,6 @@ public interface AuthService {
     void resetPassword(ResetPasswordRequest request);
 
     void resendResetPassword(RequestResetPasswordRequest resetPasswordRequest);
+
+    void changePassword(UUID userId, PasswordChangingRequest passwordChangingRequest);
 }

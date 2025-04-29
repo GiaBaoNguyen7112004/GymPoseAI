@@ -9,6 +9,8 @@ public final class ErrorMessage {
     public static final String ACCOUNT_LOCKED = "account_locked";
     public static final String ACCOUNT_NOT_ACTIVE = "account_not_active";
     public static final String ACCOUNT_ALREADY_ACTIVE = "account_already_active";
+    public static final String NEW_PASSWORD_NOT_MATCH = "new_password_not_match";
+    public static final String OLD_PASSWORD_NOT_MATCH = "old_password_not_match";
 
     //Internal server error
     public static final String INTERNAL_SERVER_ERROR = "internal_server_error";
