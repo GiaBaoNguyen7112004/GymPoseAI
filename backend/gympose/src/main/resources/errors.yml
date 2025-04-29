@@ -26,7 +26,13 @@ unauthorized:
   code: ERR.AUTH0201
   message: Unauthorized, You do not have permission to access this page!
 
-
+#password
+new_password_not_match:
+  code: ERR.PSW0101
+  message: New password and new password confirmation not match!
+old_password_not_match:
+  code: ERR.PSW0102
+  message: Old password is not correct!
 #token
 token_not_found:
   code: ERR.TOK0000

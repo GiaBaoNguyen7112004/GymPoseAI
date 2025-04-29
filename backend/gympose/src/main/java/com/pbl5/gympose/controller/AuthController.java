@@ -1,7 +1,9 @@
 package com.pbl5.gympose.controller;
 
+import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.payload.request.auth.*;
+import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
@@ -77,6 +79,14 @@ public class AuthController {
     public ResponseEntity<ResponseData> resendResetPassword(@Valid @RequestBody RequestResetPasswordRequest request) {
         authService.resendResetPassword(request);
         ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.RESEND_RESET_PASSWORD);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @PatchMapping(ApiPath.CHANGE_PASSWORD)
+    public ResponseEntity<ResponseData> changePassword(@CurrentUser UserPrincipal userPrincipal,
+                                                       @Valid @RequestBody PasswordChangingRequest request) {
+        authService.changePassword(userPrincipal.getId(), request);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.PASSWORD_CHANGED);
         return ResponseEntity.ok(responseData);
     }
 }

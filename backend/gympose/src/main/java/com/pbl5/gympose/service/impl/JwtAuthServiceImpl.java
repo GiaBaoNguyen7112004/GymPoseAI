@@ -37,6 +37,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -157,5 +159,17 @@ public class JwtAuthServiceImpl implements AuthService {
     public void resendResetPassword(RequestResetPasswordRequest resetPasswordRequest) {
         User user = userService.findByEmail(resetPasswordRequest.getEmail());
         eventPublisher.publishEvent(new ResendRequestResetPasswordEvent(user));
+    }
+
+    @Override
+    public void changePassword(UUID userId, PasswordChangingRequest passwordChangingRequest) {
+        if (!Objects.equals(passwordChangingRequest.getNewPassword(), passwordChangingRequest.getNewPasswordConfirmation()))
+            throw new BadRequestException(ErrorMessage.NEW_PASSWORD_NOT_MATCH);
+
+        User user = userService.findById(userId);
+        if (!passwordEncoder.matches(passwordChangingRequest.getOldPassword(), user.getPassword()))
+            throw new BadRequestException(ErrorMessage.OLD_PASSWORD_NOT_MATCH);
+        user.setPassword(passwordEncoder.encode(passwordChangingRequest.getNewPassword()));
+        userService.save(user);
     }
 }
