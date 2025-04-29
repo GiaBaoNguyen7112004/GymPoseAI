@@ -50,6 +50,12 @@ public final class FeedbackMessage {
     //JWT
     public static final String JWT_REFRESHED = "JWT refreshed successfully";
 
+    //TARGET
+    public static final String TARGET_CALORIES_RETRIEVED = "Target calories retrieved successfully";
+    public static final String TARGET_TODAY_RETRIEVED = "Target today retrieved successfully";
+    public static final String TARGET_TODAY_UPDATED = "Target today updated successfully";
+    public static final String TARGET_WEEKLY_RETRIEVED = "Target weekly retrieved successfully";
+
     private FeedbackMessage() {
     }
 }

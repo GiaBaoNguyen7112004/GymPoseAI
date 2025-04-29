@@ -27,7 +27,7 @@ public class SendingEmailService {
     SpringTemplateEngine springTemplateEngine;
     AppProperties appProperties;
 
-    @Async("emailTaskExecutor")
+    @Async("taskExecutor")
     public void sendEmailFromTemplate(
             String email,
             String templateName,
@@ -49,7 +49,7 @@ public class SendingEmailService {
         this.sendMail(email, subject, detail);
     }
 
-    @Async("emailTaskExecutor")
+    @Async("taskExecutor")
     public void sendOtpEmailFromTemplate(
             String email,
             String templateName,
@@ -71,7 +71,7 @@ public class SendingEmailService {
         this.sendMail(email, subject, detail);
     }
 
-    @Async("emailTaskExecutor")
+    @Async("taskExecutor")
     public void sendEmailFromTemplate(
             String email,
             String templateName,
@@ -95,7 +95,7 @@ public class SendingEmailService {
         this.sendMail(email, subject, detail);
     }
 
-    @Async("emailTaskExecutor")
+    @Async("taskExecutor")
     public void sendEmailFromTemplate(
             String email,
             String templateName,
@@ -123,7 +123,7 @@ public class SendingEmailService {
         this.sendMail(email, subject, detail);
     }
 
-    @Async("emailTaskExecutor")
+    @Async("taskExecutor")
     public void sendDeleteAccount(String email, String code, String language) {
         Context context = new Context();
         Locale locale = new Locale(language);

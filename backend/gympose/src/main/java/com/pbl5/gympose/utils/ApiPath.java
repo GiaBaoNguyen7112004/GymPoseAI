@@ -47,6 +47,12 @@ public final class ApiPath {
     public static final String JWT = API + "/jwt";
     public static final String JWT_REFRESH = "/refresh";
 
+    //TARGET
+    public static final String TARGET = API + "/target";
+    public static final String TARGET_TODAY = "/today";
+    public static final String TARGET_CALORIES_TODAY = TARGET_TODAY + "/calories";
+    public static final String TARGET_WEEKLY = "/weekly";
+
     // SWAGGER
     public static final String SWAGGER = "/swagger-ui.html";
 

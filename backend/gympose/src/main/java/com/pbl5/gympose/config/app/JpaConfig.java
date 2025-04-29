@@ -1,4 +1,4 @@
-package com.pbl5.gympose.config.jpa;
+package com.pbl5.gympose.config.app;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

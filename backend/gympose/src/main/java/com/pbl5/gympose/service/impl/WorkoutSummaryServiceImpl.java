@@ -17,7 +17,7 @@ import com.pbl5.gympose.service.ExerciseService;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.CommonFunction;
-import com.pbl5.gympose.utils.WorkoutUtil;
+import com.pbl5.gympose.utils.WorkoutUtils;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +43,9 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
         Exercise exercise = workoutSummary.getExercise();
         return WorkoutSummaryDetailResponse.builder()
                 .id(workoutSummary.getId())
-                .caloriesBurned(WorkoutUtil.getCaloriesBurned(workoutSummary, userWeight,
+                .caloriesBurned(WorkoutUtils.getCaloriesBurned(workoutSummary, userWeight,
                         exercise))
-                .CaloriesBase(WorkoutUtil.getCaloriesBase(userWeight, exercise))
+                .CaloriesBase(WorkoutUtils.getCaloriesBase(userWeight, exercise))
                 .startTime(workoutSummary.getStartTime())
                 .endTime(workoutSummary.getEndTime())
                 .category(workoutSummary.getExercise().getCategory().getName())
@@ -125,10 +125,10 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                             userId, startOfDay, endOfDay);
 
                     double caloriesBase = summaries.stream().mapToDouble(workoutSummary
-                            -> WorkoutUtil.getCaloriesBase(user.getWeight(), workoutSummary.getExercise())).sum();
+                            -> WorkoutUtils.getCaloriesBase(user.getWeight(), workoutSummary.getExercise())).sum();
 
                     double caloriesBurned = summaries.stream().mapToDouble(workoutSummary
-                            -> WorkoutUtil.getCaloriesBurned(workoutSummary, user.getWeight(), workoutSummary.getExercise())).sum();
+                            -> WorkoutUtils.getCaloriesBurned(workoutSummary, user.getWeight(), workoutSummary.getExercise())).sum();
 
                     Set<String> categories = new HashSet<>();
                     summaries.forEach(workoutSummary -> categories.add(workoutSummary.getExercise()
@@ -160,10 +160,10 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                             userId, startOfDay, endOfDay);
 
                     double caloriesBase = summaries.stream().mapToDouble(workoutSummary
-                            -> WorkoutUtil.getCaloriesBase(user.getWeight(), workoutSummary.getExercise())).sum();
+                            -> WorkoutUtils.getCaloriesBase(user.getWeight(), workoutSummary.getExercise())).sum();
 
                     double caloriesBurned = summaries.stream().mapToDouble(workoutSummary
-                            -> WorkoutUtil.getCaloriesBurned(workoutSummary, user.getWeight(),
+                            -> WorkoutUtils.getCaloriesBurned(workoutSummary, user.getWeight(),
                             workoutSummary.getExercise())).sum();
 
                     Set<String> categories = new HashSet<>();
@@ -190,10 +190,10 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                     List<WorkoutSummary> summaries = workoutSummaryRepository.findByUser_IdAndStartTimeBetween(
                             userId, startOfMonth, endOfMonth);
                     double caloriesBase = summaries.stream().mapToDouble(workoutSummary
-                            -> WorkoutUtil.getCaloriesBase(user.getWeight(), workoutSummary.getExercise())).sum();
+                            -> WorkoutUtils.getCaloriesBase(user.getWeight(), workoutSummary.getExercise())).sum();
 
                     double caloriesBurned = summaries.stream().mapToDouble(workoutSummary
-                            -> WorkoutUtil.getCaloriesBurned(workoutSummary, user.getWeight(), workoutSummary.getExercise())).sum();
+                            -> WorkoutUtils.getCaloriesBurned(workoutSummary, user.getWeight(), workoutSummary.getExercise())).sum();
 
                     Set<String> categories = new HashSet<>();
                     summaries.forEach(workoutSummary -> categories.add(workoutSummary.getExercise()

@@ -80,5 +80,10 @@ public class UserServiceImpl implements UserService {
     public String uploadAvatar(MultipartFile file) {
         return storageService.uploadFileWithFolder(file, "avatars");
     }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 }
 

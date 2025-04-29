@@ -70,6 +70,9 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<WorkoutSummary> workoutSummaries;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Target> targets;
+
     public int getAge() {
         return LocalDate.now().getYear() - this.getDateOfBirth().getYear();
     }

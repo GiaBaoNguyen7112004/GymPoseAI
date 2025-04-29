@@ -29,4 +29,6 @@ public interface UserService {
     void updateUser(UUID id, UserUpdatingRequest userUpdatingRequest);
 
     String uploadAvatar(MultipartFile file);
+
+    List<User> findAll();
 }
