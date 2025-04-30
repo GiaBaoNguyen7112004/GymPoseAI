@@ -51,7 +51,11 @@ function RootStackNavigation() {
                     <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
                     <RootStack.Screen name='Setting' component={Setting} />
                     <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
-                    <RootStack.Screen name='ConfirmYourGoal' component={Register.ConfirmYourGoal} />
+                    <RootStack.Screen
+                        name='ConfirmYourGoal'
+                        component={Register.ConfirmYourGoal}
+                        options={{ gestureEnabled: false }}
+                    />
                     <RootStack.Screen name='ActivityList' component={ActivityListScreen} />
                 </RootStack.Group>
             ) : (

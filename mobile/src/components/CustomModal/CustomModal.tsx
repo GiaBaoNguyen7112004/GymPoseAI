@@ -1,14 +1,14 @@
 import React, { memo } from 'react'
-import { Keyboard } from 'react-native'
+import { Keyboard, ModalProps } from 'react-native'
 import { Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
-interface CustomModalProps {
+interface CustomModalProps extends ModalProps {
     visible: boolean
     children: React.ReactNode
 }
 
-function CustomModal({ children, visible }: CustomModalProps) {
+function CustomModal({ children, visible, ...rest }: CustomModalProps) {
     return (
-        <Modal animationType='fade' transparent={true} visible={visible}>
+        <Modal animationType='fade' transparent={true} visible={visible} {...rest}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.centeredView}>{children}</View>
             </TouchableWithoutFeedback>

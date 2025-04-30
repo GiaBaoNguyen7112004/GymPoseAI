@@ -1,7 +1,9 @@
+import { forwardRef, memo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import ControlledInput, { ControllerInputProps } from './components/ControlledInput'
+import { TextInput } from 'react-native'
 
-function TextInputV2Custom(props: ControllerInputProps) {
+const TextInputV2Custom = forwardRef<TextInput, ControllerInputProps>((props, ref) => {
     const { name } = props
 
     const formContext = useFormContext()
@@ -12,6 +14,7 @@ function TextInputV2Custom(props: ControllerInputProps) {
         return null
     }
 
-    return <ControlledInput {...props} />
-}
+    return <ControlledInput {...props} ref={ref} />
+})
+
 export default TextInputV2Custom

@@ -62,8 +62,6 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
         }
         updateProfileMutate(body, {
             onSuccess: (res) => {
-                const message = res.data.message
-                showToast({ title: message, position: 'top' })
                 navigation.replace('ConfirmYourGoal')
                 refetch()
             },

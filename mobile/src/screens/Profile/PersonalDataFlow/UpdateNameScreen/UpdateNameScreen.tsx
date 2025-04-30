@@ -71,19 +71,25 @@ function UpdateNameScreen({ onGoBack, goToTop }: ScreenComponentProps) {
                         >
                             <View style={styles.inputsWrapper}>
                                 <TextInputCustomV2
+                                    {...methods.register('first_name')}
                                     label='first name'
                                     name='first_name'
                                     type='default'
                                     placeholder='first name'
                                     returnKeyType='next'
+                                    onSubmitEditing={() => {
+                                        methods.setFocus('last_name')
+                                    }}
                                 />
                                 <TextInputCustomV2
+                                    {...methods.register('last_name')}
                                     label='last name'
                                     name='last_name'
                                     type='default'
                                     placeholder='last name'
                                     noBorderBottom
                                     returnKeyType='done'
+                                    onSubmitEditing={onSubmit}
                                 />
                             </View>
                         </ScrollView>

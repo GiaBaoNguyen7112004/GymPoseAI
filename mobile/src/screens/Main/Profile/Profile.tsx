@@ -1,32 +1,27 @@
-import { useContext, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View, ActivityIndicator, Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useMutation } from '@tanstack/react-query'
 
 import NavigationBar from '@/components/NavigationBar'
 import Switch from '@/components/Switch'
 import AnimatedBottomSheetLayout, { AnimatedBottomSheetLayoutRef } from '@/components/layouts/AnimatedBottomSheetLayout'
 
 import { MainTabScreenProps } from '@/navigation/types'
-import { AppContext } from '@/Contexts/App.context'
-import { authApi } from '@/services/rest'
-import { showErrorAlert } from '@/utils/alert.util'
-
 import UserInfo from './Components/UserInfo'
 import SettingItem from './Components/SettingItem'
 import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
 import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity/PasswordAndSecurity'
 
 import useScrollListener from '@/hooks/useScrollListener'
+import ModalLogout from './Components/ModalLogout/ModalLogout'
+import LoaderModal from '@/components/LoaderModal'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
-    const { setAuthenticated } = useContext(AppContext)
     const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
-
-    const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
+    const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false)
 
     const { isScrolled, handleScroll } = useScrollListener()
 
@@ -34,32 +29,16 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
         setIsNotificationEnabled(value)
     }
 
+    const openBottomSheet = (Content: React.ReactNode) => {
+        bottomSheetRef.current?.open(<>{Content}</>)
+    }
+
     const openEditProfile = () => {
-        bottomSheetRef.current?.open(<PersonalDataFlow onClose={() => bottomSheetRef.current?.close()} />)
+        openBottomSheet(<PersonalDataFlow onClose={() => bottomSheetRef.current?.close()} />)
     }
+
     const openPasswordAndSecurity = () => {
-        bottomSheetRef.current?.open(<PasswordAndSecurity onClose={() => bottomSheetRef.current?.close()} />)
-    }
-
-    const handleLogout = async () => {
-        if (isLoggingOut) return
-        setIsLoggingOut(true)
-
-        try {
-            await logout(undefined, {
-                onSuccess: () => {
-                    setAuthenticated(false)
-                    setIsLoggingOut(false)
-                },
-                onError: () => {
-                    showErrorAlert('default')
-                    setIsLoggingOut(false)
-                }
-            })
-        } catch (error) {
-            showErrorAlert('default')
-            setIsLoggingOut(false)
-        }
+        openBottomSheet(<PasswordAndSecurity onClose={() => bottomSheetRef.current?.close()} />)
     }
 
     return (
@@ -118,7 +97,11 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                             />
                         </View>
 
-                        <Pressable style={styles.logoutBtn} onPress={handleLogout} disabled={isLoggingOut}>
+                        <Pressable
+                            style={styles.logoutBtn}
+                            onPress={() => setIsLogoutModalVisible(true)}
+                            disabled={isLoggingOut}
+                        >
                             {isLoggingOut ? (
                                 <ActivityIndicator size='small' color='#555' />
                             ) : (
@@ -127,6 +110,13 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                         </Pressable>
                     </View>
                 </ScrollView>
+                <ModalLogout
+                    isLoggingOut={isLoggingOut}
+                    isLogoutModalVisible={isLogoutModalVisible}
+                    setIsLoggingOut={setIsLoggingOut}
+                    toggleModal={setIsLogoutModalVisible}
+                />
+                {isLoggingOut && <LoaderModal title='logging out' />}
             </View>
         </AnimatedBottomSheetLayout>
     )

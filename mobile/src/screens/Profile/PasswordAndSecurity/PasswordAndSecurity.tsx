@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -14,6 +14,7 @@ import useUserData from '@/hooks/useUserData'
 import TextInputCustom from '@/components/TextInput'
 import handleFormError from '@/utils/handleFormError'
 import React, { useCallback, memo } from 'react'
+import KeyboardDismissWrapper from '@/components/KeyboardDismissWrapper'
 
 type FormData = Pick<SchemaType, 'password' | 'old_password' | 'confirm_password'>
 const formSchema = schema.pick(['password', 'old_password', 'confirm_password'])
@@ -32,7 +33,6 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
             old_password: '',
             password: ''
         },
-        mode: 'onBlur',
         resolver: yupResolver(formSchema)
     })
 
@@ -55,7 +55,7 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
     )
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+        <KeyboardDismissWrapper>
             <View style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={onClose} style={styles.headerCloseButton}>
@@ -77,28 +77,45 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
                 <FormProvider {...methods}>
                     <View style={styles.formContainer}>
                         <View style={styles.formInputs}>
-                            <ScrollView keyboardShouldPersistTaps='handled' scrollEnabled={isKeyboardVisible}>
+                            <ScrollView
+                                keyboardShouldPersistTaps='handled'
+                                scrollEnabled={isKeyboardVisible}
+                                style={styles.scrollFormView}
+                                scrollEventThrottle={16}
+                                showsVerticalScrollIndicator
+                                nestedScrollEnabled
+                            >
                                 <View style={styles.inputsWrapper}>
                                     <TextInputCustom
+                                        {...methods.register('old_password')}
                                         name='old_password'
                                         type='password'
                                         placeholder='Old password'
                                         returnKeyType='next'
                                         containerStyle={styles.input}
+                                        onSubmitEditing={() => {
+                                            methods.setFocus('password')
+                                        }}
                                     />
                                     <TextInputCustom
+                                        {...methods.register('password')}
                                         name='password'
                                         type='password'
                                         placeholder='New password'
                                         returnKeyType='next'
                                         containerStyle={styles.input}
+                                        onSubmitEditing={() => {
+                                            methods.setFocus('confirm_password')
+                                        }}
                                     />
                                     <TextInputCustom
+                                        {...methods.register('confirm_password')}
                                         name='confirm_password'
                                         type='password'
                                         placeholder='Confirm password'
                                         returnKeyType='done'
                                         containerStyle={styles.input}
+                                        onSubmitEditing={onSubmit}
                                     />
                                 </View>
                             </ScrollView>
@@ -118,7 +135,7 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
                     </View>
                 </FormProvider>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardDismissWrapper>
     )
 }
 
@@ -165,6 +182,7 @@ const styles = StyleSheet.create({
     formInputs: {
         flex: 1
     },
+    scrollFormView: {},
     inputsWrapper: {
         marginTop: 16,
         marginHorizontal: 20,

@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, useImperativeHandle, forwardRef, ReactNode } from 'react'
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native'
 import Animated, { useAnimatedStyle, interpolateColor, useSharedValue, withTiming } from 'react-native-reanimated'
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -82,8 +82,6 @@ const AnimatedBottomSheetLayout = forwardRef<AnimatedBottomSheetLayoutRef, Props
 
     return (
         <Animated.View style={[styles.container, containerStyle]}>
-            <Animated.View style={[styles.contentWrapper, contentStyle]}>{children}</Animated.View>
-
             <BottomSheetModal
                 ref={bottomSheetRef}
                 snapPoints={['96%']}
@@ -95,6 +93,7 @@ const AnimatedBottomSheetLayout = forwardRef<AnimatedBottomSheetLayoutRef, Props
                 handleStyle={styles.sheetHandle}
                 animatedIndex={animatedIndex}
                 enablePanDownToClose={false}
+                enableContentPanningGesture={Platform.OS === 'ios' ? true : false}
             >
                 <Animated.View style={[styles.sheetContent, { paddingBottom: bottom }]}>
                     {isLoading ? (
@@ -106,6 +105,7 @@ const AnimatedBottomSheetLayout = forwardRef<AnimatedBottomSheetLayoutRef, Props
                     )}
                 </Animated.View>
             </BottomSheetModal>
+            <Animated.View style={[styles.contentWrapper, contentStyle]}>{children}</Animated.View>
         </Animated.View>
     )
 })

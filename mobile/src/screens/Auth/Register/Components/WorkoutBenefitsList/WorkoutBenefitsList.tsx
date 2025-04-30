@@ -1,4 +1,5 @@
 import Icon from '@/components/Icon'
+import { DATA_GOAL } from '@/constants/common.constants'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { IconName } from '@/constants/icon.constants'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -9,38 +10,17 @@ const ITEM_WIDTH = SCREEN_WIDTH * 0.7
 const ITEM_HEIGHT = 478
 const SPACING = 0
 
-const DATA = [
-    {
-        id: '1',
-        title: 'Improve Shape',
-        desc: 'I have a low amount of body fat and need / want to build more muscle',
-        nameIcon: 'AbWorkout'
-    },
-    {
-        id: '2',
-        title: 'Lean & Tone',
-        desc: 'I’m “skinny fat”. look thin but have no shape. I want to add learn muscle in the right way',
-        nameIcon: 'loweBodyWorkout'
-    },
-    {
-        id: '3',
-        title: 'Lose a Fat',
-        desc: 'I have over 20 lbs to lose. I want to drop all this fat and gain muscle mass',
-        nameIcon: 'FullBodyWorkout'
-    }
-]
-
 export default function WorkoutGoalCarousel() {
     const scrollX = useRef(new Animated.Value(0)).current
 
     return (
         <View style={styles.container}>
             <Animated.FlatList
-                data={DATA}
+                scrollEnabled={true}
+                data={DATA_GOAL}
                 horizontal
                 keyExtractor={(item) => item.id}
                 showsHorizontalScrollIndicator={false}
-                pagingEnabled
                 snapToInterval={ITEM_WIDTH}
                 decelerationRate='fast'
                 scrollEventThrottle={16}

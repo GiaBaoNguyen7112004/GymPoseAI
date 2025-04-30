@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, memo, useEffect, useRef, useState } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
 import {
     KeyboardTypeOptions,
@@ -20,87 +20,86 @@ export interface ControllerInputProps extends Omit<TextInputProps, 'defaultValue
     noBorderBottom?: boolean
 }
 
-function ControlledInput({
-    type = 'default',
-    name,
-    rules,
-    defaultValue,
-    label,
-    noBorderBottom = false,
-    ...rest
-}: ControllerInputProps) {
-    const { field } = useController({ name, rules, defaultValue })
-    const isPassword = type === 'password'
+const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
+    ({ type = 'default', name, rules, defaultValue, label, noBorderBottom = false, ...rest }, ref) => {
+        const { field } = useController({ name, rules, defaultValue })
+        const isPassword = type === 'password'
 
-    const [isPasswordHidden, setPasswordHidden] = useState(true)
-    const [isFocused, setIsFocused] = useState(false)
-    const inputRef = useRef<TextInput>(null)
+        const [isPasswordHidden, setPasswordHidden] = useState(true)
+        const [isFocused, setIsFocused] = useState(false)
 
-    const animatedValue = useSharedValue(field.value ? 1 : 0)
+        const animatedValue = useSharedValue(field.value ? 1 : 0)
 
-    useEffect(() => {
-        animatedValue.value = withTiming(isFocused || !!field.value ? 1 : 0, { duration: 200 })
-    }, [isFocused, field.value])
+        useEffect(() => {
+            animatedValue.value = withTiming(isFocused || !!field.value ? 1 : 0, { duration: 200 })
+        }, [isFocused, field.value])
 
-    const labelStyle = useAnimatedStyle(() => ({
-        position: 'absolute',
-        left: 15,
-        top: interpolate(animatedValue.value, [0, 1], [16, 0]),
-        fontSize: interpolate(animatedValue.value, [0, 1], [17, 14]),
-        color: '#80848D',
-        backgroundColor: 'transparent',
-        zIndex: 1
-    }))
+        const labelStyle = useAnimatedStyle(() => ({
+            position: 'absolute',
+            left: 15,
+            top: interpolate(animatedValue.value, [0, 1], [16, 0]),
+            fontSize: interpolate(animatedValue.value, [0, 1], [17, 14]),
+            color: '#80848D',
+            backgroundColor: 'transparent',
+            zIndex: 1
+        }))
 
-    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-        setIsFocused(true)
-        rest.onFocus?.(e)
-    }
+        const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+            setIsFocused(true)
+            rest.onFocus?.(e)
+        }
 
-    const handleBlur = () => {
-        setIsFocused(false)
-        field.onBlur()
-    }
+        const handleBlur = () => {
+            setIsFocused(false)
+            field.onBlur()
+        }
 
-    return (
-        <View style={styles.container}>
-            <View
-                style={[
-                    styles.inputWrapper,
-                    noBorderBottom && { borderBottomColor: '#F7F8F8' },
-                    isFocused && !noBorderBottom && styles.inputWrapperFocused
-                ]}
-            >
-                <TouchableWithoutFeedback onPress={() => inputRef.current?.focus()}>
-                    <Animated.Text style={[styles.label, labelStyle]}>{label}</Animated.Text>
-                </TouchableWithoutFeedback>
+        const focusInput = () => {
+            if (ref) {
+                ;(ref as React.MutableRefObject<TextInput | null>).current?.focus
+            }
+        }
 
-                <TextInput
-                    ref={inputRef}
-                    secureTextEntry={isPassword && isPasswordHidden}
-                    style={styles.input}
-                    placeholderTextColor='transparent'
-                    keyboardType={isPassword ? 'default' : type}
-                    onChangeText={field.onChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    value={field.value?.toString() ?? ''}
-                    {...rest}
-                />
+        return (
+            <View style={styles.container}>
+                <View
+                    style={[
+                        styles.inputWrapper,
+                        noBorderBottom && { borderBottomColor: '#F7F8F8' },
+                        isFocused && !noBorderBottom && styles.inputWrapperFocused
+                    ]}
+                >
+                    <TouchableWithoutFeedback onPress={focusInput}>
+                        <Animated.Text style={[styles.label, labelStyle]}>{label}</Animated.Text>
+                    </TouchableWithoutFeedback>
 
-                {isPassword && (
-                    <TouchableOpacity style={styles.iconWrapper} onPress={() => setPasswordHidden((prev) => !prev)}>
-                        <MaterialCommunityIcons
-                            name={isPasswordHidden ? 'eye-off-outline' : 'eye-outline'}
-                            size={20}
-                            color={isPasswordHidden ? '#333' : '#318bfb'}
-                        />
-                    </TouchableOpacity>
-                )}
+                    <TextInput
+                        ref={ref}
+                        secureTextEntry={isPassword && isPasswordHidden}
+                        style={styles.input}
+                        placeholderTextColor='transparent'
+                        keyboardType={isPassword ? 'default' : type}
+                        onChangeText={field.onChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        value={field.value?.toString() ?? ''}
+                        {...rest}
+                    />
+
+                    {isPassword && (
+                        <TouchableOpacity style={styles.iconWrapper} onPress={() => setPasswordHidden((prev) => !prev)}>
+                            <MaterialCommunityIcons
+                                name={isPasswordHidden ? 'eye-off-outline' : 'eye-outline'}
+                                size={20}
+                                color={isPasswordHidden ? '#333' : '#318bfb'}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
             </View>
-        </View>
-    )
-}
+        )
+    }
+)
 
 export default ControlledInput
 

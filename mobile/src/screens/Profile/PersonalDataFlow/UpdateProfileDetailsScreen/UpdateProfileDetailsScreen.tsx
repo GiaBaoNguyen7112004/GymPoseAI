@@ -56,7 +56,6 @@ function UpdateProfileDetailScreen({ onGoBack, goToTop }: ScreenComponentProps) 
             onError: (errors) => handleFormError<FormData>(errors, methods.setError)
         })
     })
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>

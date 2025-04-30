@@ -1,46 +1,37 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GradientButton from '@/components/GradientButton'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { RootStackScreenProps } from '@/navigation/types'
 import { WorkoutBenefitsList } from '../Components/WorkoutBenefitsList'
+import { useNavigation } from '@react-navigation/native'
+import useNavigationState from '@/hooks/useNavigationState'
 
 export default function ConfirmYourGoal({ navigation }: RootStackScreenProps<'ConfirmYourGoal'>) {
-    const handleConfirm = () => {
+    const { isNavigating } = useNavigationState(navigation)
+    const handleConfirm = useCallback(() => {
         navigation.replace('MainTab', {
             screen: 'Home'
         })
-    }
-
-    const renderHeader = () => (
-        <View style={styles.header}>
-            <Text style={styles.title}>What is your goal?</Text>
-            <Text style={styles.subtitle}>It will help us to choose the best program for you</Text>
-        </View>
-    )
-
-    const renderContent = () => (
-        <View style={styles.content}>
-            <WorkoutBenefitsList />
-        </View>
-    )
-
-    const renderFooter = () => (
-        <View style={styles.footer}>
-            <GradientButton style={styles.button} onPress={handleConfirm} Square>
-                <Text style={styles.buttonText}>Confirm</Text>
-            </GradientButton>
-        </View>
-    )
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topSection}>
-                {renderHeader()}
-                {renderContent()}
+                <View style={styles.header}>
+                    <Text style={styles.title}>What is your goal?</Text>
+                    <Text style={styles.subtitle}>It will help us to choose the best program for you</Text>
+                </View>
+                <View style={styles.content}>
+                    <WorkoutBenefitsList />
+                </View>
             </View>
-            {renderFooter()}
+            <View style={styles.footer}>
+                <GradientButton style={styles.button} onPress={handleConfirm} Square isLoading={isNavigating}>
+                    <Text style={styles.buttonText}>Confirm</Text>
+                </GradientButton>
+            </View>
         </SafeAreaView>
     )
 }
