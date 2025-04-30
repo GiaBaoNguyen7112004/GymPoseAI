@@ -1,4 +1,8 @@
-import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+    BottomTabBarButtonProps,
+    BottomTabNavigationOptions,
+    createBottomTabNavigator
+} from '@react-navigation/bottom-tabs'
 import { StyleSheet, Pressable, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import TabBarComponent from '@/components/BottomTabBar'
@@ -10,12 +14,10 @@ import { MainTabParamList } from './types'
 import { IconName } from '@/constants/icon.constants'
 import Profile from '@/screens/Main/Profile'
 import BlueToothScan from '@/screens/Main/BlueToothScan'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
 const MainTabs = () => {
-    const { bottom } = useSafeAreaInsets()
     return (
         <Tab.Navigator
             initialRouteName='Home'
@@ -84,7 +86,8 @@ const defaultTabOptions: BottomTabNavigationOptions = {
         backgroundColor: 'white',
         paddingTop: 18,
         paddingBottom: 18
-    }
+    },
+    lazy: false
 }
 
 const renderTabIcon = (iconName: IconName, iconActive: IconName, iconSize = 23) => {
@@ -98,12 +101,14 @@ const renderTabIcon = (iconName: IconName, iconActive: IconName, iconSize = 23) 
     }
 }
 
-const renderTabButton = ({ onPress, style, ...rest }: any) => (
-    <Pressable onPress={onPress} style={styles.tabButton}>
-        <View style={style} {...rest} />
-    </Pressable>
-)
-
+const renderTabButton = (props: BottomTabBarButtonProps) => {
+    const { onPress, children } = props
+    return (
+        <Pressable onPress={onPress} style={styles.tabButton}>
+            {children}
+        </Pressable>
+    )
+}
 const styles = StyleSheet.create({
     activeIconContainer: {
         position: 'relative',

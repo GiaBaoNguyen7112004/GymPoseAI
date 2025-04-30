@@ -58,13 +58,24 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel }: Fo
 
                 <View style={styles.inputWrapper}>
                     <TextInputCustom
+                        {...methods.register('water')}
                         name='water'
                         icon='glassOfWater'
                         type='numeric'
                         placeholder='Water (l)'
                         autoFocus
+                        returnKeyType='next'
+                        onSubmitEditing={() => methods.setFocus('calories')}
                     />
-                    <TextInputCustom name='calories' icon='boots' type='numeric' placeholder='Calories (cal)' />
+                    <TextInputCustom
+                        {...methods.register('calories')}
+                        name='calories'
+                        icon='boots'
+                        type='numeric'
+                        placeholder='Calories (cal)'
+                        returnKeyType='done'
+                        onSubmitEditing={onUpdateForm}
+                    />
                 </View>
 
                 <View style={styles.buttonRow}>

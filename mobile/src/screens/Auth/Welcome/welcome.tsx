@@ -17,11 +17,11 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
 
     const navigateToNextScreen = (isProfileComplete: boolean) => {
         if (isProfileComplete) {
-            navigation.navigate('MainTab', {
+            navigation.replace('MainTab', {
                 screen: 'Home'
             })
         } else {
-            navigation.navigate('CompleteProfile')
+            navigation.replace('CompleteProfile')
         }
     }
 

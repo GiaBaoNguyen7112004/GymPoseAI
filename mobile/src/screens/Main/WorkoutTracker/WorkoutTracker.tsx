@@ -73,23 +73,6 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
             style={styles.content}
         >
             <SafeAreaView style={styles.container}>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.header}>
-                        <NavigationBar
-                            title={'Workout Tracker'}
-                            callback={goBackScreen}
-                            headingStyle={styles.headerTitle}
-                        />
-                    </View>
-                    <View style={styles.graphContainer}>
-                        <WorkoutChart
-                            viewMode={'weekly'}
-                            workoutData={workoutHistoryData}
-                            chartConfig={chartConfig}
-                            lineChartColor={lineChartColor}
-                        />
-                    </View>
-                </View>
                 <BottomSheet
                     ref={bottomSheetRef}
                     index={0}
@@ -118,6 +101,23 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
                         </View>
                     </BottomSheetView>
                 </BottomSheet>
+                <View style={{ flex: 1 }}>
+                    <View style={styles.header}>
+                        <NavigationBar
+                            title={'Workout Tracker'}
+                            callback={goBackScreen}
+                            headingStyle={styles.headerTitle}
+                        />
+                    </View>
+                    <View style={styles.graphContainer}>
+                        <WorkoutChart
+                            viewMode={'weekly'}
+                            workoutData={workoutHistoryData}
+                            chartConfig={chartConfig}
+                            lineChartColor={lineChartColor}
+                        />
+                    </View>
+                </View>
             </SafeAreaView>
         </LinearGradient>
     )

@@ -116,36 +116,32 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
 
     return (
         <View style={styles.wrapperScreen}>
+            {isLoading && <LoaderModal title='Loading' />}
             <SafeAreaView style={styles.navBar}>
                 <NavigationBar title='Notifications' callback={navigation.goBack} />
             </SafeAreaView>
 
             <View style={styles.content}>
-                {isLoading ? (
-                    <LoaderModal title='Loading' />
-                ) : (
-                    <FlatList
-                        data={notifications}
-                        renderItem={renderNotificationItem}
-                        keyExtractor={(item) => item.id.toString()}
-                        contentContainerStyle={styles.notificationContainer}
-                        ListEmptyComponent={renderEmptyComponent}
-                        ListFooterComponent={renderFooter}
-                        onEndReached={handleEndReached}
-                        onEndReachedThreshold={0.3}
-                        showsVerticalScrollIndicator={false}
-                        refreshControl={
-                            <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} />
-                        }
-                    />
-                )}
+                <BottomSheetMoreInfo
+                    ref={bottomSheetRef}
+                    onDeleteNotification={handleDeleteNotification}
+                    notificationData={selectedNotification}
+                />
+                <FlatList
+                    data={notifications}
+                    renderItem={renderNotificationItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={styles.notificationContainer}
+                    ListEmptyComponent={renderEmptyComponent}
+                    ListFooterComponent={renderFooter}
+                    onEndReached={handleEndReached}
+                    onEndReachedThreshold={0.3}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} />
+                    }
+                />
             </View>
-
-            <BottomSheetMoreInfo
-                ref={bottomSheetRef}
-                onDeleteNotification={handleDeleteNotification}
-                notificationData={selectedNotification}
-            />
         </View>
     )
 }

@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     },
     trainingSection: {
         flex: 1,
-        marginTop: 25
+        marginTop: 10
     },
     trainingSectionHeader: {
         marginBottom: 20,
