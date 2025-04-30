@@ -86,7 +86,9 @@ const styles = StyleSheet.create({
         position: 'relative'
     },
     input: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#F7F8F8',
+        color: '#1D1617'
     },
     icon: {
         marginRight: 10

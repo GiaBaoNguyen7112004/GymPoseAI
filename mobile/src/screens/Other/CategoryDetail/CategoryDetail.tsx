@@ -66,7 +66,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
     const exerciseListRef = useRef<BottomSheetFlatListMethods | null>(null)
     useEffect(() => {
         if (exercise_id && workoutList.length > 0) {
-            const index = workoutList.findIndex((c) => c.id == exercise_id)
+            const index: number = workoutList.findIndex((c: Exercise) => c.id == exercise_id)
             if (index !== -1 && exerciseListRef.current) {
                 exerciseListRef.current.scrollToIndex({ index, animated: true })
             }

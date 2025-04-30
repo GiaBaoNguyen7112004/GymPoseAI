@@ -1,3 +1,4 @@
+import CustomModal from '@/components/CustomModal'
 import GradientButton from '@/components/GradientButton'
 import TextInputCustom from '@/components/TextInput'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
@@ -13,13 +14,14 @@ import { Text, TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import Toast from 'react-native-toast-message'
 
 interface FormUpdateTodayTargetProps {
+    visible: boolean
     waterVal: number
     caloriesVal: number
     onUpdate: () => void
     onCancel: () => void
 }
 
-function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel }: FormUpdateTodayTargetProps) {
+function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel, visible }: FormUpdateTodayTargetProps) {
     const methods = useForm<TargetSchemaType>({
         defaultValues: {
             calories: caloriesVal,
@@ -47,53 +49,55 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel }: Fo
     })
 
     return (
-        <View style={styles.wrapper}>
-            <FormProvider {...methods}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Update Today Target</Text>
-                    <TouchableOpacity style={styles.closeBtn} onPress={onCancel}>
-                        <Ionicons name='close-sharp' size={16} color='#ADA4A5' />
-                    </TouchableOpacity>
-                </View>
+        <CustomModal visible={visible}>
+            <View style={styles.wrapper}>
+                <FormProvider {...methods}>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>Update Today Target</Text>
+                        <TouchableOpacity style={styles.closeBtn} onPress={onCancel}>
+                            <Ionicons name='close-sharp' size={16} color='#ADA4A5' />
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={styles.inputWrapper}>
-                    <TextInputCustom
-                        {...methods.register('water')}
-                        name='water'
-                        icon='glassOfWater'
-                        type='numeric'
-                        placeholder='Water (l)'
-                        autoFocus
-                        returnKeyType='next'
-                        onSubmitEditing={() => methods.setFocus('calories')}
-                    />
-                    <TextInputCustom
-                        {...methods.register('calories')}
-                        name='calories'
-                        icon='boots'
-                        type='numeric'
-                        placeholder='Calories (cal)'
-                        returnKeyType='done'
-                        onSubmitEditing={onUpdateForm}
-                    />
-                </View>
+                    <View style={styles.inputWrapper}>
+                        <TextInputCustom
+                            {...methods.register('water')}
+                            name='water'
+                            icon='glassOfWater'
+                            type='numeric'
+                            placeholder='Water (l)'
+                            autoFocus
+                            returnKeyType='next'
+                            onSubmitEditing={() => methods.setFocus('calories')}
+                        />
+                        <TextInputCustom
+                            {...methods.register('calories')}
+                            name='calories'
+                            icon='boots'
+                            type='numeric'
+                            placeholder='Calories (cal)'
+                            returnKeyType='done'
+                            onSubmitEditing={onUpdateForm}
+                        />
+                    </View>
 
-                <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
-                        <Text style={styles.cancelText}>Cancel</Text>
-                    </TouchableOpacity>
-                    <GradientButton
-                        Square
-                        style={styles.submitBtn}
-                        containerStyle={{ paddingVertical: 10, paddingHorizontal: 20 }}
-                        onPress={onUpdateForm}
-                        disabled={!methods.formState.isValid}
-                    >
-                        <Text style={styles.updateText}>Update</Text>
-                    </GradientButton>
-                </View>
-            </FormProvider>
-        </View>
+                    <View style={styles.buttonRow}>
+                        <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
+                            <Text style={styles.cancelText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <GradientButton
+                            Square
+                            style={styles.submitBtn}
+                            containerStyle={{ paddingVertical: 10, paddingHorizontal: 20 }}
+                            onPress={onUpdateForm}
+                            disabled={!methods.formState.isValid}
+                        >
+                            <Text style={styles.updateText}>Update</Text>
+                        </GradientButton>
+                    </View>
+                </FormProvider>
+            </View>
+        </CustomModal>
     )
 }
 

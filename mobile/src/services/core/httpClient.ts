@@ -5,6 +5,8 @@ import storage from '@/utils/StorageManager.util'
 import { AuthResponse } from '@/types/auth.type'
 import { refreshToken } from './refreshToken'
 
+console.log('API URL:', process.env.EXPO_PUBLIC_API_URL)
+
 class Http {
     instance: AxiosInstance
     private accessToken: string | null

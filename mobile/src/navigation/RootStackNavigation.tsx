@@ -33,8 +33,7 @@ function RootStackNavigation() {
 
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
-        gestureEnabled: true,
-        ...TransitionPresets.SlideFromRightIOS
+        gestureEnabled: true
     }
 
     return (

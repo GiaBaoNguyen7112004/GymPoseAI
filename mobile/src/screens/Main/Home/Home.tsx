@@ -1,86 +1,43 @@
 import GradientButton from '@/components/GradientButton'
 import MyIcon from '@/components/Icon'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, InteractionManager } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useCallback, useContext } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
-import TrainingSessionCard from '@/components/TrainingSessionCard'
-import WorkoutCardSkeleton from '@/components/TrainingSessionCardSkeleton'
 import WaterIntake from './components/WaterIntake/WaterIntake'
 import BMIStats from './components/BMI'
-import WorkoutProgressChart from './components/WorkoutProgress'
+// import WorkoutProgressChart from './components/WorkoutProgress'
 import CaloriesStats from './components/CaloriesStats'
-import { workoutHistoryApi } from '@/services/rest'
 import { AppContext } from '@/Contexts/App.context'
 import { MainTabScreenProps } from '@/navigation/types'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
+import WorkoutHistory from './components/WorkoutHistory'
 
-function Home({ navigation }: MainTabScreenProps<'Home'>) {
+function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
     const { profile } = useContext(AppContext)
 
-    const { data: workoutHistoryResp, isLoading: isLoadingWorkout } = useQuery({
-        queryKey: ['workout-history'],
-        queryFn: () =>
-            workoutHistoryApi.getWorkoutHistory({
-                params: { page: 1, limit: 3, sort_by: 'createAt', viewMode: 'daily' },
-                user_id: profile?.id || ''
-            }),
-        staleTime: 1000 * 60 * 5
-    })
+    const [isReady, setIsReady] = useState(false)
 
-    const workoutHistoryData = workoutHistoryResp?.data.data
+    useEffect(() => {
+        const task = InteractionManager.runAfterInteractions(() => {
+            setIsReady(true)
+        })
 
-    // Handlers
+        return () => task.cancel()
+    }, [])
+
     const handleNotificationClick = useCallback(() => {
         navigation.navigate('Notification')
     }, [navigation])
-
-    const handleSeeMoreWorkoutHistory = useCallback(() => {
-        navigation.navigate('WorkoutHistoryCenter')
-    }, [navigation])
-
-    const handleWorkoutCardClick = useCallback(
-        (workoutId: string) => {
-            navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
-        },
-        [navigation]
-    )
 
     const handleCheckTodayTarget = useCallback(() => {
         navigation.navigate('ActivityTracker')
     }, [navigation])
 
-    // Render Workout History
-    const renderWorkoutHistory = () => {
-        if (isLoadingWorkout) {
-            return (
-                <View style={styles.workoutsSkeleton}>
-                    <WorkoutCardSkeleton />
-                    <WorkoutCardSkeleton />
-                    <WorkoutCardSkeleton />
-                </View>
-            )
-        }
-
-        return (
-            <FlatList
-                data={workoutHistoryData}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TrainingSessionCard
-                        item={item}
-                        style={styles.workoutItem}
-                        onPress={() => handleWorkoutCardClick(item.id)}
-                    />
-                )}
-                ListEmptyComponent={<Text style={styles.noWorkoutText}>You haven't completed any workouts today.</Text>}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 20 }}
-                scrollEnabled={false}
-            />
-        )
+    if (!isReady) {
+        return <BlankScreenLoader />
     }
 
     return (
@@ -135,20 +92,10 @@ function Home({ navigation }: MainTabScreenProps<'Home'>) {
                 </View>
 
                 {/* Workout Progress */}
-                <View style={styles.workoutProgressWrapper}>
-                    <WorkoutProgressChart user_id={profile?.id || ''} />
-                </View>
+                <View style={styles.workoutProgressWrapper}>{/* <WorkoutProgressChart /> */}</View>
 
                 {/* Workout History */}
-                <View style={styles.workoutHistoryWrapper}>
-                    <View style={styles.workoutProgressHeader}>
-                        <Text style={styles.title}>Latest Workout</Text>
-                        <TouchableOpacity onPress={handleSeeMoreWorkoutHistory}>
-                            <Text style={styles.subtitle_gray}>See more</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.workoutList}>{renderWorkoutHistory()}</View>
-                </View>
+                <WorkoutHistory navigation={navigation} route={route} />
             </SafeAreaView>
         </ScrollView>
     )

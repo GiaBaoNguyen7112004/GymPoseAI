@@ -28,7 +28,6 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
     const navigateBasedOnProfileCompletion = () => {
         navigateToNextScreen(isProfileComplete)
     }
-
     return (
         <SafeAreaView style={styles.flex}>
             <View style={styles.container}>

@@ -7,24 +7,22 @@ import { ViewModeDropdown } from '@/constants/dropdown.constant'
 import { workoutHistoryApi } from '@/services/rest'
 import { ViewModeType } from '@/types/utils.type'
 import useDebounce from '@/hooks/useDebounce'
+import useUserData from '@/hooks/useUserData'
 
-interface WorkoutProgressProps {
-    user_id: string
-}
-
-function WorkoutProgressChart({ user_id }: WorkoutProgressProps) {
+function WorkoutProgressChart() {
+    const { userData } = useUserData()
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
     const debouncedViewMode = useDebounce(viewMode, 1000)
 
     const { data } = useQuery({
-        queryKey: ['workoutHistory', debouncedViewMode, user_id],
+        queryKey: ['workoutHistory', debouncedViewMode, userData?.id],
         queryFn: () =>
             workoutHistoryApi.getWorkoutHistoryByViewMode({
-                id: user_id,
+                id: userData?.id as string,
                 viewMode: debouncedViewMode
             }),
         staleTime: 1000 * 60 * 5,
-        enabled: !!user_id
+        enabled: !!userData?.id
     })
 
     const workoutHistoryData = data?.data.data || []
@@ -56,14 +54,14 @@ function WorkoutProgressChart({ user_id }: WorkoutProgressProps) {
 
 const styles = StyleSheet.create({
     container: {
+        marginTop: 15,
         width: '100%'
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 16,
-        paddingHorizontal: 8
+        marginBottom: 16
     },
     title: {
         fontSize: 16,

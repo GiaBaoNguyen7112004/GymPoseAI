@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TodayTarget from './Components/TodayTarget'
@@ -6,7 +6,6 @@ import ActivityProgress from './Components/ActivityProgress'
 import LatestActivity from './Components/LatestActivity'
 import { RootStackScreenProps } from '@/navigation/types'
 import { useState } from 'react'
-import CustomModal from '@/components/CustomModal'
 import FormUpdateTodayTarget from './Components/FormUpdateTodayTarget'
 import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
@@ -25,6 +24,13 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
 
     return (
         <View style={styles.container}>
+            <FormUpdateTodayTarget
+                visible={modalUpdateTargetVisible}
+                caloriesVal={todayTargetData?.calories || 0}
+                waterVal={todayTargetData?.water || 0}
+                onCancel={toggleModalUpdateTarget}
+                onUpdate={toggleModalUpdateTarget}
+            />
             <SafeAreaView style={[styles.header, isScrolled && styles.headerWithBorder]}>
                 <NavigationBar title='Activity Tracker' callback={navigation.goBack} />
             </SafeAreaView>
@@ -52,15 +58,6 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                     <LatestActivity />
                 </View>
             </ScrollView>
-
-            <CustomModal visible={modalUpdateTargetVisible}>
-                <FormUpdateTodayTarget
-                    caloriesVal={todayTargetData?.calories || 0}
-                    waterVal={todayTargetData?.water || 0}
-                    onCancel={toggleModalUpdateTarget}
-                    onUpdate={toggleModalUpdateTarget}
-                />
-            </CustomModal>
         </View>
     )
 }

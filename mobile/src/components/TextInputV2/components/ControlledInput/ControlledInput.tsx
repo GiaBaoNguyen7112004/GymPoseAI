@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 10,
         fontSize: 17,
-        color: '#1f2937'
+        color: '#1f2937',
+        backgroundColor: '#F7F8F8'
     },
     label: {
         fontSize: 14

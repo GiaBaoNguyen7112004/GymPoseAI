@@ -1,3 +1,4 @@
+import React, { useCallback, useMemo } from 'react'
 import {
     BottomTabBarButtonProps,
     BottomTabNavigationOptions,
@@ -5,7 +6,6 @@ import {
 } from '@react-navigation/bottom-tabs'
 import { StyleSheet, Pressable, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import TabBarComponent from '@/components/BottomTabBar'
 import MyIcon from '@/components/Icon'
 import Home from '@/screens/Main/Home/Home'
 import WorkoutTracker from '@/screens/Main/WorkoutTracker'
@@ -17,19 +17,57 @@ import BlueToothScan from '@/screens/Main/BlueToothScan'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
+const defaultTabOptions: BottomTabNavigationOptions = {
+    headerShown: false,
+    tabBarShowLabel: false,
+    tabBarStyle: {
+        backgroundColor: 'white',
+        height: 60
+    },
+    lazy: true
+}
+
 const MainTabs = () => {
+    const renderTabButton = useCallback((props: BottomTabBarButtonProps) => {
+        const { onPress, children } = props
+        return (
+            <Pressable onPress={onPress} style={styles.tabButton}>
+                {children}
+            </Pressable>
+        )
+    }, [])
+
+    const renderTabIcon = useCallback((iconName: IconName, iconActive: IconName, iconSize = 23) => {
+        return ({ focused }: { focused: boolean }) => (
+            <View style={styles.activeIconContainer}>
+                <MyIcon name={focused ? iconActive : iconName} size={iconSize} />
+                {focused && <MyIcon name='dotGradient' size={4} style={styles.dotIndicator} />}
+            </View>
+        )
+    }, [])
+
+    const renderSearchIcon = useMemo(() => {
+        return () => (
+            <LinearGradient
+                colors={['#92A3FD', '#9DCEFF']}
+                start={{ x: 1, y: 0.5 }}
+                end={{ x: 0, y: 0.5 }}
+                style={styles.searchButton}
+            >
+                <MyIcon name='searchIcon' size={23} />
+            </LinearGradient>
+        )
+    }, [])
+
     return (
-        <Tab.Navigator
-            initialRouteName='Home'
-            tabBar={(props) => <TabBarComponent {...props} containerStyle={{ height: 80 }} />}
-            screenOptions={defaultTabOptions}
-        >
+        <Tab.Navigator initialRouteName='Home' screenOptions={defaultTabOptions}>
             <Tab.Screen
                 name='Home'
                 component={Home}
                 options={{
                     tabBarIcon: renderTabIcon('homeIcon', 'homeIconFilled'),
-                    tabBarButton: renderTabButton
+                    tabBarButton: renderTabButton,
+                    freezeOnBlur: true
                 }}
             />
             <Tab.Screen
@@ -44,16 +82,7 @@ const MainTabs = () => {
                 name='Search'
                 component={Search}
                 options={{
-                    tabBarIcon: () => (
-                        <LinearGradient
-                            colors={['#92A3FD', '#9DCEFF']}
-                            start={{ x: 1, y: 0.5 }}
-                            end={{ x: 0, y: 0.5 }}
-                            style={styles.searchButton}
-                        >
-                            <MyIcon name='searchIcon' size={23} />
-                        </LinearGradient>
-                    ),
+                    tabBarIcon: renderSearchIcon,
                     tabBarButton: renderTabButton
                 }}
             />
@@ -79,36 +108,6 @@ const MainTabs = () => {
 
 export default MainTabs
 
-const defaultTabOptions: BottomTabNavigationOptions = {
-    headerShown: false,
-    tabBarShowLabel: false,
-    tabBarStyle: {
-        backgroundColor: 'white',
-        paddingTop: 18,
-        paddingBottom: 18
-    },
-    lazy: false
-}
-
-const renderTabIcon = (iconName: IconName, iconActive: IconName, iconSize = 23) => {
-    return ({ focused }: { focused: boolean }) => {
-        return (
-            <View style={styles.activeIconContainer}>
-                <MyIcon name={focused ? iconActive : iconName} size={iconSize} />
-                {focused && <MyIcon name='dotGradient' size={4} style={styles.dotIndicator} />}
-            </View>
-        )
-    }
-}
-
-const renderTabButton = (props: BottomTabBarButtonProps) => {
-    const { onPress, children } = props
-    return (
-        <Pressable onPress={onPress} style={styles.tabButton}>
-            {children}
-        </Pressable>
-    )
-}
 const styles = StyleSheet.create({
     activeIconContainer: {
         position: 'relative',

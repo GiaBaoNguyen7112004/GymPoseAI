@@ -2,6 +2,7 @@ import { Linking } from 'react-native'
 import { COLOR_BRANDS } from '../constants/common.constants'
 import { IconName } from '../constants/icon.constants'
 import { NotificationType } from '../types/notification.type'
+import { IntakeSlot } from '@/types/target.type'
 
 export function getYouTubeVideoId(url: string) {
     const regex =
@@ -22,4 +23,23 @@ export function getAvatarWithIconNotify(type: NotificationType) {
 
 export const openLink = (url: string) => {
     Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err))
+}
+
+export function getCurrentIntakeSlot(intakes: IntakeSlot[]): IntakeSlot | null {
+    const now = new Date()
+    const nowMinutes = now.getHours() * 60 + now.getMinutes()
+
+    for (const intake of intakes) {
+        const [startHour, startMinute] = intake.start.split(':').map(Number)
+        const [endHour, endMinute] = intake.end.split(':').map(Number)
+
+        const startMinutes = startHour * 60 + startMinute
+        const endMinutes = endHour * 60 + endMinute
+
+        if (nowMinutes >= startMinutes && nowMinutes < endMinutes) {
+            return intake
+        }
+    }
+
+    return null
 }
