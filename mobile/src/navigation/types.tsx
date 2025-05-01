@@ -8,7 +8,7 @@ import type { CompositeScreenProps } from '@react-navigation/native'
 export type RootStackParamList = {
     // Authentication screens
     Login: undefined
-    CreateAccount: undefined
+    Register: undefined
     CompleteProfile: undefined
     ConfirmYourGoal: undefined
     ForgotPassword: undefined

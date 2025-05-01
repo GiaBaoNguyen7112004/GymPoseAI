@@ -15,7 +15,6 @@ import VerificationScreen from './Screens/VerificationScreen'
 import NewPasswordScreen from './Screens/NewPasswordScreen'
 
 import { RootStackScreenProps } from '@/navigation/types'
-import { useStatusBarHeight } from '@/constants/devices.constant'
 
 export interface ForgotPasswordPayload {
     email: string
@@ -47,7 +46,7 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
         })
     }
     const handleRegister = () => {
-        navigation.navigate('CreateAccount')
+        navigation.navigate('Register')
     }
     const getScreenName = () => {
         if (screenStep == 1) return 'Forgot Password'

@@ -1,5 +1,5 @@
 import { Pressable, Text, StyleSheet, View } from 'react-native'
-import { memo, useState } from 'react'
+import { memo, useCallback } from 'react'
 import MyIcon from '@/components/Icon'
 import { IconName } from '@/constants/icon.constants'
 
@@ -11,18 +11,17 @@ interface SettingItemProps {
     rightComponent?: React.ReactNode
 }
 
-function SettingItem({ icon, label, onPress, rightIcon, rightComponent }: SettingItemProps) {
-    const [isPressed, setIsPressed] = useState(false)
+const SettingItem = ({ icon, label, onPress, rightIcon, rightComponent }: SettingItemProps) => {
+    const handlePress = useCallback(() => {
+        if (onPress) {
+            onPress()
+        }
+    }, [onPress])
 
     return (
         <Pressable
-            style={({ pressed }) => [
-                styles.menuSetting__btn,
-                { backgroundColor: pressed ? '#f1f1f1' : 'transparent' } // Thay đổi màu nền khi nhấn
-            ]}
-            onPressIn={() => setIsPressed(true)} // Khi bắt đầu nhấn
-            onPressOut={() => setIsPressed(false)} // Khi nhả ra
-            onPress={onPress}
+            style={({ pressed }) => [styles.menuSetting__btn, { backgroundColor: pressed ? '#f1f1f1' : 'transparent' }]}
+            onPress={handlePress}
             android_ripple={{ color: '#ddd' }}
         >
             <MyIcon name={icon} size={16} />
@@ -31,8 +30,6 @@ function SettingItem({ icon, label, onPress, rightIcon, rightComponent }: Settin
         </Pressable>
     )
 }
-
-export default memo(SettingItem)
 
 const styles = StyleSheet.create({
     menuSetting__btn: {
@@ -52,3 +49,5 @@ const styles = StyleSheet.create({
         marginLeft: 10
     }
 })
+
+export default memo(SettingItem)

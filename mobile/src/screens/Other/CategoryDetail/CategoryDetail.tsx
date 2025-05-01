@@ -1,32 +1,27 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef, useCallback } from 'react'
+import { SafeAreaView, StyleSheet } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
 import { LinearGradient } from 'expo-linear-gradient'
-import BottomSheet, {
-    BottomSheetBackdrop,
-    BottomSheetBackdropProps,
-    BottomSheetFlatList,
-    BottomSheetFlatListMethods,
-    BottomSheetView
-} from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetBackdrop, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet'
 
-import NavigationBar from '@/components/NavigationBar'
-import MyIcon from '@/components/Icon'
-import WorkoutCard from '@/components/WorkoutCard'
-import ExerciseCartSkeleton from '@/components/ExerciseCartSkeleton'
-import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
+import Header from '@/screens/Main/Home/components/Header/Header'
+import Thumbnail from './Components/Thumbnail'
+import CategoryInfo from './Components/CategoryInfo/CategoryInfo'
+import ExerciseList from './Components/ExerciseList/ExerciseList'
+
+import { COLOR_BRANDS } from '@/constants/common.constants'
 import { RootStackScreenProps } from '@/navigation/types'
+import { workoutApi, categoriesApi } from '@/services/rest'
 import { Exercise } from '@/types/exercises.type'
-import { categories } from '@/types/workoutHistory.type'
-import { categoriesApi, workoutApi } from '@/services/rest'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category_id, exercise_id } = route.params
+    const exerciseListRef = useRef<BottomSheetFlatListMethods>(null)
 
-    const { data, isLoading } = useQuery({
+    const { data: workoutData, isLoading } = useQuery({
         queryKey: ['workout-category', category_id],
         queryFn: () => workoutApi.getWorkoutByCategoryId({ id: category_id }),
-        staleTime: 30000
+        staleTime: 30_000
     })
 
     const { data: categoryRes } = useQuery({
@@ -34,44 +29,24 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
         queryFn: () => categoriesApi.getCategoriesById({ id: category_id })
     })
 
-    const workoutList = data?.data.data || []
-    const category = categoryRes?.data.data
-    const IconThumbnailCategory = ICONS_CATEGORY_MAP.get(category?.name as categories) || 'movement1'
+    const workoutList = useMemo(() => workoutData?.data.data || [], [workoutData])
+    const category = useMemo(() => categoryRes?.data.data, [categoryRes])
 
-    const handleWorkoutPress = (id: string) => {
-        navigation.navigate('WorkoutDetail', { workout_id: id })
-    }
-
-    const renderCategoryItem = useCallback(
-        ({ item }: { item: Exercise }) => (
-            <WorkoutCard
-                itemData={item}
-                onPress={() => handleWorkoutPress(item.id)}
-                isHighlighted={item.id == exercise_id}
-            />
-        ),
-        [exercise_id]
-    )
-
-    const renderBackdrop = (props: BottomSheetBackdropProps) => (
-        <BottomSheetBackdrop
-            {...props}
-            appearsOnIndex={-1}
-            disappearsOnIndex={-1}
-            pressBehavior='none'
-            enableTouchThrough
-        />
-    )
-
-    const exerciseListRef = useRef<BottomSheetFlatListMethods | null>(null)
     useEffect(() => {
         if (exercise_id && workoutList.length > 0) {
-            const index: number = workoutList.findIndex((c: Exercise) => c.id == exercise_id)
+            const index = workoutList.findIndex((item: Exercise) => item.id === exercise_id)
             if (index !== -1 && exerciseListRef.current) {
-                exerciseListRef.current.scrollToIndex({ index, animated: true })
+                requestAnimationFrame(() => {
+                    exerciseListRef.current?.scrollToIndex({ index, animated: true })
+                })
             }
         }
     }, [exercise_id, workoutList])
+
+    const handleWorkoutPress = useCallback(
+        (id: string) => navigation.navigate('WorkoutDetail', { workout_id: id }),
+        [navigation]
+    )
 
     return (
         <LinearGradient
@@ -81,127 +56,40 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
             style={styles.content}
         >
             <SafeAreaView style={styles.container}>
-                <View style={styles.header}>
-                    <NavigationBar
-                        title='Workout Tracker'
-                        callback={navigation.goBack}
-                        headingStyle={styles.headerTitle}
-                    />
-                </View>
-
-                <View style={styles.ThumbnailContainer}>
-                    <MyIcon name={IconThumbnailCategory} size={316} />
-                </View>
-
+                <Header handleNotificationClick={navigation.goBack} />
+                <Thumbnail category={category} />
                 <BottomSheet
-                    index={0}
+                    index={exercise_id ? 1 : 0}
                     snapPoints={['72%', '90%']}
-                    backdropComponent={renderBackdrop}
                     enablePanDownToClose={false}
                     enableContentPanningGesture={false}
                     enableDynamicSizing={false}
+                    backdropComponent={(props) => (
+                        <BottomSheetBackdrop
+                            {...props}
+                            appearsOnIndex={-1}
+                            disappearsOnIndex={-1}
+                            pressBehavior='none'
+                            enableTouchThrough
+                        />
+                    )}
                 >
-                    <BottomSheetView style={styles.bottomSheetContent}>
-                        <View style={styles.trainingSection}>
-                            <View style={styles.trainingSectionHeader}>
-                                <Text style={styles.trainingTitle}>{category?.name}</Text>
-                                <Text style={styles.trainingDesc}>
-                                    {category?.exercise_count} Exercises | {category?.duration_minutes} mins |{' '}
-                                    {category?.duration_minutes} Calories Burn
-                                </Text>
-                            </View>
-
-                            <Text style={[styles.trainingTitle, styles.exerciseTitle]}>Exercises</Text>
-
-                            {isLoading ? (
-                                <View style={styles.exerciseListSkeleton}>
-                                    <ExerciseCartSkeleton />
-                                    <ExerciseCartSkeleton />
-                                    <ExerciseCartSkeleton />
-                                    <ExerciseCartSkeleton />
-                                </View>
-                            ) : (
-                                <BottomSheetFlatList
-                                    ref={exerciseListRef}
-                                    data={workoutList}
-                                    renderItem={renderCategoryItem}
-                                    keyExtractor={(item) => item.id}
-                                    showsVerticalScrollIndicator={false}
-                                    scrollEnabled={true}
-                                    onScrollToIndexFailed={(info) => {
-                                        setTimeout(() => {
-                                            exerciseListRef.current?.scrollToIndex({
-                                                index: info.index,
-                                                animated: true
-                                            })
-                                        }, 500)
-                                    }}
-                                />
-                            )}
-                        </View>
-                    </BottomSheetView>
+                    <CategoryInfo category={category} />
+                    <ExerciseList
+                        data={workoutList}
+                        isLoading={isLoading}
+                        highlightedId={exercise_id}
+                        onPressWorkout={handleWorkoutPress}
+                        listRef={exerciseListRef}
+                    />
                 </BottomSheet>
             </SafeAreaView>
         </LinearGradient>
     )
 }
 
-export default CategoryDetail
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    content: {
-        flex: 1
-    },
-    header: {
-        height: 60,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    headerTitle: {
-        color: '#FFF',
-        fontSize: 16,
-        fontWeight: '700'
-    },
-    ThumbnailContainer: {
-        marginTop: 0,
-        height: 288,
-        width: 288,
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        borderRadius: 999,
-        alignSelf: 'center',
-        justifyContent: 'center'
-    },
-    bottomSheetContent: {
-        flex: 1
-    },
-    trainingSection: {
-        flex: 1,
-        marginTop: 10
-    },
-    trainingSectionHeader: {
-        marginBottom: 20,
-        paddingHorizontal: 20
-    },
-    trainingTitle: {
-        fontSize: 16,
-        fontWeight: '700',
-        marginBottom: 5,
-        color: '#1D1617',
-        textTransform: 'capitalize'
-    },
-    exerciseListSkeleton: {
-        width: '90%'
-    },
-    trainingDesc: {
-        fontSize: 12,
-        fontWeight: '400',
-        color: '#7B6F72',
-        textTransform: 'capitalize'
-    },
-    exerciseTitle: {
-        paddingHorizontal: 20
-    }
+    container: { flex: 1 },
+    content: { flex: 1 }
 })
+export default CategoryDetail

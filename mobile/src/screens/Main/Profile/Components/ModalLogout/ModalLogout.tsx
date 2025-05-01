@@ -4,7 +4,7 @@ import { AppContext } from '@/Contexts/App.context'
 import { authApi } from '@/services/rest'
 import { showErrorAlert } from '@/utils/alert.util'
 import { useMutation } from '@tanstack/react-query'
-import { memo, useContext } from 'react'
+import { memo, useCallback, useContext } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 interface ModalLogoutProps {
@@ -14,11 +14,11 @@ interface ModalLogoutProps {
     setIsLoggingOut: (value: boolean) => void
 }
 
-function ModalLogout({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLoggingOut }: ModalLogoutProps) {
+const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLoggingOut }: ModalLogoutProps) => {
     const { setAuthenticated } = useContext(AppContext)
     const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
 
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         if (isLoggingOut) return
 
         toggleModal(false)
@@ -32,7 +32,7 @@ function ModalLogout({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
         } finally {
             setIsLoggingOut(false)
         }
-    }
+    }, [isLoggingOut, logout, setAuthenticated, toggleModal, setIsLoggingOut])
 
     return (
         <CustomModal visible={isLogoutModalVisible} onRequestClose={() => toggleModal(false)}>

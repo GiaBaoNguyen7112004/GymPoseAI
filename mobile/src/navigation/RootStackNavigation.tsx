@@ -6,7 +6,6 @@ import { RootStackParamList } from './types'
 // Auth Screens
 import WelcomeScreen from '@/screens/Auth/Welcome'
 import Login from '@/screens/Auth/Login'
-import { Register } from '@/screens/Auth/Register'
 import ForgotPassword from '@/screens/Auth/ForgotPassword'
 
 // Main Tabs
@@ -25,6 +24,9 @@ import Setting from '@/screens/Other/Setting'
 import ContactUs from '@/screens/Other/ContactUs'
 import PrivacyPolicy from '@/screens/Other/PrivacyPolicy/PrivacyPolicy'
 import ActivityListScreen from '@/screens/Other/ActivityListScreen'
+import CompleteProfile from '@/screens/Other/CompleteProfile'
+import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
+import Register from '@/screens/Auth/Register'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -49,10 +51,10 @@ function RootStackNavigation() {
                     <RootStack.Screen name='WorkoutDetail' component={WorkoutDetail} />
                     <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
                     <RootStack.Screen name='Setting' component={Setting} />
-                    <RootStack.Screen name='CompleteProfile' component={Register.CompleteProfile} />
+                    <RootStack.Screen name='CompleteProfile' component={CompleteProfile} />
                     <RootStack.Screen
                         name='ConfirmYourGoal'
-                        component={Register.ConfirmYourGoal}
+                        component={ConfirmYourGoal}
                         options={{ gestureEnabled: false }}
                     />
                     <RootStack.Screen name='ActivityList' component={ActivityListScreen} />
@@ -60,7 +62,7 @@ function RootStackNavigation() {
             ) : (
                 <RootStack.Group>
                     <RootStack.Screen name='Login' component={Login} />
-                    <RootStack.Screen name='CreateAccount' component={Register.CreateAccount} />
+                    <RootStack.Screen name='Register' component={Register} />
                     <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
                 </RootStack.Group>
             )}

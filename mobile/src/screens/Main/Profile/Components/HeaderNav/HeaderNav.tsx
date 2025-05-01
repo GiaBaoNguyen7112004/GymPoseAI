@@ -1,6 +1,7 @@
 import { View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import NavigationBar from '@/components/NavigationBar'
+import { memo } from 'react'
 
 interface Props {
     isScrolled: boolean
@@ -26,4 +27,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default HeaderNav
+export default memo(HeaderNav)

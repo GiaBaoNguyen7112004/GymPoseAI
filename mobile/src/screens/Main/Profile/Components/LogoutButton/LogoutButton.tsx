@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
 
 interface Props {
@@ -32,4 +33,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LogoutButton
+export default memo(LogoutButton)

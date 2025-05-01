@@ -1,19 +1,22 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import GradientButton from '@/components/GradientButton'
 import TextGradient from '@/components/TextGradient'
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { AppContext } from '@/Contexts/App.context'
+import { memo } from 'react'
 
 interface UserInfoProps {
     editPress?: () => void
 }
 
-function UserInfo({ editPress }: UserInfoProps) {
+const UserInfo = ({ editPress }: UserInfoProps) => {
     const { profile } = useContext(AppContext)
-
     const { first_name, last_name, height, weight, date_of_birth, avatar, email } = profile || {}
 
-    const age = date_of_birth && ~~((Date.now() - new Date(date_of_birth).getTime()) / 3.15576e10)
+    const age = useMemo(() => {
+        if (!date_of_birth) return '--'
+        return ~~((Date.now() - new Date(date_of_birth).getTime()) / 3.15576e10)
+    }, [date_of_birth])
 
     return (
         <View style={styles.ProfileWrapper}>
@@ -40,14 +43,14 @@ function UserInfo({ editPress }: UserInfoProps) {
     )
 }
 
-const ProfileValue = ({ label, value }: { label: string; value: string }) => (
+const ProfileValue = memo(({ label, value }: { label: string; value: string }) => (
     <View style={styles.profile__boxValue}>
         <TextGradient text={value} textStyle={styles.profile__value} />
         <Text style={styles.profile__label}>{label}</Text>
     </View>
-)
+))
 
-export default UserInfo
+export default memo(UserInfo)
 
 const styles = StyleSheet.create({
     ProfileWrapper: {

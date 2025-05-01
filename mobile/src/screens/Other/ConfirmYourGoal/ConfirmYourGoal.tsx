@@ -4,9 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import GradientButton from '@/components/GradientButton'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { RootStackScreenProps } from '@/navigation/types'
-import { WorkoutBenefitsList } from '../Components/WorkoutBenefitsList'
-import { useNavigation } from '@react-navigation/native'
 import useNavigationState from '@/hooks/useNavigationState'
+import { WorkoutBenefitsList } from './Components/WorkoutBenefitsList'
 
 export default function ConfirmYourGoal({ navigation }: RootStackScreenProps<'ConfirmYourGoal'>) {
     const { isNavigating } = useNavigationState(navigation)

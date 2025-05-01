@@ -1,16 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import {
-    Animated,
-    Keyboard,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableWithoutFeedback,
-    View
-} from 'react-native'
+import React, { useEffect } from 'react'
+import { Keyboard, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -31,7 +20,6 @@ import useUserData from '@/hooks/useUserData'
 import { userApi } from '@/services/rest'
 import { useMutation } from '@tanstack/react-query'
 import { Gender } from '@/types/user.type'
-import showToast from '@/utils/toast.util'
 import handleFormError from '@/utils/handleFormError'
 
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>

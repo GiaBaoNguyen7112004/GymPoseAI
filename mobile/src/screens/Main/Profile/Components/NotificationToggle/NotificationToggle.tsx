@@ -1,5 +1,6 @@
 import Switch from '@/components/Switch'
 import SettingItem from '../SettingItem'
+import { memo } from 'react'
 
 interface Props {
     value: boolean
@@ -15,4 +16,4 @@ const NotificationToggle = ({ value, onToggle }: Props) => (
     />
 )
 
-export default NotificationToggle
+export default memo(NotificationToggle)

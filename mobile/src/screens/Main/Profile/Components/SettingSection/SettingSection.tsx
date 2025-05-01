@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import { ReactNode } from 'react'
+import { memo, ReactNode } from 'react'
 
 interface Props {
     title: string
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SettingSection
+export default memo(SettingSection)

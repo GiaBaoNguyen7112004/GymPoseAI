@@ -1,5 +1,6 @@
 import LoaderModal from '@/components/LoaderModal'
 import ModalLogout from '../ModalLogout/ModalLogout'
+import { memo } from 'react'
 
 interface Props {
     isLoggingOut: boolean
@@ -20,4 +21,4 @@ const Modals = ({ isLoggingOut, isLogoutModalVisible, setIsLoggingOut, toggleMod
     </>
 )
 
-export default Modals
+export default memo(Modals)
