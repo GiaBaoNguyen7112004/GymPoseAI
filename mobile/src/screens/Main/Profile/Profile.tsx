@@ -1,59 +1,60 @@
-import { useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View, ActivityIndicator, Pressable } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useRef, useState, Suspense } from 'react'
+import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native'
 
-import NavigationBar from '@/components/NavigationBar'
-import Switch from '@/components/Switch'
 import AnimatedBottomSheetLayout, { AnimatedBottomSheetLayoutRef } from '@/components/layouts/AnimatedBottomSheetLayout'
-
 import { MainTabScreenProps } from '@/navigation/types'
+import useScrollListener from '@/hooks/useScrollListener'
+import useBottomSheetController from '@/hooks/useBottomSheetController'
+
 import UserInfo from './Components/UserInfo'
 import SettingItem from './Components/SettingItem'
+import HeaderNav from './Components/HeaderNav'
+import SettingSection from './Components/SettingSection'
+import NotificationToggle from './Components/NotificationToggle'
+import LogoutButton from './Components/LogoutButton'
+import Modals from './Components/Modals'
+import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity'
 import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
-import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity/PasswordAndSecurity'
-
-import useScrollListener from '@/hooks/useScrollListener'
-import ModalLogout from './Components/ModalLogout/ModalLogout'
-import LoaderModal from '@/components/LoaderModal'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
+    const { openBottomSheet, closeBottomSheet } = useBottomSheetController(bottomSheetRef)
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
-    const [isLoggingOut, setIsLoggingOut] = useState(false)
-    const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false)
+    const [logoutState, setLogoutState] = useState({ visible: false, loading: false })
 
     const { isScrolled, handleScroll } = useScrollListener()
 
-    const handleToggleNotification = (value: boolean) => {
-        setIsNotificationEnabled(value)
-    }
+    const openEditProfile = () =>
+        openBottomSheet(
+            <Suspense fallback={<ActivityIndicator />}>
+                <PersonalDataFlow onClose={closeBottomSheet} />
+            </Suspense>
+        )
 
-    const openBottomSheet = (Content: React.ReactNode) => {
-        bottomSheetRef.current?.open(<>{Content}</>)
-    }
-
-    const openEditProfile = () => {
-        openBottomSheet(<PersonalDataFlow onClose={() => bottomSheetRef.current?.close()} />)
-    }
-
-    const openPasswordAndSecurity = () => {
-        openBottomSheet(<PasswordAndSecurity onClose={() => bottomSheetRef.current?.close()} />)
-    }
+    const openPasswordAndSecurity = () =>
+        openBottomSheet(
+            <Suspense fallback={<ActivityIndicator />}>
+                <PasswordAndSecurity onClose={closeBottomSheet} />
+            </Suspense>
+        )
 
     return (
         <AnimatedBottomSheetLayout ref={bottomSheetRef}>
             <View style={styles.mainContent}>
-                <SafeAreaView style={[styles.navBar, isScrolled && styles.navBarScrolled]}>
-                    <NavigationBar title='Profile' callback={navigation.goBack} />
-                </SafeAreaView>
+                <HeaderNav isScrolled={isScrolled} onBack={navigation.goBack} />
 
-                <ScrollView style={styles.scrollView} onScroll={handleScroll} scrollEventThrottle={16}>
+                <ScrollView
+                    style={styles.scrollView}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                    removeClippedSubviews
+                    keyboardShouldPersistTaps='handled'
+                >
                     <UserInfo editPress={openEditProfile} />
 
                     <View style={styles.sectionWrapper}>
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Account</Text>
+                        <SettingSection title='Account'>
                             <SettingItem
                                 icon='profileGradientOutline'
                                 label='Personal Data'
@@ -64,22 +65,13 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 label='Password and Security'
                                 onPress={openPasswordAndSecurity}
                             />
-                        </View>
+                        </SettingSection>
 
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Notification</Text>
-                            <SettingItem
-                                icon='bellGradientOutline'
-                                label='Pop-up Notification'
-                                onPress={() => handleToggleNotification(!isNotificationEnabled)}
-                                rightComponent={
-                                    <Switch value={isNotificationEnabled} onValueChange={handleToggleNotification} />
-                                }
-                            />
-                        </View>
+                        <SettingSection title='Notification'>
+                            <NotificationToggle value={isNotificationEnabled} onToggle={setIsNotificationEnabled} />
+                        </SettingSection>
 
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Other</Text>
+                        <SettingSection title='Other'>
                             <SettingItem
                                 icon='messageGradientOutline'
                                 label='Contact Us'
@@ -95,47 +87,27 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 label='Settings'
                                 onPress={() => navigation.navigate('Setting')}
                             />
-                        </View>
+                        </SettingSection>
 
-                        <Pressable
-                            style={styles.logoutBtn}
-                            onPress={() => setIsLogoutModalVisible(true)}
-                            disabled={isLoggingOut}
-                        >
-                            {isLoggingOut ? (
-                                <ActivityIndicator size='small' color='#555' />
-                            ) : (
-                                <Text style={styles.logoutText}>Log out</Text>
-                            )}
-                        </Pressable>
+                        <LogoutButton
+                            isLoggingOut={logoutState.loading}
+                            onPress={() => setLogoutState((prev) => ({ ...prev, visible: true }))}
+                        />
                     </View>
                 </ScrollView>
-                <ModalLogout
-                    isLoggingOut={isLoggingOut}
-                    isLogoutModalVisible={isLogoutModalVisible}
-                    setIsLoggingOut={setIsLoggingOut}
-                    toggleModal={setIsLogoutModalVisible}
+
+                <Modals
+                    isLoggingOut={logoutState.loading}
+                    isLogoutModalVisible={logoutState.visible}
+                    setIsLoggingOut={(value) => setLogoutState((prev) => ({ ...prev, loading: value }))}
+                    toggleModal={(visible) => setLogoutState((prev) => ({ ...prev, visible }))}
                 />
-                {isLoggingOut && <LoaderModal title='logging out' />}
             </View>
         </AnimatedBottomSheetLayout>
     )
 }
 
-export default Profile
-
 const styles = StyleSheet.create({
-    navBar: {
-        height: 60,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: 'transparent'
-    },
-    navBarScrolled: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#E5E5E5'
-    },
     scrollView: {
         flex: 1,
         paddingTop: 10
@@ -151,38 +123,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '90%',
         flex: 1
-    },
-    section: {
-        padding: 20,
-        backgroundColor: '#FFF',
-        borderRadius: 16,
-        minHeight: 99,
-        width: '100%',
-        shadowColor: 'rgba(29, 22, 23, 0.3)',
-        shadowOffset: { width: 2, height: 10 },
-        shadowOpacity: 1,
-        shadowRadius: 20,
-        elevation: 8
-    },
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        lineHeight: 24,
-        color: '#1D1617',
-        marginBottom: 10
-    },
-    logoutBtn: {
-        backgroundColor: '#F5F5F5',
-        height: 44,
-        borderRadius: 12,
-        marginTop: 10,
-        marginBottom: 40,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    logoutText: {
-        color: '#555',
-        fontSize: 15,
-        fontWeight: '500'
     }
 })
+
+export default Profile

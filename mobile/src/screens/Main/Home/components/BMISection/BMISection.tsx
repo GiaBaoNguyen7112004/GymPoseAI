@@ -5,53 +5,77 @@ import MyIcon from '@/components/Icon'
 import { memo, useContext, useMemo } from 'react'
 import { AppContext } from '@/Contexts/App.context'
 
-function BMIStats() {
+const ELLIPSE_KEYS: Array<keyof typeof styles> = [
+    'ellipseBottomLeft',
+    'ellipseBottomRight',
+    'ellipseSmall1',
+    'ellipseSmall2',
+    'ellipseSmall3',
+    'ellipseSmall4'
+]
+
+const GRADIENT_START = { x: 0.4, y: 0 }
+const GRADIENT_END = { x: 0.2, y: 1 }
+
+const EllipsesDecoration = memo(() => (
+    <>
+        {ELLIPSE_KEYS.map((key, idx) => (
+            <View key={idx} style={[styles.ellipseBase, styles[key]]} />
+        ))}
+    </>
+))
+
+function BMISection() {
     const { profile } = useContext(AppContext)
 
     const bmi = useMemo(() => {
         const weight = profile?.weight ?? 0
         const height = profile?.height ?? 1
         return (weight / (height / 100) ** 2).toFixed(2)
-    }, [profile?.weight, profile?.height])
+    }, [profile])
 
     return (
-        <View style={styles.bmiShadow}>
-            <LinearGradient
-                colors={COLOR_BRANDS.primary}
-                start={{ x: 0.4, y: 0 }}
-                end={{ x: 0.2, y: 1 }}
-                style={styles.bmiInner}
-            >
-                <View style={styles.bmiContent}>
-                    <Text style={styles.bmiHeading}>BMI (Body Mass Index)</Text>
-                    <Text style={styles.bmiDescription}>You have a normal weight</Text>
-                </View>
+        <View style={styles.wrapper}>
+            <View style={styles.shadow}>
+                <LinearGradient
+                    colors={COLOR_BRANDS.primary}
+                    start={GRADIENT_START}
+                    end={GRADIENT_END}
+                    style={styles.container}
+                >
+                    <View style={styles.content}>
+                        <Text style={styles.heading}>BMI (Body Mass Index)</Text>
+                        <Text style={styles.description}>You have a normal weight</Text>
+                    </View>
 
-                <View style={styles.bmiChartContainer}>
-                    <MyIcon name='pieChart' size={176} style={styles.bmiChart} />
-                    <Text style={styles.bmiResult}>{bmi}</Text>
-                </View>
+                    <View style={styles.chartContainer}>
+                        <MyIcon name='pieChart' size={176} style={styles.chartIcon} />
+                        <Text style={styles.bmiValue}>{bmi}</Text>
+                    </View>
 
-                {/* Decorative Ellipses */}
-                {ELLIPSES.map((style, idx) => (
-                    <View key={idx} style={[styles.ellipseBase, style]} />
-                ))}
-            </LinearGradient>
+                    <EllipsesDecoration />
+                </LinearGradient>
+            </View>
         </View>
     )
 }
 
-export default memo(BMIStats)
+export default memo(BMISection)
 
 const styles = StyleSheet.create({
-    bmiShadow: {
+    wrapper: {
+        width: '90%',
+        marginTop: 30,
+        height: 146
+    },
+    shadow: {
         shadowColor: 'rgba(149, 173, 254, 0.30)',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 22,
         elevation: 5
     },
-    bmiInner: {
+    container: {
         position: 'relative',
         width: '100%',
         height: '100%',
@@ -62,41 +86,41 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    bmiContent: {
+    content: {
         flex: 1
     },
-    bmiHeading: {
+    heading: {
         color: '#fff',
         fontSize: 14,
         fontWeight: '600',
         lineHeight: 21,
         width: 162
     },
-    bmiDescription: {
-        maxWidth: 157,
+    description: {
         marginTop: 5,
+        maxWidth: 157,
         color: '#fff',
         fontSize: 12,
         fontWeight: '400',
         lineHeight: 18
     },
-    bmiChartContainer: {
+    chartContainer: {
         position: 'relative',
         flex: 1
     },
-    bmiChart: {
+    chartIcon: {
         position: 'absolute',
         top: -30,
         right: -30
     },
-    bmiResult: {
+    bmiValue: {
+        position: 'absolute',
+        top: 15,
+        right: 25,
         color: '#fff',
         fontSize: 12,
         fontWeight: '600',
-        lineHeight: 18,
-        position: 'absolute',
-        top: 15,
-        right: 25
+        lineHeight: 18
     },
     ellipseBase: {
         position: 'absolute',
@@ -146,12 +170,3 @@ const styles = StyleSheet.create({
         right: '60%'
     }
 })
-
-const ELLIPSES = [
-    styles.ellipseBottomLeft,
-    styles.ellipseBottomRight,
-    styles.ellipseSmall1,
-    styles.ellipseSmall2,
-    styles.ellipseSmall3,
-    styles.ellipseSmall4
-]

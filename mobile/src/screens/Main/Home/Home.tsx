@@ -1,32 +1,19 @@
-import GradientButton from '@/components/GradientButton'
-import MyIcon from '@/components/Icon'
-import { SCREEN_WIDTH } from '@/constants/devices.constant'
-import { StyleSheet, Text, TouchableOpacity, View, InteractionManager } from 'react-native'
+import { StyleSheet, InteractionManager, SafeAreaView, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
-import WaterIntake from './components/WaterIntake/WaterIntake'
-import BMIStats from './components/BMI'
-// import WorkoutProgressChart from './components/WorkoutProgress'
-import CaloriesStats from './components/CaloriesStats'
-import { AppContext } from '@/Contexts/App.context'
+import WorkoutProgressChart from './components/WorkoutProgress'
 import { MainTabScreenProps } from '@/navigation/types'
 import BlankScreenLoader from '@/components/BlankScreenLoader'
 import WorkoutHistory from './components/WorkoutHistory'
+import Header from './components/Header/Header'
+import BMISection from './components/BMISection'
+import TodayTargetSection from './components/TodayTargetSection'
+import ActivityStatusSection from './components/ActivityStatusSection/ActivityStatusSection'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 
 function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
-    const { profile } = useContext(AppContext)
-
-    const [isReady, setIsReady] = useState(false)
-
-    useEffect(() => {
-        const task = InteractionManager.runAfterInteractions(() => {
-            setIsReady(true)
-        })
-
-        return () => task.cancel()
-    }, [])
+    const { isReady } = useInteractionReadyState()
 
     const handleNotificationClick = useCallback(() => {
         navigation.navigate('Notification')
@@ -41,63 +28,18 @@ function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
     }
 
     return (
-        <ScrollView style={styles.safeArea} showsVerticalScrollIndicator={false}>
-            <SafeAreaView style={styles.container}>
-                {/* Header */}
-                <View style={styles.header}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={styles.headerText}>Welcome Back,</Text>
-                        <Text style={styles.headerHeading} numberOfLines={1}>
-                            {profile?.first_name + ' ' + profile?.last_name}
-                        </Text>
-                    </View>
-                    <TouchableOpacity style={styles.headerButton} onPress={handleNotificationClick}>
-                        <MyIcon name='notificationIcon' size={18} />
-                    </TouchableOpacity>
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+                <View style={styles.content}>
+                    <Header handleNotificationClick={handleNotificationClick} />
+                    <BMISection />
+                    <TodayTargetSection handleCheckTodayTarget={handleCheckTodayTarget} />
+                    <ActivityStatusSection />
+                    <WorkoutProgressChart />
+                    <WorkoutHistory navigation={navigation} route={route} />
                 </View>
-
-                {/* BMI */}
-                <View style={styles.bmiWrapper}>
-                    <BMIStats />
-                </View>
-
-                {/* Today Target */}
-                <View style={styles.scheduleWrapper}>
-                    <View style={styles.ScheduleAction}>
-                        <Text style={styles.scheduleAction__title}>Today Target</Text>
-                        <GradientButton Square style={styles.schedule__btn} onPress={handleCheckTodayTarget}>
-                            <Text style={styles.schedule__btn_text}>Check</Text>
-                        </GradientButton>
-                    </View>
-                </View>
-
-                {/* Activity Status */}
-                <View style={styles.activityWrapper}>
-                    <View style={styles.activityStatus}>
-                        <Text style={styles.title}>Activity Status</Text>
-                        <View style={styles.stats}>
-                            <View style={styles.stats__BoxLeft}>
-                                <WaterIntake />
-                            </View>
-                            <View style={styles.stats__boxRight}>
-                                <View style={styles.stats__squareBox}>
-                                    <MyIcon name='sleepGraph' width='100%' size={110} />
-                                </View>
-                                <View style={styles.stats__squareBox}>
-                                    <CaloriesStats user_id={profile?.id || ''} />
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-
-                {/* Workout Progress */}
-                <View style={styles.workoutProgressWrapper}>{/* <WorkoutProgressChart /> */}</View>
-
-                {/* Workout History */}
-                <WorkoutHistory navigation={navigation} route={route} />
-            </SafeAreaView>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -110,152 +52,10 @@ const styles = StyleSheet.create({
     },
     container: {
         backgroundColor: '#FFF',
-        alignItems: 'center',
-        alignSelf: 'center',
-        width: SCREEN_WIDTH
+        alignSelf: 'center'
     },
-    title: {
-        fontSize: 16,
-        color: '#1D1617',
-        fontWeight: '600',
-        lineHeight: 24
-    },
-    subtitle_gray: {
-        fontSize: 12,
-        fontWeight: '500',
-        lineHeight: 18,
-        color: '#ADA4A5'
-    },
-
-    header: {
-        marginTop: 20,
-        width: '90%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    headerText: {
-        color: '#ADA4A5',
-        fontSize: 12,
-        fontWeight: '400',
-        lineHeight: 18
-    },
-    headerHeading: {
-        color: '#1D1617',
-        fontSize: 20,
-        fontWeight: '700',
-        lineHeight: 30,
-        width: '90%'
-    },
-    headerButton: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#F7F8F8',
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    bmiWrapper: {
-        width: '90%',
-        marginTop: 30,
-        height: 146
-    },
-    scheduleWrapper: {
-        marginTop: 38,
-        width: '90%'
-    },
-    ScheduleAction: {
+    content: {
         width: '100%',
-        height: 57,
-        borderRadius: 16,
-        backgroundColor: '#EAF0FF',
-        paddingHorizontal: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center'
-    },
-    schedule__btn: {
-        width: 68,
-        height: 28
-    },
-    schedule__btn_text: {
-        fontSize: 12,
-        fontWeight: '400',
-        color: '#fff',
-        position: 'absolute'
-    },
-    scheduleAction__title: {
-        fontSize: 14,
-        color: '#1D1617',
-        fontWeight: '500'
-    },
-    activityWrapper: {
-        marginTop: 30,
-        width: '90%'
-    },
-    activityStatus: {
-        width: '100%'
-    },
-    stats: {
-        marginTop: 16,
-        flexDirection: 'row',
-        columnGap: 15
-    },
-    stats__BoxLeft: {
-        flex: 1
-    },
-    stats__boxRight: {
-        flex: 1,
-        rowGap: 15
-    },
-    stats__squareBox: {
-        width: '100%',
-        flex: 1,
-        borderRadius: 20,
-        backgroundColor: '#fff',
-
-        shadowColor: 'rgba(29, 22, 23, 0.3)',
-        shadowOffset: { width: 1, height: 10 },
-        shadowOpacity: 1,
-        shadowRadius: 20,
-        maxHeight: 150,
-
-        // Android shadow
-        elevation: 8
-    },
-    workoutProgressWrapper: {
-        marginTop: 33,
-        width: '90%'
-    },
-    workoutProgressHeader: {
-        marginTop: 33,
-        width: '90%',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    workoutHistoryWrapper: {
-        alignItems: 'center',
-        width: '100%'
-    },
-    workoutList: {
-        marginTop: 20,
-        rowGap: 15,
-        alignContent: 'center',
-        justifyContent: 'center',
-        width: SCREEN_WIDTH,
-        paddingBottom: 20
-    },
-    workoutsSkeleton: { width: SCREEN_WIDTH * 0.9, alignSelf: 'center' },
-    workoutItem: {
-        width: SCREEN_WIDTH * 0.9,
-        height: 80
-    },
-    noWorkoutText: {
-        fontSize: 14,
-        color: '#ADA4A5',
-        fontWeight: '400',
-        textAlign: 'center',
-        marginTop: 10,
-        marginBottom: 50
     }
 })

@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
 
@@ -9,7 +9,6 @@ import { useTooltip } from '@/hooks/useTooltip'
 import { workoutHistoryLineChart } from '@/config/chart.config'
 import { calculateWorkoutHistoryChart, getChartWidth } from '@/utils/chart.util'
 import { ViewModeType } from '@/types/utils.type'
-import LineChartSkeleton from '../LineChartSkeleton'
 
 interface WorkoutChartProps {
     workoutData: workoutHistoryOfDay[]
@@ -45,7 +44,9 @@ const WorkoutChart = ({
 
     const renderChart =
         workoutData.length === 0 ? (
-            <LineChartSkeleton />
+            <View style={styles.noDataContainer}>
+                <Text style={styles.noDataText}>No data available</Text>
+            </View>
         ) : (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartContainer}>
                 <LineChart

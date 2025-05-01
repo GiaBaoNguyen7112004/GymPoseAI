@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { Skeleton } from 'moti/skeleton'
 
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LineChartSkeleton
+export default memo(LineChartSkeleton)

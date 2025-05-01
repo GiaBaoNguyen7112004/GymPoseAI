@@ -8,13 +8,14 @@ import { workoutHistoryApi } from '@/services/rest'
 import { ViewModeType } from '@/types/utils.type'
 import useDebounce from '@/hooks/useDebounce'
 import useUserData from '@/hooks/useUserData'
+import LineChartSkeleton from '@/components/LineChartSkeleton'
 
 function WorkoutProgressChart() {
     const { userData } = useUserData()
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
     const debouncedViewMode = useDebounce(viewMode, 1000)
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['workoutHistory', debouncedViewMode, userData?.id],
         queryFn: () =>
             workoutHistoryApi.getWorkoutHistoryByViewMode({
@@ -25,13 +26,21 @@ function WorkoutProgressChart() {
         enabled: !!userData?.id
     })
 
-    const workoutHistoryData = data?.data.data || []
+    const workoutHistoryData = useMemo(() => data?.data?.data || [], [data])
 
     const handleViewModeChange = useCallback((val: string) => {
         setViewMode(val as ViewModeType)
     }, [])
 
     const dropdownData = useMemo(() => ViewModeDropdown, [])
+
+    const chartContent = useMemo(() => {
+        if (isLoading || !workoutHistoryData.length) {
+            return <LineChartSkeleton />
+        }
+
+        return <WorkoutChart viewMode={debouncedViewMode} workoutData={workoutHistoryData} />
+    }, [isLoading, workoutHistoryData, debouncedViewMode])
 
     return (
         <View style={styles.container}>
@@ -46,16 +55,17 @@ function WorkoutProgressChart() {
                     onChange={handleViewModeChange}
                 />
             </View>
-
-            <WorkoutChart viewMode={debouncedViewMode} workoutData={workoutHistoryData} />
+            {chartContent}
         </View>
     )
 }
 
+export default memo(WorkoutProgressChart)
+
 const styles = StyleSheet.create({
     container: {
-        marginTop: 15,
-        width: '100%'
+        marginTop: 33,
+        width: '90%'
     },
     header: {
         flexDirection: 'row',
@@ -87,5 +97,3 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end'
     }
 })
-
-export default memo(WorkoutProgressChart)
