@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react'
 import { Keyboard, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
 import { LinearGradient } from 'expo-linear-gradient'
-import { FormProvider, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { FormProvider } from 'react-hook-form'
 
 import MyIcon from '@/components/Icon'
 import GradientButton from '@/components/GradientButton'
@@ -13,50 +11,20 @@ import DatePickerInput from '@/components/DatePickerInput'
 import TextInputCustom from '@/components/TextInput'
 
 import { RootStackScreenProps } from '@/navigation/types'
-import { schema, SchemaType } from '@/utils/rules.util'
 import { DataGender } from '@/constants/dropdown.constant'
 import { useKeyboard } from '@/hooks/useKeyboard'
-import useUserData from '@/hooks/useUserData'
-import { userApi } from '@/services/rest'
-import { useMutation } from '@tanstack/react-query'
-import { Gender } from '@/types/user.type'
-import handleFormError from '@/utils/handleFormError'
-
-type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
-const formSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
+import { useProfileForm } from '@/hooks/useProfileForm'
 
 function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>) {
     const { isKeyboardVisible } = useKeyboard()
-    const { userData, refetch } = useUserData()
-    const methods = useForm<FormData>({
-        resolver: yupResolver(formSchema),
-        mode: 'onChange'
-    })
-    const { mutate: updateProfileMutate, isPending } = useMutation({
-        mutationFn: userApi.updateProfile
+    const handleSuccess = () => {
+        navigation.replace('ConfirmYourGoal')
+    }
+
+    const { methods, isPending, onSubmit } = useProfileForm({
+        onSuccessCallback: handleSuccess
     })
     const canSubmit = methods.formState.isValid
-    useEffect(() => {
-        methods.setValue('date_of_birth', userData?.date_of_birth ? new Date(userData.date_of_birth) : new Date())
-        methods.setValue('gender', userData?.gender as Gender)
-        methods.setValue('height', userData?.height ?? 0)
-        methods.setValue('weight', userData?.weight ?? 0)
-    }, [userData?.date_of_birth, userData?.weight, userData?.height, userData?.gender])
-    const onSubmit = methods.handleSubmit((data) => {
-        const body = {
-            ...data,
-            date_of_birth: data.date_of_birth.toISOString(),
-            gender: data.gender as Gender
-        }
-        updateProfileMutate(body, {
-            onSuccess: (res) => {
-                navigation.replace('ConfirmYourGoal')
-                refetch()
-            },
-            onError: (errors) => handleFormError<FormData>(errors, methods.setError)
-        })
-    })
-
     return (
         <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

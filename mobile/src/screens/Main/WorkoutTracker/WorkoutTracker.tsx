@@ -1,4 +1,3 @@
-import React, { useRef } from 'react'
 import { View, StyleSheet, SafeAreaView } from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { LinearGradient } from 'expo-linear-gradient'

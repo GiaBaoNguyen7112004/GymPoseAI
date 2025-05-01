@@ -12,20 +12,14 @@ import { categoriesApi } from '@/services/rest'
 import CategoryCard from '@/components/CategoryCard'
 import CategoryCardSkeleton from '@/components/CategoryCardSkeleton'
 import { Category } from '@/types/exercises.type'
+import { useCategories } from '@/hooks/useCategoriesData'
 
 interface CategoryBottomSheetProps {
     handleCategoryPress: (category: Category) => void
 }
 
 const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(({ handleCategoryPress }, ref) => {
-    const { data: categoriesQuery, isLoading: categoriesLoading } = useQuery({
-        queryKey: ['categories'],
-        queryFn: categoriesApi.getCategories,
-        staleTime: 1000 * 60 * 10 // Cache for 10 minutes
-    })
-
-    const categoriesData = categoriesQuery?.data?.data || []
-
+    const { categoriesData, categoriesLoading } = useCategories()
     const renderCategoryItem = useCallback(
         ({ item }: { item: Category }) => <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />,
         [handleCategoryPress]

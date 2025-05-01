@@ -1,61 +1,25 @@
 import GradientButton from '@/components/GradientButton'
 import { useKeyboard } from '@/hooks/useKeyboard'
-import { schema, SchemaType } from '@/utils/rules.util'
 import { Ionicons } from '@expo/vector-icons'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider } from 'react-hook-form'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScreenComponentProps } from '../routes.config'
 import DropdownInput from '@/components/DropdownInput'
 import DatePickerInput from '@/components/DatePickerInput'
 import { DataGender } from '@/constants/dropdown.constant'
-import { useMutation } from '@tanstack/react-query'
-import { userApi } from '@/services/rest'
-import { Gender } from '@/types/user.type'
-import handleFormError from '@/utils/handleFormError'
-import showToast from '@/utils/toast.util'
-import useUserData from '@/hooks/useUserData'
-import { useEffect } from 'react'
 import TextInputWithUnit from '@/components/TextInputWithUnit'
-
-type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
-const formSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
+import { useProfileForm } from '@/hooks/useProfileForm'
 
 function UpdateProfileDetailScreen({ onGoBack, goToTop }: ScreenComponentProps) {
     const { isKeyboardVisible } = useKeyboard()
-    const { userData, refetch } = useUserData()
-    const methods = useForm<FormData>({
-        resolver: yupResolver(formSchema),
-        mode: 'onChange'
-    })
-    const { mutate: updateProfileMutate, isPending } = useMutation({
-        mutationFn: userApi.updateProfile
+    const handleSuccess = () => {
+        if (goToTop) goToTop()
+    }
+
+    const { methods, isPending, onSubmit } = useProfileForm({
+        onSuccessCallback: handleSuccess
     })
 
-    useEffect(() => {
-        if (userData) {
-            methods.setValue('date_of_birth', new Date(userData.date_of_birth) || new Date())
-            methods.setValue('gender', userData.gender as Gender)
-            methods.setValue('height', userData.height ?? 0)
-            methods.setValue('weight', userData.weight ?? 0)
-        }
-    }, [userData, methods])
-
-    const onSubmit = methods.handleSubmit((data) => {
-        const body = {
-            ...data,
-            date_of_birth: data.date_of_birth.toISOString(),
-            gender: data.gender as Gender
-        }
-        updateProfileMutate(body, {
-            onSuccess: (res) => {
-                showToast({ title: res.data.message })
-                if (goToTop) goToTop()
-                refetch()
-            },
-            onError: (errors) => handleFormError<FormData>(errors, methods.setError)
-        })
-    })
     return (
         <View style={styles.container}>
             <View style={styles.header}>

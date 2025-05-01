@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { SafeAreaView, StyleSheet } from 'react-native'
-import { useQuery } from '@tanstack/react-query'
 import { LinearGradient } from 'expo-linear-gradient'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet'
 
@@ -11,36 +10,23 @@ import ExerciseList from './Components/ExerciseList/ExerciseList'
 
 import { COLOR_BRANDS } from '@/constants/common.constants'
 import { RootStackScreenProps } from '@/navigation/types'
-import { workoutApi, categoriesApi } from '@/services/rest'
-import { Exercise } from '@/types/exercises.type'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
+import { useCategoryDetailData } from '@/hooks/useCategoryDetailData'
+import { scrollToExerciseById } from '@/utils/scrollHelpers'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category_id, exercise_id } = route.params
     const exerciseListRef = useRef<BottomSheetFlatListMethods>(null)
+    const { category, isLoading, workoutList } = useCategoryDetailData(category_id)
 
-    const { data: workoutData, isLoading } = useQuery({
-        queryKey: ['workout-category', category_id],
-        queryFn: () => workoutApi.getWorkoutByCategoryId({ id: category_id }),
-        staleTime: 30_000
-    })
-
-    const { data: categoryRes } = useQuery({
-        queryKey: ['category', category_id],
-        queryFn: () => categoriesApi.getCategoriesById({ id: category_id })
-    })
-
-    const workoutList = useMemo(() => workoutData?.data.data || [], [workoutData])
-    const category = useMemo(() => categoryRes?.data.data, [categoryRes])
+    const { isReady } = useInteractionReadyState()
+    if (!isReady) {
+        return <BlankScreenLoader />
+    }
 
     useEffect(() => {
-        if (exercise_id && workoutList.length > 0) {
-            const index = workoutList.findIndex((item: Exercise) => item.id === exercise_id)
-            if (index !== -1 && exerciseListRef.current) {
-                requestAnimationFrame(() => {
-                    exerciseListRef.current?.scrollToIndex({ index, animated: true })
-                })
-            }
-        }
+        scrollToExerciseById(exerciseListRef, workoutList, exercise_id)
     }, [exercise_id, workoutList])
 
     const handleWorkoutPress = useCallback(
