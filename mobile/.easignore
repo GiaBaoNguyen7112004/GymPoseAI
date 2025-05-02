@@ -70,4 +70,5 @@ expo-env.d.ts
 .env.development
 
 
-google-services.json
+/ios
+/android

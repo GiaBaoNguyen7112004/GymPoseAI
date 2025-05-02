@@ -122,11 +122,6 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
             </SafeAreaView>
 
             <View style={styles.content}>
-                <BottomSheetMoreInfo
-                    ref={bottomSheetRef}
-                    onDeleteNotification={handleDeleteNotification}
-                    notificationData={selectedNotification}
-                />
                 <FlatList
                     data={notifications}
                     renderItem={renderNotificationItem}
@@ -142,6 +137,11 @@ function NotificationScreen({ navigation }: RootStackScreenProps<'Notification'>
                     }
                 />
             </View>
+            <BottomSheetMoreInfo
+                ref={bottomSheetRef}
+                onDeleteNotification={handleDeleteNotification}
+                notificationData={selectedNotification}
+            />
         </View>
     )
 }

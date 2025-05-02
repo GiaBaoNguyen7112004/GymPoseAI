@@ -9,8 +9,10 @@ import { ViewModeType } from '@/types/utils.type'
 import useDebounce from '@/hooks/useDebounce'
 import useUserData from '@/hooks/useUserData'
 import LineChartSkeleton from '@/components/LineChartSkeleton'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 
 function WorkoutProgressChart() {
+    const { isReady } = useInteractionReadyState()
     const { userData } = useUserData()
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
     const debouncedViewMode = useDebounce(viewMode, 1000)
@@ -35,12 +37,12 @@ function WorkoutProgressChart() {
     const dropdownData = useMemo(() => ViewModeDropdown, [])
 
     const chartContent = useMemo(() => {
-        if (isLoading || !workoutHistoryData.length) {
+        if (!isReady || isLoading || !workoutHistoryData.length) {
             return <LineChartSkeleton />
         }
 
         return <WorkoutChart viewMode={debouncedViewMode} workoutData={workoutHistoryData} />
-    }, [isLoading, workoutHistoryData, debouncedViewMode])
+    }, [isReady, isLoading, workoutHistoryData, debouncedViewMode])
 
     return (
         <View style={styles.container}>

@@ -44,11 +44,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F7F8F8',
-        borderRadius: 8,
-        position: 'absolute',
-        left: 29,
-        top: 0,
-        zIndex: 1
+        borderRadius: 8
     },
     title: {
         flex: 1,

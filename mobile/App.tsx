@@ -1,12 +1,12 @@
 import React from 'react'
-import { View, ActivityIndicator, StatusBar } from 'react-native'
+import { StatusBar } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { NotificationProvider } from './src/Contexts/NotificationContext'
 import Toast from 'react-native-toast-message'
 import * as Linking from 'expo-linking'
 
-// Font Poppins
 import {
     useFonts,
     Poppins_300Light,
@@ -16,22 +16,20 @@ import {
     Poppins_700Bold
 } from '@expo-google-fonts/poppins'
 
-// Navigation & Contexts
 import RootStackNavigation from './src/navigation/RootStackNavigation'
 import { AppProvider } from './src/Contexts/App.context'
 
-// Utils
 import storage from './src/utils/StorageManager.util'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { toastFitnessXConfig } from './src/config/toast.config'
+import BlankScreenLoader from './src/components/BlankScreenLoader'
+import * as Notifications from 'expo-notifications'
 
-// Khởi tạo linking
 const prefix = Linking.createURL('/')
 const linking = {
     prefixes: [prefix]
 }
 
-// Khởi tạo queryClient
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
@@ -40,8 +38,15 @@ export const queryClient = new QueryClient({
     }
 })
 
-// Load local storage
 storage.load()
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true
+    })
+})
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -53,24 +58,22 @@ export default function App() {
     })
 
     if (!fontsLoaded) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size='large' color='#9DCEFF' />
-            </View>
-        )
+        return <BlankScreenLoader />
     }
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <QueryClientProvider client={queryClient}>
-                <AppProvider>
-                    <BottomSheetModalProvider>
-                        <NavigationContainer linking={linking}>
-                            <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
-                            <RootStackNavigation />
-                        </NavigationContainer>
-                    </BottomSheetModalProvider>
-                    <Toast config={toastFitnessXConfig} />
-                </AppProvider>
+                <NotificationProvider>
+                    <AppProvider>
+                        <BottomSheetModalProvider>
+                            <NavigationContainer linking={linking}>
+                                <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
+                                <RootStackNavigation />
+                            </NavigationContainer>
+                        </BottomSheetModalProvider>
+                        <Toast config={toastFitnessXConfig} />
+                    </AppProvider>
+                </NotificationProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>
     )

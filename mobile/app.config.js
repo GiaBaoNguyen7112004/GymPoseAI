@@ -1,7 +1,7 @@
 const IS_DEV = process.env.APP_VARIANT === 'development';
 
 export default {
-  scheme: IS_DEV ? ['gymposeai-dev'] : ['gymposeai'],
+  scheme: IS_DEV ? 'gymposeai-dev' : 'gymposeai',
   name: IS_DEV ? 'GymPoseAI (Development)' : 'GymPoseAI',
   slug: 'GymPoseAI',
   version: '1.0.2',
@@ -39,6 +39,7 @@ export default {
       'android.permission.BLUETOOTH_CONNECT',
     ],
     package: 'com.taplamit.GymPoseAI',
+    googleServicesFile: "./google-services.json"
   },
   web: {
     bundler: 'metro',
