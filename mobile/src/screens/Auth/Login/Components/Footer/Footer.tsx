@@ -6,6 +6,7 @@ import GradientButton from '@/components/GradientButton'
 import TextGradient from '@/components/TextGradient'
 import MyIcon from '@/components/Icon'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
+import { useFacebookLogin } from '@/hooks/useFacebookLogin'
 
 interface FooterProps {
     goToRegister: () => void
@@ -15,6 +16,8 @@ interface FooterProps {
 }
 
 const Footer = ({ goToRegister, onSubmit, formState, isLoginIn }: FooterProps) => {
+    const { loginWithFacebook } = useFacebookLogin()
+
     return (
         <View style={styles.container}>
             <GradientButton
@@ -35,7 +38,7 @@ const Footer = ({ goToRegister, onSubmit, formState, isLoginIn }: FooterProps) =
             </View>
 
             <View style={styles.socialWrapper}>
-                <Pressable style={styles.socialButton}>
+                <Pressable style={styles.socialButton} onPress={loginWithFacebook}>
                     <Icon name='facebook-f' size={20} color='#1877F2' />
                 </Pressable>
             </View>

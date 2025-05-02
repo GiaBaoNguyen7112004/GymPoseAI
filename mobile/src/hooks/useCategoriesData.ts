@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/services/rest'
-import { useMemo } from 'react'
 
 export function useCategories() {
     const { data, isLoading, ...rest } = useQuery({
@@ -9,7 +8,7 @@ export function useCategories() {
         staleTime: 1000 * 60 * 10
     })
 
-    const categoriesData = useMemo(() => data?.data?.data || [], [])
+    const categoriesData = data?.data?.data || []
 
     return { categoriesData, categoriesLoading: isLoading, ...rest }
 }

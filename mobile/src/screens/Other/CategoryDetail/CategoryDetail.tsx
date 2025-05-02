@@ -21,9 +21,6 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
     const { category, isLoading, workoutList } = useCategoryDetailData(category_id)
 
     const { isReady } = useInteractionReadyState()
-    if (!isReady) {
-        return <BlankScreenLoader />
-    }
 
     useEffect(() => {
         scrollToExerciseById(exerciseListRef, workoutList, exercise_id)
@@ -33,6 +30,9 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
         (id: string) => navigation.navigate('WorkoutDetail', { workout_id: id }),
         [navigation]
     )
+    if (!isReady) {
+        return <BlankScreenLoader />
+    }
 
     return (
         <LinearGradient

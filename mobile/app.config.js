@@ -4,7 +4,7 @@ export default {
   scheme: IS_DEV ? ['gymposeai-dev'] : ['gymposeai'],
   name: IS_DEV ? 'GymPoseAI (Development)' : 'GymPoseAI',
   slug: 'GymPoseAI',
-  version: '1.0.1',
+  version: '1.0.2',
   orientation: 'portrait',
   icon: './src/assets/images/logo.png',
   userInterfaceStyle: 'automatic',
@@ -83,7 +83,17 @@ export default {
         addGeneratedScheme: !!IS_DEV,
       },
     ],
-  ],
+    ["react-native-fbsdk-next", {
+      appID: '1852106532214043',
+      clientId: "37b622f6e337065117c580be5f6b4862",
+      displayName: "GymPoseAI",
+      scheme: 'fb1852106532214043',
+      advertiserIDCollectionEnabled: false,
+      autoLogAppEventsEnabled: false,
+      isAutoInitEnabled: true,
+      iosUserTrackingPermission: "This identifier will be used to deliver personalized ads to you."
+    }
+    ]],
   extra: {
     eas: {
       projectId: '237cb4c2-14e4-427d-867a-bcfcbce60d21',
@@ -96,3 +106,4 @@ export default {
     },
   },
 };
+
