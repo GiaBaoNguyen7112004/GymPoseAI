@@ -2,8 +2,6 @@ import { useEffect, useRef, useCallback } from 'react'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet'
-
-import Header from '@/screens/Main/Home/components/Header/Header'
 import Thumbnail from './Components/Thumbnail'
 import CategoryInfo from './Components/CategoryInfo/CategoryInfo'
 import ExerciseList from './Components/ExerciseList/ExerciseList'
@@ -14,6 +12,7 @@ import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import BlankScreenLoader from '@/components/BlankScreenLoader'
 import { useCategoryDetailData } from '@/hooks/useCategoryDetailData'
 import { scrollToExerciseById } from '@/utils/scrollHelpers'
+import Header from './Components/Header'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
     const { category_id, exercise_id } = route.params
@@ -21,9 +20,6 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
     const { category, isLoading, workoutList } = useCategoryDetailData(category_id)
 
     const { isReady } = useInteractionReadyState()
-    if (!isReady) {
-        return <BlankScreenLoader />
-    }
 
     useEffect(() => {
         scrollToExerciseById(exerciseListRef, workoutList, exercise_id)
@@ -33,7 +29,9 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
         (id: string) => navigation.navigate('WorkoutDetail', { workout_id: id }),
         [navigation]
     )
-
+    if (!isReady) {
+        return <BlankScreenLoader />
+    }
     return (
         <LinearGradient
             colors={COLOR_BRANDS.primary}
@@ -42,7 +40,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
             style={styles.content}
         >
             <SafeAreaView style={styles.container}>
-                <Header handleNotificationClick={navigation.goBack} />
+                <Header onBack={navigation.goBack} />
                 <Thumbnail category={category} />
                 <BottomSheet
                     index={exercise_id ? 1 : 0}
@@ -57,6 +55,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
                             disappearsOnIndex={-1}
                             pressBehavior='none'
                             enableTouchThrough
+                            style={{ height: 0 }}
                         />
                     )}
                 >

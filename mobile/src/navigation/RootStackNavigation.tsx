@@ -27,23 +27,27 @@ import ActivityListScreen from '@/screens/Other/ActivityListScreen'
 import CompleteProfile from '@/screens/Other/CompleteProfile'
 import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
 import Register from '@/screens/Auth/Register'
+import { useNotification } from '@/Contexts/NotificationContext'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootStackNavigation() {
+    const { error, expoPushToken, notification } = useNotification()
     const { isAuthenticated } = useContext(AppContext)
 
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
         gestureEnabled: true
     }
-
+    console.log(error, 'error')
+    console.log(expoPushToken, 'expoPushToken')
+    console.log(notification, 'notification')
     return (
         <RootStack.Navigator screenOptions={screenOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>
             {isAuthenticated ? (
                 <RootStack.Group>
                     <RootStack.Screen name='Welcome' component={WelcomeScreen} options={{ gestureEnabled: false }} />
-                    <RootStack.Screen name='MainTab' component={MainTabs} />
+                    <RootStack.Screen name='MainTab' component={MainTabs} options={{}} />
                     <RootStack.Screen name='Notification' component={Notification} />
                     <RootStack.Screen name='WorkoutHistoryCenter' component={WorkoutHistoryCenter} />
                     <RootStack.Screen name='WorkoutHistoryDetail' component={WorkoutHistoryDetail} />

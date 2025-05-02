@@ -10,8 +10,11 @@ import FormUpdateTodayTarget from './Components/FormUpdateTodayTarget'
 import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 import useScrollListener from '@/hooks/useScrollListener'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
 
 function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>) {
+    const { isReady } = useInteractionReadyState()
     const [modalUpdateTargetVisible, setModalUpdateTargetVisible] = useState<boolean>(false)
     const { isScrolled, handleScroll } = useScrollListener()
     const toggleModalUpdateTarget = () => {
@@ -22,15 +25,12 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
     const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getTodayTarget })
     const todayTargetData = data?.data.data
 
+    if (!isReady) {
+        return <BlankScreenLoader />
+    }
+
     return (
         <View style={styles.container}>
-            <FormUpdateTodayTarget
-                visible={modalUpdateTargetVisible}
-                caloriesVal={todayTargetData?.calories || 0}
-                waterVal={todayTargetData?.water || 0}
-                onCancel={toggleModalUpdateTarget}
-                onUpdate={toggleModalUpdateTarget}
-            />
             <SafeAreaView style={[styles.header, isScrolled && styles.headerWithBorder]}>
                 <NavigationBar title='Activity Tracker' callback={navigation.goBack} />
             </SafeAreaView>
@@ -57,6 +57,13 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 <View style={styles.latestActivityCard}>
                     <LatestActivity />
                 </View>
+                <FormUpdateTodayTarget
+                    visible={modalUpdateTargetVisible}
+                    caloriesVal={todayTargetData?.calories || 0}
+                    waterVal={todayTargetData?.water || 0}
+                    onCancel={toggleModalUpdateTarget}
+                    onUpdate={toggleModalUpdateTarget}
+                />
             </ScrollView>
         </View>
     )

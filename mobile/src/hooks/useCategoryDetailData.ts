@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
 import { workoutApi, categoriesApi } from '@/services/rest'
 
 export function useCategoryDetailData(category_id: string) {
@@ -10,7 +9,7 @@ export function useCategoryDetailData(category_id: string) {
     } = useQuery({
         queryKey: ['workout-category', category_id],
         queryFn: () => workoutApi.getWorkoutByCategoryId({ id: category_id }),
-        staleTime: 30_000
+        staleTime: 10 * 60 * 1000
     })
 
     const { data: categoryRes } = useQuery({
@@ -18,8 +17,8 @@ export function useCategoryDetailData(category_id: string) {
         queryFn: () => categoriesApi.getCategoriesById({ id: category_id })
     })
 
-    const workoutList = useMemo(() => workoutData?.data.data || [], [workoutData])
-    const category = useMemo(() => categoryRes?.data.data, [categoryRes])
+    const workoutList = workoutData?.data.data || []
+    const category = categoryRes?.data.data
 
     return { workoutList, isLoading, category, ...rest }
 }

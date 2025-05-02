@@ -29,14 +29,17 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.content}>
-                    <NavigationBar
-                        title={'Workout Tracker'}
-                        callback={() => navigation.goBack()}
-                        headingStyle={styles.headerTitle}
-                    />
+                    <View style={styles.header}>
+                        <NavigationBar
+                            title={'Workout Tracker'}
+                            callback={() => navigation.goBack()}
+                            headingStyle={styles.headerTitle}
+                        />
+                    </View>
+
                     <LineChartWorkout />
+                    <CategoryBottomSheet handleCategoryPress={handleCategoryPress} />
                 </View>
-                <CategoryBottomSheet handleCategoryPress={handleCategoryPress} />
             </SafeAreaView>
         </LinearGradient>
     )
@@ -54,10 +57,12 @@ const styles = StyleSheet.create({
     content: {
         flex: 1
     },
+    header: {
+        marginTop: 10
+    },
     headerTitle: {
         color: '#FFF',
         fontSize: 16,
-        fontWeight: '700',
-        marginTop: 10
+        fontWeight: '700'
     }
 })

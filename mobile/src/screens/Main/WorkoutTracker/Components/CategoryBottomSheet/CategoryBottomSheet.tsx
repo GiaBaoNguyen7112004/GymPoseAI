@@ -24,7 +24,6 @@ const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(({
         ({ item }: { item: Category }) => <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />,
         [handleCategoryPress]
     )
-
     const renderSkeletons = useCallback(() => [1, 2].map((_, index) => <CategoryCardSkeleton key={index} />), [])
 
     const renderBackdrop = useCallback(
@@ -34,7 +33,8 @@ const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(({
                 appearsOnIndex={-1}
                 disappearsOnIndex={-1}
                 pressBehavior='none'
-                enableTouchThrough
+                enableTouchThrough={true}
+                style={{ height: 0 }}
             />
         ),
         []
