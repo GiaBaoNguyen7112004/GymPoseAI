@@ -1,0 +1,8 @@
+<resources>
+  <string name="app_name">GymPoseAI</string>
+  <string name="expo_system_ui_user_interface_style" translatable="false">automatic</string>
+  <string name="fb_login_protocol_scheme">fb1852106532214043</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">cover</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="facebook_app_id">1852106532214043</string><string name="facebook_client_token">37b622f6e337065117c580be5f6b4862</string>
+</resources>

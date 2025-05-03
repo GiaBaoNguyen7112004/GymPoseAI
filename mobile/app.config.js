@@ -108,3 +108,6 @@ export default {
   },
 };
 
+
+//keytool -exportcert -alias androiddebugkey -keystore "D:\DUT\Orther\AI\Projects\GymPoseAI\mobile\android\app\debug.keystore" -storepass android | "C:\Program Files\OpenSSL\bin\openssl.exe" sha1 -binary | "C:\Program Files\OpenSSL\bin\openssl.exe" base64
+

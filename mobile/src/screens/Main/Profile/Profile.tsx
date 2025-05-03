@@ -15,12 +15,13 @@ import LogoutButton from './Components/LogoutButton'
 import Modals from './Components/Modals'
 import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity'
 import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
+import { useNotification } from '@/Contexts/NotificationContext'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
+    const { allowNotification, setAllowNotification } = useNotification()
     const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
     const { openBottomSheet, closeBottomSheet } = useBottomSheetController(bottomSheetRef)
 
-    const [isNotificationEnabled, setIsNotificationEnabled] = useState(false)
     const [logoutState, setLogoutState] = useState({ visible: false, loading: false })
 
     const { isScrolled, handleScroll } = useScrollListener()
@@ -68,7 +69,7 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                         </SettingSection>
 
                         <SettingSection title='Notification'>
-                            <NotificationToggle value={isNotificationEnabled} onToggle={setIsNotificationEnabled} />
+                            <NotificationToggle value={allowNotification} onToggle={setAllowNotification} />
                         </SettingSection>
 
                         <SettingSection title='Other'>

@@ -6,6 +6,7 @@ class StorageManager {
     private accessToken: string | null = null
     private refreshToken: string | null = null
     private userProfile: User | null = null
+    private allowNotification: boolean | null = null
 
     private constructor() {}
 
@@ -22,6 +23,8 @@ class StorageManager {
             this.refreshToken = await AsyncStorage.getItem('refresh_token')
             const user = await AsyncStorage.getItem('user')
             this.userProfile = user ? JSON.parse(user) : null
+            const allowNotification = await AsyncStorage.getItem('allowNotification')
+            this.allowNotification = allowNotification !== null ? allowNotification === 'true' : null
         } catch (error) {
             console.error('Error loading storage:', error)
         }
@@ -37,6 +40,10 @@ class StorageManager {
 
     getProfile(): User | null {
         return this.userProfile
+    }
+
+    getAllowNotification(): boolean | null {
+        return this.allowNotification
     }
 
     async saveAccessToken(token: string): Promise<void> {
@@ -66,12 +73,22 @@ class StorageManager {
         }
     }
 
+    async saveAllowNotification(value: boolean): Promise<void> {
+        this.allowNotification = value
+        try {
+            await AsyncStorage.setItem('allowNotification', value.toString())
+        } catch (error) {
+            console.error('Error saving allowNotification:', error)
+        }
+    }
+
     async clearStorage(): Promise<void> {
         this.accessToken = null
         this.refreshToken = null
         this.userProfile = null
+        this.allowNotification = null
         try {
-            await AsyncStorage.multiRemove(['access_token', 'refresh_token', 'user'])
+            await AsyncStorage.multiRemove(['access_token', 'refresh_token', 'user', 'allowNotification'])
         } catch (error) {
             console.error('Error clearing storage:', error)
         }

@@ -11,7 +11,7 @@ import handleFormError from '@/utils/handleFormError'
 export type FormData = Pick<SchemaType, 'email' | 'password'>
 const formSchema = schema.pick(['email', 'password'])
 
-export function useLogin() {
+export function useEmailPasswordLogin() {
     const { setAuthenticated, setProfile } = useContext(AppContext)
 
     const methods = useForm<FormData>({

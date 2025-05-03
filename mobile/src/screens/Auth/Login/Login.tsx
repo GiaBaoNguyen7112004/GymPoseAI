@@ -6,10 +6,12 @@ import { RootStackScreenProps } from '@/navigation/types'
 import Header from './Components/Header'
 import LoginForm from './Components/LoginForm/LoginForm'
 import Footer from './Components/Footer'
-import { useLogin } from '@/hooks/useLogin'
+import useAuth from '@/hooks/useAuth'
 
 function Login({ navigation }: RootStackScreenProps<'Login'>) {
-    const { handleLogin, loginMutation, methods } = useLogin()
+    const { emailPassword, facebook } = useAuth()
+    const { handleLogin, loginMutation, methods } = emailPassword
+    const { loginWithFacebook } = facebook
 
     const handleGoToForgotPassword = useCallback(() => {
         navigation.push('ForgotPassword')
@@ -30,6 +32,7 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
                     <Footer
                         goToRegister={handleGoToRegister}
                         onSubmit={handleLogin}
+                        loginWithFacebook={loginWithFacebook}
                         formState={methods.formState.isValid}
                         isLoginIn={loginMutation.isPending}
                     />
