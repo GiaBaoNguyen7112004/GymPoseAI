@@ -1,16 +1,16 @@
-import { StyleSheet, SafeAreaView, View, InteractionManager } from 'react-native'
+import { StyleSheet, SafeAreaView, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 
 import WorkoutProgressChart from './components/WorkoutProgress'
 import { MainTabScreenProps } from '@/navigation/types'
-import BlankScreenLoader from '@/components/BlankScreenLoader'
 import WorkoutHistory from './components/WorkoutHistory'
 import Header from './components/Header'
 import BMISection from './components/BMISection'
 import TodayTargetSection from './components/TodayTargetSection'
-import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import ActivityStatusSection from './components/ActivityStatusSection/ActivityStatusSection'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import HomeSkeleton from './components/HomeSkeleton'
 
 function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
     const { isReady } = useInteractionReadyState()
@@ -23,7 +23,7 @@ function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
     }, [navigation])
 
     if (!isReady) {
-        return <BlankScreenLoader />
+        return <HomeSkeleton />
     }
     return (
         <SafeAreaView style={styles.safeArea}>

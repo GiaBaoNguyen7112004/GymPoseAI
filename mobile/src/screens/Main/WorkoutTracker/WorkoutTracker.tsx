@@ -6,18 +6,10 @@ import { MainTabScreenProps } from '@/navigation/types'
 import { Category } from '@/types/exercises.type'
 import CategoryBottomSheet from './Components/CategoryBottomSheet'
 import LineChartWorkout from './Components/LineChartWorkout'
-import useInteractionReadyState from '@/hooks/useInteractionReadyState'
-import BlankScreenLoader from '@/components/BlankScreenLoader'
 
 function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
-    const { isReady } = useInteractionReadyState()
-
     const handleCategoryPress = (category: Category) => {
         navigation.navigate('CategoryDetail', { category_id: category.id })
-    }
-
-    if (!isReady) {
-        return <BlankScreenLoader />
     }
 
     return (

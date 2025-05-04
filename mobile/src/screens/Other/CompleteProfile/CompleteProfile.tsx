@@ -14,15 +14,16 @@ import { RootStackScreenProps } from '@/navigation/types'
 import { DataGender } from '@/constants/dropdown.constant'
 import { useKeyboard } from '@/hooks/useKeyboard'
 import { useProfileForm } from '@/hooks/useProfileForm'
+import showToast from '@/utils/toast.util'
 
 function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>) {
     const { isKeyboardVisible } = useKeyboard()
-    const handleSuccess = () => {
-        navigation.replace('ConfirmYourGoal')
-    }
 
     const { methods, isPending, onSubmit } = useProfileForm({
-        onSuccessCallback: handleSuccess
+        onSuccessCallback: (res) => {
+            navigation.replace('ConfirmYourGoal')
+            showToast({ title: res.data.message, position: 'top' })
+        }
     })
     const canSubmit = methods.formState.isValid
     return (

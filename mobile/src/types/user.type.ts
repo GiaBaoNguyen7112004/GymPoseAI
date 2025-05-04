@@ -1,3 +1,5 @@
+import { ResponseApi } from './utils.type'
+
 export interface User {
     id: string
     avatar?: string
@@ -28,3 +30,5 @@ export type UpdateProfileDetailReqBody = {
 export type UpdateAvatarReqBody = {
     avatar: string
 }
+
+export type ResponseUserApi = ResponseApi<User, any>

@@ -1,6 +1,7 @@
 import { BaseQueryConfig, ResponseApi } from '@/types/utils.type'
 import http from '../core/httpClient'
 import { ResponseAPINotificationPage } from '@/types/notification.type'
+import { ResponseNewNotificationCount } from '@/types/FCM.type'
 
 const notificationApi = {
     getNotification({ params }: { params: BaseQueryConfig }) {
@@ -13,6 +14,15 @@ const notificationApi = {
     },
     deleteNotification({ id }: { id: string }) {
         return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}/delete`)
+    },
+    getNewNotificationCount() {
+        return http.get<ResponseNewNotificationCount>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new`)
+    },
+    resetNewNotificationCount() {
+        return http.put<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/reset-new`)
+    },
+    readAllNotification() {
+        return http.put<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/read-all`)
     }
 }
 

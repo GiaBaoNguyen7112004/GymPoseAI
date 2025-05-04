@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
 import YoutubePlayer from 'react-native-youtube-iframe'
 import Icon from 'react-native-vector-icons/Feather'
@@ -9,10 +8,10 @@ import TimeLine from './components/TimeLine'
 import { getYouTubeVideoId } from '@/utils/common.util'
 import { workoutApi } from '@/services/rest'
 import ReadMoreText from '@/components/ReadMoreText'
-import LoaderModal from '@/components/LoaderModal'
 import useScrollListener from '@/hooks/useScrollListener'
+import ExerciseDetailSkeleton from './components/ExerciseDetailSkeleton'
 
-function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetail'>) {
+function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
     const { handleScroll, isScrolled } = useScrollListener()
     const { workout_id } = route.params
 
@@ -27,9 +26,10 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
         workoutData?.media_url || 'https://youtu.be/irfw1gQ0foQ?si=HDvPCvOcnmu9XJ79'
     )
 
+    if (isLoading) return <ExerciseDetailSkeleton />
+
     return (
         <View style={styles.container}>
-            {isLoading && <LoaderModal title='Loading' />}
             <SafeAreaView style={[styles.navBar, isScrolled && styles.navBarScrolled]}>
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
@@ -82,7 +82,7 @@ function WorkoutDetail({ navigation, route }: RootStackScreenProps<'WorkoutDetai
     )
 }
 
-export default WorkoutDetail
+export default ExerciseDetail
 
 const styles = StyleSheet.create({
     container: {

@@ -22,7 +22,7 @@ export type RootStackParamList = {
     WorkoutHistoryCenter: undefined
     WorkoutHistoryDetail: { workout_id: string }
     CategoryDetail: { category_id: string; exercise_id?: string }
-    WorkoutDetail: { workout_id: string }
+    ExerciseDetail: { workout_id: string }
     ActivityTracker: undefined
     Setting: undefined
     ProfileManager: undefined

@@ -1,3 +1,3 @@
-import WorkoutDetail from './WorkoutDetail'
+import ExerciseDetail from './ExerciseDetail'
 
-export default WorkoutDetail
+export default ExerciseDetail

@@ -1,5 +1,11 @@
 import { ResponseApi } from '@/types/utils.type'
-import { UpdateAvatarReqBody, UpdateNameReqBody, UpdateProfileDetailReqBody, User } from '@/types/user.type'
+import {
+    ResponseUserApi,
+    UpdateAvatarReqBody,
+    UpdateNameReqBody,
+    UpdateProfileDetailReqBody,
+    User
+} from '@/types/user.type'
 import http from '../core/httpClient'
 import { ChangePasswordRedBody } from '@/types/auth.type'
 
@@ -7,10 +13,10 @@ type updateProfileBodyReq = UpdateNameReqBody | UpdateProfileDetailReqBody | Upd
 
 const userApi = {
     getProfile() {
-        return http.get<ResponseApi<User, any>>(process.env.EXPO_PUBLIC_URL_USER)
+        return http.get<ResponseUserApi>(process.env.EXPO_PUBLIC_URL_USER)
     },
     updateProfile(body: updateProfileBodyReq) {
-        return http.patch<ResponseApi<User, any>>(process.env.EXPO_PUBLIC_URL_USER, body)
+        return http.patch<ResponseUserApi>(process.env.EXPO_PUBLIC_URL_USER, body)
     },
     changePassword(body: ChangePasswordRedBody) {
         return http.put<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_CHANGE_PASSWORD, body)

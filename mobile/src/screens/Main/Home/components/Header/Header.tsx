@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MyIcon from '@/components/Icon'
+import { StyleSheet, Text, View } from 'react-native'
 import { memo } from 'react'
 import useUserData from '@/hooks/useUserData'
+import NotificationButton from '../NotificationButton'
 
 interface HeaderProps {
     handleNotificationClick: () => void
@@ -10,7 +10,6 @@ interface HeaderProps {
 function Header({ handleNotificationClick }: HeaderProps) {
     const { userData } = useUserData()
     const fullName = `${userData?.first_name ?? ''} ${userData?.last_name ?? ''}`.trim()
-
     return (
         <View style={styles.header}>
             <View style={styles.textContainer}>
@@ -19,9 +18,7 @@ function Header({ handleNotificationClick }: HeaderProps) {
                     {fullName}
                 </Text>
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleNotificationClick}>
-                <MyIcon name='notificationIcon' size={18} />
-            </TouchableOpacity>
+            <NotificationButton onPress={handleNotificationClick} />
         </View>
     )
 }

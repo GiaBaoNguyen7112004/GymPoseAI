@@ -1,6 +1,5 @@
 import { forwardRef, memo, useCallback } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useQuery } from '@tanstack/react-query'
 import BottomSheet, {
     BottomSheetBackdrop,
     BottomSheetBackdropProps,
@@ -8,7 +7,6 @@ import BottomSheet, {
     BottomSheetView
 } from '@gorhom/bottom-sheet'
 
-import { categoriesApi } from '@/services/rest'
 import CategoryCard from '@/components/CategoryCard'
 import CategoryCardSkeleton from '@/components/CategoryCardSkeleton'
 import { Category } from '@/types/exercises.type'

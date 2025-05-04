@@ -1,7 +1,8 @@
-import { useCallback } from 'react'
-import type { AnimatedBottomSheetLayoutRef } from '@/components/layouts/AnimatedBottomSheetLayout'
+import { AnimatedBottomSheetLayoutRef } from '@/types/components/bottomSheet.type'
+import { useCallback, useRef } from 'react'
 
-export default function useBottomSheetController(bottomSheetRef: React.RefObject<AnimatedBottomSheetLayoutRef>) {
+export default function useBottomSheetController() {
+    const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
     const openBottomSheet = useCallback((Content: React.ReactNode) => {
         bottomSheetRef.current?.open(<>{Content}</>)
     }, [])
@@ -10,5 +11,5 @@ export default function useBottomSheetController(bottomSheetRef: React.RefObject
         bottomSheetRef.current?.close()
     }, [])
 
-    return { openBottomSheet, closeBottomSheet }
+    return { openBottomSheet, closeBottomSheet, bottomSheetRef }
 }

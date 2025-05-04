@@ -3,18 +3,18 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { schema, SchemaType } from '@/utils/rules.util'
 import { userApi } from '@/services/rest'
-import { Gender } from '@/types/user.type'
 import { useMutation } from '@tanstack/react-query'
 import handleFormError from '@/utils/handleFormError'
-import showToast from '@/utils/toast.util'
 import useUserData from '@/hooks/useUserData'
+import { AxiosResponse } from 'axios'
+import { Gender, ResponseUserApi } from '@/types/user.type'
 
 type FormData = Pick<SchemaType, 'date_of_birth' | 'gender' | 'height' | 'weight'>
 const formSchema = schema.pick(['date_of_birth', 'gender', 'height', 'weight'])
 
 interface UseProfileFormProps {
-    onSuccessCallback?: (response: any) => void
-    onErrorCallback?: (errors: any) => void
+    onSuccessCallback?: (response: AxiosResponse<ResponseUserApi, any>) => void
+    onErrorCallback?: (errors: Error) => void
 }
 
 export const useProfileForm = ({ onSuccessCallback, onErrorCallback }: UseProfileFormProps) => {
@@ -34,7 +34,7 @@ export const useProfileForm = ({ onSuccessCallback, onErrorCallback }: UseProfil
             methods.setValue('height', userData.height ?? 0)
             methods.setValue('weight', userData.weight ?? 0)
         }
-    }, [userData, methods])
+    }, [methods, userData])
 
     const onSubmit = methods.handleSubmit((data) => {
         const body = {
@@ -44,7 +44,6 @@ export const useProfileForm = ({ onSuccessCallback, onErrorCallback }: UseProfil
         }
         updateProfileMutate(body, {
             onSuccess: (res) => {
-                showToast({ title: res.data.message })
                 refetch()
                 if (onSuccessCallback) {
                     onSuccessCallback(res)

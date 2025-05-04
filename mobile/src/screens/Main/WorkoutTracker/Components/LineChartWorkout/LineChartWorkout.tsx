@@ -1,6 +1,7 @@
 import LineChartSkeleton from '@/components/LineChartSkeleton'
 import WorkoutChart from '@/components/WorkoutChart'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import useUserData from '@/hooks/useUserData'
 import { workoutHistoryApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
@@ -8,6 +9,7 @@ import { StyleSheet, View } from 'react-native'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 
 function LineChartWorkout() {
+    const { isReady } = useInteractionReadyState()
     const { userData } = useUserData()
 
     const { data: workoutQuery, isLoading } = useQuery({
@@ -17,6 +19,8 @@ function LineChartWorkout() {
         staleTime: 1000 * 60 * 5
     })
     const workoutHistoryData = workoutQuery?.data.data || []
+
+    if (!isReady) return <LineChartSkeleton />
     return (
         <View style={styles.graphContainer}>
             {isLoading ? (

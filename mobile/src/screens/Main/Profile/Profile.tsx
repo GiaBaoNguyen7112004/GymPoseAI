@@ -1,7 +1,7 @@
-import { useRef, useState, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native'
 
-import AnimatedBottomSheetLayout, { AnimatedBottomSheetLayoutRef } from '@/components/layouts/AnimatedBottomSheetLayout'
+import AnimatedBottomSheetLayout from '@/components/layouts/AnimatedBottomSheetLayout'
 import { MainTabScreenProps } from '@/navigation/types'
 import useScrollListener from '@/hooks/useScrollListener'
 import useBottomSheetController from '@/hooks/useBottomSheetController'
@@ -19,8 +19,7 @@ import { useNotification } from '@/Contexts/NotificationContext'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { allowNotification, setAllowNotification } = useNotification()
-    const bottomSheetRef = useRef<AnimatedBottomSheetLayoutRef>(null)
-    const { openBottomSheet, closeBottomSheet } = useBottomSheetController(bottomSheetRef)
+    const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
 
     const [logoutState, setLogoutState] = useState({ visible: false, loading: false })
 

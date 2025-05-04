@@ -1,11 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MyIcon from '@/components/Icon'
 import AvatarWithIcon from '@/components/AvatarWithIcon'
 import { Notification } from '@/types/notification.type'
 import { formatRelativeTimeFromNow } from '@/utils/format.util'
-import { COLOR_BRANDS } from '@/constants/common.constants'
-import { IconName } from '@/constants/icon.constants'
 import { getAvatarWithIconNotify } from '@/utils/common.util'
+import { Feather } from '@expo/vector-icons'
+import { memo } from 'react'
 
 interface NotificationCardProps {
     itemData: Notification
@@ -18,44 +17,45 @@ function NotificationCard({ itemData, onCardPress, onBtnMorePress }: Notificatio
     const containerStyle = [styles.container, !itemData.is_read && styles.unread]
     return (
         <TouchableOpacity style={containerStyle} onPress={onCardPress} activeOpacity={0.9}>
-            <AvatarWithIcon size={45} colors={colors} icon={icon} />
+            <AvatarWithIcon size={55} colors={colors} icon={icon} />
             <View style={styles.content}>
-                <Text numberOfLines={1} ellipsizeMode='tail' style={styles.title}>
+                <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>
                     {itemData.title}
                 </Text>
                 <Text style={styles.time}>{formatRelativeTimeFromNow(itemData.created_at)}</Text>
             </View>
             <TouchableOpacity onPress={onBtnMorePress} hitSlop={10} style={styles.moreBtn}>
-                <MyIcon name='moreIcon' size={14} />
+                <Feather name='more-horizontal' size={24} color='black' />
             </TouchableOpacity>
         </TouchableOpacity>
     )
 }
 
-export default NotificationCard
+export default memo(NotificationCard)
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 15,
-        paddingHorizontal: 30
+        paddingHorizontal: 15
     },
     unread: {
-        backgroundColor: '#EBF8FF'
+        backgroundColor: '#F0F4F8'
     },
     content: {
         flex: 1,
         marginLeft: 10
     },
     title: {
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: '500',
         lineHeight: 18,
-        color: '#1D1617'
+        color: '#1D1617',
+        paddingRight: 30
     },
     time: {
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: '400',
         lineHeight: 15,
         color: '#7B6F72',

@@ -1,3 +1,3 @@
-// import NotificationCart from './NotificationCard'
+import NotificationCart from './NotificationCard'
 
-// export default NotificationCart
+export default NotificationCart

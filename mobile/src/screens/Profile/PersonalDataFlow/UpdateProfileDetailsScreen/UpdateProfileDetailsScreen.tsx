@@ -9,15 +9,16 @@ import DatePickerInput from '@/components/DatePickerInput'
 import { DataGender } from '@/constants/dropdown.constant'
 import TextInputWithUnit from '@/components/TextInputWithUnit'
 import { useProfileForm } from '@/hooks/useProfileForm'
+import showToast from '@/utils/toast.util'
 
 function UpdateProfileDetailScreen({ onGoBack, goToTop }: ScreenComponentProps) {
     const { isKeyboardVisible } = useKeyboard()
-    const handleSuccess = () => {
-        if (goToTop) goToTop()
-    }
 
     const { methods, isPending, onSubmit } = useProfileForm({
-        onSuccessCallback: handleSuccess
+        onSuccessCallback: (res) => {
+            if (goToTop) goToTop()
+            showToast({ title: res.data.message, position: 'bottom' })
+        }
     })
 
     return (

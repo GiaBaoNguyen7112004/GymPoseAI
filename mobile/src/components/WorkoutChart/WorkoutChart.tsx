@@ -9,6 +9,7 @@ import { useTooltip } from '@/hooks/useTooltip'
 import { workoutHistoryLineChart } from '@/config/chart.config'
 import { calculateWorkoutHistoryChart, getChartWidth } from '@/utils/chart.util'
 import { ViewModeType } from '@/types/utils.type'
+import { SCREEN_WIDTH } from '@/constants/devices.constant'
 
 interface WorkoutChartProps {
     workoutData: workoutHistoryOfDay[]
@@ -73,8 +74,9 @@ const WorkoutChart = ({
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        position: 'relative'
+        maxWidth: SCREEN_WIDTH * 0.9,
+        position: 'relative',
+        width: '100%'
     },
     chartContainer: {
         position: 'relative',

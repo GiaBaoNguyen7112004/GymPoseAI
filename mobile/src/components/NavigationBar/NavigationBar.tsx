@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react'
 import { StyleSheet, Text, View, Pressable, StyleProp, TextStyle } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { Feather, Ionicons } from '@expo/vector-icons'
 
 export interface NavigationBarProps {
     title: string
@@ -8,9 +8,17 @@ export interface NavigationBarProps {
     headingStyle?: StyleProp<TextStyle>
     buttonBackStyle?: StyleProp<TextStyle>
     iconColor?: string
+    handleMorePress?: () => void
 }
 
-const NavigationBar: React.FC<NavigationBarProps> = ({ callback, title, headingStyle, buttonBackStyle, iconColor }) => {
+const NavigationBar: React.FC<NavigationBarProps> = ({
+    callback,
+    title,
+    headingStyle,
+    buttonBackStyle,
+    iconColor,
+    handleMorePress
+}) => {
     const handleBackPress = useCallback(() => {
         if (callback) callback()
     }, [callback])
@@ -21,6 +29,11 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ callback, title, headingS
                 <Ionicons name='chevron-back' size={20} color={iconColor} />
             </Pressable>
             <Text style={[styles.title, headingStyle]}>{title}</Text>
+            {handleMorePress && (
+                <Pressable onPress={handleMorePress} style={[styles.btnBack, buttonBackStyle]}>
+                    <Feather name='more-horizontal' size={20} color={iconColor} />
+                </Pressable>
+            )}
         </View>
     )
 }
