@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         flex: 1,
-        width: SCREEN_WIDTH * 0.9,
+        width: SCREEN_WIDTH,
         marginTop: 15
     }
 })

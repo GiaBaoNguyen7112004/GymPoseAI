@@ -1,4 +1,4 @@
-import { createStackNavigator, StackNavigationOptions, TransitionPresets } from '@react-navigation/stack'
+import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
 import { useContext } from 'react'
 import { AppContext } from '@/Contexts/App.context'
 import { RootStackParamList } from './types'
@@ -32,16 +32,12 @@ import ExerciseDetail from '@/screens/Other/WorkoutDetail'
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootStackNavigation() {
-    const { error, expoPushToken, notification } = useNotification()
     const { isAuthenticated } = useContext(AppContext)
 
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
         gestureEnabled: true
     }
-    console.log(error, 'error')
-    console.log(expoPushToken, 'expoPushToken')
-    console.log(notification, 'notification')
     return (
         <RootStack.Navigator screenOptions={screenOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>
             {isAuthenticated ? (
