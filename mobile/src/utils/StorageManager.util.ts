@@ -7,6 +7,7 @@ class StorageManager {
     private refreshToken: string | null = null
     private userProfile: User | null = null
     private allowNotification: boolean | null = null
+    private pushToken: string | null = null
 
     private constructor() {}
 
@@ -25,6 +26,7 @@ class StorageManager {
             this.userProfile = user ? JSON.parse(user) : null
             const allowNotification = await AsyncStorage.getItem('allowNotification')
             this.allowNotification = allowNotification !== null ? allowNotification === 'true' : null
+            this.pushToken = await AsyncStorage.getItem('push_token')
         } catch (error) {
             console.error('Error loading storage:', error)
         }
@@ -46,6 +48,9 @@ class StorageManager {
         return this.allowNotification
     }
 
+    getPushToken(): string | null {
+        return this.pushToken
+    }
     async saveAccessToken(token: string): Promise<void> {
         this.accessToken = token
         try {
@@ -79,6 +84,15 @@ class StorageManager {
             await AsyncStorage.setItem('allowNotification', value.toString())
         } catch (error) {
             console.error('Error saving allowNotification:', error)
+        }
+    }
+
+    async savePushToken(token: string): Promise<void> {
+        this.pushToken = token
+        try {
+            await AsyncStorage.setItem('push_token', token)
+        } catch (error) {
+            console.error('Error saving push token:', error)
         }
     }
 

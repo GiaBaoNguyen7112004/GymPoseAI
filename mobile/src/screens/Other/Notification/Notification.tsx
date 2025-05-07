@@ -21,7 +21,6 @@ const NotificationScreen = ({ navigation }: RootStackScreenProps<'Notification'>
 
     return (
         <View style={styles.wrapperScreen}>
-            {isLoading && <LoaderModal title='Loading' />}
             <SafeAreaView style={styles.navBar}>
                 <NavigationBar
                     title='Notifications'
@@ -30,6 +29,7 @@ const NotificationScreen = ({ navigation }: RootStackScreenProps<'Notification'>
                 />
             </SafeAreaView>
             <View style={styles.content}>
+                <LoaderModal isVisible={isLoading} />
                 <NotificationList
                     notifications={notifications}
                     onRefresh={refetch}
@@ -51,14 +51,23 @@ export default NotificationScreen
 const styles = StyleSheet.create({
     wrapperScreen: {
         flex: 1,
-        backgroundColor: '#FFF'
+        backgroundColor: '#F7F8F8'
     },
     navBar: {
         height: 60,
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: '#E5E5E5'
+        borderBottomColor: '#E5E5E5',
+        backgroundColor: '#FFF',
+        // iOS shadow
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3
     },
     content: {
         flex: 1

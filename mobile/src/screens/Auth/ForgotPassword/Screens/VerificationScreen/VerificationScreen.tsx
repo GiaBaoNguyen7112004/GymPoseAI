@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FormProvider } from 'react-hook-form'
+import { FontAwesome } from '@expo/vector-icons'
 
 import GradientButton from '@/components/GradientButton'
 import TextGradient from '@/components/TextGradient'
@@ -8,6 +9,7 @@ import OTPInput from '@/components/OTPInput'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { useOTPVerification } from '@/hooks/useOTPVerification'
 import { authApi } from '@/services/rest'
+import { useFacebookLogin } from '@/hooks/useFacebookLogin'
 
 interface VerificationScreenProps {
     onSuccess: (otp: string) => void
@@ -22,10 +24,12 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
         verifyFn: authApi.verifyOtpForgotPassword,
         resendFn: authApi.resentOTPForgotPassword
     })
+    const { loginWithFacebook } = useFacebookLogin()
 
     return (
         <FormProvider {...methods}>
             <View style={styles.wrapper}>
+                {/* Title & OTP Input */}
                 <View>
                     <Text style={styles.title}>Enter Verification Code</Text>
                     <View style={styles.otpWrapper}>
@@ -33,7 +37,9 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
                     </View>
                 </View>
 
+                {/* Actions */}
                 <View>
+                    {/* Resend OTP */}
                     <TouchableOpacity style={styles.resendWrapper} disabled={countdown > 0} onPress={handleResend}>
                         <Text style={styles.resendText}>
                             {countdown > 0 ? `You can resend in ${countdown}s` : `If you didn’t receive a code,`}
@@ -41,6 +47,7 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
                         {countdown === 0 && <TextGradient style={styles.resendStrong} text=' Resend' />}
                     </TouchableOpacity>
 
+                    {/* Submit Button */}
                     <GradientButton
                         Square
                         style={styles.submitBtn}
@@ -51,9 +58,18 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
                         <Text style={styles.submitText}>Send</Text>
                     </GradientButton>
 
+                    {/* Sign Up */}
                     <Text style={styles.haveAccountText}>Do you have an account?</Text>
                     <TouchableOpacity style={styles.signupBtn} onPress={onSingUp}>
                         <Text style={styles.signupText}>Sign up</Text>
+                    </TouchableOpacity>
+
+                    {/* Facebook Login */}
+                    <TouchableOpacity style={styles.facebookBtn} onPress={loginWithFacebook}>
+                        <View style={styles.facebookContent}>
+                            <FontAwesome name='facebook' size={20} color='#8F8F8F' style={{ marginRight: 8 }} />
+                            <Text style={styles.facebookText}>Login with Facebook</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -118,13 +134,32 @@ const styles = StyleSheet.create({
         width: SCREEN_WIDTH * 0.9,
         height: 50,
         justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 100
+        alignItems: 'center'
     },
     signupText: {
         fontSize: 16,
         fontWeight: '600',
         color: '#8F8F8F'
+    },
+    facebookBtn: {
+        marginTop: 18,
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: '#444',
+        width: SCREEN_WIDTH * 0.9,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 100
+    },
+    facebookText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#8F8F8F'
+    },
+    facebookContent: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })
 

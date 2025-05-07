@@ -87,6 +87,7 @@ export default {
     ["react-native-fbsdk-next", {
       appID: '1852106532214043',
       clientId: "37b622f6e337065117c580be5f6b4862",
+      clientToken: "37b622f6e337065117c580be5f6b4862",
       displayName: "GymPoseAI",
       scheme: 'fb1852106532214043',
       advertiserIDCollectionEnabled: false,

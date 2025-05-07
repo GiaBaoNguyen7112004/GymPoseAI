@@ -1,7 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
 
 import NavigationBar from '@/components/NavigationBar'
 import TextGradient from '@/components/TextGradient'
@@ -14,41 +12,20 @@ import StatItem from './Components/StatItem'
 import { COLOR_BRANDS } from '@/constants/common.constants'
 import { RootStackScreenProps } from '@/navigation/types'
 import { formatDate } from '@/utils/format.util'
-import { workoutHistoryApi } from '@/services/rest'
-import { calculateWorkoutSummaryChart } from '@/utils/chart.util'
 import useScrollListener from '@/hooks/useScrollListener'
 import LoaderModal from '@/components/LoaderModal'
+import { useWorkoutData } from '@/hooks/useWorkoutData'
 
 export default function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
     const { workout_id } = route.params
 
-    const { data: workoutRes } = useQuery({
-        queryKey: ['workout_id', workout_id],
-        queryFn: () => workoutHistoryApi.getWorkoutSummaryById({ id: workout_id })
-    })
-
-    const { data: errorsRes, isLoading } = useQuery({
-        queryKey: ['errors_of_workout', workout_id],
-        queryFn: () => workoutHistoryApi.getErrorsOfWorkoutById({ id: workout_id }),
-        staleTime: 1000 * 60 * 5
-    })
-
-    const workout = workoutRes?.data.data
-    const poseErrors = errorsRes?.data.data || []
-
-    const workoutDuration = useMemo(() => {
-        const start = new Date(workout?.start_time || '')
-        const end = new Date(workout?.end_time || '')
-        return Math.floor((end.getTime() - start.getTime()) / 60000)
-    }, [workout])
-
-    const progressData = useMemo(() => calculateWorkoutSummaryChart(workout), [workout])
+    const { workout, poseErrors, workoutDuration, progressData, isLoading } = useWorkoutData(workout_id)
 
     const { isScrolled, handleScroll } = useScrollListener()
 
     return (
         <View style={styles.container}>
-            {isLoading && <LoaderModal title='Loading' />}
+            <LoaderModal isVisible={isLoading} />
             <SafeAreaView style={[styles.navbar, isScrolled && styles.navbarWithBorder]}>
                 <NavigationBar title='Summary' callback={navigation.goBack} />
             </SafeAreaView>
@@ -127,21 +104,21 @@ export default function WorkoutHistoryDetail({ navigation, route }: RootStackScr
 
 const card = {
     backgroundColor: '#fff',
-    shadowColor: 'rgba(29, 22, 23, 0.3)',
-    shadowOffset: { width: 1, height: 10 },
+    shadowColor: 'rgba(29, 22, 23, 0.1)',
+    shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 20,
     elevation: 8
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FFF' },
-    scrollView: { flex: 1, backgroundColor: '#FFF ' },
+    container: { flex: 1, backgroundColor: '#F7F8F8' },
+    scrollView: { flex: 1, backgroundColor: '#F7F8F8' },
     navbar: {
         height: 60,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: '#F7F8F8',
         borderBottomWidth: 1,
         borderBottomColor: 'transparent'
     },
@@ -153,7 +130,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#1D1617',
-        marginBottom: 18
+        marginBottom: 5
     },
     cardTop: {
         ...card,

@@ -1,62 +1,67 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet, Dimensions } from 'react-native'
 import { Skeleton } from 'moti/skeleton'
-import Home from '../../Home'
 
-const windowWidth = Dimensions.get('window').width
 const PADDING = 16
+const windowWidth = Dimensions.get('window').width
+
+const skeletonColorMode: 'light' | 'dark' = 'light'
+const skeletonRectProps = { colorMode: skeletonColorMode, radius: 6 }
+const skeletonCircleProps = { colorMode: skeletonColorMode, radius: 'round' as const }
 
 const HomeSkeleton = ({ show = true }: { show?: boolean }) => {
-    const skeletonColorMode: 'light' | 'dark' = 'light'
-    const skeletonRectProps = { colorMode: skeletonColorMode, radius: 6 }
-    const skeletonCircleProps = { colorMode: skeletonColorMode, radius: 'round' as 'round' }
-
     return (
         <ScrollView style={styles.screen} contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
             <Skeleton.Group show={show}>
+                {/* Header */}
                 <View style={styles.header}>
-                    <View style={styles.headerTextContainer}>
-                        <Skeleton height={14} width={'30%'} {...skeletonRectProps} />
-                        <View style={{ height: 6 }} />
-                        <Skeleton height={28} width={'60%'} {...skeletonRectProps} radius={8} />
+                    <View>
+                        <Skeleton height={14} width='30%' {...skeletonRectProps} />
+                        <View style={styles.spacingSmall} />
+                        <Skeleton height={28} width='60%' {...skeletonRectProps} radius={8} />
                     </View>
                     <Skeleton height={36} width={36} {...skeletonCircleProps} />
                 </View>
 
+                {/* Large Card */}
                 <View style={styles.cardLarge}>
-                    <View style={{ flex: 1, paddingRight: PADDING }}>
-                        <Skeleton height={20} width={'70%'} {...skeletonRectProps} />
-                        <View style={{ height: 8 }} />
-                        <Skeleton height={16} width={'90%'} {...skeletonRectProps} />
-                        <View style={{ height: 15 }} />
+                    <View style={styles.flex1PaddingRight}>
+                        <Skeleton height={20} width='70%' {...skeletonRectProps} />
+                        <View style={styles.spacingXSmall} />
+                        <Skeleton height={16} width='90%' {...skeletonRectProps} />
+                        <View style={styles.spacingMedium} />
                         <Skeleton height={35} width={100} {...skeletonRectProps} radius={10} />
                     </View>
                     <Skeleton height={70} width={70} {...skeletonCircleProps} />
                 </View>
 
+                {/* Simple Card Row */}
                 <View style={[styles.cardSimple, styles.rowBetween]}>
-                    <Skeleton height={20} width={'40%'} {...skeletonRectProps} />
+                    <Skeleton height={20} width='40%' {...skeletonRectProps} />
                     <Skeleton height={30} width={80} {...skeletonRectProps} radius={10} />
                 </View>
 
+                {/* Section Title */}
                 <View style={styles.sectionTitle}>
-                    <Skeleton height={22} width={'50%'} {...skeletonRectProps} />
+                    <Skeleton height={22} width='50%' {...skeletonRectProps} />
                 </View>
 
+                {/* Activity Card */}
                 <View style={styles.cardActivity}>
                     <View style={styles.rowBetween}>
                         <View>
                             <Skeleton height={18} width={80} {...skeletonRectProps} />
-                            <View style={{ height: 6 }} />
+                            <View style={styles.spacingXSmall} />
                             <Skeleton height={24} width={100} {...skeletonRectProps} />
                         </View>
                         <Skeleton height={25} width={70} {...skeletonRectProps} radius={12} />
                     </View>
-                    <View style={{ height: 15 }} />
-                    <Skeleton height={60} width={'100%'} {...skeletonRectProps} />
+                    <View style={styles.spacingMedium} />
+                    <Skeleton height={60} width='100%' {...skeletonRectProps} />
                 </View>
             </Skeleton.Group>
-            <View style={{ height: 50 }} />
+
+            <View style={styles.bottomSpacer} />
         </ScrollView>
     )
 }
@@ -75,59 +80,57 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginBottom: PADDING * 1.5
     },
-    headerTextContainer: {},
     cardLarge: {
         flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFF',
         borderRadius: 20,
         padding: PADDING * 1.2,
         marginBottom: PADDING * 1.5,
-        alignItems: 'center'
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#E5E5E5'
+    },
+    flex1PaddingRight: {
+        flex: 1,
+        paddingRight: PADDING
     },
     cardSimple: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFF',
         borderRadius: 16,
         paddingVertical: PADDING,
         paddingHorizontal: PADDING * 1.2,
-        marginBottom: PADDING * 1.5
+        marginBottom: PADDING * 1.5,
+        borderWidth: 1,
+        borderColor: '#E5E5E5'
     },
     sectionTitle: {
         marginBottom: PADDING * 0.75
     },
     cardActivity: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFF',
         borderRadius: 20,
         padding: PADDING * 1.2,
-        marginBottom: PADDING * 1.5
+        marginBottom: PADDING * 1.5,
+        borderWidth: 1,
+        borderColor: '#E5E5E5'
     },
     rowBetween: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    bottomRow: {
-        flexDirection: 'row'
+    spacingXSmall: {
+        height: 6
     },
-    cardBottom: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 20,
-        padding: PADDING,
-        shadowColor: '#C0C8E0',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 3
+    spacingSmall: {
+        height: 8
     },
-    waterCard: {
-        flex: 1,
-        marginRight: PADDING / 2,
-        height: 260
+    spacingMedium: {
+        height: 15
     },
-    rightColumn: {
-        flex: 1,
-        marginLeft: PADDING / 2
-    },
-    rightCard: {}
+    bottomSpacer: {
+        height: 50
+    }
 })
 
 export default HomeSkeleton

@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 15,
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        backgroundColor: '#FFF'
     },
     unread: {
         backgroundColor: '#F0F4F8'

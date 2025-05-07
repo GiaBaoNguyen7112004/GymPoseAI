@@ -63,8 +63,8 @@ export default function App() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <QueryClientProvider client={queryClient}>
-                <NotificationProvider>
-                    <AppProvider>
+                <AppProvider>
+                    <NotificationProvider>
                         <BottomSheetModalProvider>
                             <NavigationContainer linking={linking}>
                                 <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
@@ -72,8 +72,8 @@ export default function App() {
                             </NavigationContainer>
                         </BottomSheetModalProvider>
                         <Toast config={toastFitnessXConfig} />
-                    </AppProvider>
-                </NotificationProvider>
+                    </NotificationProvider>
+                </AppProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>
     )

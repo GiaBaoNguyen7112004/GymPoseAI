@@ -8,6 +8,7 @@ import StorageManager from '@/utils/StorageManager.util'
 import { Alert } from 'react-native'
 import { useMutation } from '@tanstack/react-query'
 import { FCMApi } from '@/services/rest'
+import { AppContext } from './App.context'
 
 interface NotificationContextType {
     expoPushToken: string | null
@@ -36,9 +37,12 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     const [notification, setNotification] = useState<Notifications.Notification | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [allowNotification, setAllowNotificationState] = useState<boolean>(true)
-
-    const {} = useMutation({
+    const { isAuthenticated } = useContext(AppContext)
+    const { mutateAsync: registerFCMMutateAsync } = useMutation({
         mutationFn: FCMApi.registerFCMToken
+    })
+    const { mutateAsync: deleteFCMMutateAsync } = useMutation({
+        mutationFn: FCMApi.deleteFCMToken
     })
 
     const notificationListener = useRef<Notifications.Subscription>()
@@ -75,8 +79,12 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         try {
             const token = await registerForPushNotificationsAsync()
             setExpoPushToken(token)
-
-            return !!token
+            if (!token) {
+                throw new Error('Failed to get push token')
+            }
+            if (isAuthenticated) await registerFCMMutateAsync({ push_token: token })
+            await StorageManager.savePushToken(token)
+            return true
         } catch (err) {
             handleError(err, 'Failed to register for push notifications')
             return false
@@ -87,6 +95,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     const initializePushNotifications = async () => {
         try {
             // Get stored notification preference
+            const storedPushToken = await StorageManager.getPushToken()
+            setExpoPushToken(storedPushToken)
             const storedPermission = await StorageManager.getAllowNotification()
             const shouldEnableNotifications = storedPermission !== null ? storedPermission : true
             setAllowNotificationState(shouldEnableNotifications)
@@ -105,6 +115,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
                     setAllowNotificationState(false)
                     await StorageManager.saveAllowNotification(false)
                 }
+            } else {
             }
         } catch (err) {
             handleError(err, 'Failed to initialize push notifications')
@@ -115,6 +126,9 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     const setAllowNotification = async (value: boolean): Promise<void> => {
         try {
             if (!value) {
+                if (isAuthenticated && expoPushToken) {
+                    await deleteFCMMutateAsync({ push_token: expoPushToken })
+                }
                 // Disable notifications
                 Alert.alert('Notifications Disabled', 'You will no longer receive new notifications.', [{ text: 'OK' }])
                 setAllowNotificationState(false)

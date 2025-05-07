@@ -11,12 +11,14 @@ import CategoryCard from '@/components/CategoryCard'
 import CategoryCardSkeleton from '@/components/CategoryCardSkeleton'
 import { Category } from '@/types/exercises.type'
 import { useCategories } from '@/hooks/useCategoriesData'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 
 interface CategoryBottomSheetProps {
     handleCategoryPress: (category: Category) => void
 }
 
 const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(({ handleCategoryPress }, ref) => {
+    const { isReady } = useInteractionReadyState()
     const { categoriesData, categoriesLoading } = useCategories()
     const renderCategoryItem = useCallback(
         ({ item }: { item: Category }) => <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />,
@@ -51,7 +53,7 @@ const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(({
             <BottomSheetView style={styles.bottomSheetContent}>
                 <View style={styles.trainingSection}>
                     <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
-                    {categoriesLoading ? (
+                    {!isReady || categoriesLoading ? (
                         renderSkeletons()
                     ) : (
                         <BottomSheetFlatList

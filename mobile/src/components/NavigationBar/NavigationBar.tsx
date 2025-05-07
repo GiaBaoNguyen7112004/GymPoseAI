@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     navigationBar: {
         backgroundColor: 'transparent',
         flexDirection: 'row',
-        height: 40,
+        height: 42,
         paddingHorizontal: 29,
         paddingVertical: 10,
         alignItems: 'center',

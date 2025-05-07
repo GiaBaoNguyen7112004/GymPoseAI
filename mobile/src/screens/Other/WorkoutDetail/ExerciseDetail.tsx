@@ -8,11 +8,9 @@ import TimeLine from './components/TimeLine'
 import { getYouTubeVideoId } from '@/utils/common.util'
 import { workoutApi } from '@/services/rest'
 import ReadMoreText from '@/components/ReadMoreText'
-import useScrollListener from '@/hooks/useScrollListener'
 import ExerciseDetailSkeleton from './components/ExerciseDetailSkeleton'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
-    const { handleScroll, isScrolled } = useScrollListener()
     const { workout_id } = route.params
 
     const { data, isLoading } = useQuery({
@@ -30,19 +28,14 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
 
     return (
         <View style={styles.container}>
-            <SafeAreaView style={[styles.navBar, isScrolled && styles.navBarScrolled]}>
+            <SafeAreaView style={styles.navBar}>
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
                         <Icon name='x' size={18} color='#333' />
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            <ScrollView
-                style={styles.scrollView}
-                showsVerticalScrollIndicator={false}
-                onScroll={handleScroll}
-                scrollEventThrottle={16}
-            >
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
                 <View style={styles.content}>
                     <View style={styles.videoContainer}>
                         <YoutubePlayer height={300} videoId={workoutIdYoutube as string} />
@@ -96,9 +89,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         borderBottomWidth: 1,
         borderBottomColor: 'transparent'
-    },
-    navBarScrolled: {
-        borderBottomColor: '#E5E5E5'
     },
     scrollView: {
         flex: 1,

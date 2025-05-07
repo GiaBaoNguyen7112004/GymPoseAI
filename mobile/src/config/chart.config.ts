@@ -16,7 +16,7 @@ const lineChartConfig: AbstractChartConfig = {
         color: '#7B6F72'
     },
     propsForDots: {
-        r: '2',
+        r: '1',
         strokeWidth: '1',
         stroke: '#86aeff'
     },

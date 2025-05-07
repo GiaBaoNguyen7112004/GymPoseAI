@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { View, RefreshControl, FlatList, Image, StyleSheet, Text } from 'react-native'
 import NotificationCard from '../NotificationCard'
 import { Notification } from '@/types/notification.type'
+import LottieView from 'lottie-react-native'
 
 interface Props {
     notifications: Notification[]
@@ -49,10 +50,11 @@ const NotificationList: React.FC<Props> = ({
     const renderEmptyComponent = useCallback(
         () => (
             <View style={styles.emptyContainer}>
-                <Image
-                    source={require('@/assets/images/notification.png')}
+                <LottieView
+                    source={require('@/assets/animations/empty_cart.json')}
+                    autoPlay
+                    loop
                     style={styles.emptyImage}
-                    resizeMode='contain'
                 />
                 <Text style={styles.emptyText}>You have no notifications</Text>
             </View>
@@ -87,8 +89,9 @@ export default NotificationList
 
 const styles = StyleSheet.create({
     notificationContainer: {
-        paddingBottom: 16,
-        flexGrow: 1
+        paddingVertical: 5,
+        flexGrow: 1,
+        backgroundColor: '#F7F8F8'
     },
     emptyContainer: {
         flex: 1,

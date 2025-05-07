@@ -1,43 +1,38 @@
+import React, { memo } from 'react'
 import { categories } from '@/types/workoutHistory.type'
-import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 interface TabBarProps {
-    onChangeTab?: (tab: string) => void
-    activeTab?: categories
+    onChangeTab?: (tab: categories) => void
+    activeTab: categories
 }
 
 const TABS: categories[] = ['full body', 'lower body', 'abdominal muscles']
 
-function TabBar({ onChangeTab, activeTab }: TabBarProps) {
-    const [activeTabState, setActiveTab] = useState<categories>(activeTab || 'full body')
-
+const TabBar = ({ onChangeTab, activeTab }: TabBarProps) => {
     const handleTabChange = (tab: categories) => {
-        setActiveTab(tab)
-        onChangeTab?.(tab)
+        if (tab !== activeTab) {
+            onChangeTab?.(tab)
+        }
     }
 
-    return (
-        <View style={styles.tabs}>
-            {TABS.map((tab) => {
-                const isActive = tab === activeTabState
-                return (
-                    <TouchableOpacity
-                        key={tab}
-                        style={[styles.tab, isActive && styles.activeTab]}
-                        onPress={() => handleTabChange(tab)}
-                    >
-                        <Text style={[styles.tabText, isActive && styles.activeTabText]}>{capitalize(tab)}</Text>
-                    </TouchableOpacity>
-                )
-            })}
-        </View>
-    )
+    const renderTab = (tab: categories) => {
+        const isActive = tab === activeTab
+        return (
+            <TouchableOpacity
+                key={tab}
+                style={[styles.tab, isActive && styles.activeTab]}
+                onPress={() => handleTabChange(tab)}
+            >
+                <Text style={[styles.tabText, isActive && styles.activeTabText]}>{tab}</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    return <View style={styles.tabs}>{TABS.map(renderTab)}</View>
 }
 
-export default TabBar
-
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
+export default memo(TabBar)
 
 const styles = StyleSheet.create({
     tabs: {
@@ -56,16 +51,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 10,
         backgroundColor: '#fff',
-
-        // Android shadow
-        elevation: 11
+        elevation: 11 // Android shadow
     },
     activeTab: {
         backgroundColor: 'rgba(149, 173, 254, 0.10)'
     },
     tabText: {
         fontSize: 14,
-        fontWeight: '500'
+        fontWeight: '500',
+        textTransform: 'capitalize'
     },
     activeTabText: {
         color: '#5A76FA',

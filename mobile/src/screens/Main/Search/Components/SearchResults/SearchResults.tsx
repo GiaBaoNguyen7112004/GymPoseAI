@@ -1,11 +1,12 @@
 import { memo, useCallback, useEffect } from 'react'
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
 
 import WorkoutCard from '@/components/WorkoutCard'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { searchApi } from '@/services/rest'
 import { Exercise } from '@/types/exercises.type'
+import LottieView from 'lottie-react-native'
 
 interface SearchResultsProps {
     searchText: string
@@ -55,7 +56,7 @@ function SearchResults({ searchText, handleWorkoutCardPress, setIsLoading }: Sea
 
     const renderInitialPrompt = () => (
         <View style={styles.noSearchContainer}>
-            <Image source={require('@/assets/images/search.png')} style={styles.searchIcon} />
+            <LottieView source={require('@/assets/animations/search.json')} autoPlay loop style={styles.searchIcon} />
             <Text style={styles.searchPrompt}>Start searching for workouts...</Text>
         </View>
     )

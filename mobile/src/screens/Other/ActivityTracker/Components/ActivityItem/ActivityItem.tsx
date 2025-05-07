@@ -3,6 +3,7 @@ import { COLOR_BRANDS } from '@/constants/common.constants'
 import { UserActivity } from '@/types/userActivity.type'
 import { formatRelativeTimeFromNow } from '@/utils/format.util'
 import { Feather } from '@expo/vector-icons'
+import { memo } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 interface ActivityItemProps {
@@ -24,14 +25,15 @@ function ActivityItem({ data }: ActivityItemProps) {
     )
 }
 
-export default ActivityItem
+export default memo(ActivityItem)
 
 const styles = StyleSheet.create({
     activityItem: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 15,
-        borderRadius: 16
+        borderRadius: 16,
+        backgroundColor: '#fff'
     },
     activityIconContainer: {},
     activityDetails: {

@@ -12,6 +12,7 @@ import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { schema, SchemaType } from '@/utils/rules.util'
 import handleFormError from '@/utils/handleFormError'
 import { authApi } from '@/services/rest'
+import { useFacebookLogin } from '@/hooks/useFacebookLogin'
 
 interface FindAccountScreenProps {
     onSuccess: (email: string) => void
@@ -23,6 +24,7 @@ type FormData = Pick<SchemaType, 'email'>
 const FormSchema = schema.pick(['email'])
 
 function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScreenProps) {
+    const { loginWithFacebook } = useFacebookLogin()
     const methods = useForm<FormData>({
         defaultValues: { email },
         resolver: yupResolver(FormSchema),
@@ -77,7 +79,7 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
                     </View>
 
                     <View style={styles.otherOptionsWrapper}>
-                        <Pressable style={styles.btnOther}>
+                        <Pressable style={styles.btnOther} onPress={loginWithFacebook}>
                             <Icon name='facebook-f' size={20} color='#1877F2' />
                         </Pressable>
                         <Pressable style={styles.btnOther} onPress={handleGotoLogin}>

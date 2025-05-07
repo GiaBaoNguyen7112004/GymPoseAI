@@ -26,7 +26,6 @@ import ActivityListScreen from '@/screens/Other/ActivityListScreen'
 import CompleteProfile from '@/screens/Other/CompleteProfile'
 import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
 import Register from '@/screens/Auth/Register'
-import { useNotification } from '@/Contexts/NotificationContext'
 import ExerciseDetail from '@/screens/Other/WorkoutDetail'
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -36,7 +35,9 @@ function RootStackNavigation() {
 
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
-        gestureEnabled: true
+        gestureEnabled: true,
+        animationTypeForReplace: 'pop',
+        animation: 'slide_from_right'
     }
     return (
         <RootStack.Navigator screenOptions={screenOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>

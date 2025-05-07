@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#1D1617',
-        marginBottom: 18
+        marginBottom: 5
     },
     card: {
         gap: 12
@@ -58,13 +58,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 12,
         padding: 16,
-        shadowColor: 'rgba(29, 22, 23, 0.3)',
-        shadowOffset: { width: 1, height: 10 },
+        shadowColor: 'rgba(29, 22, 23, 0.1)',
+        shadowOffset: { width: 1, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 20,
-        maxHeight: 150,
-
-        // Android shadow
         elevation: 8
     },
     iconContainer: {

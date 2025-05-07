@@ -1,3 +1,4 @@
+import { ViewModeType } from '@/types/utils.type'
 import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -5,7 +6,7 @@ const FILTERS = ['daily', 'weekly', 'monthly', 'yearly'] as const
 type Filter = (typeof FILTERS)[number]
 
 interface FilterBarProps {
-    onChangeFilter?: (value: string) => void
+    onChangeFilter?: (value: ViewModeType) => void
     activeFilterProp?: Filter
 }
 

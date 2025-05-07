@@ -58,7 +58,7 @@ export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'
                 )}
                 ListEmptyComponent={<Text style={styles.noWorkoutText}>You haven't completed any workouts today.</Text>}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 20 }}
+                contentContainerStyle={{ paddingBottom: 20, gap: 10 }}
                 scrollEnabled={false}
             />
         )
