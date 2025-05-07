@@ -27,6 +27,7 @@ import CompleteProfile from '@/screens/Other/CompleteProfile'
 import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
 import Register from '@/screens/Auth/Register'
 import ExerciseDetail from '@/screens/Other/WorkoutDetail'
+import GymLiveScreen from '@/screens/Other/GymLiveScreen'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -59,6 +60,7 @@ function RootStackNavigation() {
                         options={{ gestureEnabled: false }}
                     />
                     <RootStack.Screen name='ActivityList' component={ActivityListScreen} />
+                    <RootStack.Screen name='GymLiveScreen' component={GymLiveScreen} />
                 </RootStack.Group>
             ) : (
                 <RootStack.Group>

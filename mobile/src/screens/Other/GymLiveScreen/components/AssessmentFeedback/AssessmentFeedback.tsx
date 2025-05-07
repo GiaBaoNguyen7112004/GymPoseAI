@@ -1,0 +1,67 @@
+import React from 'react'
+import { Text, StyleSheet, Animated } from 'react-native'
+import { BlurView } from 'expo-blur'
+
+const COLORS = {
+    textPrimary: '#E2E8F0',
+    highlightPositive: '#10B981',
+    highlightNegative: '#F87171'
+}
+
+type Props = {
+    assessmentResult: string
+    fadeAnim: Animated.Value
+    slideAnim: Animated.Value
+    blurIntensity?: number
+}
+
+const AssessmentFeedback = ({ assessmentResult, fadeAnim, slideAnim, blurIntensity = 85 }: Props) => {
+    const isPositive =
+        assessmentResult.toLowerCase().includes('perfect') || assessmentResult.toLowerCase().includes('good')
+    const highlightColor = isPositive ? COLORS.highlightPositive : COLORS.highlightNegative
+
+    return (
+        <Animated.View
+            style={[
+                styles.wrapper,
+                {
+                    opacity: fadeAnim,
+                    transform: [{ translateY: slideAnim }]
+                }
+            ]}
+        >
+            <BlurView intensity={blurIntensity} tint='dark' style={styles.container}>
+                <Text style={styles.text}>
+                    AI Feedback:
+                    <Text style={[styles.highlight, { color: highlightColor }]}> {assessmentResult}</Text>
+                </Text>
+            </BlurView>
+        </Animated.View>
+    )
+}
+
+const styles = StyleSheet.create({
+    wrapper: {
+        borderRadius: 16,
+        overflow: 'hidden',
+        marginBottom: 20
+    },
+    container: {
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    text: {
+        color: COLORS.textPrimary,
+        fontSize: 18,
+        fontWeight: '600',
+        textAlign: 'center',
+        lineHeight: 24
+    },
+    highlight: {
+        fontWeight: 'bold'
+    }
+})
+
+export default AssessmentFeedback

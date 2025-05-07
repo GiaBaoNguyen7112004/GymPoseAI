@@ -1,12 +1,25 @@
 import DeviceModal from '@/components/DeviceConnectionModal'
+import GradientButton from '@/components/GradientButton'
 import useBLE from '@/hooks/useBTE'
 import { MainTabScreenProps } from '@/navigation/types'
-import { useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import LottieView from 'lottie-react-native'
+import { useEffect, useState } from 'react'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 
-const BlueToothScan = ({}: MainTabScreenProps<'BlueToothScan'>) => {
-    const { allDevices, connectedDevice, connectToDevice, color, requestPermissions, scanForPeripherals } = useBLE()
+const BlueToothScan = ({ navigation }: MainTabScreenProps<'BlueToothScan'>) => {
+    const {
+        allDevices,
+        connectedDevice,
+        connectToDevice,
+        requestPermissions,
+        scanForPeripherals,
+        isScanning,
+        responseMessage,
+        disconnectFromDevice
+    } = useBLE()
+
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+    const [showStatusMessage, setShowStatusMessage] = useState<boolean>(false)
 
     const scanForDevices = async () => {
         const isPermissionsEnabled = await requestPermissions()
@@ -15,34 +28,76 @@ const BlueToothScan = ({}: MainTabScreenProps<'BlueToothScan'>) => {
         }
     }
 
-    const hideModal = () => {
-        setIsModalVisible(false)
-    }
+    const hideModal = () => setIsModalVisible(false)
 
     const openModal = async () => {
-        scanForDevices()
+        await scanForDevices()
         setIsModalVisible(true)
     }
 
+    const gotoGymLive = () => {
+        navigation.navigate('GymLiveScreen', {})
+    }
+    const hasIpDevice = responseMessage
+    useEffect(() => {
+        let timeout: NodeJS.Timeout | null = null
+
+        if (connectedDevice) {
+            setShowStatusMessage(false)
+            timeout = setTimeout(() => {
+                setShowStatusMessage(true)
+            }, 2000)
+        } else {
+            setShowStatusMessage(false)
+        }
+
+        return () => {
+            if (timeout) clearTimeout(timeout)
+        }
+    }, [connectedDevice, hasIpDevice])
+
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: color }]}>
-            <View style={styles.heartRateTitleWrapper}>
-                {connectedDevice ? (
-                    <>
-                        <Text style={styles.heartRateTitleText}>Connected</Text>
-                    </>
-                ) : (
-                    <Text style={styles.heartRateTitleText}>Please connect the Camera</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.content}>
+                <LottieView
+                    source={require('@/assets/animations/loading_connection.json')}
+                    autoPlay
+                    loop
+                    style={styles.banner}
+                />
+
+                <Text style={styles.title}>{connectedDevice ? 'Camera Connected' : 'No Device Connected'}</Text>
+
+                {!connectedDevice && (
+                    <Text style={styles.subtitle}>Connect your camera to start tracking your workout progress.</Text>
+                )}
+
+                {connectedDevice && showStatusMessage && hasIpDevice && (
+                    <View style={styles.overlayContainer}>
+                        <Text style={styles.successText}>🎉 Connection Successful!</Text>
+                    </View>
+                )}
+
+                {connectedDevice && showStatusMessage && !hasIpDevice && (
+                    <View style={styles.warningBox}>
+                        <Text style={styles.warningText}>
+                            ⚠️ Connected but no IP found. Please reconnect your device.
+                        </Text>
+                    </View>
                 )}
             </View>
-            <TouchableOpacity onPress={openModal} style={styles.ctaButton}>
-                <Text style={styles.ctaButtonText}>Connect</Text>
-            </TouchableOpacity>
+
+            <GradientButton onPress={gotoGymLive} Square containerStyle={styles.ctaButton}>
+                <Text style={styles.ctaButtonText}>{connectedDevice ? 'Disconnect' : 'Connect Device'}</Text>
+            </GradientButton>
+
             <DeviceModal
                 closeModal={hideModal}
                 visible={isModalVisible}
                 connectToPeripheral={connectToDevice}
                 devices={allDevices}
+                onRefresh={scanForDevices}
+                isScanning={isScanning}
             />
         </SafeAreaView>
     )
@@ -51,44 +106,78 @@ const BlueToothScan = ({}: MainTabScreenProps<'BlueToothScan'>) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f2f2f2'
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'space-between',
+        paddingBottom: 40
     },
-    heartRateTitleWrapper: {
+    content: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingHorizontal: 24,
+        backgroundColor: '#E6F0FA',
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
+        shadowColor: '#1E90FF',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8
     },
-    heartRateTitleText: {
-        fontSize: 30,
-        fontWeight: 'bold',
+    banner: {
+        width: 260,
+        height: 260,
+        marginBottom: 32
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: '700',
+        color: '#1E293B',
         textAlign: 'center',
-        marginHorizontal: 20,
-        color: 'black'
+        marginTop: 12
     },
-    heartRateText: {
-        fontSize: 25,
-        marginTop: 15
+    subtitle: {
+        fontSize: 16,
+        color: '#64748B',
+        textAlign: 'center',
+        marginTop: 12,
+        lineHeight: 24,
+        maxWidth: '85%',
+        fontFamily: 'Inter-Regular'
     },
     ctaButton: {
-        backgroundColor: '#FF6060',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 50,
-        marginHorizontal: 20,
-        marginBottom: 5,
-        borderRadius: 8
+        width: '90%',
+        alignSelf: 'center',
+        marginTop: 50
     },
     ctaButtonText: {
         fontSize: 18,
-        fontWeight: 'bold',
-        color: 'white'
+        fontWeight: '600',
+        color: '#FFFFFF',
+        textAlign: 'center',
+        fontFamily: 'Inter-SemiBold'
+    },
+    overlayContainer: {
+        marginTop: 20,
+        alignItems: 'center'
+    },
+    successText: {
+        fontSize: 16,
+        color: '#16a34a',
+        fontWeight: '600',
+        marginTop: 8
+    },
+    warningBox: {
+        marginTop: 20,
+        backgroundColor: '#fee2e2',
+        padding: 12,
+        borderRadius: 8
+    },
+    warningText: {
+        color: '#b91c1c',
+        fontSize: 14,
+        fontWeight: '500',
+        textAlign: 'center'
     }
 })
-// const BlueToothScan = ({}: MainTabScreenProps<'BlueToothScan'>) => {
-//     return (
-//         <View>
-//             <Text>BlueToothScan</Text>
-//         </View>
-//     )
-// }
+
 export default BlueToothScan

@@ -27,6 +27,7 @@ export type RootStackParamList = {
     Setting: undefined
     ProfileManager: undefined
     ActivityList: undefined
+    GymLiveScreen: { exercise_id?: string }
 
     // Common information screens
     ContactUs: undefined

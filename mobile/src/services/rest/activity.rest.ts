@@ -1,4 +1,4 @@
-import http from '@/services/core/httpClient'
+import http from '@/services/core/http'
 import { BaseQueryConfig } from '@/types/utils.type'
 import { ResponseAPIActivityPage } from '@/types/userActivity.type'
 

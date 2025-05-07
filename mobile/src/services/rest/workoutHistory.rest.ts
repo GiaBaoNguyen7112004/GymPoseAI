@@ -1,4 +1,4 @@
-import http from '@/services/core/httpClient'
+import http from '@/services/core/http'
 import { ResponseApi, ViewModeType } from '@/types/utils.type'
 import {
     pose_error,

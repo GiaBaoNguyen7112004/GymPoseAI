@@ -1,4 +1,4 @@
-import http from '@/services/core/httpClient'
+import http from '@/services/core/http'
 import storage from '@/utils/StorageManager.util'
 
 import { AuthResponse, FindAccountResponse, RegisterReqBody } from '@/types/auth.type'

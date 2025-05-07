@@ -1,6 +1,6 @@
 import { ResponseApi } from '@/types/utils.type'
-import http from '../core/httpClient'
 import { Category } from '@/types/exercises.type'
+import http from '@/services/core/http'
 
 const categoriesApi = {
     getCategories() {

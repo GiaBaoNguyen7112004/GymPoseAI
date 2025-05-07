@@ -1,5 +1,5 @@
 import { ResponseApi } from '@/types/utils.type'
-import http from '../core/httpClient'
+import http from '@/services/core/http'
 import { UploadImageResData } from '@/types/upload.type'
 
 const uploadApi = {

@@ -1,5 +1,5 @@
 import { BaseQueryConfig, ResponseApi } from '@/types/utils.type'
-import http from '../core/httpClient'
+import http from '@/services/core/http'
 import { ResponseAPINotificationPage } from '@/types/notification.type'
 import { ResponseNewNotificationCount } from '@/types/FCM.type'
 

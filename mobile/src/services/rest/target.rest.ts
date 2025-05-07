@@ -1,4 +1,4 @@
-import http from '@/services/core/httpClient'
+import http from '@/services/core/http'
 import { ResponseApi } from '@/types/utils.type'
 import { CaloriesTargetOfDay, TodayTargetResponseAPI, WeekTargetResponseAPI } from '@/types/target.type'
 

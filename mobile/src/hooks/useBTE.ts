@@ -1,132 +1,154 @@
-import { useState } from 'react'
-import { PermissionsAndroid, Platform } from 'react-native'
-import * as DeviceInfo from 'expo-device'
-import * as base64 from 'react-native-base64'
-import { BleError, BleManager, Characteristic, Device } from 'react-native-ble-plx'
+import { useEffect, useState, useRef, useContext } from 'react'
+import { BleManager, Device, Subscription as BleSubscription } from 'react-native-ble-plx'
+import { Platform, PermissionsAndroid } from 'react-native'
+import base64 from 'react-native-base64'
+import { AppContext } from '@/Contexts/App.context'
+
+const SERVICE_UUID = '12345678-1234-5678-1234-56789abcdeff'
+const CHARACTERISTIC_UUID = '12345678-1234-5678-1234-56789abcdef0'
 
 const bleManager = new BleManager()
 
-const DATA_SERVICE_UUID = '19b10000-e8f2-537e-4f6c-d104768a1214'
-const COLOR_CHARACTERISTIC_UUID = '19b10001-e8f2-537e-4f6c-d104768a1217'
-
-function useBLE() {
+const useBLE = () => {
+    const { setIpCamera } = useContext(AppContext)
     const [allDevices, setAllDevices] = useState<Device[]>([])
     const [connectedDevice, setConnectedDevice] = useState<Device | null>(null)
-    const [color, setColor] = useState('white')
+    const [responseMessage, setResponseMessage] = useState<string | undefined>(undefined)
+    const [statusMessage, setStatusMessage] = useState<string>('Not connected')
+    const [isScanning, setIsScanning] = useState(false)
 
-    const requestAndroid31Permissions = async () => {
-        const permissions = [
-            PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-            PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        ]
+    const monitorSubscription = useRef<BleSubscription | null>(null)
 
-        const results = await Promise.all(
-            permissions.map((permission) =>
-                PermissionsAndroid.request(permission, {
-                    title: 'Bluetooth Permission',
-                    message: 'Bluetooth Low Energy requires Location',
-                    buttonPositive: 'OK'
-                })
-            )
-        )
-
-        return results.every((result) => result === PermissionsAndroid.RESULTS.GRANTED)
-    }
-
-    const requestPermissions = async () => {
-        if (Platform.OS !== 'android') return true
-
-        const apiLevel = DeviceInfo.platformApiLevel ?? -1
-        if (apiLevel < 31) {
-            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-                title: 'Location Permission',
-                message: 'Bluetooth Low Energy requires Location',
-                buttonPositive: 'OK'
-            })
-            return granted === PermissionsAndroid.RESULTS.GRANTED
+    const requestPermissions = async (): Promise<boolean> => {
+        if (Platform.OS === 'android') {
+            try {
+                if (Platform.Version < 31) {
+                    const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+                    )
+                    return granted === PermissionsAndroid.RESULTS.GRANTED
+                } else {
+                    const result = await PermissionsAndroid.requestMultiple([
+                        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+                        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+                    ])
+                    return Object.values(result).every((r) => r === PermissionsAndroid.RESULTS.GRANTED)
+                }
+            } catch (e) {
+                console.error('Permission error:', e)
+                return false
+            }
         }
-
-        return await requestAndroid31Permissions()
+        return true
     }
 
     const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
         devices.some((device) => device.id === nextDevice.id)
 
     const scanForPeripherals = () => {
+        setStatusMessage('Scanning...')
+        setIsScanning(true)
+        setAllDevices([])
+
         bleManager.startDeviceScan(null, null, (error, device) => {
             if (error) {
-                console.log('Scan error:', error)
+                setStatusMessage('Scan error: ' + error.message)
+                setIsScanning(false)
                 return
             }
 
-            if (device && (device.name === 'Arduino' || device.localName === 'Arduino')) {
-                setAllDevices((prevDevices) =>
-                    isDuplicateDevice(prevDevices, device) ? prevDevices : [...prevDevices, device]
-                )
+            if (device && device.id && device.id === 'D8:3A:DD:E7:89:7C') {
+                setAllDevices((prev) => {
+                    if (!isDuplicateDevice(prev, device)) {
+                        return [...prev, device]
+                    }
+                    return prev
+                })
             }
         })
+
+        setTimeout(() => {
+            bleManager.stopDeviceScan()
+            setIsScanning(false)
+            setStatusMessage('Scan complete')
+        }, 4000)
     }
 
     const connectToDevice = async (device: Device) => {
         try {
-            const connected = await bleManager.connectToDevice(device.id)
-            await connected.discoverAllServicesAndCharacteristics()
-            bleManager.stopDeviceScan()
-
+            setStatusMessage(`Connecting to ${device.name}...`)
+            const connected = await bleManager.connectToDevice(device.id, { timeout: 10000 })
             setConnectedDevice(connected)
-            startStreamingData(connected)
-        } catch (error) {
-            console.log('Connection failed:', error)
+            setStatusMessage(`Connected to ${device.name}`)
+
+            await connected.discoverAllServicesAndCharacteristics()
+            await readInitialCharacteristic(connected)
+        } catch (e) {
+            console.error('Connect error:', e)
+            setStatusMessage('Connection error: ' + e)
         }
     }
 
-    const decodeColorFromCharacteristic = (value: string) => {
-        const colorCode = base64.decode(value)
-        switch (colorCode) {
-            case 'B':
-                return 'blue'
-            case 'R':
-                return 'red'
-            case 'G':
-                return 'green'
-            default:
-                return 'white'
+    const readInitialCharacteristic = async (device: Device) => {
+        try {
+            const services = await device.services()
+            for (const service of services) {
+                if (service.uuid.toLowerCase() === SERVICE_UUID.toLowerCase()) {
+                    const characteristics = await service.characteristics()
+                    for (const c of characteristics) {
+                        if (c.uuid.toLowerCase() === CHARACTERISTIC_UUID.toLowerCase()) {
+                            const data = await c.read()
+                            if (!data.value) return
+                            const decodedValue = decodeBase64Value(data.value)
+                            setIpCamera(decodedValue.trim())
+                            setResponseMessage(decodedValue.trim())
+                            setStatusMessage('Data read successfully')
+                            return
+                        }
+                    }
+                }
+            }
+            setStatusMessage('Matching characteristic not found')
+        } catch (e) {
+            console.error('Read error:', e)
+            setStatusMessage('Read error: ' + e)
         }
     }
 
-    const onDataUpdate = (error: BleError | null, characteristic: Characteristic | null) => {
-        if (error) {
-            console.log('Data update error:', error)
-            return
+    const decodeBase64Value = (base64Value: string) => {
+        try {
+            return base64.decode(base64Value || '') || 'unknown'
+        } catch {
+            return 'unknown'
         }
-
-        if (!characteristic?.value) {
-            console.log('Empty characteristic value')
-            return
-        }
-
-        const receivedColor = decodeColorFromCharacteristic(characteristic.value)
-        setColor(receivedColor)
     }
 
-    const startStreamingData = async (device: Device) => {
-        if (!device) {
-            console.log('No device to stream from')
-            return
+    const disconnectFromDevice = async () => {
+        try {
+            if (connectedDevice) {
+                await bleManager.cancelDeviceConnection(connectedDevice.id)
+                monitorSubscription.current?.remove()
+                setConnectedDevice(null)
+                setResponseMessage('')
+                setStatusMessage('Disconnected')
+            }
+        } catch (e) {
+            console.error('Disconnect error:', e)
+            setStatusMessage('Disconnection error: ' + e)
         }
-
-        device.monitorCharacteristicForService(DATA_SERVICE_UUID, COLOR_CHARACTERISTIC_UUID, onDataUpdate)
     }
 
     return {
+        scanForPeripherals,
         allDevices,
         connectedDevice,
-        color,
-        requestPermissions,
-        scanForPeripherals,
         connectToDevice,
-        startStreamingData
+        disconnectFromDevice,
+        responseMessage,
+        statusMessage,
+        isScanning,
+        requestPermissions
     }
 }
 

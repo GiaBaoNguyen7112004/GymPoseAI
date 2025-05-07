@@ -6,7 +6,7 @@ import {
     UpdateProfileDetailReqBody,
     User
 } from '@/types/user.type'
-import http from '../core/httpClient'
+import http from '@/services/core/http'
 import { ChangePasswordRedBody } from '@/types/auth.type'
 
 type updateProfileBodyReq = UpdateNameReqBody | UpdateProfileDetailReqBody | UpdateAvatarReqBody

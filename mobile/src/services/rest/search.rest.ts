@@ -1,4 +1,4 @@
-import http from '../core/httpClient'
+import http from '@/services/core/http'
 import { ResponseApiSearch, SearchParams } from '@/types/search.type'
 
 const searchApi = {
