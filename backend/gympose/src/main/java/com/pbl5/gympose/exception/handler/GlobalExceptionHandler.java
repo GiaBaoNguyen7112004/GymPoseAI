@@ -62,6 +62,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseData> handlingMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        LogUtils.error("Loi method argument not valid");
         LogUtils.info(ex.getMessage());
         List<ErrorResponse> errorResponses = new ArrayList<>();
         errors.stream().forEach(objectError -> {

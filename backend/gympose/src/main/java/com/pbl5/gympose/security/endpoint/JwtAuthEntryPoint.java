@@ -34,6 +34,6 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
         httpServletResponse
                 .getWriter()
-                .write(Objects.requireNonNull(CommonFunction.convertToJSON(responseData)));
+                .write(Objects.requireNonNull(CommonFunction.toJsonString(responseData)));
     }
 }

@@ -22,4 +22,8 @@ public interface WorkoutSummaryService {
     List<PoseErrorResponse> getPoseErrors(UUID workoutSummaryId);
 
     List<WorkoutStatisticResponse> getWorkoutStatistics(UUID userId, String viewMode);
+
+    WorkoutSummary findByIdAndUserId(UUID workoutSummaryId, UUID userId);
+
+    WorkoutSummary save(WorkoutSummary workoutSummary);
 }

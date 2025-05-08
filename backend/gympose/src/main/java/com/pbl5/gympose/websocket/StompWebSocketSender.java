@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class WebSocketSender {
+public class StompWebSocketSender {
     SimpMessagingTemplate messagingTemplate;
 
-    public void send(AIResultMessage message) {
+    public void sendAIResult(AIResultMessage message) {
         messagingTemplate.convertAndSend("/pose-error/user/" + message.getUserId(), message);
     }
 }

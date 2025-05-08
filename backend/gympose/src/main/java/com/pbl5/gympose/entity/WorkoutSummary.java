@@ -34,6 +34,7 @@ public class WorkoutSummary extends AbstractEntity {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "workoutSummary", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "workout_summary_id")
     List<PoseError> poseErrors = new ArrayList<>();
 }

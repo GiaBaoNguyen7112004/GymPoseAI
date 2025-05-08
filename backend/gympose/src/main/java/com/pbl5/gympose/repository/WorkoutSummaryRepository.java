@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -18,6 +19,8 @@ public interface WorkoutSummaryRepository extends JpaRepository<WorkoutSummary, 
             LocalDateTime to,
             Pageable pageable
     );
+
+    Optional<WorkoutSummary> findByIdAndUser_Id(UUID id, UUID userId);
 
     List<WorkoutSummary> findByUser_IdAndStartTimeBetween(UUID userId, LocalDateTime fromDate, LocalDateTime toDate);
 }

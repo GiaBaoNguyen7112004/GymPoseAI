@@ -38,6 +38,8 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/api-docs/**",
             "/v3/api-docs.yaml",
+            "/ws/**",
+            "/stomp/ws/**"
     };
 
     public final String[] PUBLIC_GET_ENDPOINT = {

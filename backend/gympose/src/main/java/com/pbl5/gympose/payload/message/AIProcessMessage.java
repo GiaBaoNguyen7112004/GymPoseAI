@@ -8,11 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AIProcessMessage {
+public class AIProcessMessage implements Serializable {
     JsonNode keyPoints;
     String userId;
 }
