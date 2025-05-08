@@ -67,7 +67,6 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
 
         List<PoseError> poseErrors = request.getPoseErrors().stream()
                 .map(poseErrorMapper::toPoseError)
-                .peek(poseError -> poseError.setWorkoutSummary(workoutSummary))
                 .toList();
 
         workoutSummary.setPoseErrors(poseErrors);
@@ -213,5 +212,16 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
         }
 
         return responses;
+    }
+
+    @Override
+    public WorkoutSummary findByIdAndUserId(UUID workoutSummaryId, UUID userId) {
+        return workoutSummaryRepository.findByIdAndUser_Id(workoutSummaryId, userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.WORKOUT_SUMMARY_NOT_FOUND));
+    }
+
+    @Override
+    public WorkoutSummary save(WorkoutSummary workoutSummary) {
+        return workoutSummaryRepository.save(workoutSummary);
     }
 }

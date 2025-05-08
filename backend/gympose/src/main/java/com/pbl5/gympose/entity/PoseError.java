@@ -19,9 +19,5 @@ public class PoseError extends AbstractEntity {
     UUID id;
 
     String aiResult;
-    Integer repIndex;
-
-    @ManyToOne
-    @JoinColumn(name = "workout_summary_id", nullable = true)
-    WorkoutSummary workoutSummary;
+    String repIndex;
 }

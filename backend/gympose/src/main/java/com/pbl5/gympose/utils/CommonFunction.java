@@ -6,12 +6,23 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import java.util.UUID;
 
 public final class CommonFunction {
     private CommonFunction() {
     }
 
-    public static String convertToJSON(Object ob) {
+    public static UUID convertStringToUUID(String input) {
+        try {
+            return UUID.fromString(input);
+        } catch (IllegalArgumentException e) {
+            // Trả về null hoặc throw exception tuỳ bạn muốn handle thế nào
+            LogUtils.error("cannot convert to UUID");
+            return null;
+        }
+    }
+
+    public static String toJsonString(Object ob) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(ob);

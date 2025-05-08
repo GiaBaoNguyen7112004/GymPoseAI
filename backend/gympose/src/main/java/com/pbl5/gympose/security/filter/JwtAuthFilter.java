@@ -60,7 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             ResponseData responseData = ResponseData.error(error);
             response
                     .getWriter()
-                    .write(Objects.requireNonNull(CommonFunction.convertToJSON(responseData)));
+                    .write(Objects.requireNonNull(CommonFunction.toJsonString(responseData)));
         } catch (Exception exception) {
             LogUtils.error(request.getMethod(), request.getRequestURL().toString(), exception.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -70,7 +70,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             ResponseData responseData = ResponseData.error(error);
             response
                     .getWriter()
-                    .write(Objects.requireNonNull(CommonFunction.convertToJSON(responseData)));
+                    .write(Objects.requireNonNull(CommonFunction.toJsonString(responseData)));
         }
     }
 
