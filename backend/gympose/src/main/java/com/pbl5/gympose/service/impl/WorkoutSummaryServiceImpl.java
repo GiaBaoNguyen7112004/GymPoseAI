@@ -221,6 +221,11 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
     }
 
     @Override
+    public WorkoutSummaryDetailResponse getWorkoutSummaryDetail(UUID workoutSummaryId) {
+        return createWorkoutSummaryDetailResponse(findById(workoutSummaryId));
+    }
+
+    @Override
     public WorkoutSummary save(WorkoutSummary workoutSummary) {
         return workoutSummaryRepository.save(workoutSummary);
     }

@@ -37,13 +37,14 @@ public final class FeedbackMessage {
     public static final String USER_UPDATED = "User updated successfully";
 
     //Workout summary
+    public static final String WORKOUT_SUMMARIES_RETRIEVED = "Workout summaries retrieved successfully";
     public static final String WORKOUT_SUMMARY_RETRIEVED = "Workout summary retrieved successfully";
     public static final String POSE_ERRORS_RETRIEVED = "Pose errors retrieved successfully";
     public static final String WORKOUT_SUMMARY_CREATED = "Workout summary created successfully";
     public static final String WORKOUT_STATISTICS_RETRIEVED = "Workout statistics retrieved successfully";
 
     //NOTIFICATION
-    public static final String NOTIFICATION_CREATED = "Notification created successfully";
+    public static final String NOTIFICATION_REGISTERED = "Notification registered successfully";
     public static final String NOTIFICATIONS_RETRIEVED = "Notifications retrieved successfully";
     public static final String NOTIFICATION_READ = "Notification read successfully";
     public static final String NOTIFICATION_DELETED = "Notification deleted successfully";

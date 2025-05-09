@@ -25,5 +25,7 @@ public interface WorkoutSummaryService {
 
     WorkoutSummary findByIdAndUserId(UUID workoutSummaryId, UUID userId);
 
+    WorkoutSummaryDetailResponse getWorkoutSummaryDetail(UUID workoutSummaryId);
+
     WorkoutSummary save(WorkoutSummary workoutSummary);
 }

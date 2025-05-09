@@ -5,6 +5,7 @@ import com.pbl5.gympose.entity.Exercise;
 import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.WorkoutSummary;
+import com.pbl5.gympose.event.WorkoutFinishEvent;
 import com.pbl5.gympose.payload.message.AIProcessMessage;
 import com.pbl5.gympose.producer.AIMessageProducer;
 import com.pbl5.gympose.service.ExerciseService;
@@ -12,6 +13,7 @@ import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.LogUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -45,6 +47,8 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
     private final ExerciseService exerciseService;
     private final WorkoutSummaryService workoutSummaryService;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public static AIProcessMessage convertToAIProcessMessage(TextMessage textMessage) {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonPayload = textMessage.getPayload();
@@ -77,6 +81,8 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
         session.getAttributes().put(SESSION_ATTRIBUTE_USER_ID, userId);
         session.getAttributes().put(SESSION_ATTRIBUTE_EXERCISE_ID, exerciseId);
         session.getAttributes().put(SESSION_ATTRIBUTE_WORKOUT_SUMMARY_ID, workoutSummaryId);
+
+        session.sendMessage(new TextMessage(workoutSummaryId));
 
         sessions.put(userId, session);
         LogUtils.info("New WebSocket connection: userId=" + userId);
@@ -184,7 +190,7 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
             workoutSummary.setUser(user);
             workoutSummary.getPoseErrors().addAll(errors);
         }
-
-        workoutSummaryService.save(workoutSummary);
+        WorkoutSummary savedWorkoutSummary = workoutSummaryService.save(workoutSummary);
+        eventPublisher.publishEvent(new WorkoutFinishEvent(savedWorkoutSummary));
     }
 }

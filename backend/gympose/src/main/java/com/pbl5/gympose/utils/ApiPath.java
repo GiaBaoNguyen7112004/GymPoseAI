@@ -36,7 +36,8 @@ public final class ApiPath {
 
     // WORKOUT SUMMARY
     public static final String WORKOUT_SUMMARY = API + "/workout-summary";
-    public static final String WORKOUT_SUMMARY_BY_ID = "/{workout-summary-id}";
+    public static final String WORKOUT_SUMMARY_BY_ID = "/detail/{workout-summary-id}";
+    public static final String WORKOUT_SUMMARY_ERROR = "/errors";
     public static final String WORKOUT_SUMMARY_HISTORY = "/history";
     public static final String WORKOUT_STATISTICS = "/statistics";
 

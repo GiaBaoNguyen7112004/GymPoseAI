@@ -4,10 +4,7 @@ package com.pbl5.gympose.payload.response.notification;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.pbl5.gympose.enums.NotificationType;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
@@ -16,6 +13,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)

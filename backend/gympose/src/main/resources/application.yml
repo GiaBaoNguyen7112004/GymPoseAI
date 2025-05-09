@@ -55,6 +55,7 @@ app:
     first-name: ${ADMIN_FIRST_NAME}
     last-name: ${ADMIN_LAST_NAME}
 web-url: http://localhost:3000
+expo-url: https://exp.host/--/api/v2/push/send
 cloudinary:
   cloud-name: ${CLOUD_NAME}
   api-key: ${API_KEY}
