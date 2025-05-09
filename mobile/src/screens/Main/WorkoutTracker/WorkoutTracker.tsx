@@ -1,39 +1,32 @@
 import { View, StyleSheet, SafeAreaView } from 'react-native'
-import NavigationBar from '@/components/NavigationBar'
-import { LinearGradient } from 'expo-linear-gradient'
-import { COLOR_BRANDS } from '@/constants/common.constants'
 import { MainTabScreenProps } from '@/navigation/types'
 import { Category } from '@/types/exercises.type'
 import CategoryBottomSheet from './Components/CategoryBottomSheet'
 import LineChartWorkout from './Components/LineChartWorkout'
+import Header from './Components/Header'
+import { useCallback } from 'react'
+import ViewLinerGradient from '@/components/ViewLinerGradient'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 
 function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
-    const handleCategoryPress = (category: Category) => {
+    const { isReady } = useInteractionReadyState()
+    const handleCategoryPress = useCallback((category: Category) => {
         navigation.navigate('CategoryDetail', { category_id: category.id })
-    }
+    }, [])
+    const goBackScreen = useCallback(() => {
+        navigation.goBack()
+    }, [])
 
     return (
-        <LinearGradient
-            colors={COLOR_BRANDS.primary}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 0.02, y: 0 }}
-            style={styles.BackgroundLinerWrapper}
-        >
+        <ViewLinerGradient style={styles.BackgroundLinerWrapper}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.content}>
-                    <View style={styles.header}>
-                        <NavigationBar
-                            title={'Workout Tracker'}
-                            callback={() => navigation.goBack()}
-                            headingStyle={styles.headerTitle}
-                        />
-                    </View>
-
+                    <Header goBackScreen={goBackScreen} />
                     <LineChartWorkout />
-                    <CategoryBottomSheet handleCategoryPress={handleCategoryPress} />
+                    <CategoryBottomSheet handleCategoryPress={handleCategoryPress} isReady={isReady} />
                 </View>
             </SafeAreaView>
-        </LinearGradient>
+        </ViewLinerGradient>
     )
 }
 

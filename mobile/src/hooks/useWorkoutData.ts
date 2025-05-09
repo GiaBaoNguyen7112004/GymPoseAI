@@ -4,19 +4,13 @@ import { calculateWorkoutSummaryChart } from '@/utils/chart.util'
 import { useMemo } from 'react'
 
 export function useWorkoutData(workout_id: string) {
-    const { data: workoutRes } = useQuery({
+    const { data: workoutRes, isPending } = useQuery({
         queryKey: ['workout_id', workout_id],
         queryFn: () => workoutHistoryApi.getWorkoutSummaryById({ id: workout_id })
     })
 
-    const { data: errorsRes, isLoading } = useQuery({
-        queryKey: ['errors_of_workout', workout_id],
-        queryFn: () => workoutHistoryApi.getErrorsOfWorkoutById({ id: workout_id }),
-        staleTime: 1000 * 60 * 5
-    })
-
     const workout = workoutRes?.data.data
-    const poseErrors = errorsRes?.data.data || []
+    const poseErrors = workout?.pose_errors || []
 
     const workoutDuration = useMemo(() => {
         const start = new Date(workout?.start_time || '')
@@ -26,5 +20,5 @@ export function useWorkoutData(workout_id: string) {
 
     const progressData = useMemo(() => calculateWorkoutSummaryChart(workout), [workout])
 
-    return { workout, poseErrors, workoutDuration, progressData, isLoading }
+    return { workout, poseErrors, workoutDuration, progressData, isLoading: isPending }
 }

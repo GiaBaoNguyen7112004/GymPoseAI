@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import LottieView from 'lottie-react-native'
 
 import GradientButton from '@/components/GradientButton'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@/constants/devices.constant'
+import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { RootStackScreenProps } from '@/navigation/types'
 import useUserData from '@/hooks/useUserData'
 import useNavigationState from '@/hooks/useNavigationState'
@@ -26,7 +26,6 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
     return (
         <SafeAreaView style={styles.screen}>
             <View style={styles.container}>
-                {/* Animation + Text */}
                 <View style={styles.topSection}>
                     <LottieView
                         source={require('@/assets/animations/welcome.json')}
@@ -43,7 +42,6 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
                     </View>
                 </View>
 
-                {/* Button */}
                 <GradientButton containerStyle={styles.button} Square onPress={handleNavigate} isLoading={isNavigating}>
                     <Text style={styles.buttonText}>Go To Home</Text>
                 </GradientButton>

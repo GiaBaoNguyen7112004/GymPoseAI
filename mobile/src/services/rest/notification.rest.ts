@@ -13,7 +13,7 @@ const notificationApi = {
         return http.put(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}/read`)
     },
     deleteNotification({ id }: { id: string }) {
-        return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}/delete`)
+        return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}`)
     },
     getNewNotificationCount() {
         return http.get<ResponseNewNotificationCount>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new`)

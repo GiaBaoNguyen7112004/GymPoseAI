@@ -1,5 +1,5 @@
-export interface WebSocketMessage<Data> {
-    Key: string
+export interface SignalMessage<Data> {
+    type: string
     data: Data
 }
 
@@ -11,3 +11,7 @@ export type ResumeExercisePayload = {
     workout_summary_id: string
     user_id: string
 }
+
+export type EventHandlerType = (data: any) => void
+
+export type eventHandlerObjType = Record<string, EventHandlerType>

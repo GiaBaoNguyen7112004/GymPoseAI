@@ -1,9 +1,9 @@
 import DeviceModal from '@/components/DeviceConnectionModal'
 import GradientButton from '@/components/GradientButton'
-import useBLE from '@/hooks/useBTE'
+import useBLE from '@/hooks/useBLE'
 import { MainTabScreenProps } from '@/navigation/types'
 import LottieView from 'lottie-react-native'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 
 const BlueToothScan = ({ navigation }: MainTabScreenProps<'BlueToothScan'>) => {
@@ -56,6 +56,11 @@ const BlueToothScan = ({ navigation }: MainTabScreenProps<'BlueToothScan'>) => {
         }
     }, [connectedDevice, hasIpDevice])
 
+    const cantStreamCamera = useMemo(
+        () => connectedDevice && showStatusMessage && hasIpDevice,
+        [connectedDevice, showStatusMessage, hasIpDevice]
+    )
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
@@ -72,13 +77,13 @@ const BlueToothScan = ({ navigation }: MainTabScreenProps<'BlueToothScan'>) => {
                     <Text style={styles.subtitle}>Connect your camera to start tracking your workout progress.</Text>
                 )}
 
-                {connectedDevice && showStatusMessage && hasIpDevice && (
+                {cantStreamCamera && (
                     <View style={styles.overlayContainer}>
                         <Text style={styles.successText}>🎉 Connection Successful!</Text>
                     </View>
                 )}
 
-                {connectedDevice && showStatusMessage && !hasIpDevice && (
+                {!cantStreamCamera && (
                     <View style={styles.warningBox}>
                         <Text style={styles.warningText}>
                             ⚠️ Connected but no IP found. Please reconnect your device.
@@ -87,7 +92,11 @@ const BlueToothScan = ({ navigation }: MainTabScreenProps<'BlueToothScan'>) => {
                 )}
             </View>
 
-            <GradientButton onPress={gotoGymLive} Square containerStyle={styles.ctaButton}>
+            <GradientButton
+                onPress={connectedDevice ? disconnectFromDevice : openModal}
+                Square
+                containerStyle={styles.ctaButton}
+            >
                 <Text style={styles.ctaButtonText}>{connectedDevice ? 'Disconnect' : 'Connect Device'}</Text>
             </GradientButton>
 

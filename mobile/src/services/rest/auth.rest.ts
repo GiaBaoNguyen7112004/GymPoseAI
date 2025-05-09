@@ -1,7 +1,7 @@
 import http from '@/services/core/http'
 import storage from '@/utils/StorageManager.util'
 
-import { AuthResponse, FindAccountResponse, RegisterReqBody } from '@/types/auth.type'
+import { AuthResponse, FindAccountResponse, RegisterReqBody, ResetPasswordReqBody } from '@/types/auth.type'
 
 import { ResponseApi } from '@/types/utils.type'
 
@@ -32,7 +32,7 @@ const authApi = {
         return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_RESEND_OTP_FORGOT_PASSWORD, body)
     },
 
-    resetPassword(body: { email: string; password: string; otp: string }) {
+    resetPassword(body: ResetPasswordReqBody) {
         return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_RESET_PASSWORD, body)
     }
 }

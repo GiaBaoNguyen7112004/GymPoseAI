@@ -1,4 +1,6 @@
+import useCategoryData from '@/hooks/useCategoryData'
 import { Category } from '@/types/exercises.type'
+import { Skeleton } from 'moti/skeleton'
 import { memo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
@@ -7,6 +9,14 @@ interface CategoryInfoProps {
 }
 
 function CategoryInfo({ category }: CategoryInfoProps) {
+    if (!category)
+        return (
+            <View style={styles.skeletonWrapper}>
+                <Skeleton height={16} width={100} radius={5} colorMode='light' />
+                <Skeleton height={12} width={200} radius={5} colorMode='light' />
+            </View>
+        )
+
     return (
         <View style={styles.wrapper}>
             <View style={styles.header}>
@@ -28,6 +38,12 @@ const styles = StyleSheet.create({
     header: {
         marginBottom: 20,
         paddingHorizontal: 20
+    },
+    skeletonWrapper: {
+        marginTop: 10,
+        paddingHorizontal: 20,
+        marginBottom: 20,
+        gap: 6
     },
     title: {
         fontSize: 16,

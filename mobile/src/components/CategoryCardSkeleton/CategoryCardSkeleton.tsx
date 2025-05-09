@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         marginBottom: 15,
         borderWidth: 1,
-        borderColor: '#F7F8F8'
+        borderColor: '#E5E5E5'
     },
     contentWrapper: {
         flex: 1,

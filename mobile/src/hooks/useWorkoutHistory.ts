@@ -1,13 +1,10 @@
 import { useInfiniteQuery, keepPreviousData } from '@tanstack/react-query'
-import { useContext, useMemo } from 'react'
-import { AppContext } from '@/Contexts/App.context'
+import { useMemo } from 'react'
 import { workoutHistoryApi } from '@/services/rest'
 import { QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage, categories } from '@/types/workoutHistory.type'
 import { ViewModeType } from '@/types/utils.type'
 
 export const useWorkoutHistory = (category: categories, viewMode: ViewModeType, order: 'asc' | 'desc') => {
-    const { profile } = useContext(AppContext)
-
     const queryConfig = useMemo<QueryConfigWorkoutHistory>(
         () => ({
             page: 1,
@@ -23,9 +20,8 @@ export const useWorkoutHistory = (category: categories, viewMode: ViewModeType, 
     return useInfiniteQuery<ResponseAPIWorkoutHistoryPage, Error>({
         queryKey: ['workout-history-screen', category, viewMode, order],
         queryFn: async ({ pageParam = 1 }) => {
-            const response = await workoutHistoryApi.getWorkoutHistory({
-                params: { ...queryConfig, page: pageParam as number },
-                user_id: profile?.id || ''
+            const response = await workoutHistoryApi.getWorkoutSummaryList({
+                params: { ...queryConfig, page: pageParam as number }
             })
             return response.data
         },

@@ -36,3 +36,9 @@ export type ChangePasswordRedBody = {
     old_password: string
     password: string
 }
+
+export type ResetPasswordReqBody = {
+    email: string
+    password: string
+    otp: string
+}

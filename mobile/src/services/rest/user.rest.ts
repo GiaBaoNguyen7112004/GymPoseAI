@@ -13,7 +13,7 @@ type updateProfileBodyReq = UpdateNameReqBody | UpdateProfileDetailReqBody | Upd
 
 const userApi = {
     getProfile() {
-        return http.get<ResponseUserApi>(process.env.EXPO_PUBLIC_URL_USER)
+        return http.get<ResponseUserApi>(`${process.env.EXPO_PUBLIC_URL_USER}/profile`)
     },
     updateProfile(body: updateProfileBodyReq) {
         return http.patch<ResponseUserApi>(process.env.EXPO_PUBLIC_URL_USER, body)

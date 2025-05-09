@@ -4,8 +4,8 @@ import LottieView from 'lottie-react-native'
 
 const EmptyComponent = () => (
     <View style={styles.container}>
-        <LottieView source={require('@/assets/animations/activity.json')} autoPlay loop style={styles.icon} />
-        <Text style={styles.text}>No activity found</Text>
+        <LottieView source={require('@/assets/animations/document_empty.json')} autoPlay loop style={styles.icon} />
+        <Text style={styles.text}>No data available.</Text>
     </View>
 )
 

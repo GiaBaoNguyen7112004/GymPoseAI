@@ -1,10 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { View, Image, StyleSheet, SafeAreaView, Animated, Easing } from 'react-native'
+import React, { useEffect, useState, useRef, useContext } from 'react'
+import { View, StyleSheet, SafeAreaView, Animated, Easing } from 'react-native'
+import { RTCView, MediaStream } from 'react-native-webrtc'
 import AssessmentFeedback from './components/AssessmentFeedback'
 import MetricsBar from './components/MetricsBar'
 import ControlButtons from './components/ControlButtons'
+import useWebRTC from '@/hooks/useWebRTC'
+import { RootStackScreenProps } from '@/navigation/types'
+import { AppContext } from '@/Contexts/App.context'
+import { useWorkoutHistory } from '@/hooks/useWorkoutHistory'
 
-const GymLiveScreen = () => {
+const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScreen'>) => {
+    const { workout_history_id, exercise_id } = route.params
+    const { profile, ipCamera } = useContext(AppContext)
+
     const [exerciseName] = useState('Barbell Squats')
     const [caloriesBurned] = useState(210)
     const [assessmentResult, setAssessmentResult] = useState('Good depth and form!')
@@ -12,6 +20,12 @@ const GymLiveScreen = () => {
     const [timeLeft, setTimeLeft] = useState(1800)
     const fadeAnim = useRef(new Animated.Value(0)).current
     const slideAnim = useRef(new Animated.Value(20)).current
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null)
+
+    const { startConnection } = useWebRTC({
+        wsSignalingUrl: `ws://${ipCamera}:8080`,
+        onRemoteStream: (stream) => setRemoteStream(stream)
+    })
 
     useEffect(() => {
         fadeAnim.setValue(0)
@@ -49,6 +63,19 @@ const GymLiveScreen = () => {
         }
     }, [isPaused, timeLeft])
 
+    useEffect(() => {
+        const init = async () => {
+            try {
+                await startConnection()
+                console.log('WebRTC connection started')
+            } catch (err) {
+                console.error('Error starting WebRTC connection:', err)
+            }
+        }
+
+        init()
+    }, [])
+
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60)
         const secs = seconds % 60
@@ -63,13 +90,11 @@ const GymLiveScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Image
-                source={{
-                    uri: 'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                }}
-                style={styles.background}
-                resizeMode='cover'
-            />
+            {remoteStream ? (
+                <RTCView streamURL={remoteStream.toURL()} style={styles.background} objectFit='cover' />
+            ) : (
+                <View style={styles.backgroundPlaceholder} />
+            )}
             <View style={styles.overlay} />
 
             <SafeAreaView style={{ flex: 1, padding: 20, paddingTop: 60 }}>
@@ -97,9 +122,13 @@ const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject
     },
+    backgroundPlaceholder: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: '#000'
+    },
     overlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)'
+        backgroundColor: 'transparent'
     }
 })
 

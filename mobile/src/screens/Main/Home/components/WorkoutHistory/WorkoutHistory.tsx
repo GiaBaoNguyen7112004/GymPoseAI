@@ -1,22 +1,18 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import TrainingSessionCard from '@/components/TrainingSessionCard'
 import WorkoutCardSkeleton from '@/components/TrainingSessionCardSkeleton'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { useQuery } from '@tanstack/react-query'
 import { workoutHistoryApi } from '@/services/rest'
-import { AppContext } from '@/Contexts/App.context'
 import { MainTabScreenProps } from '@/navigation/types'
 
 export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'>) {
-    const { profile } = useContext(AppContext)
-
     const { data: workoutHistoryResp, isLoading: isLoadingWorkout } = useQuery({
         queryKey: ['workout-history'],
         queryFn: () =>
-            workoutHistoryApi.getWorkoutHistory({
-                params: { page: 1, limit: 3, sort_by: 'createAt', viewMode: 'daily' },
-                user_id: profile?.id || ''
+            workoutHistoryApi.getWorkoutSummaryList({
+                params: { page: 1, limit: 3, sort_by: 'createAt', viewMode: 'daily' }
             }),
         staleTime: 1000 * 60 * 5
     })

@@ -18,10 +18,9 @@ function WorkoutProgressChart() {
     const debouncedViewMode = useDebounce(viewMode, 1000)
 
     const { data, isLoading } = useQuery({
-        queryKey: ['workoutHistory', debouncedViewMode, userData?.id],
+        queryKey: ['workoutHistory', debouncedViewMode],
         queryFn: () =>
-            workoutHistoryApi.getWorkoutHistoryByViewMode({
-                id: userData?.id as string,
+            workoutHistoryApi.getWorkoutSummaryStatistics({
                 viewMode: debouncedViewMode
             }),
         staleTime: 1000 * 60 * 5,
@@ -35,7 +34,6 @@ function WorkoutProgressChart() {
     }, [])
 
     const dropdownData = useMemo(() => ViewModeDropdown, [])
-
     const chartContent = useMemo(() => {
         if (!isReady || isLoading || !workoutHistoryData.length) {
             return <LineChartSkeleton />

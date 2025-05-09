@@ -75,7 +75,8 @@ export const calculateWorkoutSummaryChart = (workoutSummaryData?: workoutHistory
         id: '',
         name_workout: '',
         reps_count: 1,
-        errors_count: 0
+        errors_count: 0,
+        pose_errors: []
     }
 
     const summary = workoutSummaryData || defaultSummary
@@ -163,7 +164,6 @@ export const calculateWorkoutHistoryChart = (
 ): DataPoint[] => {
     const { start, end } = getChartDateRange(viewMode)
     const chartData = generateEmptyChartData(viewMode, start)
-
     workoutData.forEach(({ date, calories_burned, calories_base }) => {
         const d = new Date(date)
         if (d < start || d > end) return

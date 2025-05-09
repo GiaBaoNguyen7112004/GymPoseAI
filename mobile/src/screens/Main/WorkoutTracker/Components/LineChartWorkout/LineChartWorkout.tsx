@@ -2,36 +2,35 @@ import LineChartSkeleton from '@/components/LineChartSkeleton'
 import WorkoutChart from '@/components/WorkoutChart'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
-import useUserData from '@/hooks/useUserData'
 import { workoutHistoryApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 import { StyleSheet, View } from 'react-native'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 
-function LineChartWorkout() {
-    const { isReady } = useInteractionReadyState()
-    const { userData } = useUserData()
+interface LineChartWorkoutProps {
+    isReadyRender?: boolean
+}
 
-    const { data: workoutQuery, isLoading } = useQuery({
-        queryKey: ['workoutHistory', userData?.id],
-        queryFn: () =>
-            workoutHistoryApi.getWorkoutHistoryByViewMode({ id: userData?.id as string, viewMode: 'weekly' }),
+function LineChartWorkout({ isReadyRender }: LineChartWorkoutProps) {
+    const { data: workoutQuery } = useQuery({
+        queryKey: ['workoutHistory', 'weekly'],
+        queryFn: () => workoutHistoryApi.getWorkoutSummaryStatistics({ viewMode: 'weekly' }),
         staleTime: 1000 * 60 * 5
     })
     const workoutHistoryData = workoutQuery?.data.data || []
 
-    if (!isReady) return <LineChartSkeleton />
+    const isChartReady = isReadyRender && workoutHistoryData?.length > 0
     return (
         <View style={styles.graphContainer}>
-            {isLoading ? (
-                <LineChartSkeleton />
-            ) : (
+            {isChartReady ? (
                 <WorkoutChart
                     viewMode={'weekly'}
                     workoutData={workoutHistoryData}
                     chartConfig={chartConfig}
                     lineChartColor={lineChartColor}
                 />
+            ) : (
+                <LineChartSkeleton />
             )}
         </View>
     )

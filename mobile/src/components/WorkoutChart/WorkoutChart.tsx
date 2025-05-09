@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
     container: {
         maxWidth: SCREEN_WIDTH * 0.9,
         position: 'relative',
-        width: '100%'
+        width: '100%',
+        marginLeft: -10
     },
     chartContainer: {
         position: 'relative',

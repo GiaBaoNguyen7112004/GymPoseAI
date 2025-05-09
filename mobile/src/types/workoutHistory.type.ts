@@ -11,6 +11,7 @@ export interface workoutHistory {
     category: categories
     reps_count: number
     errors_count: number
+    pose_errors: pose_error[]
 }
 
 export interface pose_error {

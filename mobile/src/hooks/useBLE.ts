@@ -86,7 +86,7 @@ const useBLE = () => {
             await readInitialCharacteristic(connected)
         } catch (e) {
             console.error('Connect error:', e)
-            setStatusMessage('Connection error: ' + e)
+            setStatusMessage('Connection error')
         }
     }
 
@@ -112,7 +112,7 @@ const useBLE = () => {
             setStatusMessage('Matching characteristic not found')
         } catch (e) {
             console.error('Read error:', e)
-            setStatusMessage('Read error: ' + e)
+            setStatusMessage('Read error')
         }
     }
 
@@ -135,7 +135,7 @@ const useBLE = () => {
             }
         } catch (e) {
             console.error('Disconnect error:', e)
-            setStatusMessage('Disconnection error: ' + e)
+            setStatusMessage('Disconnection error')
         }
     }
 

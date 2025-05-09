@@ -1,20 +1,29 @@
 import { View, StyleSheet } from 'react-native'
-import { memo, RefObject, useCallback } from 'react'
+import { memo, useCallback, useEffect, useRef } from 'react'
 import { BottomSheetFlatList, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet'
 
 import WorkoutCard from '@/components/WorkoutCard'
 import ExerciseCartSkeleton from '@/components/ExerciseCartSkeleton'
 import { Exercise } from '@/types/exercises.type'
+import { scrollToExerciseById } from '@/utils/scrollHelpers'
+import useWorkoutListOfCategoryData from '@/hooks/useWorkoutListOfCategoryData'
+import EmptyComponent from '@/components/EmptyComponent'
 
 interface ExerciseListProps {
-    data: Exercise[]
-    isLoading: boolean
     highlightedId?: string
     onPressWorkout: (id: string) => void
-    listRef: RefObject<BottomSheetFlatListMethods>
+    categoryId: string
 }
 
-function ExerciseList({ data, isLoading, highlightedId, onPressWorkout, listRef }: ExerciseListProps) {
+function ExerciseList({ highlightedId, onPressWorkout, categoryId }: ExerciseListProps) {
+    const listRef = useRef<BottomSheetFlatListMethods>(null)
+
+    const { workoutList, isLoading } = useWorkoutListOfCategoryData({ categoryId })
+
+    useEffect(() => {
+        scrollToExerciseById(listRef, workoutList, highlightedId)
+    }, [highlightedId, workoutList])
+
     const renderItem = useCallback(
         ({ item }: { item: Exercise }) => (
             <WorkoutCard
@@ -53,9 +62,10 @@ function ExerciseList({ data, isLoading, highlightedId, onPressWorkout, listRef 
     return (
         <BottomSheetFlatList
             ref={listRef}
-            data={data}
+            data={workoutList}
             renderItem={renderItem}
             keyExtractor={keyExtractor}
+            ListEmptyComponent={<EmptyComponent />}
             showsVerticalScrollIndicator={false}
             scrollEnabled
             onScrollToIndexFailed={handleScrollToIndexFailed}
