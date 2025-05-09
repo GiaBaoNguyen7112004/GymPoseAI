@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import TrainingSessionCard from '@/components/TrainingSessionCard'
-import WorkoutCardSkeleton from '@/components/TrainingSessionCardSkeleton'
-import { SCREEN_WIDTH } from '@/constants/devices.constant'
+import { StyleSheet, View } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
 import { workoutHistoryApi } from '@/services/rest'
 import { MainTabScreenProps } from '@/navigation/types'
+import { SCREEN_WIDTH } from '@/constants/devices.constant'
+import WorkoutHistoryHeader from './WorkoutHistoryHeader'
+import WorkoutHistoryList from './WorkoutHistoryList'
 
 export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'>) {
-    const { data: workoutHistoryResp, isLoading: isLoadingWorkout } = useQuery({
+    const { data: workoutHistoryResp, isLoading } = useQuery({
         queryKey: ['workout-history'],
         queryFn: () =>
             workoutHistoryApi.getWorkoutSummaryList({
@@ -17,107 +17,37 @@ export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'
         staleTime: 1000 * 60 * 5
     })
 
-    const workoutHistoryData = workoutHistoryResp?.data.data
+    const data = workoutHistoryResp?.data.data
 
-    const handleSeeMoreWorkoutHistory = useCallback(() => {
+    const handleSeeMore = useCallback(() => {
         navigation.navigate('WorkoutHistoryCenter')
     }, [navigation])
 
-    const handleWorkoutCardClick = useCallback(
-        (workoutId: string) => {
-            navigation.navigate('WorkoutHistoryDetail', { workout_id: workoutId })
+    const handlePressItem = useCallback(
+        (id: string) => {
+            navigation.navigate('WorkoutHistoryDetail', { workout_id: id })
         },
         [navigation]
     )
 
-    const renderWorkoutHistory = () => {
-        if (isLoadingWorkout) {
-            return (
-                <View style={styles.workoutsSkeleton}>
-                    <WorkoutCardSkeleton />
-                    <WorkoutCardSkeleton />
-                    <WorkoutCardSkeleton />
-                </View>
-            )
-        }
-
-        return (
-            <FlatList
-                data={workoutHistoryData}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TrainingSessionCard
-                        item={item}
-                        style={styles.workoutItem}
-                        onPress={() => handleWorkoutCardClick(item.id)}
-                    />
-                )}
-                ListEmptyComponent={<Text style={styles.noWorkoutText}>You haven't completed any workouts today.</Text>}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 20, gap: 10 }}
-                scrollEnabled={false}
-            />
-        )
-    }
-
     return (
-        <View style={styles.workoutHistoryWrapper}>
-            <View style={styles.workoutProgressHeader}>
-                <Text style={styles.title}>Latest Workout</Text>
-                <TouchableOpacity onPress={handleSeeMoreWorkoutHistory}>
-                    <Text style={styles.subtitle_gray}>See more</Text>
-                </TouchableOpacity>
+        <View style={styles.wrapper}>
+            <WorkoutHistoryHeader onPressSeeMore={handleSeeMore} />
+            <View style={styles.list}>
+                <WorkoutHistoryList data={data} isLoading={isLoading} onPressItem={handlePressItem} />
             </View>
-            <View style={styles.workoutList}>{renderWorkoutHistory()}</View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 16,
-        color: '#1D1617',
-        fontWeight: '600',
-        lineHeight: 24
-    },
-    subtitle_gray: {
-        fontSize: 12,
-        fontWeight: '500',
-        lineHeight: 18,
-        color: '#ADA4A5'
-    },
-    workoutHistoryWrapper: {
+    wrapper: {
         alignItems: 'center',
         width: '100%'
     },
-    workoutProgressHeader: {
-        marginTop: 33,
-        width: '90%',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    workoutList: {
+    list: {
         marginTop: 20,
-        rowGap: 15,
-        alignContent: 'center',
-        justifyContent: 'center',
         width: SCREEN_WIDTH,
         paddingBottom: 20
-    },
-    workoutsSkeleton: {
-        width: SCREEN_WIDTH * 0.9,
-        alignSelf: 'center'
-    },
-    workoutItem: {
-        width: SCREEN_WIDTH * 0.9,
-        height: 80
-    },
-    noWorkoutText: {
-        fontSize: 14,
-        color: '#ADA4A5',
-        fontWeight: '400',
-        textAlign: 'center',
-        marginTop: 10,
-        marginBottom: 50
     }
 })

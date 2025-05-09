@@ -1,14 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
-import YoutubePlayer from 'react-native-youtube-iframe'
-import Icon from 'react-native-vector-icons/Feather'
+import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native'
 import { RootStackScreenProps } from '@/navigation/types'
 import { useQuery } from '@tanstack/react-query'
-import GradientButton from '@/components/GradientButton'
-import TimeLine from './components/TimeLine'
 import { getYouTubeVideoId } from '@/utils/common.util'
 import { workoutApi } from '@/services/rest'
+
+import GradientButton from '@/components/GradientButton'
 import ReadMoreText from '@/components/ReadMoreText'
 import ExerciseDetailSkeleton from './components/ExerciseDetailSkeleton'
+
+import ExerciseHeader from './components/ExerciseHeader'
+import ExerciseVideoPlayer from './components/ExerciseVideoPlayer'
+import ExerciseInfo from './components/ExerciseInfo'
+import ExerciseSteps from './components/ExerciseSteps/ExerciseSteps'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
     const { workout_id } = route.params
@@ -20,31 +23,21 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
     })
 
     const workoutData = data?.data?.data
-    const workoutIdYoutube = getYouTubeVideoId(
-        workoutData?.media_url || 'https://youtu.be/irfw1gQ0foQ?si=HDvPCvOcnmu9XJ79'
-    )
+    const workoutIdYoutube = getYouTubeVideoId(workoutData?.media_url || '')
 
     if (isLoading) return <ExerciseDetailSkeleton />
 
     return (
         <View style={styles.container}>
-            <SafeAreaView style={styles.navBar}>
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
-                        <Icon name='x' size={18} color='#333' />
-                    </TouchableOpacity>
-                </View>
+            <SafeAreaView>
+                <ExerciseHeader onClose={() => navigation.goBack()} />
             </SafeAreaView>
-            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} scrollEventThrottle={16}>
-                <View style={styles.content}>
-                    <View style={styles.videoContainer}>
-                        <YoutubePlayer height={300} videoId={workoutIdYoutube as string} />
-                    </View>
 
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.title}>{workoutData?.name || 'Workout'}</Text>
-                        <Text style={styles.subtitle}>{workoutData?.duration_minutes || 0} minutes</Text>
-                    </View>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <View style={styles.content}>
+                    <ExerciseVideoPlayer videoId={workoutIdYoutube as string} />
+
+                    <ExerciseInfo name={workoutData?.name || 'Workout'} duration={workoutData?.duration_minutes || 0} />
 
                     <View style={styles.descriptionContainer}>
                         <ReadMoreText
@@ -56,15 +49,7 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
                         />
                     </View>
 
-                    <View style={styles.howToContainer}>
-                        <View style={styles.howToHeader}>
-                            <Text style={styles.sectionTitle}>How To Do It</Text>
-                            <Text style={styles.stepsCount}>{workoutData?.steps?.length || 0} Steps</Text>
-                        </View>
-                        <View style={styles.stepsContainer}>
-                            <TimeLine stepsData={workoutData?.steps || []} />
-                        </View>
-                    </View>
+                    <ExerciseSteps steps={workoutData?.steps || []} />
 
                     <GradientButton Square containerStyle={styles.buttonSubmit}>
                         <Text style={styles.textInnerButtonSubmit}>Start</Text>
@@ -82,67 +67,16 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF'
     },
-    navBar: {
-        height: 60,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        backgroundColor: '#FFF',
-        borderBottomWidth: 1,
-        borderBottomColor: 'transparent'
-    },
     scrollView: {
         flex: 1,
         backgroundColor: '#FFF'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        marginBottom: 10
-    },
-    closeButton: {
-        backgroundColor: '#F7F8F8',
-        borderRadius: 8,
-        width: 32,
-        height: 32,
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     content: {
         padding: 20,
         paddingBottom: 40
     },
-    videoContainer: {
-        borderRadius: 12,
-        aspectRatio: 16 / 9,
-        marginBottom: 20,
-        overflow: 'hidden',
-        width: '100%',
-        backgroundColor: '#1D1617'
-    },
-    titleContainer: {
-        marginBottom: 16
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#1D1617',
-        textTransform: 'capitalize'
-    },
-    subtitle: {
-        marginTop: 5,
-        fontSize: 12,
-        fontWeight: '400',
-        color: '#7B6F72'
-    },
     descriptionContainer: {
         marginBottom: 24
-    },
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: 15
     },
     descriptionText: {
         fontSize: 12,
@@ -156,23 +90,6 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontWeight: '500'
     },
-    howToContainer: {
-        marginBottom: 24
-    },
-    howToHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 13
-    },
-    stepsCount: {
-        fontSize: 12,
-        fontWeight: '500',
-        color: '#ADA4A5'
-    },
-    stepsContainer: {
-        width: '100%'
-    },
     buttonSubmit: {
         marginTop: 30,
         shadowColor: 'rgb(146, 163, 253)',
@@ -184,6 +101,7 @@ const styles = StyleSheet.create({
     textInnerButtonSubmit: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#FFF'
+        color: '#FFF',
+        textAlign: 'center'
     }
 })

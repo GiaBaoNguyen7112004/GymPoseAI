@@ -7,6 +7,7 @@ import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { searchApi } from '@/services/rest'
 import { Exercise } from '@/types/exercises.type'
 import LottieView from 'lottie-react-native'
+import { defaultKeyExtractor } from '@/utils/list'
 
 interface SearchResultsProps {
     searchText: string
@@ -68,7 +69,7 @@ function SearchResults({ searchText, handleWorkoutCardPress, setIsLoading }: Sea
             ) : (
                 <FlatList
                     data={exerciseList}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={defaultKeyExtractor}
                     renderItem={renderWorkoutCard}
                     ListEmptyComponent={renderNoResults}
                     keyboardShouldPersistTaps='handled'

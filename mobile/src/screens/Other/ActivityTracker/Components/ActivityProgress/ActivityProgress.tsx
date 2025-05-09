@@ -2,7 +2,7 @@ import { activityTrackerBarChart } from '@/config/chart.config'
 import { targetApi } from '@/services/rest'
 import { calculateActivityProgressChart } from '@/utils/chart.util'
 import { useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { Dimensions } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart } from 'react-native-chart-kit'
@@ -10,7 +10,11 @@ import BarChartSkeleton from '@/components/BarChartSkeleton'
 
 const screenWidth = Dimensions.get('window').width - 80 + 32
 
-function ActivityProgress() {
+interface ActivityProgressProps {
+    isReadyRender?: boolean
+}
+
+function ActivityProgress({ isReadyRender }: ActivityProgressProps) {
     const { data, isLoading } = useQuery({
         queryKey: ['activity'],
         queryFn: targetApi.getWeeklyStatisticsTarget
@@ -21,6 +25,8 @@ function ActivityProgress() {
         return calculateActivityProgressChart(activityData || [])
     }, [data])
 
+    const canRender = !isLoading && isReadyRender
+
     return (
         <View style={styles.activityProgressCard}>
             <View style={styles.activityProgressHeader}>
@@ -28,9 +34,7 @@ function ActivityProgress() {
             </View>
             <View style={styles.chartBoxShadow}>
                 <View style={styles.chartContainer}>
-                    {isLoading ? (
-                        <BarChartSkeleton />
-                    ) : (
+                    {canRender ? (
                         <BarChart
                             yAxisLabel=''
                             yAxisSuffix=''
@@ -45,6 +49,8 @@ function ActivityProgress() {
                             flatColor={true}
                             withHorizontalLabels={false}
                         />
+                    ) : (
+                        <BarChartSkeleton />
                     )}
                 </View>
             </View>
@@ -52,7 +58,7 @@ function ActivityProgress() {
     )
 }
 
-export default ActivityProgress
+export default memo(ActivityProgress)
 
 const styles = StyleSheet.create({
     activityProgressCard: {

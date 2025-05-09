@@ -8,6 +8,7 @@ import { Exercise } from '@/types/exercises.type'
 import { scrollToExerciseById } from '@/utils/scrollHelpers'
 import useWorkoutListOfCategoryData from '@/hooks/useWorkoutListOfCategoryData'
 import EmptyComponent from '@/components/EmptyComponent'
+import { defaultKeyExtractor } from '@/utils/list'
 
 interface ExerciseListProps {
     highlightedId?: string
@@ -34,8 +35,6 @@ function ExerciseList({ highlightedId, onPressWorkout, categoryId }: ExerciseLis
         ),
         [onPressWorkout, highlightedId]
     )
-
-    const keyExtractor = useCallback((item: Exercise) => item.id, [])
 
     const handleScrollToIndexFailed = useCallback(
         (info: { index: number }) => {
@@ -64,7 +63,7 @@ function ExerciseList({ highlightedId, onPressWorkout, categoryId }: ExerciseLis
             ref={listRef}
             data={workoutList}
             renderItem={renderItem}
-            keyExtractor={keyExtractor}
+            keyExtractor={defaultKeyExtractor}
             ListEmptyComponent={<EmptyComponent />}
             showsVerticalScrollIndicator={false}
             scrollEnabled

@@ -3,6 +3,7 @@ import TextGradient from '@/components/TextGradient'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import MyIcon from '@/components/Icon'
+import { defaultKeyExtractor } from '@/utils/list'
 
 const DATA = [{ id: 1, value: 600, time: '6am - 8am' }]
 
@@ -31,7 +32,7 @@ function WaterIntake() {
                 <TextGradient textStyle={styles.stats__value} text='4 Liters' />
                 <Text style={styles.waterIntake__subtitle}>Real time updates</Text>
                 <ScrollView horizontal={true} style={{ width: '100%' }}>
-                    <FlatList data={DATA} keyExtractor={(item) => item.id.toString()} renderItem={renderWaterLogItem} />
+                    <FlatList data={DATA} keyExtractor={defaultKeyExtractor} renderItem={renderWaterLogItem} />
                 </ScrollView>
             </View>
         </View>

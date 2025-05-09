@@ -8,6 +8,7 @@ import { useCategories } from '@/hooks/useCategoriesData'
 import EmptyComponent from '@/components/EmptyComponent'
 import CategorySkeletonList from '../CategorySkeletonList'
 import InvisibleBackdrop from '@/components/InvisibleBackdrop'
+import { defaultKeyExtractor } from '@/utils/list'
 
 interface CategoryBottomSheetProps {
     handleCategoryPress: (category: Category) => void
@@ -23,8 +24,6 @@ const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(
             ),
             [handleCategoryPress]
         )
-
-        const keyExtractor = useCallback((item: Category) => item.id.toString(), [])
 
         const contentReady = isReady && !categoriesLoading
         return (
@@ -45,7 +44,7 @@ const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(
                                 data={categoriesData}
                                 scrollEnabled
                                 renderItem={renderCategoryItem}
-                                keyExtractor={keyExtractor}
+                                keyExtractor={defaultKeyExtractor}
                                 showsVerticalScrollIndicator={false}
                                 keyboardShouldPersistTaps='handled'
                                 bounces={false}

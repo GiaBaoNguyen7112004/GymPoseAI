@@ -1,3 +1,4 @@
+import { defaultKeyExtractor } from '@/utils/list'
 import React, { FC, useCallback, memo } from 'react'
 import {
     FlatList,
@@ -92,7 +93,7 @@ const DeviceModal: FC<DeviceModalProps> = ({
                         <FlatList
                             data={devices}
                             renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
+                            keyExtractor={defaultKeyExtractor}
                             ItemSeparatorComponent={() => <View style={styles.separator} />}
                             contentContainerStyle={styles.deviceList}
                             initialNumToRender={10}

@@ -1,18 +1,19 @@
-import React from 'react'
-
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-
+import React, { useCallback, memo } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, ListRenderItemInfo } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-
 import { useQuery } from '@tanstack/react-query'
-
 import { activityApi } from '@/services/rest'
-
-import ActivityCartSkeleton from '@/components/ActivityCartSkeleton' // Import component skeleton
-
 import ActivityItem from '../ActivityItem/ActivityItem'
+import LatestActivitySkeleton from '../LatestActivitySkeleton'
+import EmptyComponentV2 from '@/components/EmptyComponentV2'
+import { defaultKeyExtractor } from '@/utils/list'
+import { UserActivity } from '@/types/userActivity.type'
 
-function LatestActivity() {
+interface LatestActivityProps {
+    isReadyRender?: boolean
+}
+
+function LatestActivity({ isReadyRender }: LatestActivityProps) {
     const navigation = useNavigation()
 
     const { data, isLoading } = useQuery({
@@ -28,12 +29,13 @@ function LatestActivity() {
 
     const activities = data?.data || []
 
-    const handleSeeMore = () => {
+    const handleSeeMore = useCallback(() => {
         navigation.navigate('ActivityList')
-    }
+    }, [navigation])
 
-    const renderEmpty = () => <Text style={styles.emptyText}>No activity yet</Text>
+    const renderItem = useCallback(({ item }: ListRenderItemInfo<UserActivity>) => <ActivityItem data={item} />, [])
 
+    const canRender = !isLoading && isReadyRender
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -45,26 +47,22 @@ function LatestActivity() {
                 )}
             </View>
 
-            {isLoading ? (
-                <View>
-                    <ActivityCartSkeleton />
-                    <ActivityCartSkeleton />
-                    <ActivityCartSkeleton />
-                </View>
-            ) : activities.length > 0 ? (
-                <View>
-                    {activities.map((item) => (
-                        <ActivityItem key={item.id.toString()} data={item} />
-                    ))}
-                </View>
+            {canRender ? (
+                <FlatList
+                    data={activities}
+                    keyExtractor={defaultKeyExtractor}
+                    renderItem={renderItem}
+                    scrollEnabled={false}
+                    ListEmptyComponent={<EmptyComponentV2 message='No activity yet' />}
+                />
             ) : (
-                renderEmpty()
+                <LatestActivitySkeleton />
             )}
         </View>
     )
 }
 
-export default LatestActivity
+export default memo(LatestActivity)
 
 const styles = StyleSheet.create({
     container: {
@@ -86,11 +84,24 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#ADA4A5'
     },
+    emptyContainer: {
+        flex: 1,
+        position: 'relative'
+    },
     emptyText: {
         marginTop: 20,
         textAlign: 'center',
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: '400',
-        color: '#ADA4A5'
+        color: '#ADA4A5',
+        position: 'absolute',
+        bottom: 10,
+        left: '50%',
+        transform: [{ translateX: '-50%' }]
+    },
+    emptyIcon: {
+        width: 350,
+        height: 200,
+        alignItems: 'center'
     }
 })

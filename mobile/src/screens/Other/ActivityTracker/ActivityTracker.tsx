@@ -25,10 +25,6 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
     const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getTodayTarget })
     const todayTargetData = data?.data.data
 
-    if (!isReady) {
-        return <BlankScreenLoader />
-    }
-
     return (
         <View style={styles.container}>
             <SafeAreaView style={[styles.header, isScrolled && styles.headerWithBorder]}>
@@ -51,11 +47,11 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 </View>
 
                 <View style={styles.activityProgressCard}>
-                    <ActivityProgress />
+                    <ActivityProgress isReadyRender={isReady} />
                 </View>
 
                 <View style={styles.latestActivityCard}>
-                    <LatestActivity />
+                    <LatestActivity isReadyRender={isReady} />
                 </View>
                 <FormUpdateTodayTarget
                     visible={modalUpdateTargetVisible}

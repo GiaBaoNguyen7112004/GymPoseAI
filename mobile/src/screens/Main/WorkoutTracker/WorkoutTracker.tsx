@@ -22,7 +22,7 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
             <SafeAreaView style={styles.container}>
                 <View style={styles.content}>
                     <Header goBackScreen={goBackScreen} />
-                    <LineChartWorkout />
+                    <LineChartWorkout isReadyRender={isReady} />
                     <CategoryBottomSheet handleCategoryPress={handleCategoryPress} isReady={isReady} />
                 </View>
             </SafeAreaView>

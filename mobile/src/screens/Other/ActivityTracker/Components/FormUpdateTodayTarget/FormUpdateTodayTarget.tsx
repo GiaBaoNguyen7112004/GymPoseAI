@@ -10,9 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Text, TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
-import Toast from 'react-native-toast-message'
-
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
 interface FormUpdateTodayTargetProps {
     visible: boolean
     waterVal: number
@@ -88,7 +86,6 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
                         <GradientButton
                             Square
                             style={styles.submitBtn}
-                            containerStyle={{ paddingVertical: 10, paddingHorizontal: 20 }}
                             onPress={onUpdateForm}
                             disabled={!methods.formState.isValid}
                         >

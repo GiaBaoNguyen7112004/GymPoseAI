@@ -4,6 +4,7 @@ import { View, RefreshControl, FlatList, Image, StyleSheet, Text } from 'react-n
 import NotificationCard from '../NotificationCard'
 import { Notification } from '@/types/notification.type'
 import LottieView from 'lottie-react-native'
+import { defaultKeyExtractor } from '@/utils/list'
 
 interface Props {
     notifications: Notification[]
@@ -70,7 +71,7 @@ const NotificationList: React.FC<Props> = ({
         <FlatList
             data={notifications}
             renderItem={renderNotificationItem}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={defaultKeyExtractor}
             contentContainerStyle={styles.notificationContainer}
             ListEmptyComponent={renderEmptyComponent}
             ListFooterComponent={renderFooter}

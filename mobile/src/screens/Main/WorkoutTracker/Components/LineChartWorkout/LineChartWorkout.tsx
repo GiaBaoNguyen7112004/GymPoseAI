@@ -20,6 +20,7 @@ function LineChartWorkout({ isReadyRender }: LineChartWorkoutProps) {
     const workoutHistoryData = workoutQuery?.data.data || []
 
     const isChartReady = isReadyRender && workoutHistoryData?.length > 0
+
     return (
         <View style={styles.graphContainer}>
             {isChartReady ? (
