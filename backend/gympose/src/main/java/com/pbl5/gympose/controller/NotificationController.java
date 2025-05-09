@@ -2,7 +2,7 @@ package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.payload.request.notification.NotificationRequest;
+import com.pbl5.gympose.payload.request.notification.NotificationRegisterRequest;
 import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.NotificationService;
 import com.pbl5.gympose.utils.ApiPath;
@@ -29,9 +29,10 @@ public class NotificationController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    public ResponseEntity<ResponseData> createNotification(@RequestBody NotificationRequest request) {
-        ResponseData responseData = ResponseData.success(notificationService.createNotification(request.getUserId(),
-                request), FeedbackMessage.NOTIFICATION_CREATED);
+    public ResponseEntity<ResponseData> register(@CurrentUser UserPrincipal userPrincipal,
+                                                 @RequestBody NotificationRegisterRequest request) {
+        notificationService.register(userPrincipal.getId(), request);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NOTIFICATION_REGISTERED);
         return ResponseEntity.ok(responseData);
     }
 

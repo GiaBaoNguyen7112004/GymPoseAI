@@ -2,11 +2,12 @@ package com.pbl5.gympose.event.handler;
 
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
+import com.pbl5.gympose.entity.WorkoutSummary;
+import com.pbl5.gympose.enums.NotificationType;
 import com.pbl5.gympose.enums.TokenType;
-import com.pbl5.gympose.event.AccountVerificationEvent;
-import com.pbl5.gympose.event.RequestResetPasswordEvent;
-import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
-import com.pbl5.gympose.event.UserRegistrationEvent;
+import com.pbl5.gympose.event.*;
+import com.pbl5.gympose.payload.request.notification.NotificationRequest;
+import com.pbl5.gympose.service.NotificationService;
 import com.pbl5.gympose.service.TargetService;
 import com.pbl5.gympose.service.TokenService;
 import com.pbl5.gympose.service.email.EmailService;
@@ -20,6 +21,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
@@ -29,6 +32,7 @@ public class EventHandler {
     EmailService emailService;
     TokenService tokenService;
     TargetService targetService;
+    NotificationService notificationService;
 
     @EventListener
     private void handleUserRegistrationEvent(UserRegistrationEvent event) {
@@ -61,5 +65,23 @@ public class EventHandler {
     private void handleAccountVerificationEvent(AccountVerificationEvent event) {
         User user = event.getUser();
         targetService.createUserTarget(user.getId());
+    }
+
+    @EventListener
+    private void handleWorkoutFinishEvent(WorkoutFinishEvent event) {
+        WorkoutSummary workoutSummary = event.getWorkoutSummary();
+        Map<String, Object> metadata = new HashMap<>();
+        User user = workoutSummary.getUser();
+        metadata.put("workout_id", workoutSummary.getId());
+        NotificationRequest notificationRequest = NotificationRequest.builder()
+                .userId(user.getId())
+                .type(NotificationType.WORKOUT)
+                .title("Congratulation! You just fininshed the workout")
+                .description("You have a new exercise in today plan")
+                .metaData(metadata)
+                .build();
+
+        tokenService.findAllByTypeAndUserId(TokenType.EXPO_PUSH_NOTIFICATION, user.getId()).forEach(
+                token -> notificationService.sendPushNotification(token.getToken(), notificationRequest));
     }
 }

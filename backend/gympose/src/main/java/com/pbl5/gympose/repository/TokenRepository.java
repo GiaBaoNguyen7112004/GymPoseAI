@@ -5,6 +5,7 @@ import com.pbl5.gympose.enums.TokenType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,4 +18,6 @@ public interface TokenRepository extends JpaRepository<Token, UUID> {
     Optional<Token> findByTokenAndUserId(String token, UUID userId);
 
     Optional<Token> findByTypeAndUser_Id(TokenType type, UUID userId);
+
+    List<Token> findAllByTypeAndUser_Id(TokenType type, UUID userId);
 }

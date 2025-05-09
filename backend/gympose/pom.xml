@@ -34,6 +34,12 @@
     </properties>
 
     <dependencies>
+        <!--        push noti-->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version>
+        </dependency>
         <!--        jsonb-->
         <dependency>
             <groupId>com.vladmihalcea</groupId>

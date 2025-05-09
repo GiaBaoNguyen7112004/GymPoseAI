@@ -38,6 +38,14 @@ public class WorkoutSummaryController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
+    @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID)
+    public ResponseEntity<ResponseData> getWorkoutSummaryById(@PathVariable(name = "workout-summary-id") UUID id) {
+        ResponseData responseData = ResponseData.success(workoutSummaryService.getWorkoutSummaryDetail(id),
+                FeedbackMessage.WORKOUT_SUMMARY_RETRIEVED);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_HISTORY)
     public ResponseEntity<ResponseData> getWorkoutHistory(@RequestParam(name = "sort", defaultValue = "created_at") String sortBy,
                                                           @RequestParam(name = "order", defaultValue = "desc") String order,
@@ -50,12 +58,12 @@ public class WorkoutSummaryController {
         PagingWorkoutSummariesResponse response = workoutSummaryService
                 .getWorkoutHistory(pageable, userPrincipal.getId(), viewMode, category);
         ResponseData responseData = ResponseData.successWithMeta(response.getWorkoutSummaries(), response.getPageInfo(),
-                FeedbackMessage.WORKOUT_SUMMARY_RETRIEVED);
+                FeedbackMessage.WORKOUT_SUMMARIES_RETRIEVED);
         return ResponseEntity.ok(responseData);
     }
 
     @SecurityRequirement(name = "bearerAuth")
-    @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID)
+    @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID + ApiPath.WORKOUT_SUMMARY_ERROR)
     public ResponseEntity<ResponseData> getWorkoutPoseErros(@PathVariable(name = "workout-summary-id") UUID id) {
         ResponseData responseData = ResponseData.success(workoutSummaryService.getPoseErrors(id),
                 FeedbackMessage.POSE_ERRORS_RETRIEVED);

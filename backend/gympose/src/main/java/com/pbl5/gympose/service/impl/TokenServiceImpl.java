@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,5 +91,10 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Token save(Token token) {
         return tokenRepository.save(token);
+    }
+
+    @Override
+    public List<Token> findAllByTypeAndUserId(TokenType type, UUID userId) {
+        return tokenRepository.findAllByTypeAndUser_Id(type, userId);
     }
 }
