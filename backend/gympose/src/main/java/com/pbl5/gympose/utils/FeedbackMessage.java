@@ -10,6 +10,7 @@ public final class FeedbackMessage {
     public static final String RESET_PASSWORD = "Reset password successfully";
     public static final String RESEND_RESET_PASSWORD = "Resend password successfully";
     public static final String PASSWORD_CHANGED = "Password changed successfully";
+    public static final String FACEBOOK_LOGGED_IN = "logged in by facebook successfully";
 
     // Category
     public static final String CATEGORY_CREATED = "Category created successfully";

@@ -1,9 +1,7 @@
 package com.pbl5.gympose.service.impl;
 
-import com.pbl5.gympose.entity.Role;
-import com.pbl5.gympose.entity.Token;
-import com.pbl5.gympose.entity.User;
-import com.pbl5.gympose.entity.UserPrincipal;
+import com.pbl5.gympose.entity.*;
+import com.pbl5.gympose.enums.AuthProvider;
 import com.pbl5.gympose.enums.CachePrefix;
 import com.pbl5.gympose.enums.RoleName;
 import com.pbl5.gympose.event.AccountVerificationEvent;
@@ -11,6 +9,7 @@ import com.pbl5.gympose.event.RequestResetPasswordEvent;
 import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
 import com.pbl5.gympose.event.UserRegistrationEvent;
 import com.pbl5.gympose.exception.BadRequestException;
+import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.exception.UnauthenticatedException;
 import com.pbl5.gympose.mapper.UserMapper;
 import com.pbl5.gympose.payload.request.auth.*;
@@ -19,8 +18,10 @@ import com.pbl5.gympose.payload.response.auth.LoginResponse;
 import com.pbl5.gympose.payload.response.auth.SignUpResponse;
 import com.pbl5.gympose.service.AuthService;
 import com.pbl5.gympose.service.TokenService;
+import com.pbl5.gympose.service.UserProviderService;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.service.cache.CacheService;
+import com.pbl5.gympose.service.facebook.FacebookService;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import com.pbl5.gympose.utils.jwt.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -37,7 +38,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -55,6 +58,8 @@ public class JwtAuthServiceImpl implements AuthService {
     TokenService tokenService;
     CacheService cacheService;
     ApplicationEventPublisher applicationEventPublisher;
+    FacebookService facebookService;
+    UserProviderService userProviderService;
 
 
     @Override
@@ -171,5 +176,46 @@ public class JwtAuthServiceImpl implements AuthService {
             throw new BadRequestException(ErrorMessage.OLD_PASSWORD_NOT_MATCH);
         user.setPassword(passwordEncoder.encode(passwordChangingRequest.getNewPassword()));
         userService.save(user);
+    }
+
+    @Override
+    public LoginResponse loginWithFacebook(final String fbAccessToken) {
+        Map<String, Object> userProfile = facebookService.getUserInfo(fbAccessToken);
+        String userFbId = (String) userProfile.get("id");
+        String userFbFirstName = (String) userProfile.get("first_name");
+        String userFbLastName = (String) userProfile.get("last_name");
+        String userFbEmail = (String) userProfile.get("email");
+
+        if (userFbEmail == null) {
+            throw new NotFoundException(ErrorMessage.MISSING_FACEBOOK_EMAIL);
+        }
+
+        Optional<UserProvider> optionalUserProvider = userProviderService
+                .findByAuthProviderAndProviderId(AuthProvider.FACEBOOK, userFbId);
+        UUID userId = null;
+        if (optionalUserProvider.isPresent()) {
+            userId = optionalUserProvider.get().getUser().getId();
+        } else {
+            User user = new User();
+            user.setEmail(userFbEmail);
+            user.setFirstName(userFbFirstName);
+            user.setLastName(userFbLastName);
+            user.setAccountVerifiedAt(LocalDateTime.now());
+
+            UserProvider userProvider = new UserProvider();
+            userProvider.setAuthProvider(AuthProvider.FACEBOOK);
+            userProvider.setProviderId(userFbId);
+            userProvider.setUser(user);
+
+            user.getUserProviders().add(userProvider);
+            userId = userService.save(user).getId();
+        }
+
+        boolean isRefreshToken = true;
+        String refreshToken = jwtUtils.generateToken(userFbEmail, isRefreshToken);
+        String accessToken = jwtUtils.generateToken(userFbEmail, !isRefreshToken);
+
+        return new JwtLoginResponse(userMapper.toUserResponse(userService.findById(userId)),
+                accessToken, refreshToken);
     }
 }

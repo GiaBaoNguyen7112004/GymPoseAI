@@ -24,4 +24,6 @@ public interface AuthService {
     void resendResetPassword(RequestResetPasswordRequest resetPasswordRequest);
 
     void changePassword(UUID userId, PasswordChangingRequest passwordChangingRequest);
+
+    LoginResponse loginWithFacebook(String fbAccessToken);
 }

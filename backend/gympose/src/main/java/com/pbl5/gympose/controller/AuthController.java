@@ -89,4 +89,11 @@ public class AuthController {
         ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.PASSWORD_CHANGED);
         return ResponseEntity.ok(responseData);
     }
+
+    @PostMapping(ApiPath.LOGIN_WITH_FACEBOOK)
+    public ResponseEntity<ResponseData> loginWithFacebook(@RequestBody FacebookLoginRequest request) {
+        ResponseData responseData = ResponseData.success(authService.loginWithFacebook(request.getAccessToken()),
+                FeedbackMessage.FACEBOOK_LOGGED_IN);
+        return ResponseEntity.ok(responseData);
+    }
 }

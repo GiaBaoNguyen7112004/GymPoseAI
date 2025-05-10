@@ -26,6 +26,14 @@ unauthorized:
   code: ERR.AUTH0201
   message: Unauthorized, You do not have permission to access this page!
 
+#facebook
+facebook_unauthenticated:
+  code: ERR.FB0101
+  message: Can not login with facebook!
+missing_facebook_email:
+  CODE: ERR.FB0201
+  message: Missing email facebook!
+
 #password
 new_password_not_match:
   code: ERR.PSW0101

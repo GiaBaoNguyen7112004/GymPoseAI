@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,8 +65,8 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Notification> notifications;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<UserProvider> userProviders;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<UserProvider> userProviders = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<WorkoutSummary> workoutSummaries;
