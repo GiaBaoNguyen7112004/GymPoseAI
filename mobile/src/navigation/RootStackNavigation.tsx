@@ -14,7 +14,7 @@ import MainTabs from './MainTabs'
 // App Screens
 import Notification from '@/screens/Other/Notification'
 import WorkoutHistoryCenter from '@/screens/Other/WorkoutHistoryCenter'
-import WorkoutHistoryDetail from '@/screens/Other/WorkoutHistoryDetail'
+import WorkoutSummaryDetail from '@/screens/Other/WorkoutSummaryDetail'
 import CategoryDetail from '@/screens/Other/CategoryDetail'
 import ActivityTracker from '@/screens/Other/ActivityTracker'
 import Setting from '@/screens/Other/Setting'
@@ -26,7 +26,7 @@ import ActivityListScreen from '@/screens/Other/ActivityListScreen'
 import CompleteProfile from '@/screens/Other/CompleteProfile'
 import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
 import Register from '@/screens/Auth/Register'
-import ExerciseDetail from '@/screens/Other/WorkoutDetail'
+import ExerciseDetail from '@/screens/Other/ExerciseDetail'
 import GymLiveScreen from '@/screens/Other/GymLiveScreen'
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -48,7 +48,7 @@ function RootStackNavigation() {
                     <RootStack.Screen name='MainTab' component={MainTabs} options={{}} />
                     <RootStack.Screen name='Notification' component={Notification} />
                     <RootStack.Screen name='WorkoutHistoryCenter' component={WorkoutHistoryCenter} />
-                    <RootStack.Screen name='WorkoutHistoryDetail' component={WorkoutHistoryDetail} />
+                    <RootStack.Screen name='WorkoutSummaryDetail' component={WorkoutSummaryDetail} />
                     <RootStack.Screen name='CategoryDetail' component={CategoryDetail} />
                     <RootStack.Screen name='ExerciseDetail' component={ExerciseDetail} />
                     <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />

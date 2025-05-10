@@ -20,7 +20,7 @@ export type RootStackParamList = {
     // Feature-specific screens
     Notification: undefined
     WorkoutHistoryCenter: undefined
-    WorkoutHistoryDetail: { workout_id: string }
+    WorkoutSummaryDetail: { workout_id: string }
     CategoryDetail: { category_id: string; exercise_id?: string }
     ExerciseDetail: { workout_id: string }
     ActivityTracker: undefined

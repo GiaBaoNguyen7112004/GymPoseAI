@@ -11,7 +11,6 @@ import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 import useScrollListener from '@/hooks/useScrollListener'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
-import BlankScreenLoader from '@/components/BlankScreenLoader'
 
 function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>) {
     const { isReady } = useInteractionReadyState()
