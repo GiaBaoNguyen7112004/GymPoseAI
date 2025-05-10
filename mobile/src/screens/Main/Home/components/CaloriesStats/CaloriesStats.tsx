@@ -13,7 +13,7 @@ interface CaloriesStatsProps {
 function CaloriesStats({ user_id }: CaloriesStatsProps) {
     const { data } = useQuery({
         queryKey: ['calories', user_id],
-        queryFn: async () => targetApi.getTodayCaloriesTarget({ id: user_id }),
+        queryFn: async () => targetApi.getDailyCaloriesTarget(),
         staleTime: 1000 * 60 * 5,
         enabled: !!user_id
     })

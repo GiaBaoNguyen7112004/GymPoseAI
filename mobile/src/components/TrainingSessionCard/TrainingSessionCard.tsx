@@ -68,14 +68,14 @@ const styles = StyleSheet.create({
     },
     name: {
         marginTop: 15,
-        fontSize: 12,
+        fontSize: 14,
         color: '#1D1617',
         fontWeight: '500',
         lineHeight: 18
     },
     stats: {
         marginTop: 3,
-        fontSize: 10,
+        fontSize: 12,
         color: '#A4A9AD',
         fontWeight: '400',
         lineHeight: 15

@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
-interface FormUpdateTodayTargetProps {
+interface FormUpdateDailyTargetProps {
     visible: boolean
     waterVal: number
     caloriesVal: number
@@ -19,7 +19,7 @@ interface FormUpdateTodayTargetProps {
     onCancel: () => void
 }
 
-function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel, visible }: FormUpdateTodayTargetProps) {
+function FormUpdateDailyTarget({ waterVal, caloriesVal, onUpdate, onCancel, visible }: FormUpdateDailyTargetProps) {
     const methods = useForm<TargetSchemaType>({
         defaultValues: {
             calories: caloriesVal,
@@ -31,7 +31,7 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
     })
 
     const updateTargetMutation = useMutation({
-        mutationFn: targetApi.updateTodayTarget
+        mutationFn: targetApi.updateDailyTarget
     })
     const onUpdateForm = methods.handleSubmit((data) => {
         onUpdate()
@@ -51,7 +51,7 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
             <View style={styles.wrapper}>
                 <FormProvider {...methods}>
                     <View style={styles.header}>
-                        <Text style={styles.title}>Update Today Target</Text>
+                        <Text style={styles.title}>Update Daily Target</Text>
                         <TouchableOpacity style={styles.closeBtn} onPress={onCancel}>
                             <Ionicons name='close-sharp' size={16} color='#ADA4A5' />
                         </TouchableOpacity>
@@ -98,7 +98,7 @@ function FormUpdateTodayTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
     )
 }
 
-export default FormUpdateTodayTarget
+export default FormUpdateDailyTarget
 
 const styles = StyleSheet.create({
     wrapper: {

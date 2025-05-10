@@ -25,6 +25,7 @@ export type FindAccountResponse = ResponseApi<
     any
 >
 
+// request body types
 export type RegisterReqBody = {
     first_name: string
     last_name: string
@@ -41,4 +42,17 @@ export type ResetPasswordReqBody = {
     email: string
     password: string
     otp: string
+}
+export type LoginWithFacebookReqBody = {
+    access_token: string
+}
+
+export type ForgotPasswordReqBody = {
+    email: string
+    otp: string
+}
+
+export type LoginReqBody = {
+    email: string
+    password: string
 }

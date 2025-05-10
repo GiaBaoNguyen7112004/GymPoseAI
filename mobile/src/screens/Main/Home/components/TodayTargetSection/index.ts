@@ -1,3 +1,3 @@
-import TodayTargetSection from './TodayTargetSection'
+import DailyTargetSection from './DailyTargetSection'
 
-export default TodayTargetSection
+export default DailyTargetSection

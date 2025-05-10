@@ -2,16 +2,16 @@ import GradientButton from '@/components/GradientButton'
 import { memo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-interface TodayTargetSectionProps {
-    handleCheckTodayTarget: () => void
+interface DailyTargetSectionProps {
+    handleCheckDailyTarget: () => void
 }
 
-function TodayTargetSection({ handleCheckTodayTarget }: TodayTargetSectionProps) {
+function DailyTargetSection({ handleCheckDailyTarget }: DailyTargetSectionProps) {
     return (
         <View style={styles.wrapper}>
             <View style={styles.container}>
-                <Text style={styles.title}>Today Target</Text>
-                <GradientButton Square style={styles.button} onPress={handleCheckTodayTarget}>
+                <Text style={styles.title}>Daily Target</Text>
+                <GradientButton Square style={styles.button} onPress={handleCheckDailyTarget}>
                     <Text style={styles.buttonText}>Check</Text>
                 </GradientButton>
             </View>
@@ -19,7 +19,7 @@ function TodayTargetSection({ handleCheckTodayTarget }: TodayTargetSectionProps)
     )
 }
 
-export default memo(TodayTargetSection)
+export default memo(DailyTargetSection)
 
 const styles = StyleSheet.create({
     wrapper: {

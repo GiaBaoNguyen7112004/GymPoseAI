@@ -23,10 +23,8 @@ function SearchResults({ searchText, handleWorkoutCardPress, setIsLoading }: Sea
         queryKey: ['search', trimmedSearchText],
         queryFn: () =>
             searchApi.search({
-                params: {
-                    q: trimmedSearchText,
-                    type: 'less'
-                }
+                q: trimmedSearchText,
+                type: 'less'
             }),
         enabled: isSearchActive
     })

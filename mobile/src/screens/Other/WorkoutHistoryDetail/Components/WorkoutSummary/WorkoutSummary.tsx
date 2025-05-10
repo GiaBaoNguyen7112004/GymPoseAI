@@ -1,4 +1,3 @@
-// components/WorkoutSummary.tsx
 import { View, Text, StyleSheet } from 'react-native'
 import AvatarWithIcon from '@/components/AvatarWithIcon'
 import { formatDate } from '@/utils/format.util'
@@ -8,49 +7,57 @@ import WorkoutHistoryProgressChart from '../WorkoutHistoryProgressChart/WorkoutH
 import { workoutHistory } from '@/types/workoutHistory.type'
 import { ProgressChartData } from 'react-native-chart-kit/dist/ProgressChart'
 import { memo } from 'react'
+import StatItem from '../StatItem'
 
 interface WorkoutSummaryProps {
     workout?: workoutHistory
     workoutDuration: number
     progressData: ProgressChartData
+    poseErrorCount?: number
 }
 
-const WorkoutSummary = ({ workout, workoutDuration, progressData }: WorkoutSummaryProps) => {
+const WorkoutSummary = ({ workout, workoutDuration, progressData, poseErrorCount }: WorkoutSummaryProps) => {
     return (
-        <View style={styles.cardTop}>
-            <View style={styles.header}>
-                <AvatarWithIcon size={40} colors={COLOR_BRANDS.secondary} icon='AbWorkout' />
-                <View>
-                    <Text style={styles.name}>{workout?.name_workout}</Text>
-                    <Text style={styles.date}>{formatDate(new Date(workout?.start_time || ''))}</Text>
+        <View>
+            <View style={styles.cardTop}>
+                <View style={styles.header}>
+                    <AvatarWithIcon size={40} colors={COLOR_BRANDS.secondary} icon='AbWorkout' />
+                    <View>
+                        <Text style={styles.name}>{workout?.name_workout}</Text>
+                        <Text style={styles.date}>{formatDate(new Date(workout?.start_time || ''))}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.activityRow}>
+                    <View>
+                        <ActivityItem
+                            label='Calories Burned'
+                            value={`${workout?.calories_burned || 0}`}
+                            unit={`/ ${workout?.calories_base || 0} CAL`}
+                            color={(progressData as any).colors[1]}
+                        />
+                        <ActivityItem
+                            label='Exercise Time'
+                            value={`${workoutDuration || 0}`}
+                            unit={`/ ${workout?.calories_base || 0} MIN`}
+                            color={(progressData as any).colors[0]}
+                        />
+                        <ActivityItem
+                            label='Form Accuracy'
+                            value={(progressData as any).data[2].toFixed(2) || 0}
+                            unit='%'
+                            color={(progressData as any).colors[2]}
+                        />
+                    </View>
+
+                    <View style={styles.chartWrapper}>
+                        <WorkoutHistoryProgressChart data={progressData} />
+                    </View>
                 </View>
             </View>
-
-            <View style={styles.activityRow}>
-                <View>
-                    <ActivityItem
-                        label='Calories Burned'
-                        value={`${workout?.calories_burned || 0}`}
-                        unit={`/ ${workout?.calories_base || 0} CAL`}
-                        color={(progressData as any).colors[1]}
-                    />
-                    <ActivityItem
-                        label='Exercise Time'
-                        value={`${workoutDuration || 0}`}
-                        unit={`/ ${workout?.duration_minutes || 0} MIN`}
-                        color={(progressData as any).colors[0]}
-                    />
-                    <ActivityItem
-                        label='Form Accuracy'
-                        value={(progressData as any).toFixed(2)}
-                        unit='%'
-                        color={(progressData as any).colors[2]}
-                    />
-                </View>
-
-                <View style={styles.chartWrapper}>
-                    <WorkoutHistoryProgressChart data={progressData} />
-                </View>
+            <View style={styles.cardBottom}>
+                <StatItem label='Total Reps' value={workout?.reps_count || 0} />
+                <StatItem label='Form Errors' value={poseErrorCount || 0} />
             </View>
         </View>
     )
@@ -68,6 +75,21 @@ const styles = StyleSheet.create({
         shadowRadius: 20,
         elevation: 8
     },
+    cardBottom: {
+        backgroundColor: '#fff',
+        marginTop: 3,
+        borderBottomLeftRadius: 16,
+        borderBottomRightRadius: 16,
+        padding: 16,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        shadowColor: 'rgba(29, 22, 23, 0.1)',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 20,
+        elevation: 8
+    },
+
     header: {
         flexDirection: 'row',
         gap: 12,

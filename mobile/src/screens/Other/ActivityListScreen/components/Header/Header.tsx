@@ -9,7 +9,7 @@ interface HeaderProps {
 function Header({ goBackScreen }: HeaderProps) {
     return (
         <SafeAreaView style={styles.header}>
-            <NavigationBar title='Today Activity' callback={goBackScreen} />
+            <NavigationBar title='Daily Activity' callback={goBackScreen} />
         </SafeAreaView>
     )
 }

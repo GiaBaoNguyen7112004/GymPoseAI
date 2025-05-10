@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useWorkoutHistory } from '@/hooks/useWorkoutHistory'
 import LoaderModal from '@/components/LoaderModal'
@@ -20,6 +20,12 @@ export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProp
         order
     )
 
+    const handleChangeSortMode = useCallback(() => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc')), [])
+
+    const handleItemPress = useCallback((id: string) => {
+        navigation.navigate('WorkoutHistoryDetail', { workout_id: id })
+    }, [])
+
     const workouts = data?.pages.flatMap((page) => page.data) || []
 
     return (
@@ -32,7 +38,7 @@ export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProp
                     order={order}
                     onCategoryChange={setCategory}
                     onViewModeChange={setViewMode}
-                    onOrderChange={() => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+                    onOrderChange={handleChangeSortMode}
                 />
                 <View style={{ flex: 1 }}>
                     <LoaderModal isVisible={isLoading} />
@@ -43,7 +49,7 @@ export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProp
                         hasNextPage={hasNextPage}
                         fetchNextPage={fetchNextPage}
                         onRefresh={refetch}
-                        onPressItem={(id) => navigation.navigate('WorkoutHistoryDetail', { workout_id: id })}
+                        onPressItem={handleItemPress}
                     />
                 </View>
             </View>

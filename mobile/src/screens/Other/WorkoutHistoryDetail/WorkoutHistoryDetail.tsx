@@ -22,7 +22,12 @@ function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'Worko
             </SafeAreaView>
             <ScrollView style={styles.scrollView} onScroll={handleScroll} scrollEventThrottle={16}>
                 <View style={styles.section}>
-                    <WorkoutSummary workout={workout} workoutDuration={workoutDuration} progressData={progressData} />
+                    <WorkoutSummary
+                        workout={workout}
+                        workoutDuration={workoutDuration}
+                        progressData={progressData}
+                        poseErrorCount={poseErrors.length}
+                    />
                 </View>
 
                 <View style={styles.section}>

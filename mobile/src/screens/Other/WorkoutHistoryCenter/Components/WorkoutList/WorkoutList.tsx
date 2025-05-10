@@ -4,6 +4,9 @@ import LottieView from 'lottie-react-native'
 import TrainingSessionCard from '@/components/TrainingSessionCard'
 import Loader from '@/components/Loader'
 import { workoutHistory } from '@/types/workoutHistory.type'
+import { defaultKeyExtractor } from '@/utils/list'
+import EmptyState from './EmptyState'
+import FooterLoader from './FooterLoader'
 
 interface WorkoutListProps {
     data: workoutHistory[]
@@ -14,19 +17,6 @@ interface WorkoutListProps {
     onRefresh: () => void
     onPressItem: (id: string) => void
 }
-
-const EmptyState = () => (
-    <View style={styles.emptyContainer}>
-        <LottieView source={require('@/assets/animations/stats.json')} autoPlay loop style={styles.emptyImage} />
-        <Text style={styles.emptyText}>No workouts found.</Text>
-    </View>
-)
-
-const FooterLoader = () => (
-    <View style={styles.footerLoader}>
-        <Loader />
-    </View>
-)
 
 const WorkoutList = ({
     data,
@@ -45,8 +35,8 @@ const WorkoutList = ({
     return (
         <FlatList
             data={data}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={data.length === 0 ? styles.emptyListContent : styles.listContent}
+            keyExtractor={defaultKeyExtractor}
+            contentContainerStyle={styles.listContent}
             renderItem={renderItem}
             ListEmptyComponent={<EmptyState />}
             onEndReached={() => {
@@ -66,32 +56,7 @@ const styles = StyleSheet.create({
     listContent: {
         paddingHorizontal: 16,
         paddingVertical: 10,
-        gap: 10
-    },
-    emptyListContent: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingBottom: 16
-    },
-    footerLoader: {
-        alignItems: 'center',
-        paddingVertical: 12
-    },
-    emptyContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1
-    },
-    emptyText: {
-        fontSize: 16,
-        fontWeight: '400',
-        color: '#ADA4A5',
-        textAlign: 'center'
-    },
-    emptyImage: {
-        width: 250,
-        height: 250
+        gap: 10,
+        flexGrow: 1
     }
 })

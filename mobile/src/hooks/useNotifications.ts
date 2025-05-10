@@ -5,7 +5,7 @@ const useNotifications = () => {
     return useInfiniteQuery({
         queryKey: ['notification'],
         queryFn: async ({ pageParam = 1 }) => {
-            const res = await notificationApi.getNotification({ params: { page: pageParam, limit: 10 } })
+            const res = await notificationApi.getNotification({ page: pageParam, limit: 10 })
             return res.data
         },
         getNextPageParam: ({ meta }) => (meta.current_page < meta.total_page ? meta.current_page + 1 : undefined),

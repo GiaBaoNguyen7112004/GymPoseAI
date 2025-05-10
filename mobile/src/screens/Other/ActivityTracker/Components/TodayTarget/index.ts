@@ -1,3 +1,3 @@
-import TodayTarget from './TodayTarget'
+import DailyTarget from './DailyTarget'
 
-export default TodayTarget
+export default DailyTarget

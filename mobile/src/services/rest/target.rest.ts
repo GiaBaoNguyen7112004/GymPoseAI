@@ -1,19 +1,24 @@
 import http from '@/services/core/http'
-import { ResponseApi } from '@/types/utils.type'
-import { CaloriesTargetOfDay, TodayTargetResponseAPI, WeekTargetResponseAPI } from '@/types/target.type'
+import {
+    DailyCaloriesTargetResponseAPI,
+    DailyTargetResponseAPI,
+    DailyUpdateTargetReqBody,
+    DailyWaterTargetResponseAPI,
+    WeekTargetResponseAPI
+} from '@/types/target.type'
 
 const targetApi = {
-    getTodayCaloriesTarget({ id }: { id: string }) {
-        return http.get<ResponseApi<CaloriesTargetOfDay, null>>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/calories/${id}`)
+    getDailyCaloriesTarget() {
+        return http.get<DailyCaloriesTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/calories`)
     },
-    getTodayWaterTarget({ id }: { id: string }) {
-        return http.get<ResponseApi<CaloriesTargetOfDay, null>>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/water/${id}`)
+    getDailyWaterTarget() {
+        return http.get<DailyWaterTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/water`)
     },
-    getTodayTarget() {
-        return http.get<TodayTargetResponseAPI>(process.env.EXPO_PUBLIC_URL_TARGETS)
+    getDailyTarget() {
+        return http.get<DailyTargetResponseAPI>(process.env.EXPO_PUBLIC_URL_TARGETS)
     },
-    updateTodayTarget(body: { water: number; calories: number }) {
-        return http.put<TodayTargetResponseAPI>(process.env.EXPO_PUBLIC_URL_TARGETS, body)
+    updateDailyTarget(body: DailyUpdateTargetReqBody) {
+        return http.put<DailyTargetResponseAPI>(process.env.EXPO_PUBLIC_URL_TARGETS, body)
     },
     getWeeklyStatisticsTarget() {
         return http.put<WeekTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/stat`)

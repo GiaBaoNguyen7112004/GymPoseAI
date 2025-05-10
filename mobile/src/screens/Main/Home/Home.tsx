@@ -7,7 +7,7 @@ import { MainTabScreenProps } from '@/navigation/types'
 import WorkoutHistory from './components/WorkoutHistory'
 import Header from './components/Header'
 import BMISection from './components/BMISection'
-import TodayTargetSection from './components/TodayTargetSection'
+import DailyTargetSection from './components/DailyTargetSection'
 import ActivityStatusSection from './components/ActivityStatusSection/ActivityStatusSection'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import HomeSkeleton from './components/HomeSkeleton'
@@ -18,7 +18,7 @@ function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
         navigation.navigate('Notification')
     }, [navigation])
 
-    const handleCheckTodayTarget = useCallback(() => {
+    const handleCheckDailyTarget = useCallback(() => {
         navigation.navigate('ActivityTracker')
     }, [navigation])
 
@@ -31,7 +31,7 @@ function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
                 <View style={styles.content}>
                     <Header handleNotificationClick={handleNotificationClick} />
                     <BMISection />
-                    <TodayTargetSection handleCheckTodayTarget={handleCheckTodayTarget} />
+                    <DailyTargetSection handleCheckDailyTarget={handleCheckDailyTarget} />
                     <ActivityStatusSection />
                     <WorkoutProgressChart />
                     <WorkoutHistory navigation={navigation} route={route} />

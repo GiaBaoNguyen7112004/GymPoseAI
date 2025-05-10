@@ -9,7 +9,7 @@ import {
 } from '@/types/workoutHistory.type'
 
 const workoutHistoryApi = {
-    getWorkoutSummaryList({ params }: { params: QueryConfigWorkoutHistory }) {
+    getWorkoutSummaryList(params: QueryConfigWorkoutHistory) {
         return http.get<ResponseAPIWorkoutHistoryPage>(`${process.env.EXPO_PUBLIC_URL_GET_WORKOUT_HISTORY}/history`, {
             params
         })

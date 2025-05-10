@@ -19,9 +19,7 @@ function LatestActivity({ isReadyRender }: LatestActivityProps) {
     const { data, isLoading } = useQuery({
         queryKey: ['latest-activity-preview'],
         queryFn: async () => {
-            const response = await activityApi.getDailyActivity({
-                params: { page: 1, limit: 3 }
-            })
+            const response = await activityApi.getDailyActivity({ page: 1, limit: 3 })
             return response.data
         },
         staleTime: 60 * 1000

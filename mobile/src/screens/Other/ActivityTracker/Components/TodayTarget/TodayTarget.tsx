@@ -4,18 +4,18 @@ import { StyleSheet, Text, View } from 'react-native'
 import MyIcon from '@/components/Icon'
 import TextGradient from '@/components/TextGradient'
 
-interface TodayTargetProps {
-    updateTodayTargetPress: () => void
+interface DailyTargetProps {
+    updateDailyTargetPress: () => void
     caloriesVal: number
     waterVal: number
 }
 
-function TodayTarget({ waterVal, caloriesVal, updateTodayTargetPress }: TodayTargetProps) {
+function DailyTarget({ waterVal, caloriesVal, updateDailyTargetPress }: DailyTargetProps) {
     return (
         <View style={styles.todayTargetCard}>
             <View style={styles.todayTargetHeader}>
-                <Text style={styles.todayTargetTitle}>Today Target</Text>
-                <GradientButton style={styles.todayTargetBadge} onPress={updateTodayTargetPress}>
+                <Text style={styles.todayTargetTitle}>Daily Target</Text>
+                <GradientButton style={styles.todayTargetBadge} onPress={updateDailyTargetPress}>
                     <AntDesign name='plus' size={18} color='#FFF' style={styles.todayTargetIconPlus} />
                 </GradientButton>
             </View>
@@ -41,7 +41,7 @@ function TodayTarget({ waterVal, caloriesVal, updateTodayTargetPress }: TodayTar
     )
 }
 
-export default TodayTarget
+export default DailyTarget
 
 const styles = StyleSheet.create({
     todayTargetCard: {

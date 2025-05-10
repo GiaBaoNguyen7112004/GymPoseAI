@@ -37,7 +37,7 @@ function ActivityListScreen({ navigation }: RootStackScreenProps<'ActivityList'>
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={isFetchingNextPage ? <FooterLoader /> : null}
-                    ListEmptyComponent={!isLoading ? <EmptyComponent /> : null}
+                    ListEmptyComponent={<EmptyComponent />}
                 />
             </View>
         </View>

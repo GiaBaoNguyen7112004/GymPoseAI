@@ -4,10 +4,8 @@ import { ResponseAPINotificationPage } from '@/types/notification.type'
 import { ResponseNewNotificationCount } from '@/types/FCM.type'
 
 const notificationApi = {
-    getNotification({ params }: { params: BaseQueryConfig }) {
-        return http.get<ResponseAPINotificationPage>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, {
-            params
-        })
+    getNotification(params: BaseQueryConfig) {
+        return http.get<ResponseAPINotificationPage>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, { params })
     },
     readNotification({ id }: { id: string }) {
         return http.put(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}/read`)

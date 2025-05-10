@@ -21,7 +21,8 @@ export const useWorkoutHistory = (category: categories, viewMode: ViewModeType, 
         queryKey: ['workout-history-screen', category, viewMode, order],
         queryFn: async ({ pageParam = 1 }) => {
             const response = await workoutHistoryApi.getWorkoutSummaryList({
-                params: { ...queryConfig, page: pageParam as number }
+                ...queryConfig,
+                page: pageParam as number
             })
             return response.data
         },

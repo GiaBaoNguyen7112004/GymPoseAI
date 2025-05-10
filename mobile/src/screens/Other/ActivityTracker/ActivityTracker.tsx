@@ -1,12 +1,12 @@
 import { View, StyleSheet, ScrollView } from 'react-native'
 import NavigationBar from '@/components/NavigationBar'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TodayTarget from './Components/TodayTarget'
+import DailyTarget from './Components/DailyTarget'
 import ActivityProgress from './Components/ActivityProgress'
 import LatestActivity from './Components/LatestActivity'
 import { RootStackScreenProps } from '@/navigation/types'
 import { useState } from 'react'
-import FormUpdateTodayTarget from './Components/FormUpdateTodayTarget'
+import FormUpdateDailyTarget from './Components/FormUpdateDailyTarget'
 import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 import useScrollListener from '@/hooks/useScrollListener'
@@ -22,7 +22,7 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
         refetch()
     }
 
-    const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getTodayTarget })
+    const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getDailyTarget })
     const todayTargetData = data?.data.data
 
     return (
@@ -39,10 +39,10 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 scrollEventThrottle={16}
             >
                 <View style={styles.todayTargetCard}>
-                    <TodayTarget
+                    <DailyTarget
                         caloriesVal={todayTargetData?.calories || 0}
                         waterVal={todayTargetData?.water || 0}
-                        updateTodayTargetPress={toggleModalUpdateTarget}
+                        updateDailyTargetPress={toggleModalUpdateTarget}
                     />
                 </View>
 
@@ -53,7 +53,7 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 <View style={styles.latestActivityCard}>
                     <LatestActivity isReadyRender={isReady} />
                 </View>
-                <FormUpdateTodayTarget
+                <FormUpdateDailyTarget
                     visible={modalUpdateTargetVisible}
                     caloriesVal={todayTargetData?.calories || 0}
                     waterVal={todayTargetData?.water || 0}
