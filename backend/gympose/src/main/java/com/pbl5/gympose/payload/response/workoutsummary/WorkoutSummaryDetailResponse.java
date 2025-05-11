@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -17,10 +18,11 @@ public class WorkoutSummaryDetailResponse {
     UUID id;
     String nameExercise;
     LocalDateTime startTime;
-    LocalDateTime endTime;
+    Integer durationMinutes;
     Double caloriesBurned;
-    Double CaloriesBase;
+    Double caloriesBase;
     String category;
     Integer repCount;
     Integer errorsCount;
+    List<PoseErrorResponse> poseErrors;
 }
