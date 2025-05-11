@@ -29,8 +29,8 @@ public class JwtUtils {
                 .claim(USERNAME_CLAIM, username)
                 .setIssuedAt(new Date())
                 .setExpiration(isRefreshToken
-                        ? new Date(new Date().getTime() + appProperties.getAuth().getAccessTokenExpirationMsec())
-                        : new Date(new Date().getTime() + appProperties.getAuth().getRefreshTokenExpirationMsec()))
+                        ? new Date(new Date().getTime() + appProperties.getAuth().getRefreshTokenExpirationMsec())
+                        : new Date(new Date().getTime() + appProperties.getAuth().getAccessTokenExpirationMsec()))
                 .signWith(isRefreshToken ? getRefreshTokenSecretKey() : getAccessTokenSecretKey(),
                         SignatureAlgorithm.HS512).compact();
     }

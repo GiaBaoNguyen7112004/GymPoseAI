@@ -23,4 +23,6 @@ public interface ExerciseService {
     void deleteExerciseById(UUID exerciseId);
 
     Exercise findById(UUID id);
+
+    List<ExerciseResponse> searchByName(String query, String type);
 }

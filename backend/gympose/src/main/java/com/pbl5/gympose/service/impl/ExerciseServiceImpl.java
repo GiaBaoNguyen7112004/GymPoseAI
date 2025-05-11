@@ -19,8 +19,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,5 +89,27 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public Exercise findById(UUID id) {
         return exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.EXERCISE_NOT_FOUND));
+    }
+
+    @Override
+    public List<ExerciseResponse> searchByName(String query, String type) {
+        return exerciseRepository.searchByName(buildFullTextQuery(query), type)
+                .stream().map(exerciseMapper::toExerciseResponse).toList();
+    }
+
+    public String buildFullTextQuery(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return ""; // hoặc throw exception nếu cần
+        }
+
+        query = query.trim();
+
+        if (query.contains(" ")) {
+            return Arrays.stream(query.split("\\s+"))
+                    .map(word -> word + ":*")
+                    .collect(Collectors.joining(" & "));
+        } else {
+            return query + ":*";
+        }
     }
 }

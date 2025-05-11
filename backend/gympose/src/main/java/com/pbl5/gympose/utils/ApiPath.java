@@ -23,6 +23,7 @@ public final class ApiPath {
     // EXERCISE
     public static final String EXERCISES = API + "/exercises";
     public static final String EXERCISE_BY_ID = "/{exercise-id}";
+    public static final String EXERCISES_SEARCH = "/search";
 
     // IMAGE
     public static final String UPLOAD_IMAGE = "/upload-image";
@@ -45,6 +46,8 @@ public final class ApiPath {
     // NOTIFICATION
     public static final String NOTIFICATIONS = API + "/notifications";
     public static final String NOTIFICATION_BY_ID = "/{notification-id}";
+    public static final String NOTIFICATION_RESET = "/new/reset";
+    public static final String NEW_NOTIFICATIONS_NUMBER = "/new/number";
 
     //JWT
     public static final String JWT = API + "/jwt";
