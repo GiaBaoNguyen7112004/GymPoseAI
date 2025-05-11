@@ -23,4 +23,8 @@ public interface NotificationService {
     void deleteById(UUID notificationId);
 
     void sendPushNotification(String expoToken, NotificationRequest notificationRequest);
+
+    long getNewNotificationNumber(UUID userId);
+
+    void resetNewNotifications(UUID userId);
 }

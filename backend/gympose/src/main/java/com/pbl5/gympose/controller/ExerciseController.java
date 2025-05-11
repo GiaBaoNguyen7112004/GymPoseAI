@@ -87,4 +87,11 @@ public class ExerciseController {
                 FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }
+
+    @GetMapping(ApiPath.EXERCISES + ApiPath.EXERCISES_SEARCH)
+    public ResponseEntity<ResponseData> searchExercises(@RequestParam String query, @RequestParam String type) {
+        ResponseData responseData = ResponseData.success(exerciseService.searchByName(query, type),
+                FeedbackMessage.EXERCISE_SEARCHED);
+        return ResponseEntity.ok(responseData);
+    }
 }

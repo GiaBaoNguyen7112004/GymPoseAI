@@ -31,6 +31,8 @@ public class Notification extends AbstractEntity {
 
     Boolean isRead = false;
 
+    Boolean isNew = true;
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> metaData;

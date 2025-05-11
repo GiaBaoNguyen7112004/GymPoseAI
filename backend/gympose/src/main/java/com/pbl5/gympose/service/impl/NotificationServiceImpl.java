@@ -112,4 +112,15 @@ public class NotificationServiceImpl implements NotificationService {
             LogUtils.error("Failed to send push notification : " + e.getMessage());
         }
     }
+
+    @Override
+    public long getNewNotificationNumber(UUID userId) {
+        return notificationRepository.findAllByUser_IdAndIsNew(userId, Boolean.TRUE).size();
+    }
+
+    @Override
+    public void resetNewNotifications(UUID userId) {
+        notificationRepository.findAllByUser_IdAndIsNew(userId, Boolean.TRUE)
+                .forEach(notification -> notification.setIsNew(Boolean.FALSE));
+    }
 }

@@ -26,6 +26,7 @@ public final class FeedbackMessage {
     public static final String EXERCISES_BY_CATEGORY_RETRIEVED = "Exercises by category retrieved successfully";
     public static final String EXERCISE_DELETED = "Exercise deleted successfully";
     public static final String EXERCISE_UPDATED = "Exercise updated successfully";
+    public static final String EXERCISE_SEARCHED = "Exercise searched successfully";
 
 
     // Image
@@ -49,6 +50,8 @@ public final class FeedbackMessage {
     public static final String NOTIFICATIONS_RETRIEVED = "Notifications retrieved successfully";
     public static final String NOTIFICATION_READ = "Notification read successfully";
     public static final String NOTIFICATION_DELETED = "Notification deleted successfully";
+    public static final String NEW_NOTIFICATIONS_NUMBER_RETRIEVED = "New Notifications number retrieved successfully";
+    public static final String NEW_NOTIFICATIONS_NUMBER_RESET = "New Notifications number reset successfully";
 
     //JWT
     public static final String JWT_REFRESHED = "JWT refreshed successfully";
