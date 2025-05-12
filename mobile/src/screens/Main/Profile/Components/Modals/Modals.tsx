@@ -17,7 +17,7 @@ const Modals = ({ isLoggingOut, isLogoutModalVisible, setIsLoggingOut, toggleMod
             setIsLoggingOut={setIsLoggingOut}
             toggleModal={toggleModal}
         />
-        {isLoggingOut && <LoaderModal title='logging out' />}
+        <LoaderModal title='logging out' isVisible={isLoggingOut} />
     </>
 )
 

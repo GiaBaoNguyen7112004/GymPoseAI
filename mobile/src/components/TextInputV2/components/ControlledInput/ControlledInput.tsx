@@ -1,4 +1,4 @@
-import { forwardRef, memo, useEffect, useRef, useState } from 'react'
+import { forwardRef, memo, useCallback, useEffect, useState } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
 import {
     KeyboardTypeOptions,
@@ -49,9 +49,10 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
             rest.onFocus?.(e)
         }
 
-        const handleBlur = () => {
+        const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
             setIsFocused(false)
             field.onBlur()
+            rest.onBlur?.(e)
         }
 
         const focusInput = () => {
@@ -74,6 +75,7 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
                     </TouchableWithoutFeedback>
 
                     <TextInput
+                        {...rest}
                         ref={ref}
                         secureTextEntry={isPassword && isPasswordHidden}
                         style={styles.input}
@@ -83,7 +85,6 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         value={field.value?.toString() ?? ''}
-                        {...rest}
                     />
 
                     {isPassword && (
@@ -101,7 +102,7 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
     }
 )
 
-export default ControlledInput
+export default memo(ControlledInput)
 
 const styles = StyleSheet.create({
     container: {

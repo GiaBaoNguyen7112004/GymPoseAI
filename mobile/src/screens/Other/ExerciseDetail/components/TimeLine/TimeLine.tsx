@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import MyIcon from '@/components/Icon'
 import TextGradient from '@/components/TextGradient'
 import { COLOR_BRANDS } from '@/constants/common.constants'
+import { memo, useCallback } from 'react'
 
 interface TimeLineProps {
     stepsData: StepOfExercise[]
@@ -10,7 +11,7 @@ interface TimeLineProps {
 
 function TimeLine({ stepsData }: TimeLineProps) {
     const sortedSteps = stepsData.sort((a, b) => a.step_number - b.step_number)
-    const handleFormatNumber = (value: number) => value.toString().padStart(2, '0')
+    const handleFormatNumber = useCallback((value: number) => value.toString().padStart(2, '0'), [])
     return (
         <View style={styles.stepsContainer}>
             {stepsData.length > 0 &&
@@ -39,7 +40,7 @@ function TimeLine({ stepsData }: TimeLineProps) {
     )
 }
 
-export default TimeLine
+export default memo(TimeLine)
 
 const styles = StyleSheet.create({
     stepsContainer: {

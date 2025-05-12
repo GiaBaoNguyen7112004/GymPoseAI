@@ -6,16 +6,11 @@ import { useQuery } from '@tanstack/react-query'
 import { memo, useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-interface CaloriesStatsProps {
-    user_id: string
-}
-
-function CaloriesStats({ user_id }: CaloriesStatsProps) {
+function CaloriesStats() {
     const { data } = useQuery({
-        queryKey: ['calories', user_id],
+        queryKey: ['calories'],
         queryFn: async () => targetApi.getDailyCaloriesTarget(),
-        staleTime: 1000 * 60 * 5,
-        enabled: !!user_id
+        staleTime: 1000 * 60 * 5
     })
 
     const { calories_burned = 0, calories_target = 1 } = data?.data?.data ?? {}

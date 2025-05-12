@@ -8,8 +8,8 @@ import useDeleteNotification from '@/hooks/useDeleteNotification'
 import { showErrorAlert } from '@/utils/alert.util'
 import showToast from '@/utils/toast.util'
 import { Notification } from '@/types/notification.type'
-import NotificationDetail from '@/screens/Other/Notification/components/NotificationDetail'
-import MoreActionNavBar from '@/screens/Other/Notification/components/MoreActionNavBar'
+import NotificationDetail from '@/screens/Main/Notification/components/NotificationDetail'
+import MoreActionNavBar from '@/screens/Main/Notification/components/MoreActionNavBar'
 
 export default function useNotificationHandlers(refetch: () => void) {
     const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()

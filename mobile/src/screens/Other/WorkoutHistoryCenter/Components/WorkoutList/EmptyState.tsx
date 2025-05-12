@@ -1,4 +1,5 @@
 import LottieView from 'lottie-react-native'
+import { memo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 const EmptyState = () => (
@@ -8,7 +9,7 @@ const EmptyState = () => (
     </View>
 )
 
-export default EmptyState
+export default memo(EmptyState)
 
 const styles = StyleSheet.create({
     emptyContainer: {

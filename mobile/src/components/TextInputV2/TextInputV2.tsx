@@ -17,4 +17,4 @@ const TextInputV2Custom = forwardRef<TextInput, ControllerInputProps>((props, re
     return <ControlledInput {...props} ref={ref} />
 })
 
-export default TextInputV2Custom
+export default memo(TextInputV2Custom)

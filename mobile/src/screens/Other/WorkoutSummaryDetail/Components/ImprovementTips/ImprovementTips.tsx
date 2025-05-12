@@ -2,6 +2,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import TextGradient from '@/components/TextGradient'
+import { memo } from 'react'
 
 const ImprovementTips = () => {
     return (
@@ -59,4 +60,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ImprovementTips
+export default memo(ImprovementTips)

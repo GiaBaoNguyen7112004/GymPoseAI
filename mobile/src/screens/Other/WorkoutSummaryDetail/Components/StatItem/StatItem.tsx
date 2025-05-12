@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface StatItemProps {
@@ -14,7 +15,7 @@ function StatItem({ label, value }: StatItemProps) {
     )
 }
 
-export default StatItem
+export default memo(StatItem)
 
 const styles = StyleSheet.create({
     statItem: { flex: 1 },

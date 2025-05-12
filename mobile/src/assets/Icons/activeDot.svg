@@ -1,20 +1,20 @@
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_f_1153_2484)">
+<g filter="url(#filter0_f_1162_2873)">
 <circle cx="10" cy="10" r="5" fill="white"/>
-<circle cx="10" cy="10" r="4.6" stroke="url(#paint0_linear_1153_2484)" stroke-width="0.8"/>
+<circle cx="10" cy="10" r="4.6" stroke="url(#paint0_linear_1162_2873)" stroke-width="0.8"/>
 </g>
-<circle cx="10" cy="10" r="3" fill="url(#paint1_linear_1153_2484)"/>
+<circle cx="10" cy="10" r="3" fill="url(#paint1_linear_1162_2873)"/>
 <defs>
-<filter id="filter0_f_1153_2484" x="0" y="0" width="20" height="20" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_f_1162_2873" x="0" y="0" width="20" height="20" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feGaussianBlur stdDeviation="2.5" result="effect1_foregroundBlur_1153_2484"/>
+<feGaussianBlur stdDeviation="2.5" result="effect1_foregroundBlur_1162_2873"/>
 </filter>
-<linearGradient id="paint0_linear_1153_2484" x1="15" y1="15" x2="1.67207" y2="13.9687" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear_1162_2873" x1="15" y1="15" x2="1.67207" y2="13.9687" gradientUnits="userSpaceOnUse">
 <stop stop-color="#C58BF2"/>
 <stop offset="1" stop-color="#EEA4CE"/>
 </linearGradient>
-<linearGradient id="paint1_linear_1153_2484" x1="13" y1="13" x2="5.00324" y2="12.3812" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint1_linear_1162_2873" x1="13" y1="13" x2="5.00324" y2="12.3812" gradientUnits="userSpaceOnUse">
 <stop stop-color="#C58BF2"/>
 <stop offset="1" stop-color="#EEA4CE"/>
 </linearGradient>

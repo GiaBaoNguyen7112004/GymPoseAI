@@ -1,6 +1,4 @@
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
-import { useContext } from 'react'
-import { AppContext } from '@/Contexts/App.context'
 import { RootStackParamList } from './types'
 
 // Auth Screens
@@ -12,12 +10,10 @@ import ForgotPassword from '@/screens/Auth/ForgotPassword'
 import MainTabs from './MainTabs'
 
 // App Screens
-import Notification from '@/screens/Other/Notification'
 import WorkoutHistoryCenter from '@/screens/Other/WorkoutHistoryCenter'
 import WorkoutSummaryDetail from '@/screens/Other/WorkoutSummaryDetail'
 import CategoryDetail from '@/screens/Other/CategoryDetail'
 import ActivityTracker from '@/screens/Other/ActivityTracker'
-import Setting from '@/screens/Other/Setting'
 
 // Common Screens
 import ContactUs from '@/screens/Other/ContactUs'
@@ -28,11 +24,15 @@ import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
 import Register from '@/screens/Auth/Register'
 import ExerciseDetail from '@/screens/Other/ExerciseDetail'
 import GymLiveScreen from '@/screens/Other/GymLiveScreen'
+import useAppContext from '@/hooks/useAppContext'
+import BlueToothScan from '@/screens/Other/BlueToothScan'
+import MyDevice from '@/screens/Other/MyDevice'
+import AboutGymBotScreen from '@/screens/Other/AboutGymBot'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootStackNavigation() {
-    const { isAuthenticated } = useContext(AppContext)
+    const { isAuthenticated } = useAppContext()
 
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
@@ -46,13 +46,12 @@ function RootStackNavigation() {
                 <RootStack.Group>
                     <RootStack.Screen name='Welcome' component={WelcomeScreen} options={{ gestureEnabled: false }} />
                     <RootStack.Screen name='MainTab' component={MainTabs} options={{}} />
-                    <RootStack.Screen name='Notification' component={Notification} />
+                    <RootStack.Screen name='BlueToothScan' component={BlueToothScan} />
                     <RootStack.Screen name='WorkoutHistoryCenter' component={WorkoutHistoryCenter} />
                     <RootStack.Screen name='WorkoutSummaryDetail' component={WorkoutSummaryDetail} />
                     <RootStack.Screen name='CategoryDetail' component={CategoryDetail} />
                     <RootStack.Screen name='ExerciseDetail' component={ExerciseDetail} />
                     <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
-                    <RootStack.Screen name='Setting' component={Setting} />
                     <RootStack.Screen name='CompleteProfile' component={CompleteProfile} />
                     <RootStack.Screen
                         name='ConfirmYourGoal'
@@ -61,6 +60,7 @@ function RootStackNavigation() {
                     />
                     <RootStack.Screen name='ActivityList' component={ActivityListScreen} />
                     <RootStack.Screen name='GymLiveScreen' component={GymLiveScreen} />
+                    <RootStack.Screen name='MyDevice' component={MyDevice} />
                 </RootStack.Group>
             ) : (
                 <RootStack.Group>
@@ -73,6 +73,7 @@ function RootStackNavigation() {
             <RootStack.Group navigationKey={isAuthenticated ? 'user' : 'guest'}>
                 <RootStack.Screen name='ContactUs' component={ContactUs} />
                 <RootStack.Screen name='PrivacyPolicy' component={PrivacyPolicy} />
+                <RootStack.Screen name='AboutGymBot' component={AboutGymBotScreen} />
             </RootStack.Group>
         </RootStack.Navigator>
     )

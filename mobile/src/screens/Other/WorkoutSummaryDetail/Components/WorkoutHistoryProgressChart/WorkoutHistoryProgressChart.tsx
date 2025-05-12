@@ -1,4 +1,5 @@
 import { workoutSummaryProgressRingChart } from '@/config/chart.config'
+import { memo } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { ProgressChart } from 'react-native-chart-kit'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
@@ -29,7 +30,7 @@ function WorkoutHistoryProgressChart({
     )
 }
 
-export default WorkoutHistoryProgressChart
+export default memo(WorkoutHistoryProgressChart)
 
 const styles = StyleSheet.create({
     chartContainer: {

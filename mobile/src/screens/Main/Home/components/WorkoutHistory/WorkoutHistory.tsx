@@ -12,7 +12,10 @@ export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'
         queryKey: ['workout-history'],
         queryFn: () =>
             workoutHistoryApi.getWorkoutSummaryList({
-                params: { page: 1, limit: 3, sort_by: 'createAt', viewMode: 'daily' }
+                page: 1,
+                limit: 3,
+                sort_by: 'createAt',
+                viewMode: 'daily'
             }),
         staleTime: 1000 * 60 * 5
     })
@@ -25,7 +28,7 @@ export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'
 
     const handlePressItem = useCallback(
         (id: string) => {
-            navigation.navigate('WorkoutHistoryDetail', { workout_id: id })
+            navigation.navigate('WorkoutSummaryDetail', { workout_id: id })
         },
         [navigation]
     )

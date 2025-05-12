@@ -3,16 +3,16 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 
-import { AppContext } from '@/Contexts/App.context'
 import { authApi } from '@/services/rest'
 import { schema, SchemaType } from '@/utils/rules.util'
 import handleFormError from '@/utils/handleFormError'
+import useAppContext from './useAppContext'
 
 export type FormData = Pick<SchemaType, 'email' | 'password'>
 const formSchema = schema.pick(['email', 'password'])
 
 export function useEmailPasswordLogin() {
-    const { setAuthenticated, setProfile } = useContext(AppContext)
+    const { setAuthenticated, setProfile } = useAppContext()
 
     const methods = useForm<FormData>({
         defaultValues: { email: '', password: '' },

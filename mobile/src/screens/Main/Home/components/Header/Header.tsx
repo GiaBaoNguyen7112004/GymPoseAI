@@ -1,13 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { memo } from 'react'
 import useUserData from '@/hooks/useUserData'
-import NotificationButton from '../NotificationButton'
+import CameraInfoButton from '../CameraInfoButton'
 
-interface HeaderProps {
-    handleNotificationClick: () => void
-}
-
-function Header({ handleNotificationClick }: HeaderProps) {
+function Header() {
     const { userData } = useUserData()
     const fullName = `${userData?.first_name ?? ''} ${userData?.last_name ?? ''}`.trim()
     return (
@@ -18,7 +14,7 @@ function Header({ handleNotificationClick }: HeaderProps) {
                     {fullName}
                 </Text>
             </View>
-            <NotificationButton onPress={handleNotificationClick} />
+            <CameraInfoButton />
         </View>
     )
 }

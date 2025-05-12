@@ -14,9 +14,6 @@ import HomeSkeleton from './components/HomeSkeleton'
 
 function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
     const { isReady } = useInteractionReadyState()
-    const handleNotificationClick = useCallback(() => {
-        navigation.navigate('Notification')
-    }, [navigation])
 
     const handleCheckDailyTarget = useCallback(() => {
         navigation.navigate('ActivityTracker')
@@ -27,9 +24,9 @@ function Home({ navigation, route }: MainTabScreenProps<'Home'>) {
     }
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.container} removeClippedSubviews={true}>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.container} nestedScrollEnabled={true}>
                 <View style={styles.content}>
-                    <Header handleNotificationClick={handleNotificationClick} />
+                    <Header />
                     <BMISection />
                     <DailyTargetSection handleCheckDailyTarget={handleCheckDailyTarget} />
                     <ActivityStatusSection />

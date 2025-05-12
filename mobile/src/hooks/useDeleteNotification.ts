@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { notificationApi } from '@/services/rest'
 import { AxiosResponse } from 'axios'
 import { ResponseApi } from '@/types/utils.type'
+import { useCallback } from 'react'
 
 interface DeleteNotificationParams {
     onSuccessCallback?: (data: AxiosResponse<ResponseApi<any, any>, any>) => void
@@ -15,9 +16,9 @@ const useDeleteNotification = ({ onErrorCallback, onSuccessCallback }: DeleteNot
         onError: onErrorCallback
     })
 
-    const handleDeleteNotification = async (id: string) => {
+    const handleDeleteNotification = useCallback(async (id: string) => {
         await mutation.mutateAsync({ id })
-    }
+    }, [])
 
     return { handleDeleteNotification, isDeleting: mutation.isPending }
 }

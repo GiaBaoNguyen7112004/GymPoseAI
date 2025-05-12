@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
 import { categories } from '@/types/workoutHistory.type'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -10,24 +10,31 @@ interface TabBarProps {
 const TABS: categories[] = ['full body', 'lower body', 'abdominal muscles']
 
 const TabBar = ({ onChangeTab, activeTab }: TabBarProps) => {
-    const handleTabChange = (tab: categories) => {
-        if (tab !== activeTab) {
-            onChangeTab?.(tab)
-        }
-    }
+    const handleTabChange = useCallback(
+        (tab: categories) => {
+            if (tab !== activeTab) {
+                onChangeTab?.(tab)
+            }
+        },
 
-    const renderTab = (tab: categories) => {
-        const isActive = tab === activeTab
-        return (
-            <TouchableOpacity
-                key={tab}
-                style={[styles.tab, isActive && styles.activeTab]}
-                onPress={() => handleTabChange(tab)}
-            >
-                <Text style={[styles.tabText, isActive && styles.activeTabText]}>{tab}</Text>
-            </TouchableOpacity>
-        )
-    }
+        [activeTab, onChangeTab]
+    )
+
+    const renderTab = useCallback(
+        (tab: categories) => {
+            const isActive = tab == activeTab
+            return (
+                <TouchableOpacity
+                    key={tab}
+                    style={[styles.tab, isActive && styles.activeTab]}
+                    onPress={() => handleTabChange(tab)}
+                >
+                    <Text style={[styles.tabText, isActive && styles.activeTabText]}>{tab}</Text>
+                </TouchableOpacity>
+            )
+        },
+        [activeTab]
+    )
 
     return <View style={styles.tabs}>{TABS.map(renderTab)}</View>
 }

@@ -18,13 +18,13 @@ export type RootStackParamList = {
     MainTab: { screen: string }
 
     // Feature-specific screens
-    Notification: undefined
+    BlueToothScan: undefined
+    MyDevice: undefined
     WorkoutHistoryCenter: undefined
     WorkoutSummaryDetail: { workout_id: string }
     CategoryDetail: { category_id: string; exercise_id?: string }
     ExerciseDetail: { workout_id: string }
     ActivityTracker: undefined
-    Setting: undefined
     ProfileManager: undefined
     ActivityList: undefined
     GymLiveScreen: { exercise_id?: string; workout_history_id?: string }
@@ -32,6 +32,7 @@ export type RootStackParamList = {
     // Common information screens
     ContactUs: undefined
     PrivacyPolicy: undefined
+    AboutGymBot: undefined
 }
 
 /**
@@ -41,7 +42,7 @@ export type MainTabParamList = {
     Home: undefined
     WorkoutTracker: undefined
     Search: undefined
-    BlueToothScan: undefined
+    Notification: undefined
     Profile: undefined
 }
 

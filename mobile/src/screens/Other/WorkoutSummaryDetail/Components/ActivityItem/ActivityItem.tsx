@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface ActivityItemProps {
@@ -19,7 +20,7 @@ function ActivityItem({ label, value, unit, color }: ActivityItemProps) {
     )
 }
 
-export default ActivityItem
+export default memo(ActivityItem)
 
 const styles = StyleSheet.create({
     activityItem: { marginBottom: 8 },

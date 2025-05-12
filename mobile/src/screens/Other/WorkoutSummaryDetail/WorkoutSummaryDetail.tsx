@@ -8,7 +8,7 @@ import { useWorkoutData } from '@/hooks/useWorkoutData'
 import { RootStackScreenProps } from '@/navigation/types'
 import useScrollListener from '@/hooks/useScrollListener'
 
-function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'WorkoutHistoryDetail'>) {
+function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'WorkoutSummaryDetail'>) {
     const { workout_id } = route.params
     const { workout, poseErrors, workoutDuration, progressData, isLoading } = useWorkoutData(workout_id)
 
@@ -16,7 +16,7 @@ function WorkoutHistoryDetail({ navigation, route }: RootStackScreenProps<'Worko
 
     return (
         <View style={styles.container}>
-            <LoaderModal isVisible={isLoading} />
+            <LoaderModal isVisible={isLoading} title='Loading' />
             <SafeAreaView style={[styles.navbar, isScrolled && styles.navbarWithBorder]}>
                 <NavigationBar title='Summary' callback={navigation.goBack} />
             </SafeAreaView>
@@ -66,4 +66,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default WorkoutHistoryDetail
+export default WorkoutSummaryDetail

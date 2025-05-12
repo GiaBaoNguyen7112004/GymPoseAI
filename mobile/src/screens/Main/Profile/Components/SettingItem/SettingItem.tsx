@@ -4,7 +4,7 @@ import MyIcon from '@/components/Icon'
 import { IconName } from '@/constants/icon.constants'
 
 interface SettingItemProps {
-    icon: IconName
+    icon?: IconName
     label: string
     onPress?: () => void
     rightIcon?: IconName
@@ -24,7 +24,8 @@ const SettingItem = ({ icon, label, onPress, rightIcon, rightComponent }: Settin
             onPress={handlePress}
             android_ripple={{ color: '#ddd' }}
         >
-            <MyIcon name={icon} size={16} />
+            {icon && <MyIcon name={icon} size={16} />}
+
             <Text style={styles.setting__label}>{label}</Text>
             {rightComponent || <MyIcon name={rightIcon || 'arrowRightGray'} size={18} />}
         </Pressable>

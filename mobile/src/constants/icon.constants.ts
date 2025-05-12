@@ -29,6 +29,7 @@ const icons = {
     activityFilled: require('@/assets/Icons/ActivityFilled.svg').default,
     profileLightFilled: require('@/assets/Icons/ProfileFilled.svg').default,
     dotGradient: require('@/assets/Icons/Ellipse 63.svg').default,
+    activeDotGradient: require('@/assets/Icons/activeDot.svg').default,
     notificationIcon: require('@/assets/Icons/Notification.svg').default,
     AbWorkout: require('@/assets/Icons/Ab-Workout 1.svg').default,
     loweBodyWorkout: require('@/assets/Icons/loweBody-workout 1.svg').default,
@@ -53,10 +54,12 @@ const icons = {
     messageGradientOutline: require('@/assets/Icons/MessageGradientOutline.svg').default,
     stepLine: require('@/assets/Icons/StepLine.svg').default,
     stepDot: require('@/assets/Icons/StepDot.svg').default,
+
     glassOfWater: require('@/assets/Icons/glassOfWaterIcon.svg').default,
     boots: require('@/assets/Icons/bootsIcon.svg').default,
     humanDrinking: require('@/assets/Icons/human-female-drinking.svg').default,
-    LockGradientOutline: require('@/assets/Icons/LockGradientOutline.svg').default
+    LockGradientOutline: require('@/assets/Icons/LockGradientOutline.svg').default,
+    NotificationFilled: require('@/assets/Icons/NotificationFilled.svg').default
 }
 
 export type IconName = keyof typeof icons

@@ -33,18 +33,9 @@ export type RegisterReqBody = {
     password: string
 }
 
-export type ChangePasswordRedBody = {
-    old_password: string
-    password: string
-}
-
-export type ResetPasswordReqBody = {
+export type LoginReqBody = {
     email: string
     password: string
-    otp: string
-}
-export type LoginWithFacebookReqBody = {
-    access_token: string
 }
 
 export type ForgotPasswordReqBody = {
@@ -52,7 +43,17 @@ export type ForgotPasswordReqBody = {
     otp: string
 }
 
-export type LoginReqBody = {
+export type ResetPasswordReqBody = {
     email: string
     password: string
+    otp: string
+}
+
+export type ChangePasswordReqBody = {
+    old_password: string
+    password: string
+}
+
+export type LoginWithFacebookReqBody = {
+    access_token: string
 }

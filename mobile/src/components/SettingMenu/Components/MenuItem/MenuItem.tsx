@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
+import { memo } from 'react'
 import { StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native'
 
 interface MenuItemProps {
@@ -19,7 +20,7 @@ function MenuItem({ title, onPress, isLast = false }: MenuItemProps) {
     )
 }
 
-export default MenuItem
+export default memo(MenuItem)
 
 const styles = StyleSheet.create({
     container: {

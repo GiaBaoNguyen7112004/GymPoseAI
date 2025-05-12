@@ -21,7 +21,7 @@ function ActivityStatusSection() {
                             <MyIcon name='sleepGraph' width='100%' size={110} />
                         </View>
                         <View style={styles.squareBox}>
-                            <CaloriesStats user_id={userData?.id || ''} />
+                            <CaloriesStats />
                         </View>
                     </View>
                 </View>

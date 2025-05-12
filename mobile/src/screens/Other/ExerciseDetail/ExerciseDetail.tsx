@@ -12,10 +12,14 @@ import ExerciseHeader from './components/ExerciseHeader'
 import ExerciseVideoPlayer from './components/ExerciseVideoPlayer'
 import ExerciseInfo from './components/ExerciseInfo'
 import ExerciseSteps from './components/ExerciseSteps/ExerciseSteps'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import { useCallback, useState } from 'react'
+import DeviceModal from '@/components/DeviceConnectionModal'
+import useBLE from '@/hooks/useBLE'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
+    const { isReady } = useInteractionReadyState()
     const { workout_id } = route.params
-
     const { data, isLoading } = useQuery({
         queryKey: ['workout', workout_id],
         queryFn: () => workoutApi.getWorkoutById({ id: workout_id }),
@@ -25,12 +29,12 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
     const workoutData = data?.data?.data
     const workoutIdYoutube = getYouTubeVideoId(workoutData?.media_url || '')
 
-    if (isLoading) return <ExerciseDetailSkeleton />
+    if (isLoading || !isReady) return <ExerciseDetailSkeleton />
 
     return (
         <View style={styles.container}>
             <SafeAreaView>
-                <ExerciseHeader onClose={() => navigation.goBack()} />
+                <ExerciseHeader onClose={navigation.goBack} />
             </SafeAreaView>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -52,7 +56,7 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
                     <ExerciseSteps steps={workoutData?.steps || []} />
 
                     <GradientButton Square containerStyle={styles.buttonSubmit}>
-                        <Text style={styles.textInnerButtonSubmit}>Start</Text>
+                        <Text style={styles.textInnerButtonSubmit}>Let’s Train</Text>
                     </GradientButton>
                 </View>
             </ScrollView>

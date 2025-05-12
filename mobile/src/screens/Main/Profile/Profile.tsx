@@ -1,5 +1,5 @@
-import { useState, Suspense } from 'react'
-import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native'
+import { useState, Suspense, useCallback } from 'react'
+import { ScrollView, StyleSheet, View, ActivityIndicator, Pressable } from 'react-native'
 
 import AnimatedBottomSheetLayout from '@/components/layouts/AnimatedBottomSheetLayout'
 import { MainTabScreenProps } from '@/navigation/types'
@@ -15,29 +15,62 @@ import LogoutButton from './Components/LogoutButton'
 import Modals from './Components/Modals'
 import PasswordAndSecurity from '@/screens/Profile/PasswordAndSecurity'
 import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
-import { useNotification } from '@/Contexts/NotificationContext'
+import useNotification from '@/hooks/useNotificationContext'
+import useBluetoothContext from '@/hooks/useBluetoothContext'
+import AddDeviceButton from './Components/AddDeviceButton/AddDeviceButton'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { allowNotification, setAllowNotification } = useNotification()
     const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
+    const { peripheralInfo } = useBluetoothContext()
 
     const [logoutState, setLogoutState] = useState({ visible: false, loading: false })
 
     const { isScrolled, handleScroll } = useScrollListener()
 
-    const openEditProfile = () =>
+    const openEditProfile = useCallback(() => {
         openBottomSheet(
             <Suspense fallback={<ActivityIndicator />}>
                 <PersonalDataFlow onClose={closeBottomSheet} />
             </Suspense>
         )
+    }, [openBottomSheet, closeBottomSheet])
 
-    const openPasswordAndSecurity = () =>
+    const openPasswordAndSecurity = useCallback(() => {
         openBottomSheet(
             <Suspense fallback={<ActivityIndicator />}>
                 <PasswordAndSecurity onClose={closeBottomSheet} />
             </Suspense>
         )
+    }, [openBottomSheet, closeBottomSheet])
+
+    const handleContactUs = useCallback(() => {
+        navigation.navigate('ContactUs')
+    }, [navigation])
+
+    const handlePrivacyPolicy = useCallback(() => {
+        navigation.navigate('PrivacyPolicy')
+    }, [navigation])
+
+    const handleLogoutPress = useCallback(() => {
+        setLogoutState((prev) => ({ ...prev, visible: true }))
+    }, [])
+
+    const handleSetIsLoggingOut = useCallback((value: boolean) => {
+        setLogoutState((prev) => ({ ...prev, loading: value }))
+    }, [])
+
+    const handleToggleModal = useCallback((visible: boolean) => {
+        setLogoutState((prev) => ({ ...prev, visible }))
+    }, [])
+
+    const handleGotoAddDevice = useCallback(() => {
+        navigation.navigate('MyDevice')
+    }, [])
+
+    const handleGotoDevice = useCallback(() => {
+        navigation.navigate('MyDevice')
+    }, [])
 
     return (
         <AnimatedBottomSheetLayout ref={bottomSheetRef}>
@@ -54,6 +87,10 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                     <UserInfo editPress={openEditProfile} />
 
                     <View style={styles.sectionWrapper}>
+                        <SettingSection title='My devices'>
+                            {peripheralInfo && <SettingItem label={peripheralInfo.name} onPress={handleGotoDevice} />}
+                            <AddDeviceButton onPress={handleGotoAddDevice} />
+                        </SettingSection>
                         <SettingSection title='Account'>
                             <SettingItem
                                 icon='profileGradientOutline'
@@ -72,35 +109,23 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                         </SettingSection>
 
                         <SettingSection title='Other'>
-                            <SettingItem
-                                icon='messageGradientOutline'
-                                label='Contact Us'
-                                onPress={() => navigation.navigate('ContactUs')}
-                            />
+                            <SettingItem icon='messageGradientOutline' label='Contact Us' onPress={handleContactUs} />
                             <SettingItem
                                 icon='shieldGradientOutline'
                                 label='Privacy Policy'
-                                onPress={() => navigation.navigate('PrivacyPolicy')}
-                            />
-                            <SettingItem
-                                icon='settingGradientOutline'
-                                label='Settings'
-                                onPress={() => navigation.navigate('Setting')}
+                                onPress={handlePrivacyPolicy}
                             />
                         </SettingSection>
 
-                        <LogoutButton
-                            isLoggingOut={logoutState.loading}
-                            onPress={() => setLogoutState((prev) => ({ ...prev, visible: true }))}
-                        />
+                        <LogoutButton isLoggingOut={logoutState.loading} onPress={handleLogoutPress} />
                     </View>
                 </ScrollView>
 
                 <Modals
                     isLoggingOut={logoutState.loading}
                     isLogoutModalVisible={logoutState.visible}
-                    setIsLoggingOut={(value) => setLogoutState((prev) => ({ ...prev, loading: value }))}
-                    toggleModal={(visible) => setLogoutState((prev) => ({ ...prev, visible }))}
+                    setIsLoggingOut={handleSetIsLoggingOut}
+                    toggleModal={handleToggleModal}
                 />
             </View>
         </AnimatedBottomSheetLayout>

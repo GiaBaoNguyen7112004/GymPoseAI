@@ -24,7 +24,13 @@ const DynamicBottomSheet = forwardRef<AnimatedBottomSheetLayoutRef, Props>(
 
         const renderBackdrop = useCallback(
             (props: BottomSheetBackdropProps) => (
-                <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} pressBehavior='none' />
+                <BottomSheetBackdrop
+                    {...props}
+                    appearsOnIndex={0}
+                    disappearsOnIndex={-1}
+                    pressBehavior='close'
+                    onPress={handleClose}
+                />
             ),
             []
         )

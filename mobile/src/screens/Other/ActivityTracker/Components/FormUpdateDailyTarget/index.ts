@@ -1,3 +1,3 @@
-import FormUpdateDailyTarget from './FormUpdateDailyTarget'
+import FormUpdateDailyTarget from './FormUpdateTodayTarget'
 
 export default FormUpdateDailyTarget

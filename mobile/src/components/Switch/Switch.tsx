@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
-import { View, StyleSheet, Animated, PanResponder, Easing, TouchableOpacity } from 'react-native'
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle, memo, useMemo, useCallback } from 'react'
+import { View, StyleSheet, Animated, PanResponder, Easing, Pressable } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 interface CustomGradientSwitchProps {
@@ -9,11 +9,13 @@ interface CustomGradientSwitchProps {
     height?: number
     thumbColor?: string
     gradientColors?: [string, string, ...string[]]
+    thumbRadius?: number
 }
 
 const CustomGradientSwitch = forwardRef<any, CustomGradientSwitchProps>(
     (
         {
+            thumbRadius = 7,
             value,
             onValueChange,
             width = 44,
@@ -23,8 +25,8 @@ const CustomGradientSwitch = forwardRef<any, CustomGradientSwitchProps>(
         },
         ref
     ) => {
-        const thumbRadius = 7
-        const padding = thumbRadius * 0.7
+        const padding = useMemo(() => thumbRadius * 0.7, [thumbRadius])
+
         const [internalValue, setInternalValue] = useState(value)
         const translateX = useRef(new Animated.Value(value ? width - 2 * thumbRadius - padding : padding)).current
 
@@ -66,7 +68,7 @@ const CustomGradientSwitch = forwardRef<any, CustomGradientSwitchProps>(
             })
         ).current
 
-        const handlePress = () => {
+        const handlePress = useCallback(() => {
             const newValue = !internalValue
             setInternalValue(newValue)
             onValueChange(newValue)
@@ -76,14 +78,14 @@ const CustomGradientSwitch = forwardRef<any, CustomGradientSwitchProps>(
                 useNativeDriver: true,
                 easing: Easing.ease
             }).start()
-        }
+        }, [])
 
         useImperativeHandle(ref, () => ({
-            toggle: handlePress // expose the handlePress function as toggle
+            toggle: handlePress
         }))
 
         return (
-            <TouchableOpacity onPress={handlePress} activeOpacity={1}>
+            <Pressable onPress={handlePress}>
                 <View style={[styles.container, { width, height, borderRadius: height / 2 }]}>
                     {internalValue ? (
                         <LinearGradient
@@ -107,7 +109,7 @@ const CustomGradientSwitch = forwardRef<any, CustomGradientSwitchProps>(
                         {...panResponder.panHandlers}
                     />
                 </View>
-            </TouchableOpacity>
+            </Pressable>
         )
     }
 )
@@ -128,4 +130,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CustomGradientSwitch
+export default memo(CustomGradientSwitch)

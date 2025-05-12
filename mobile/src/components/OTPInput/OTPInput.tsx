@@ -1,5 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import OTPInputControlled, { OTPInputControlledProps } from './Components/OTPInputControlled'
+import { memo } from 'react'
 
 function OTPInput(props: OTPInputControlledProps) {
     const { name } = props
@@ -15,4 +16,4 @@ function OTPInput(props: OTPInputControlledProps) {
     return <OTPInputControlled {...props} />
 }
 
-export default OTPInput
+export default memo(OTPInput)

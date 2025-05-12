@@ -1,25 +1,24 @@
-import { useEffect, useState, useRef, useContext } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { BleManager, Device, Subscription as BleSubscription } from 'react-native-ble-plx'
 import { Platform, PermissionsAndroid } from 'react-native'
-import base64 from 'react-native-base64'
-import { AppContext } from '@/Contexts/App.context'
-
-const SERVICE_UUID = '12345678-1234-5678-1234-56789abcdeff'
-const CHARACTERISTIC_UUID = '12345678-1234-5678-1234-56789abcdef0'
+import { set } from 'lodash'
 
 const bleManager = new BleManager()
 
-const useBLE = () => {
-    const { setIpCamera } = useContext(AppContext)
+interface UseBLEProps {
+    connectedDeviceProps: Device | null
+}
+
+const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
     const [allDevices, setAllDevices] = useState<Device[]>([])
-    const [connectedDevice, setConnectedDevice] = useState<Device | null>(null)
-    const [responseMessage, setResponseMessage] = useState<string | undefined>(undefined)
-    const [statusMessage, setStatusMessage] = useState<string>('Not connected')
+    const [connectedDevice, setConnectedDevice] = useState<Device | null>(connectedDeviceProps)
     const [isScanning, setIsScanning] = useState(false)
+    const [isDisconnecting, setIsDisconnecting] = useState(false)
+    const [isConnecting, setIsConnecting] = useState(false)
 
     const monitorSubscription = useRef<BleSubscription | null>(null)
 
-    const requestPermissions = async (): Promise<boolean> => {
+    const requestPermissions = useCallback(async (): Promise<boolean> => {
         if (Platform.OS === 'android') {
             try {
                 if (Platform.Version < 31) {
@@ -41,24 +40,24 @@ const useBLE = () => {
             }
         }
         return true
-    }
+    }, [])
 
-    const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
-        devices.some((device) => device.id === nextDevice.id)
+    const isDuplicateDevice = useCallback(
+        (devices: Device[], nextDevice: Device) => devices.some((device) => device.id === nextDevice.id),
+        []
+    )
 
-    const scanForPeripherals = () => {
-        setStatusMessage('Scanning...')
+    const scanForPeripherals = useCallback(() => {
         setIsScanning(true)
         setAllDevices([])
 
         bleManager.startDeviceScan(null, null, (error, device) => {
             if (error) {
-                setStatusMessage('Scan error: ' + error.message)
                 setIsScanning(false)
                 return
             }
 
-            if (device && device.id && device.id === 'D8:3A:DD:E7:89:7C') {
+            if (device && (device.name == 'RaspberryPi' || device.localName == 'Raspberry Pi')) {
                 setAllDevices((prev) => {
                     if (!isDuplicateDevice(prev, device)) {
                         return [...prev, device]
@@ -71,84 +70,48 @@ const useBLE = () => {
         setTimeout(() => {
             bleManager.stopDeviceScan()
             setIsScanning(false)
-            setStatusMessage('Scan complete')
         }, 4000)
-    }
+    }, [])
 
-    const connectToDevice = async (device: Device) => {
+    const connectToDevice = useCallback(async (device: Device) => {
         try {
-            setStatusMessage(`Connecting to ${device.name}...`)
+            setIsConnecting(true)
             const connected = await bleManager.connectToDevice(device.id, { timeout: 10000 })
             setConnectedDevice(connected)
-            setStatusMessage(`Connected to ${device.name}`)
 
             await connected.discoverAllServicesAndCharacteristics()
-            await readInitialCharacteristic(connected)
         } catch (e) {
             console.error('Connect error:', e)
-            setStatusMessage('Connection error')
+        } finally {
+            setIsConnecting(false)
         }
-    }
+    }, [])
 
-    const readInitialCharacteristic = async (device: Device) => {
-        try {
-            const services = await device.services()
-            for (const service of services) {
-                if (service.uuid.toLowerCase() === SERVICE_UUID.toLowerCase()) {
-                    const characteristics = await service.characteristics()
-                    for (const c of characteristics) {
-                        if (c.uuid.toLowerCase() === CHARACTERISTIC_UUID.toLowerCase()) {
-                            const data = await c.read()
-                            if (!data.value) return
-                            const decodedValue = decodeBase64Value(data.value)
-                            setIpCamera(decodedValue.trim())
-                            setResponseMessage(decodedValue.trim())
-                            setStatusMessage('Data read successfully')
-                            return
-                        }
-                    }
-                }
-            }
-            setStatusMessage('Matching characteristic not found')
-        } catch (e) {
-            console.error('Read error:', e)
-            setStatusMessage('Read error')
-        }
-    }
-
-    const decodeBase64Value = (base64Value: string) => {
-        try {
-            return base64.decode(base64Value || '') || 'unknown'
-        } catch {
-            return 'unknown'
-        }
-    }
-
-    const disconnectFromDevice = async () => {
+    const disconnectFromDevice = useCallback(async () => {
         try {
             if (connectedDevice) {
+                setIsDisconnecting(true)
                 await bleManager.cancelDeviceConnection(connectedDevice.id)
                 monitorSubscription.current?.remove()
                 setConnectedDevice(null)
-                setResponseMessage('')
-                setStatusMessage('Disconnected')
             }
         } catch (e) {
             console.error('Disconnect error:', e)
-            setStatusMessage('Disconnection error')
+        } finally {
+            setIsDisconnecting(false)
         }
-    }
+    }, [])
 
     return {
         scanForPeripherals,
         allDevices,
-        connectedDevice,
+        bleConnectedDevice: connectedDevice,
         connectToDevice,
         disconnectFromDevice,
-        responseMessage,
-        statusMessage,
         isScanning,
-        requestPermissions
+        requestPermissions,
+        isDisconnecting,
+        isConnecting
     }
 }
 

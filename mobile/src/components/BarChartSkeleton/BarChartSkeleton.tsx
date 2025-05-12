@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Skeleton } from 'moti/skeleton'
 
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default BarChartSkeleton
+export default memo(BarChartSkeleton)

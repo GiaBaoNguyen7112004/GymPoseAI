@@ -1,19 +1,17 @@
-import React, { useCallback, useMemo } from 'react'
-import {
-    BottomTabBarButtonProps,
-    BottomTabNavigationOptions,
-    createBottomTabNavigator
-} from '@react-navigation/bottom-tabs'
-import { StyleSheet, Pressable, View } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
-import MyIcon from '@/components/Icon'
+import React, { useCallback } from 'react'
+import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Home from '@/screens/Main/Home/Home'
 import WorkoutTracker from '@/screens/Main/WorkoutTracker'
 import Search from '@/screens/Main/Search/Search'
 import { MainTabParamList } from './types'
-import { IconName } from '@/constants/icon.constants'
 import Profile from '@/screens/Main/Profile'
-import BlueToothScan from '@/screens/Main/BlueToothScan'
+import Notification from '@/screens/Main/Notification'
+import NotificationBadgeIcon from '@/components/NotificationBadgeIcon'
+import useNewNotificationCount from '@/hooks/useNewNotificationCount'
+import TabBarButton from './components/TabBarButton'
+import { IconName } from '@/constants/icon.constants'
+import TabBarSearchIcon from './components/TabBarSearchIcon'
+import TabBarIcon from './components/TabBarIcon'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
@@ -27,35 +25,10 @@ const defaultTabOptions: BottomTabNavigationOptions = {
     lazy: true
 }
 
-const MainTabs = () => {
-    const renderTabButton = useCallback((props: BottomTabBarButtonProps) => {
-        const { onPress, children } = props
-        return (
-            <Pressable onPress={onPress} style={styles.tabButton}>
-                {children}
-            </Pressable>
-        )
-    }, [])
-
-    const renderTabIcon = useCallback((iconName: IconName, iconActive: IconName, iconSize = 23) => {
+function MainTabs() {
+    const renderTabIcon = useCallback((iconName: IconName, iconActive: IconName) => {
         return ({ focused }: { focused: boolean }) => (
-            <View style={styles.activeIconContainer}>
-                <MyIcon name={focused ? iconActive : iconName} size={iconSize} />
-                {focused && <MyIcon name='dotGradient' size={4} style={styles.dotIndicator} />}
-            </View>
-        )
-    }, [])
-
-    const renderSearchIcon = useMemo(() => {
-        return () => (
-            <LinearGradient
-                colors={['#92A3FD', '#9DCEFF']}
-                start={{ x: 1, y: 0.5 }}
-                end={{ x: 0, y: 0.5 }}
-                style={styles.searchButton}
-            >
-                <MyIcon name='searchIcon' size={23} />
-            </LinearGradient>
+            <TabBarIcon iconName={iconName} iconActive={iconActive} focused={focused} />
         )
     }, [])
 
@@ -66,7 +39,7 @@ const MainTabs = () => {
                 component={Home}
                 options={{
                     tabBarIcon: renderTabIcon('homeIcon', 'homeIconFilled'),
-                    tabBarButton: renderTabButton,
+                    tabBarButton: TabBarButton,
                     freezeOnBlur: true
                 }}
             />
@@ -75,23 +48,31 @@ const MainTabs = () => {
                 component={WorkoutTracker}
                 options={{
                     tabBarIcon: renderTabIcon('activity', 'activityFilled'),
-                    tabBarButton: renderTabButton
+                    tabBarButton: TabBarButton
                 }}
             />
             <Tab.Screen
                 name='Search'
                 component={Search}
                 options={{
-                    tabBarIcon: renderSearchIcon,
-                    tabBarButton: renderTabButton
+                    tabBarIcon: TabBarSearchIcon,
+                    tabBarButton: TabBarButton
                 }}
             />
             <Tab.Screen
-                name='BlueToothScan'
-                component={BlueToothScan}
+                name='Notification'
+                component={Notification}
                 options={{
-                    tabBarIcon: renderTabIcon('cameraIcon', 'cameraIconFilled'),
-                    tabBarButton: renderTabButton
+                    tabBarIcon: ({ focused, color }) => (
+                        <NotificationBadgeIcon
+                            iconName='notificationIcon'
+                            activeIconName='NotificationFilled'
+                            size={23}
+                            focused={focused}
+                            color={color}
+                        />
+                    ),
+                    tabBarButton: TabBarButton
                 }}
             />
             <Tab.Screen
@@ -99,7 +80,7 @@ const MainTabs = () => {
                 component={Profile}
                 options={{
                     tabBarIcon: renderTabIcon('profileLight', 'profileLightFilled'),
-                    tabBarButton: renderTabButton
+                    tabBarButton: TabBarButton
                 }}
             />
         </Tab.Navigator>
@@ -107,32 +88,3 @@ const MainTabs = () => {
 }
 
 export default MainTabs
-
-const styles = StyleSheet.create({
-    activeIconContainer: {
-        position: 'relative',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    dotIndicator: {
-        position: 'absolute',
-        bottom: -8
-    },
-    searchButton: {
-        width: 60,
-        height: 60,
-        borderRadius: 999,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 33,
-        shadowColor: 'rgba(149, 173, 254, 0.30)',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 1,
-        elevation: 10
-    },
-    tabButton: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-})

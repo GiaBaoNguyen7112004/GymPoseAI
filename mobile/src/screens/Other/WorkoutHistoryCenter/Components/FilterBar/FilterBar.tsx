@@ -1,5 +1,5 @@
 import { ViewModeType } from '@/types/utils.type'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 const FILTERS = ['daily', 'weekly', 'monthly', 'yearly'] as const
@@ -27,7 +27,7 @@ function FilterBar({ activeFilterProp, onChangeFilter }: FilterBarProps) {
                         onPress={() => handleChangeViewMode(filter)}
                     >
                         <Text style={[styles.filterButtonText, isActive && styles.activeFilterButtonText]}>
-                            {capitalize(filter)}
+                            {filter}
                         </Text>
                     </TouchableOpacity>
                 )
@@ -36,9 +36,7 @@ function FilterBar({ activeFilterProp, onChangeFilter }: FilterBarProps) {
     )
 }
 
-export default FilterBar
-
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
+export default memo(FilterBar)
 
 const styles = StyleSheet.create({
     durationFilters: {
@@ -58,7 +56,8 @@ const styles = StyleSheet.create({
     },
     filterButtonText: {
         fontSize: 12,
-        color: '#4b5563'
+        color: '#4b5563',
+        transform: 'capitalize'
     },
     activeFilterButtonText: {
         color: '#5A76FA'

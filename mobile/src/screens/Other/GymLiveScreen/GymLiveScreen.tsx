@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, StyleSheet, SafeAreaView, Animated, Easing } from 'react-native'
 import { RTCView, MediaStream } from 'react-native-webrtc'
 import AssessmentFeedback from './components/AssessmentFeedback'
@@ -6,12 +6,11 @@ import MetricsBar from './components/MetricsBar'
 import ControlButtons from './components/ControlButtons'
 import useWebRTC from '@/hooks/useWebRTC'
 import { RootStackScreenProps } from '@/navigation/types'
-import { AppContext } from '@/Contexts/App.context'
-import { useWorkoutHistory } from '@/hooks/useWorkoutHistory'
+import useAppContext from '@/hooks/useAppContext'
 
 const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScreen'>) => {
     const { workout_history_id, exercise_id } = route.params
-    const { profile, ipCamera } = useContext(AppContext)
+    const { profile } = useAppContext()
 
     const [exerciseName] = useState('Barbell Squats')
     const [caloriesBurned] = useState(210)
@@ -23,7 +22,7 @@ const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScree
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null)
 
     const { startConnection } = useWebRTC({
-        wsSignalingUrl: `ws://${ipCamera}:8080`,
+        wsSignalingUrl: `ws://192.168.35.54:8080`,
         onRemoteStream: (stream) => setRemoteStream(stream)
     })
 

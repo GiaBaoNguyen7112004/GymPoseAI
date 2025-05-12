@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { memo, ReactNode } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Svg, { Circle, Defs, LinearGradient as Linear, Stop } from 'react-native-svg'
 
@@ -66,4 +66,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CircularProgress
+export default memo(CircularProgress)

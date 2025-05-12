@@ -148,6 +148,12 @@ class WebRTCService {
     setRemoteStreamHandler(handler: (stream: MediaStream) => void): void {
         this.remoteStreamHandler = handler
     }
+    getConnectionState(): RTCPeerConnectionState {
+        return this.peerConnection.connectionState
+    }
+    getSignalingState(): RTCSignalingState {
+        return this.peerConnection.signalingState
+    }
 
     /** Close all connections and cleanup */
     closeConnection(): void {

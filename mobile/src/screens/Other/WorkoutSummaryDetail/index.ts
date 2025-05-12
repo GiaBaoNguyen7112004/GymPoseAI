@@ -1,3 +1,3 @@
-import WorkoutHistoryDetail from './WorkoutHistoryDetail'
+import WorkoutSummaryDetail from './WorkoutSummaryDetail'
 
-export default WorkoutHistoryDetail
+export default WorkoutSummaryDetail

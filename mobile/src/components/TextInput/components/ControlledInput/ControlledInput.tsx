@@ -1,4 +1,4 @@
-import { memo, useState, forwardRef } from 'react'
+import { memo, useState, forwardRef, useCallback } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
 import {
     KeyboardTypeOptions,
@@ -39,7 +39,7 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
         const [isHidePassword, setHidePassword] = useState(type === 'password')
 
         const showError = Boolean(fieldState.error?.message)
-        const togglePasswordVisibility = () => setHidePassword((prev) => !prev)
+        const togglePasswordVisibility = useCallback(() => setHidePassword((prev) => !prev), [])
 
         return (
             <View style={[styles.inputWrapper, containerStyle, showError && styles.errorBorder]}>

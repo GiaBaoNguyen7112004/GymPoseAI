@@ -1,4 +1,3 @@
-import CustomModal from '@/components/CustomModal'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import { AppContext } from '@/Contexts/App.context'
 import { authApi } from '@/services/rest'
@@ -6,6 +5,7 @@ import { showErrorAlert } from '@/utils/alert.util'
 import { useMutation } from '@tanstack/react-query'
 import { memo, useCallback, useContext } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
+import Modal from 'react-native-modal'
 
 interface ModalLogoutProps {
     isLogoutModalVisible: boolean
@@ -34,8 +34,20 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
         }
     }, [isLoggingOut, logout, setAuthenticated, toggleModal, setIsLoggingOut])
 
+    const handleCancel = useCallback(() => {
+        if (isLoggingOut) return
+        toggleModal(false)
+    }, [isLoggingOut, toggleModal])
+
     return (
-        <CustomModal visible={isLogoutModalVisible} onRequestClose={() => toggleModal(false)}>
+        <Modal
+            animationIn='zoomIn'
+            animationOut='zoomOut'
+            animationInTiming={400}
+            animationOutTiming={400}
+            onBackdropPress={handleCancel}
+            isVisible={isLogoutModalVisible}
+        >
             <View style={styles.container}>
                 <Text style={styles.title}>Are you sure you want to log out?</Text>
                 <View style={styles.buttonGroup}>
@@ -55,7 +67,7 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
                     </Pressable>
                 </View>
             </View>
-        </CustomModal>
+        </Modal>
     )
 }
 
@@ -65,8 +77,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         borderRadius: 16,
-        padding: 20,
-        width: SCREEN_WIDTH * 0.8
+        padding: 20
     },
     title: {
         fontSize: 16,

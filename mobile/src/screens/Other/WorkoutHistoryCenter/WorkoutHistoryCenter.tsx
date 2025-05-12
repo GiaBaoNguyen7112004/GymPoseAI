@@ -23,7 +23,7 @@ export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProp
     const handleChangeSortMode = useCallback(() => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc')), [])
 
     const handleItemPress = useCallback((id: string) => {
-        navigation.navigate('WorkoutHistoryDetail', { workout_id: id })
+        navigation.navigate('WorkoutSummaryDetail', { workout_id: id })
     }, [])
 
     const workouts = data?.pages.flatMap((page) => page.data) || []

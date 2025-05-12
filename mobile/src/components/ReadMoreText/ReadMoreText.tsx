@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, memo } from 'react'
 import { Text, StyleProp, TextStyle, NativeSyntheticEvent, TextLayoutEventData, View, StyleSheet } from 'react-native'
 import TextGradient from '../TextGradient'
 
@@ -25,10 +25,10 @@ const ReadMoreText = ({
     const [textShown, setTextShown] = useState(false)
     const [numLines, setNumLines] = useState<number | undefined>(undefined)
 
-    const toggleTextShown = () => {
+    const toggleTextShown = useCallback(() => {
         setTextShown((prev) => !prev)
         setNumLines((prev) => (prev === numberOfLines ? undefined : numberOfLines))
-    }
+    }, [])
 
     const onTextLayout = useCallback(
         (e: NativeSyntheticEvent<TextLayoutEventData>) => {
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ReadMoreText
+export default memo(ReadMoreText)

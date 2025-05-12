@@ -1,4 +1,3 @@
-import CustomModal from '@/components/CustomModal'
 import GradientButton from '@/components/GradientButton'
 import TextInputCustom from '@/components/TextInput'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
@@ -9,8 +8,11 @@ import showToast from '@/utils/toast.util'
 import { Ionicons } from '@expo/vector-icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
+import { memo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
+import Modal from 'react-native-modal'
+
 interface FormUpdateDailyTargetProps {
     visible: boolean
     waterVal: number
@@ -26,8 +28,7 @@ function FormUpdateDailyTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
             water: waterVal
         },
         mode: 'onBlur',
-        resolver: yupResolver(targetSchema),
-        shouldUnregister: false
+        resolver: yupResolver(targetSchema)
     })
 
     const updateTargetMutation = useMutation({
@@ -47,7 +48,14 @@ function FormUpdateDailyTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
     })
 
     return (
-        <CustomModal visible={visible}>
+        <Modal
+            animationIn='fadeInUp'
+            animationOut='fadeOutDown'
+            animationInTiming={300}
+            animationOutTiming={300}
+            onBackdropPress={onCancel}
+            isVisible={visible}
+        >
             <View style={styles.wrapper}>
                 <FormProvider {...methods}>
                     <View style={styles.header}>
@@ -94,18 +102,17 @@ function FormUpdateDailyTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
                     </View>
                 </FormProvider>
             </View>
-        </CustomModal>
+        </Modal>
     )
 }
 
-export default FormUpdateDailyTarget
+export default memo(FormUpdateDailyTarget)
 
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: '#fff',
         borderRadius: 16,
-        padding: 20,
-        width: SCREEN_WIDTH * 0.8
+        padding: 20
     },
     header: {
         flexDirection: 'row',
@@ -155,6 +162,7 @@ const styles = StyleSheet.create({
     },
     updateText: {
         color: '#fff',
-        fontWeight: '600'
+        fontWeight: '600',
+        position: 'absolute'
     }
 })

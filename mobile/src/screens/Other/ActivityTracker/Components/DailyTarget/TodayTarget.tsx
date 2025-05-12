@@ -3,6 +3,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
 import MyIcon from '@/components/Icon'
 import TextGradient from '@/components/TextGradient'
+import { memo } from 'react'
 
 interface DailyTargetProps {
     updateDailyTargetPress: () => void
@@ -41,7 +42,7 @@ function DailyTarget({ waterVal, caloriesVal, updateDailyTargetPress }: DailyTar
     )
 }
 
-export default DailyTarget
+export default memo(DailyTarget)
 
 const styles = StyleSheet.create({
     todayTargetCard: {

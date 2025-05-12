@@ -1,6 +1,6 @@
 import { Exercise } from '@/types/exercises.type'
 import { Ionicons } from '@expo/vector-icons'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { View, Text, Image, StyleSheet, Pressable, Animated, StyleProp, ViewStyle } from 'react-native'
 
 interface WorkoutCardProps {
@@ -46,10 +46,14 @@ function WorkoutCard({ itemData, onPress, isHighlighted, containerStyle }: Worko
         }
     }, [isHighlighted])
 
-    const backgroundColor = bgAnimValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['#FFFFFF', '#E0F7FA']
-    })
+    const backgroundColor = useMemo(
+        () =>
+            bgAnimValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['#FFFFFF', '#E0F7FA']
+            }),
+        []
+    )
 
     return (
         <Animated.View style={{ transform: [{ scale: scaleValue }] }}>

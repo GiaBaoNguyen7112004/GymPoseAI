@@ -1,9 +1,7 @@
-import React from 'react'
 import { StatusBar } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { NotificationProvider } from './src/Contexts/NotificationContext'
 import Toast from 'react-native-toast-message'
 import * as Linking from 'expo-linking'
 
@@ -17,7 +15,9 @@ import {
 } from '@expo-google-fonts/poppins'
 
 import RootStackNavigation from './src/navigation/RootStackNavigation'
-import { AppProvider } from './src/Contexts/App.context'
+import NotificationProvider from './src/Contexts/NotificationContext'
+import AppProvider from './src/Contexts/App.context'
+import BlueToothProvider from './src/Contexts/BluetoothContext'
 
 import storage from './src/utils/StorageManager.util'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
@@ -65,13 +65,15 @@ export default function App() {
             <QueryClientProvider client={queryClient}>
                 <AppProvider>
                     <NotificationProvider>
-                        <BottomSheetModalProvider>
-                            <NavigationContainer linking={linking}>
-                                <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
-                                <RootStackNavigation />
-                            </NavigationContainer>
-                        </BottomSheetModalProvider>
-                        <Toast config={toastFitnessXConfig} />
+                        <BlueToothProvider>
+                            <BottomSheetModalProvider>
+                                <NavigationContainer linking={linking}>
+                                    <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
+                                    <RootStackNavigation />
+                                </NavigationContainer>
+                            </BottomSheetModalProvider>
+                            <Toast config={toastFitnessXConfig} />
+                        </BlueToothProvider>
                     </NotificationProvider>
                 </AppProvider>
             </QueryClientProvider>

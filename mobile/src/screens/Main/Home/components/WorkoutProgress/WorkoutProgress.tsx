@@ -15,7 +15,7 @@ function WorkoutProgressChart() {
     const { isReady } = useInteractionReadyState()
     const { userData } = useUserData()
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
-    const debouncedViewMode = useDebounce(viewMode, 1000)
+    const debouncedViewMode = useDebounce(viewMode, 10)
 
     const { data, isLoading } = useQuery({
         queryKey: ['workoutHistory', debouncedViewMode],

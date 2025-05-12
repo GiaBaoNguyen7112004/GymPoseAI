@@ -1,5 +1,6 @@
 import { pose_error } from '@/types/workoutHistory.type'
 import { FontAwesome5 } from '@expo/vector-icons'
+import { memo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface ErrorStatItem {
@@ -40,7 +41,7 @@ function FormFeedBack({ pose_errors }: { pose_errors: pose_error[] }) {
     )
 }
 
-export default FormFeedBack
+export default memo(FormFeedBack)
 
 const styles = StyleSheet.create({
     sectionTitle: {

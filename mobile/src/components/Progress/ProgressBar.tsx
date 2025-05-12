@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ProgressBar
+export default memo(ProgressBar)

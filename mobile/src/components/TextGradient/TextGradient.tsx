@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Text, View, StyleSheet, ViewStyle, TextStyle, StyleProp, TextProps } from 'react-native'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -54,7 +54,7 @@ const TextGradientComponent = (props: TextGradientProps) => {
     )
 }
 
-export default TextGradientComponent
+export default memo(TextGradientComponent)
 
 const styles = StyleSheet.create({
     maskContainer: {

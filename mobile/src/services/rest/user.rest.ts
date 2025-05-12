@@ -7,7 +7,7 @@ import {
     User
 } from '@/types/user.type'
 import http from '@/services/core/http'
-import { ChangePasswordRedBody } from '@/types/auth.type'
+import { ChangePasswordReqBody } from '@/types/auth.type'
 
 type updateProfileBodyReq = UpdateNameReqBody | UpdateProfileDetailReqBody | UpdateAvatarReqBody
 
@@ -18,7 +18,7 @@ const userApi = {
     updateProfile(body: updateProfileBodyReq) {
         return http.patch<ResponseUserApi>(process.env.EXPO_PUBLIC_URL_USER, body)
     },
-    changePassword(body: ChangePasswordRedBody) {
+    changePassword(body: ChangePasswordReqBody) {
         return http.put<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_CHANGE_PASSWORD, body)
     }
 }

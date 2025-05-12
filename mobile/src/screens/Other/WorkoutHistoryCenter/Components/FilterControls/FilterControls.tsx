@@ -1,6 +1,5 @@
 import React, { memo } from 'react'
-import { View, ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { View, ScrollView, StyleSheet } from 'react-native'
 import { categories } from '@/types/workoutHistory.type'
 import { ViewModeType } from '@/types/utils.type'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
