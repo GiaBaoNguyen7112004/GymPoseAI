@@ -4,27 +4,30 @@ server:
     context-path: /gym-pose
 spring:
   rabbitmq:
-    host: fuji.lmq.cloudamqp.com
+    host: ${PROD_RABBITMQ_HOST}
     port: 5671
-    username: uwsuamrb
-    password: nXsf-6FMy-ePOZhKq4TyfWOH4h0YB1Rq
-    virtual-host: uwsuamrb
+    username: ${PROD_RABBITMQ_USERNAME}
+    password: ${PROD_RABBITMQ_PASSWORD}
+    virtual-host: ${PROD_RABBITMQ_VIRTUAL_HOST}
     ssl:
       enabled: true
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${PROD_REDIS_HOST}
       port: 6379
+      password: ${PROD_REDIS_PASSWORD}
+      ssl:
+        enabled: true
   datasource:
-    url: jdbc:postgresql://dpg-d0gl7q3uibrs73fnovs0-a.oregon-postgres.render.com:5432/gympose
-    username: gympose_user
-    password: ZHT676L9PB1BFeqJBokDVhhBOCi7GaMF
+    url: ${PROD_DBMS_URL}
+    username: ${PROD_DBMS_USERNAME}
+    password: ${PROD_DBMS_PASSWORD}
     driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: ${PROD_EMAIL_USERNAME}
+    password: ${PROD_EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -38,18 +41,18 @@ spring:
   #    path: ${LOG_PATH}
 app:
   auth:
-    access-token-secret: ${ACCESS_TOKEN_SECRET}
+    access-token-secret: ${PROD_ACCESS_TOKEN_SECRET}
     access-token-expiration-msec: 7200000
-    refresh-token-secret: ${REFRESH_TOKEN_SECRET}
+    refresh-token-secret: ${PROD_REFRESH_TOKEN_SECRET}
     refresh-token-expiration-msec: 2592000000
   admin:
-    email: ${ADMIN_EMAIL}
-    password: ${ADMIN_PASSWORD}
-    first-name: ${ADMIN_FIRST_NAME}
-    last-name: ${ADMIN_LAST_NAME}
+    email: ${PROD_ADMIN_EMAIL}
+    password: ${PROD_ADMIN_PASSWORD}
+    first-name: ${PROD_ADMIN_FIRST_NAME}
+    last-name: ${PROD_ADMIN_LAST_NAME}
 web-url: http://localhost:3000
 expo-url: https://exp.host/--/api/v2/push/send
 cloudinary:
-  cloud-name: ${CLOUD_NAME}
-  api-key: ${API_KEY}
-  api-secret: ${API_SECRET}
+  cloud-name: ${PROD_CLOUD_NAME}
+  api-key: ${PROD_API_KEY}
+  api-secret: ${PROD_API_SECRET}
