@@ -10,8 +10,9 @@ spring:
     password: ${RABBITMQ_PASSWORD}
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST}
       port: 6379
+      password:
   datasource:
     url: ${DBMS_CONNECTION}
     username: ${DBMS_USERNAME}

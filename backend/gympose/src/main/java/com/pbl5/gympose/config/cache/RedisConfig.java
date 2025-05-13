@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.pbl5.gympose.utils.LogUtils;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Component
 public class RedisConfig {
@@ -30,19 +32,42 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.password}")
+    private String password;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .commandTimeout(Duration.ofSeconds(60))
-                .shutdownTimeout(Duration.ZERO)
-                .clientOptions(ClientOptions.builder()
-                        .socketOptions(SocketOptions.builder()
-                                .connectTimeout(Duration.ofSeconds(3))
-                                .build())
-                        .build())
-                .build();
-        return new LettuceConnectionFactory(config, clientConfig);
+        LogUtils.info("HOST: " + host);
+        LogUtils.info("PORT: " + port);
+        LogUtils.info("PASSWORD: " + password);
+        if (!Objects.equals(password, "")) {
+            LogUtils.info("chay vao ssl");
+            config.setPassword(password);
+            LettuceClientConfiguration sslClientConfig = LettuceClientConfiguration.builder()
+                    .commandTimeout(Duration.ofSeconds(60))
+                    .shutdownTimeout(Duration.ZERO)
+                    .clientOptions(ClientOptions.builder()
+                            .socketOptions(SocketOptions.builder()
+                                    .connectTimeout(Duration.ofSeconds(3))
+                                    .build())
+                            .build())
+                    .useSsl()
+                    .build();
+            return new LettuceConnectionFactory(config, sslClientConfig);
+        } else {
+            LogUtils.info("ko chay vao ssl");
+            LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                    .commandTimeout(Duration.ofSeconds(60))
+                    .shutdownTimeout(Duration.ZERO)
+                    .clientOptions(ClientOptions.builder()
+                            .socketOptions(SocketOptions.builder()
+                                    .connectTimeout(Duration.ofSeconds(3))
+                                    .build())
+                            .build())
+                    .build();
+            return new LettuceConnectionFactory(config, clientConfig);
+        }
     }
 
     @Bean
