@@ -1,0 +1,28 @@
+server:
+  port: 8696
+  servlet:
+    context-path: /gym-pose
+    encoding:
+      charset: UTF-8
+      force: true
+spring:
+  messages:
+    basename: messages
+    encoding: UTF-8
+  thymeleaf:
+    mode: HTML
+  profiles:
+    active: dev
+  hikari:
+    max-lifetime: 60000
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  api-docs:
+    path: /v3/api-docs

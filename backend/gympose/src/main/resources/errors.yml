@@ -1,0 +1,114 @@
+#common
+internal_server_error:
+  code: ERR.SER0101
+  message: Internal server error!
+
+#authentication
+unauthenticated:
+  code: ERR.AUTH0101
+  message: Unauthenticated, You don’t have permission to access!
+incorrect_email_or_password:
+  code: ERR.AUTH0102
+  message: Unauthenticated, incorrect email or password
+account_not_existed:
+  code: ERR.AUTH0103
+  message: Unauthenticated, account not existed
+account_locked:
+  code: ERR.AUTH0104
+  message: Unauthenticated, account was locked
+account_not_active:
+  code: ERR.AUTH0105
+  message: Unauthenticated, account is not active
+account_already_active:
+  code: ERR.AUTH0106
+  message: Account is already active
+unauthorized:
+  code: ERR.AUTH0201
+  message: Unauthorized, You do not have permission to access this page!
+
+#facebook
+facebook_unauthenticated:
+  code: ERR.FB0101
+  message: Can not login with facebook!
+missing_facebook_email:
+  CODE: ERR.FB0201
+  message: Missing email facebook!
+
+#password
+new_password_not_match:
+  code: ERR.PSW0101
+  message: New password and new password confirmation not match!
+old_password_not_match:
+  code: ERR.PSW0102
+  message: Old password is not correct!
+#token
+token_not_found:
+  code: ERR.TOK0000
+  message: Token not found!
+invalid_access_token:
+  code: ERR.TOK0101
+  message: Invalid access token!
+expired_access_token:
+  code: ERR.TOK0102
+  message: Expired access token!
+invalid_refresh_token:
+  code: ERR.TOK0201
+  message: Invalid refresh token!
+expired_refresh_token:
+  code: ERR.TOK0202
+  message: Expired refresh token!
+invalid_account_verification_token:
+  code: ERR.TOK0301
+  message: Invalid account verification token!
+expired_account_verification_token:
+  code: ERR.TOK0302
+  message: Expired account verification token!
+invalid_otp:
+  code: ERR.TOK0401
+  message: Invalid otp !
+expired_otp:
+  code: ERR.TOK0402
+  message: Expired otp!
+#user
+user_not_found:
+  code: ERR.USE0101
+  message: User was not found!
+user_already_existed:
+  code: ERR.USE0102
+  message: User already existed
+
+#category
+category_not_found:
+  code: ERR.CAT0101
+  message: Category was not found!
+
+#exercise
+exercise_not_found:
+  code: ERR.EXE0101
+  message: Exercise was not found!
+
+#file
+file_delete_failed:
+  code: ERR.FIL0101
+  message: Delete file fail!
+file_size_exceeded:
+  code: ERR.FIL0102
+  message: File size exceeded!
+file_not_formatted:
+  code: ERR.FIL0103
+  message: File is not formatted!
+
+#image
+image_delete_failed:
+  code: ERR.IMG0101
+  message: Delete image failed !
+
+#workout_summary
+workout_summary_not_found:
+  code: ERR.WSU0101
+  message: Workout summary not found!
+
+#Notification
+notification_not_found:
+  code: ERR.NOT0101
+  message: Notification not found!
