@@ -2,64 +2,23 @@ server:
   port: 8696
   servlet:
     context-path: /gym-pose
+    encoding:
+      charset: UTF-8
+      force: true
 spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: 6379
   messages:
     basename: messages
     encoding: UTF-8
   thymeleaf:
     mode: HTML
-  datasource:
-    url: ${DBMS_CONNECTION}
-    username: ${DBMS_USERNAME}
-    password: ${DBMS_PASSWORD}
-    hikari:
-      max-lifetime: 60000
+  profiles:
+    active: dev
+  hikari:
+    max-lifetime: 60000
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-    default-encoding: UTF-8
-#logging:
-#  config: classpath:logback-spring.xml.bak
-#  file:
-#    path: ${LOG_PATH}
-app:
-  auth:
-    access-token-secret: ${ACCESS_TOKEN_SECRET}
-    access-token-expiration-msec: 7200000
-    refresh-token-secret: ${REFRESH_TOKEN_SECRET}
-    refresh-token-expiration-msec: 2592000000
-  admin:
-    email: ${ADMIN_EMAIL}
-    password: ${ADMIN_PASSWORD}
-    first-name: ${ADMIN_FIRST_NAME}
-    last-name: ${ADMIN_LAST_NAME}
-web-url: http://localhost:3000
-expo-url: https://exp.host/--/api/v2/push/send
-cloudinary:
-  cloud-name: ${CLOUD_NAME}
-  api-key: ${API_KEY}
-  api-secret: ${API_SECRET}
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
