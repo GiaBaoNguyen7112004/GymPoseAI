@@ -1,19 +1,16 @@
 package com.pbl5.gympose.service.impl;
 
 import com.pbl5.gympose.entity.Exercise;
-import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.PoseErrorMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
-import com.pbl5.gympose.payload.request.workoutsummary.WorkoutSummaryCreationRequest;
 import com.pbl5.gympose.payload.response.workoutsummary.PagingWorkoutSummariesResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.PoseErrorResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.WorkoutStatisticResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.WorkoutSummaryDetailResponse;
 import com.pbl5.gympose.repository.WorkoutSummaryRepository;
-import com.pbl5.gympose.service.ExerciseService;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.CommonFunction;
@@ -36,43 +33,23 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
     WorkoutSummaryRepository workoutSummaryRepository;
     PoseErrorMapper poseErrorMapper;
     UserService userService;
-    ExerciseService exerciseService;
 
     public WorkoutSummaryDetailResponse createWorkoutSummaryDetailResponse(WorkoutSummary workoutSummary) {
         Double userWeight = workoutSummary.getUser().getWeight();
         Exercise exercise = workoutSummary.getExercise();
+        List<PoseErrorResponse> poseErrors = poseErrorMapper.toPoseErrorResponses(workoutSummary.getPoseErrors());
+
         return WorkoutSummaryDetailResponse.builder()
                 .id(workoutSummary.getId())
                 .caloriesBurned(WorkoutUtils.getCaloriesBurned(workoutSummary, userWeight,
                         exercise))
-                .CaloriesBase(WorkoutUtils.getCaloriesBase(userWeight, exercise))
+                .caloriesBase(WorkoutUtils.getCaloriesBase(userWeight, exercise))
                 .startTime(workoutSummary.getStartTime())
-                .endTime(workoutSummary.getEndTime())
+                .durationMinutes(workoutSummary.getDurationMinutes())
                 .category(workoutSummary.getExercise().getCategory().getName())
                 .errorsCount(workoutSummary.getPoseErrors().size())
+                .poseErrors(poseErrors)
                 .build();
-    }
-
-    @Override
-    public WorkoutSummaryDetailResponse createWorkoutSummary(WorkoutSummaryCreationRequest request,
-                                                             UUID userId, UUID exerciseId) {
-        User user = userService.findById(userId);
-        Exercise exercise = exerciseService.findById(exerciseId);
-
-        WorkoutSummary workoutSummary = new WorkoutSummary();
-        workoutSummary.setStartTime(request.getStartTime());
-        workoutSummary.setEndTime(request.getEndTime());
-        workoutSummary.setUser(user);
-        workoutSummary.setExercise(exercise);
-
-        List<PoseError> poseErrors = request.getPoseErrors().stream()
-                .map(poseErrorMapper::toPoseError)
-                .toList();
-
-        workoutSummary.setPoseErrors(poseErrors);
-
-
-        return createWorkoutSummaryDetailResponse(workoutSummaryRepository.save(workoutSummary));
     }
 
     @Override

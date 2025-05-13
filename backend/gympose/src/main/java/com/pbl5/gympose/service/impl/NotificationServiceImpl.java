@@ -1,6 +1,8 @@
 package com.pbl5.gympose.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pbl5.gympose.entity.Notification;
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
@@ -9,8 +11,6 @@ import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.NotificationMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
 import com.pbl5.gympose.payload.request.notification.NotificationRegisterRequest;
-import com.pbl5.gympose.payload.request.notification.NotificationRequest;
-import com.pbl5.gympose.payload.response.notification.NotificationResponse;
 import com.pbl5.gympose.payload.response.notification.PagingNotificationsResponse;
 import com.pbl5.gympose.repository.NotificationRepository;
 import com.pbl5.gympose.service.NotificationService;
@@ -50,16 +50,8 @@ public class NotificationServiceImpl implements NotificationService {
         token.setType(TokenType.EXPO_PUSH_NOTIFICATION);
         token.setToken(request.getPushToken());
         user.getTokens().add(token);
+        token.setUser(user);
         userService.save(user);
-    }
-
-    @Override
-    public NotificationResponse createNotification(NotificationRequest notificationRequest) {
-        User user = userService.findById(notificationRequest.getUserId());
-        Notification notification = notificationMapper.toNotification(notificationRequest);
-        notification.setUser(user);
-
-        return notificationMapper.toNotificationResponse(notificationRepository.save(notification));
     }
 
     @Override
@@ -92,17 +84,21 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendPushNotification(String expoToken, NotificationRequest notificationRequest) {
-        NotificationResponse notificationResponse = this.createNotification(notificationRequest);
+    public void sendPushNotification(String expoToken, Notification notification) {
         try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // optional: viết ngày theo ISO-8601
+
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(expoUrl))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(Map.of(
+                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(Map.of(
                             "to", expoToken,
-                            "title", notificationResponse.getTitle(),
-                            "body", notificationResponse
+                            "title", notification.getTitle(),
+                            "body", notification.getDescription(),
+                            "data", mapper.writeValueAsString(notificationMapper.toNotificationResponse(notification))
                     ))))
                     .build();
 
@@ -122,5 +118,10 @@ public class NotificationServiceImpl implements NotificationService {
     public void resetNewNotifications(UUID userId) {
         notificationRepository.findAllByUser_IdAndIsNew(userId, Boolean.TRUE)
                 .forEach(notification -> notification.setIsNew(Boolean.FALSE));
+    }
+
+    @Override
+    public Notification save(Notification notification) {
+        return notificationRepository.save(notification);
     }
 }

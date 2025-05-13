@@ -2,7 +2,6 @@ package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.payload.general.ResponseData;
-import com.pbl5.gympose.payload.request.workoutsummary.WorkoutSummaryCreationRequest;
 import com.pbl5.gympose.payload.response.workoutsummary.PagingWorkoutSummariesResponse;
 import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.WorkoutSummaryService;
@@ -27,15 +26,6 @@ import java.util.UUID;
 @Tag(name = "WorkoutSumamry API", description = "Workout summary management")
 public class WorkoutSummaryController {
     WorkoutSummaryService workoutSummaryService;
-
-    @SecurityRequirement(name = "bearerAuth")
-    @PostMapping
-    public ResponseEntity<ResponseData> createWorkoutSummary(@RequestBody WorkoutSummaryCreationRequest request) {
-        ResponseData responseData = ResponseData.success(workoutSummaryService
-                        .createWorkoutSummary(request, request.getUserId(), request.getExerciseId()),
-                FeedbackMessage.WORKOUT_SUMMARY_CREATED);
-        return ResponseEntity.ok(responseData);
-    }
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID)

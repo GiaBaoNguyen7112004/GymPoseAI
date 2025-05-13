@@ -1,7 +1,6 @@
 package com.pbl5.gympose.service;
 
 import com.pbl5.gympose.entity.WorkoutSummary;
-import com.pbl5.gympose.payload.request.workoutsummary.WorkoutSummaryCreationRequest;
 import com.pbl5.gympose.payload.response.workoutsummary.PagingWorkoutSummariesResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.PoseErrorResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.WorkoutStatisticResponse;
@@ -12,8 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface WorkoutSummaryService {
-    WorkoutSummaryDetailResponse createWorkoutSummary(WorkoutSummaryCreationRequest request, UUID userId, UUID exerciseId);
-
     PagingWorkoutSummariesResponse getWorkoutHistory(Pageable pageable, UUID userId, String viewMode,
                                                      UUID categoryId);
 
