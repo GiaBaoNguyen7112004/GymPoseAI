@@ -184,6 +184,7 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
             workoutSummary.setDurationMinutes(workoutSummary.getDurationMinutes() + sessionDurationMinutes);
             workoutSummary.getPoseErrors().addAll(errors);
         } else {
+            workoutSummary = new WorkoutSummary();
             workoutSummary.setStartTime(startTime);
             workoutSummary.setDurationMinutes(sessionDurationMinutes);
             workoutSummary.setExercise(exercise);
