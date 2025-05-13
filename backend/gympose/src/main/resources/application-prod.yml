@@ -1,0 +1,55 @@
+server:
+  port: 8696
+  servlet:
+    context-path: /gym-pose
+spring:
+  rabbitmq:
+    host: fuji.lmq.cloudamqp.com
+    port: 5671
+    username: uwsuamrb
+    password: nXsf-6FMy-ePOZhKq4TyfWOH4h0YB1Rq
+    virtual-host: uwsuamrb
+    ssl:
+      enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+  datasource:
+    url: jdbc:postgresql://dpg-d0gl7q3uibrs73fnovs0-a.oregon-postgres.render.com:5432/gympose
+    username: gympose_user
+    password: ZHT676L9PB1BFeqJBokDVhhBOCi7GaMF
+    driver-class-name: org.postgresql.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    default-encoding: UTF-8
+  #logging:
+  #  config: classpath:logback-spring.xml.bak
+  #  file:
+  #    path: ${LOG_PATH}
+app:
+  auth:
+    access-token-secret: ${ACCESS_TOKEN_SECRET}
+    access-token-expiration-msec: 7200000
+    refresh-token-secret: ${REFRESH_TOKEN_SECRET}
+    refresh-token-expiration-msec: 2592000000
+  admin:
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
+    first-name: ${ADMIN_FIRST_NAME}
+    last-name: ${ADMIN_LAST_NAME}
+web-url: http://localhost:3000
+expo-url: https://exp.host/--/api/v2/push/send
+cloudinary:
+  cloud-name: ${CLOUD_NAME}
+  api-key: ${API_KEY}
+  api-secret: ${API_SECRET}
