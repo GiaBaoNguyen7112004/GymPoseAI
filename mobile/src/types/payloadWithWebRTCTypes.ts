@@ -1,7 +1,10 @@
+import { DeviceConfig } from './peripheral.type'
+
 export interface TrainingPayload {
     exercise_id: string | null
     workout_summary_id: string | null
     user_id: string
+    config: DeviceConfig
 }
 
 export type StatusPayload = 'OK' | 'BUSY'

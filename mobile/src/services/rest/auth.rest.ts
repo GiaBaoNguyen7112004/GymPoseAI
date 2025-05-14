@@ -7,7 +7,8 @@ import {
     ForgotPasswordReqBody,
     LoginReqBody,
     RegisterReqBody,
-    ResetPasswordReqBody
+    ResetPasswordReqBody,
+    VerifyAccountReqBody
 } from '@/types/auth.type'
 
 import { ResponseApi } from '@/types/utils.type'
@@ -41,6 +42,10 @@ const authApi = {
 
     resetPassword(body: ResetPasswordReqBody) {
         return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_RESET_PASSWORD, body)
+    },
+
+    verifyAccount(body: VerifyAccountReqBody) {
+        return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_VERIFY_ACCOUNT, body)
     }
 }
 

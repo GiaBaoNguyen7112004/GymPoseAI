@@ -29,6 +29,7 @@ import BlueToothScan from '@/screens/Other/BlueToothScan'
 import MyDevice from '@/screens/Other/MyDevice'
 import AboutGymBotScreen from '@/screens/Other/AboutGymBot'
 import Congratulation from '@/screens/Other/Congratulation'
+import VerifyAccountScreen from '@/screens/Auth/VerifyAccount'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -54,6 +55,7 @@ function RootStackNavigation() {
                     <RootStack.Screen name='ExerciseDetail' component={ExerciseDetail} />
                     <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
                     <RootStack.Screen name='CompleteProfile' component={CompleteProfile} />
+                    <RootStack.Screen name='verifyAccount' component={VerifyAccountScreen} />
                     <RootStack.Screen
                         name='ConfirmYourGoal'
                         component={ConfirmYourGoal}

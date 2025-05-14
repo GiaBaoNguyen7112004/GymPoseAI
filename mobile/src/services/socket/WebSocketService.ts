@@ -61,6 +61,8 @@ class WebSocketService {
 
     private handleError = (error: Event): void => {
         console.error('[WebSocket] Error:', error)
+        const handler = this.eventHandlers['error']
+        handler?.(error)
     }
 
     private handleClose = (): void => {

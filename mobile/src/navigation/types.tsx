@@ -1,6 +1,7 @@
 import type { StackScreenProps } from '@react-navigation/stack'
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import type { CompositeScreenProps } from '@react-navigation/native'
+import { VerifyAccountReqBody } from '@/types/auth.type'
 
 /**
  * Root stack navigator parameter list
@@ -12,6 +13,7 @@ export type RootStackParamList = {
     CompleteProfile: undefined
     ConfirmYourGoal: undefined
     ForgotPassword: undefined
+    verifyAccount: VerifyAccountReqBody
 
     // Main app entry points
     Welcome: undefined

@@ -47,7 +47,7 @@ function ActivityProgress({ isReadyRender }: ActivityProgressProps) {
                             showBarTops={false}
                             withCustomBarColorFromData={true}
                             flatColor={true}
-                            withHorizontalLabels={false}
+                            withHorizontalLabels={true}
                         />
                     ) : (
                         <BarChartSkeleton />
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     },
     chart: {
         width: '100%',
-        paddingRight: 30,
+        paddingRight: 50,
+        paddingLeft: 5,
         marginLeft: -70
     }
 })

@@ -3,7 +3,7 @@ import { Flow, ScreenComponentProps } from './routes.config'
 import EntryScreen from './EntryScreen'
 import UpdateNameScreen from './UpdateNameScreen'
 import PreviewAvatarScreen from './PreviewAvatarScreen'
-import UpdateProfileDetailScreen from './UpdateProfileDetailsScreen/UpdateProfileDetailsScreen'
+import UpdateProfileDetailScreen from './UpdateProfileDetailsScreen'
 
 export const screenMap: Record<Flow, ComponentType<ScreenComponentProps> | null> = {
     entry: EntryScreen,

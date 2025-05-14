@@ -61,7 +61,7 @@ const activityTrackerBarChartConfig: AbstractChartConfig = {
     style: {},
     barPercentage: 0.8,
     propsForBackgroundLines: {
-        strokeWidth: 0
+        strokeWidth: 1
     },
     barRadius: 12,
     propsForLabels: {

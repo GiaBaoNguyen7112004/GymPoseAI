@@ -1,9 +1,8 @@
 import { DropdownItem } from '../components/DropdownInput/Components/Dropdown'
 
 export const DataGender: DropdownItem[] = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-    { label: 'Other', value: 'Other' }
+    { label: 'Male', value: 'MALE' },
+    { label: 'Female', value: 'FEMALE' }
 ] as const
 
 export const ViewModeDropdown: DropdownItem[] = [

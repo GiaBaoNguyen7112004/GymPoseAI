@@ -13,7 +13,7 @@ export interface User {
     isProfileComplete: boolean
 }
 
-export type Gender = 'Male' | 'Female' | 'Other'
+export type Gender = 'MALE' | 'FEMALE'
 
 export type UpdateNameReqBody = {
     first_name: string

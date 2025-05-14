@@ -30,6 +30,7 @@ class WebRTCService {
     private isReconnecting = false
     private isTrainingActive = false
     private userId: string = ''
+    private signalingErrorHandler: (error: Event) => void = () => {}
 
     private constructor(options: WebRTCServiceOptions) {
         this.signaling = new WebSocketService({ url: options.wsSignalingUrl })
@@ -114,13 +115,20 @@ class WebRTCService {
 
     private initSignalingListeners(): void {
         this.signaling.on('answer', async (data) => {
+            console.log('[WebRTC] Received answer:', data)
             await this.peerConnection.setRemoteDescription(new RTCSessionDescription(data))
         })
         this.signaling.on('icecandidate', async (data) => {
+            console.log('[WebRTC] Received ICE candidate:', data)
             await this.peerConnection.addIceCandidate(new RTCIceCandidate(data))
         })
+        this.signaling.on('error', this.handleSignalingError)
     }
 
+    private handleSignalingError = (error: Event): void => {
+        console.error('[WebRTC] Signaling error:', error)
+        this.signalingErrorHandler?.(error)
+    }
     private sendSignal(type: string, data: any): void {
         this.signaling.sendMessage({ type, data })
     }
@@ -169,13 +177,21 @@ class WebRTCService {
             ['closed'].includes(this.peerConnection.connectionState)
         ) {
             this.peerConnection = this.createPeerConnection()
+            this.peerConnection.addTransceiver('video', { direction: 'sendrecv' })
             this.initPeerListeners()
         }
 
         this.createDataChannel()
-        const offer = await this.peerConnection.createOffer({ offerToReceiveAudio: false, offerToReceiveVideo: true })
+        const offer = await this.peerConnection.createOffer({})
         await this.peerConnection.setLocalDescription(offer)
-        this.sendSignal('offer', offer)
+        this.sendSignal('offer', {
+            sdp: offer.sdp,
+            type: offer.type
+        })
+    }
+
+    onSignalingError(handler: (error: Event) => void): void {
+        this.signalingErrorHandler = handler
     }
 
     addLocalStream(stream: MediaStream): void {

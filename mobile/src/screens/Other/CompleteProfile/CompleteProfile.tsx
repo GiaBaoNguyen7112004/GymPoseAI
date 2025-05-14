@@ -26,6 +26,7 @@ function CompleteProfile({ navigation }: RootStackScreenProps<'CompleteProfile'>
         }
     })
     const canSubmit = methods.formState.isValid
+
     return (
         <SafeAreaView style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -18,6 +18,7 @@ import { CountdownRef } from '@/components/Countdown/Countdown'
 import LoaderModal from '@/components/LoaderModal'
 import { workoutHistory } from '@/types/workoutHistory.type'
 import PreCallBackgroundGradient from './components/backgroundPlaceholder'
+import { DeviceConfig } from '@/types/peripheral.type'
 
 type GymLiveMode = 'NEW' | 'RESUME'
 
@@ -36,7 +37,8 @@ const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScree
     const [trainingPayload, setTrainingPayload] = useState<TrainingPayload>({
         exercise_id: exercise_id ?? null,
         workout_summary_id: workoutHistoryId ?? null,
-        user_id: profile?.id as string
+        user_id: profile?.id as string,
+        config: peripheralInfo?.config as DeviceConfig
     })
 
     const {
@@ -73,7 +75,6 @@ const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScree
 
         return 0
     }, [mode, WorkoutSummary?.elapsed_time, exercise_id])
-    console.log('timeLeftInitial', timeLeftInitial)
 
     const handleAIResponse = useCallback((data: AIResponsePayload) => {
         const { content } = data
@@ -85,7 +86,7 @@ const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScree
 
     const { sendTrainingRequest, sendStartTraining, sendStopTraining, sendPauseTraining, isWebRTConnected } = useWebRTC(
         {
-            wsSignalingUrl: `ws://192.168.1.11:8080`,
+            wsSignalingUrl: `ws://${peripheralInfo?.ip_address}:8000`,
             onRemoteStream: (stream) => setRemoteStream(stream),
             onAIResponse: handleAIResponse
         }

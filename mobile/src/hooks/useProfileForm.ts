@@ -39,7 +39,7 @@ export const useProfileForm = ({ onSuccessCallback, onErrorCallback }: UseProfil
     const onSubmit = methods.handleSubmit((data) => {
         const body = {
             ...data,
-            date_of_birth: data.date_of_birth.toISOString(),
+            date_of_birth: data.date_of_birth.toISOString().split('T')[0],
             gender: data.gender as Gender
         }
         updateProfileMutate(body, {

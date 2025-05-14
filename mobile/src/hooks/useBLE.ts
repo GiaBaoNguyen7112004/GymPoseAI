@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { BleManager, Device, Subscription as BleSubscription } from 'react-native-ble-plx'
+import { Device, Subscription as BleSubscription } from 'react-native-ble-plx'
 import { Platform, PermissionsAndroid, Alert } from 'react-native'
 import { BLE_CONFIG } from '@/constants/ble.constants'
 import BLEManager from '@/utils/BleManager'
@@ -12,13 +12,8 @@ interface UseBLEProps {
 
 const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
     const [allDevices, setAllDevices] = useState<Device[]>([])
-    const [connectedDevice, setConnectedDevice] = useState<Device | null>(
-        connectedDeviceProps ||
-            ({
-                id: '00:1A:7D:DA:71:13',
-                name: 'Hello GymBot'
-            } as Device)
-    )
+    const [connectedDevice, setConnectedDevice] = useState<Device | null>(connectedDeviceProps)
+
     const [isScanning, setIsScanning] = useState(false)
     const [isConnecting, setIsConnecting] = useState(false)
     const [isDisconnecting, setIsDisconnecting] = useState(false)

@@ -39,7 +39,21 @@ export default {
       'android.permission.BLUETOOTH_CONNECT',
     ],
     package: 'com.taplamit.GymPoseAI',
-    googleServicesFile: "./google-services.json"
+    googleServicesFile: "./google-services.json",
+    intentFilters: [
+      {
+        action: "VIEW",
+        autoVerify: true,
+        data: [
+          {
+            scheme: "https",
+            host: "*.webapp.io",
+            pathPrefix: "/records"
+          }
+        ],
+        category: ["BROWSABLE", "DEFAULT"]
+      }
+    ]
   },
   web: {
     bundler: 'metro',

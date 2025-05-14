@@ -4,6 +4,7 @@ import WebRTCService from '../services/rtc/WebRTCService'
 import { MediaStream } from 'react-native-webrtc'
 import { MessageKey } from '@/constants/messageKey'
 import { AIResponsePayload, TrainingPayload } from '@/types/payloadWithWebRTCTypes'
+import useBluetoothContext from './useBluetoothContext'
 
 interface UseWebRTCProps {
     wsSignalingUrl: string
@@ -13,16 +14,20 @@ interface UseWebRTCProps {
 
 const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse }: UseWebRTCProps) => {
     const webRTCServiceRef = useRef<WebRTCService | null>(null)
+    const { reReadInfoDevice } = useBluetoothContext()
 
     useEffect(() => {
         const webRTCService = WebRTCService.getInstance({ wsSignalingUrl })
         webRTCServiceRef.current = webRTCService
         webRTCService.setRemoteStreamHandler(onRemoteStream)
+        webRTCService.onSignalingError((error) => {
+            // reReadInfoDevice()
+        })
 
         if (onAIResponse) {
             webRTCService.on(MessageKey.AI_RESPONSE, onAIResponse)
         }
-    }, [wsSignalingUrl, onRemoteStream, onAIResponse])
+    }, [wsSignalingUrl, onRemoteStream, onAIResponse, reReadInfoDevice])
 
     useFocusEffect(
         useCallback(() => {

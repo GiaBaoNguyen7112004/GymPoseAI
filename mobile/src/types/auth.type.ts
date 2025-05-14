@@ -43,6 +43,10 @@ export type ForgotPasswordReqBody = {
     otp: string
 }
 
+export type VerifyAccountReqBody = {
+    account_verification_token: string
+}
+
 export type ResetPasswordReqBody = {
     email: string
     password: string

@@ -11,6 +11,7 @@ interface BluetoothContextType {
     configMyDevice: (config: DeviceConfig) => void
     tryConnectMyDevice: () => Promise<boolean>
     scanForDevices: () => Promise<Device[]>
+    reReadInfoDevice: () => Promise<void>
     isConnecting: boolean
     isScanning: boolean
     isDisconnecting: boolean
@@ -25,6 +26,7 @@ const initialContext: BluetoothContextType = {
     configMyDevice: () => null,
     tryConnectMyDevice: async () => Promise.resolve(false),
     scanForDevices: async () => [],
+    reReadInfoDevice: async () => Promise.resolve(),
     isConnecting: false,
     isScanning: false,
     isDisconnecting: false,
@@ -36,14 +38,7 @@ const initialContext: BluetoothContextType = {
 export const BluetoothContext = createContext<BluetoothContextType>(initialContext)
 
 function BlueToothProvider({ children }: { children: React.ReactNode }) {
-    const [deviceInfo, setDeviceInfo] = useState<PeripheralType | null>(
-        StorageManagerUtil.getPeripheral() || {
-            id: '00:1A:7D:DA:71:13',
-            name: 'Hello GymBot',
-            ip_address: '192.168.34.160',
-            config: { mute: false }
-        }
-    )
+    const [deviceInfo, setDeviceInfo] = useState<PeripheralType | null>(StorageManagerUtil.getPeripheral())
 
     const {
         connectToDeviceById,
@@ -144,6 +139,16 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
         [connectToDevice, handleSetInfoConnectedDevice]
     )
 
+    const reReadInfoDevice = useCallback(async () => {
+        if (bleConnectedDevice) {
+            try {
+                handleSetInfoConnectedDevice(bleConnectedDevice)
+            } catch (error) {
+                console.error('Error re-reading device info:', error)
+            }
+        }
+    }, [bleConnectedDevice])
+
     return (
         <BluetoothContext.Provider
             value={{
@@ -157,7 +162,8 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
                 disconnectFromDevice: handleDisconnect,
                 isConnecting,
                 isScanning,
-                isDisconnecting
+                isDisconnecting,
+                reReadInfoDevice
             }}
         >
             {children}

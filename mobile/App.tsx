@@ -27,7 +27,18 @@ import * as Notifications from 'expo-notifications'
 
 const prefix = Linking.createURL('/')
 const linking = {
-    prefixes: [prefix]
+    prefixes: ['gymposeai-dev://', 'https://gymposeai-dev.com'],
+    screens: {
+        Home: 'home',
+        Login: 'login',
+        Register: 'register',
+        verifyAccount: {
+            path: 'verify-account/:account_verification_token',
+            parse: {
+                account_verification_token: (token: string) => `${token}`
+            }
+        }
+    }
 }
 
 export const queryClient = new QueryClient({

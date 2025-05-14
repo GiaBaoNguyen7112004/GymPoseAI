@@ -4,10 +4,10 @@ import { RegisterFCMReqBody } from '@/types/FCM.type'
 
 const FCMApi = {
     registerFCMToken: (body: RegisterFCMReqBody) => {
-        return http.post<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_FCM}`, body)
+        return http.post<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, body)
     },
     deleteFCMToken: (body: RegisterFCMReqBody) => {
-        return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_FCM}`, { data: body })
+        return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, { data: body })
     }
 }
 
