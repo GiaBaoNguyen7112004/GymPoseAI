@@ -18,6 +18,7 @@ class WebSocketService {
     private reconnectAttempts = 0
     private maxReconnectAttempts: number
     private reconnectInterval: number
+    private pendingMessages: string[] = []
 
     constructor(options: WebsocketServiceOptions) {
         this.url = options.url
@@ -37,6 +38,7 @@ class WebSocketService {
             this.reconnectAttempts = 0
             this.onOpenCallbacks.forEach((cb) => cb())
             this.onOpenCallbacks = []
+            this.flushPendingMessages()
         }
     }
 
@@ -76,13 +78,23 @@ class WebSocketService {
     }
 
     sendMessage<Data>(message: SignalMessage<Data>): void {
-        if (this.socket && this.connected) {
-            this.socket.send(JSON.stringify(message))
+        const json = JSON.stringify(message)
+        if (this.socket && this.connected && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(json)
         } else {
-            console.warn('[WebSocket] Cannot send, socket not connected')
+            console.warn('[WebSocket] Socket not connected, queueing message')
+            this.pendingMessages.push(json)
         }
     }
 
+    private flushPendingMessages(): void {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return
+
+        while (this.pendingMessages.length > 0) {
+            const msg = this.pendingMessages.shift()
+            if (msg) this.socket.send(msg)
+        }
+    }
     on(eventType: string, handler: EventHandlerType): void {
         this.eventHandlers[eventType] = handler
     }

@@ -18,7 +18,6 @@ function TabBarIcon({ iconName, iconActive, focused, size = 23, color, container
     return (
         <View style={[styles.iconContainer, containerStyle]}>
             <MyIcon name={iconToShow} size={size} color={color} />
-            {focused && <MyIcon name='dotGradient' size={4} style={styles.dotIndicator} />}
         </View>
     )
 }

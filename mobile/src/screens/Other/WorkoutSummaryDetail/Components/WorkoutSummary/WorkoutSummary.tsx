@@ -23,7 +23,7 @@ const WorkoutSummary = ({ workout, workoutDuration, progressData, poseErrorCount
                 <View style={styles.header}>
                     <AvatarWithIcon size={40} colors={COLOR_BRANDS.secondary} icon='AbWorkout' />
                     <View>
-                        <Text style={styles.name}>{workout?.name_workout}</Text>
+                        <Text style={styles.name}>{workout?.name}</Text>
                         <Text style={styles.date}>{formatDate(new Date(workout?.start_time || ''))}</Text>
                     </View>
                 </View>

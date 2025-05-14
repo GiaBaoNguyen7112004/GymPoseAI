@@ -104,7 +104,7 @@ class StorageManager {
             console.error('Error saving push token:', error)
         }
     }
-    async savePeripheral(peripheral: PeripheralType): Promise<void> {
+    async savePeripheral(peripheral: PeripheralType | null): Promise<void> {
         this.Peripheral = peripheral
         try {
             await AsyncStorage.setItem(StorageKeys.PERIPHERAL, JSON.stringify(peripheral))

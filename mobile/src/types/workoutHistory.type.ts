@@ -1,17 +1,14 @@
+import { BaseExerciseInfo } from './exercises.type'
 import { BaseQueryConfig, PaginationMeta, ResponseApi, ViewModeType } from './utils.type'
 
-export interface workoutHistory {
-    id: string
-    name_workout: string
-    duration_minutes: number // in minutes
+export interface workoutHistory extends BaseExerciseInfo {
     start_time: string
-    end_time: string
     calories_burned: number
     calories_base: number
-    category: categories
     reps_count: number
     errors_count: number
     pose_errors: pose_error[]
+    elapsed_time: number // in seconds
 }
 
 export interface pose_error {

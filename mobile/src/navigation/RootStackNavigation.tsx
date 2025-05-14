@@ -28,6 +28,7 @@ import useAppContext from '@/hooks/useAppContext'
 import BlueToothScan from '@/screens/Other/BlueToothScan'
 import MyDevice from '@/screens/Other/MyDevice'
 import AboutGymBotScreen from '@/screens/Other/AboutGymBot'
+import Congratulation from '@/screens/Other/Congratulation'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
@@ -74,6 +75,11 @@ function RootStackNavigation() {
                 <RootStack.Screen name='ContactUs' component={ContactUs} />
                 <RootStack.Screen name='PrivacyPolicy' component={PrivacyPolicy} />
                 <RootStack.Screen name='AboutGymBot' component={AboutGymBotScreen} />
+                <RootStack.Screen
+                    name='Congratulation'
+                    component={Congratulation}
+                    options={{ gestureEnabled: false }}
+                />
             </RootStack.Group>
         </RootStack.Navigator>
     )

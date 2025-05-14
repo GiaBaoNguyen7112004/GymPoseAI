@@ -1,5 +1,5 @@
-import { useState, Suspense, useCallback } from 'react'
-import { ScrollView, StyleSheet, View, ActivityIndicator, Pressable } from 'react-native'
+import { useState, Suspense, useCallback, useMemo } from 'react'
+import { ScrollView, StyleSheet, View, ActivityIndicator, Alert } from 'react-native'
 
 import AnimatedBottomSheetLayout from '@/components/layouts/AnimatedBottomSheetLayout'
 import { MainTabScreenProps } from '@/navigation/types'
@@ -22,11 +22,13 @@ import AddDeviceButton from './Components/AddDeviceButton/AddDeviceButton'
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { allowNotification, setAllowNotification } = useNotification()
     const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
-    const { peripheralInfo } = useBluetoothContext()
+    const { peripheralInfo, isConnecting, connectedDevice } = useBluetoothContext()
 
     const [logoutState, setLogoutState] = useState({ visible: false, loading: false })
 
     const { isScrolled, handleScroll } = useScrollListener()
+
+    const isHasDevice = Boolean(peripheralInfo?.id)
 
     const openEditProfile = useCallback(() => {
         openBottomSheet(
@@ -65,12 +67,23 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     }, [])
 
     const handleGotoAddDevice = useCallback(() => {
-        navigation.navigate('MyDevice')
-    }, [])
+        if (!isHasDevice) return navigation.navigate('BlueToothScan')
+        Alert.alert(
+            'Device Already Paired',
+            'You have already paired a device. Please unpair the current device before adding a new one.',
+            [{ text: 'OK' }]
+        )
+    }, [isHasDevice])
 
     const handleGotoDevice = useCallback(() => {
         navigation.navigate('MyDevice')
     }, [])
+
+    const deviceStatus = useMemo(() => {
+        if (isConnecting) return 'Connecting...'
+        if (connectedDevice) return 'Connected'
+        return "Couldn't connect"
+    }, [isConnecting, connectedDevice])
 
     return (
         <AnimatedBottomSheetLayout ref={bottomSheetRef}>
@@ -88,7 +101,13 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
 
                     <View style={styles.sectionWrapper}>
                         <SettingSection title='My devices'>
-                            {peripheralInfo && <SettingItem label={peripheralInfo.name} onPress={handleGotoDevice} />}
+                            {isHasDevice && (
+                                <SettingItem
+                                    label={peripheralInfo?.name || 'GymBot'}
+                                    subText={deviceStatus}
+                                    onPress={handleGotoDevice}
+                                />
+                            )}
                             <AddDeviceButton onPress={handleGotoAddDevice} />
                         </SettingSection>
                         <SettingSection title='Account'>
@@ -101,6 +120,7 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 icon='LockGradientOutline'
                                 label='Password and Security'
                                 onPress={openPasswordAndSecurity}
+                                noBorderBottom
                             />
                         </SettingSection>
 
@@ -114,6 +134,7 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
                                 icon='shieldGradientOutline'
                                 label='Privacy Policy'
                                 onPress={handlePrivacyPolicy}
+                                noBorderBottom
                             />
                         </SettingSection>
 

@@ -12,8 +12,8 @@ function Search({ navigation }: MainTabScreenProps<'Search'>) {
 
     const debounceValue = useDebounce(searchText, 500)
     const handleWorkoutCardPress = useCallback(
-        (workoutId: string) => {
-            navigation.navigate('ExerciseDetail', { workout_id: workoutId })
+        (exercise_id: string) => {
+            navigation.navigate('ExerciseDetail', { exercise_id: exercise_id })
         },
         [navigation]
     )

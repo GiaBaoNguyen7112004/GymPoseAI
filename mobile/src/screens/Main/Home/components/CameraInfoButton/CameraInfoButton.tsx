@@ -7,7 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 function CameraInfoButton() {
     const { peripheralInfo } = useBluetoothContext()
     const navigation = useNavigation()
-    const isHasCamera = Boolean(peripheralInfo?.ip_address)
+    const isHasCamera = Boolean(peripheralInfo?.id)
     const handlePress = () => {
         if (isHasCamera) {
             navigation.navigate('MyDevice')

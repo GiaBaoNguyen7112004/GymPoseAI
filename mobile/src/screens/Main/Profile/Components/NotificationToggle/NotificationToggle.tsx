@@ -14,6 +14,7 @@ const NotificationToggle = ({ value, onToggle }: Props) => {
 
     return (
         <SettingItem
+            noBorderBottom
             icon='bellGradientOutline'
             label='Pop-up Notification'
             onPress={handleToggleNotification}

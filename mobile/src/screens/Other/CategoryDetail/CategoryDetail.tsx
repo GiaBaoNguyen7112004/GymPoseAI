@@ -17,7 +17,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
     const { category } = useCategoryData({ category_id })
 
     const handleWorkoutPress = useCallback(
-        (id: string) => navigation.navigate('ExerciseDetail', { workout_id: id }),
+        (id: string) => navigation.navigate('ExerciseDetail', { exercise_id: id }),
         [navigation]
     )
 

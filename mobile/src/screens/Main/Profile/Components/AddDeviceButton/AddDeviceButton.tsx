@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 4
+        padding: 4,
+        paddingTop: 10
     },
     textInnerAddDevice: {
         marginLeft: 4,

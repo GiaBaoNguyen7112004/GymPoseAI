@@ -5,5 +5,5 @@ export interface PeripheralType {
     config: DeviceConfig
 }
 export interface DeviceConfig {
-    mute: boolean
+    mute?: boolean
 }

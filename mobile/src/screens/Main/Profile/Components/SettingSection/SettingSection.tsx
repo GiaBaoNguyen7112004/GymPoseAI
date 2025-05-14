@@ -15,7 +15,7 @@ const SettingSection = ({ title, children }: Props) => (
 
 const styles = StyleSheet.create({
     section: {
-        padding: 20,
+        paddingVertical: 20,
         backgroundColor: '#FFF',
         borderRadius: 16,
         shadowColor: 'rgba(29, 22, 23, 0.3)',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         lineHeight: 24,
         color: '#1D1617',
-        marginBottom: 10
+        paddingLeft: 20
     }
 })
 

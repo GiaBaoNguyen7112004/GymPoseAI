@@ -4,13 +4,13 @@ import WorkoutSummary from './Components/WorkoutSummary'
 import FormFeedBack from './Components/FormFeedBack'
 import ImprovementTips from './Components/ImprovementTips'
 import LoaderModal from '@/components/LoaderModal'
-import { useWorkoutData } from '@/hooks/useWorkoutData'
 import { RootStackScreenProps } from '@/navigation/types'
 import useScrollListener from '@/hooks/useScrollListener'
+import { useWorkoutSummaryData } from '@/hooks/useWorkoutSummaryData'
 
 function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'WorkoutSummaryDetail'>) {
     const { workout_id } = route.params
-    const { workout, poseErrors, workoutDuration, progressData, isLoading } = useWorkoutData(workout_id)
+    const { workoutData, poseErrors, workoutDuration, progressData, isLoading } = useWorkoutSummaryData(workout_id)
 
     const { isScrolled, handleScroll } = useScrollListener()
 
@@ -23,7 +23,7 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
             <ScrollView style={styles.scrollView} onScroll={handleScroll} scrollEventThrottle={16}>
                 <View style={styles.section}>
                     <WorkoutSummary
-                        workout={workout}
+                        workout={workoutData}
                         workoutDuration={workoutDuration}
                         progressData={progressData}
                         poseErrorCount={poseErrors.length}

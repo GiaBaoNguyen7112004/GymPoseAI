@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Alert, SafeAreaView, StyleSheet, View } from 'react-native'
 import LottieView from 'lottie-react-native'
 
 import DeviceModal from '@/components/DeviceConnectionModal'
-
-import useBLE from '@/hooks/useBLE'
 import useBluetoothContext from '@/hooks/useBluetoothContext'
 import { RootStackScreenProps } from '@/navigation/types'
+
 import ConnectButtonSection from './components/ConnectButtonSection/ConnectButtonSection'
 import WarningSection from './components/WarningSection'
 import ActionSection from './components/ActionSection'
@@ -14,37 +13,20 @@ import StatusSection from './components/StatusSection'
 import HeaderSection from './components/HeaderSection'
 
 const BlueToothScan = ({ navigation }: RootStackScreenProps<'BlueToothScan'>) => {
-    const { peripheralInfo, setConnectedDevice, connectedDevice: contextDevice } = useBluetoothContext()
     const {
-        allDevices,
-        bleConnectedDevice,
+        connectedDevice,
+        peripheralInfo,
+        disconnectFromDevice,
         connectToDevice,
-        requestPermissions,
-        scanForPeripherals,
-        isScanning,
-        isDisconnecting,
+        allDevices,
         isConnecting,
-        disconnectFromDevice
-    } = useBLE({ connectedDeviceProps: contextDevice })
+        isDisconnecting,
+        isScanning,
+        scanForDevices
+    } = useBluetoothContext()
 
     const isLoading = isDisconnecting || isConnecting || isScanning
-
     const [isModalVisible, setIsModalVisible] = useState(false)
-
-    useEffect(() => {
-        if (contextDevice?.id !== bleConnectedDevice?.id && bleConnectedDevice) {
-            setConnectedDevice(bleConnectedDevice)
-        }
-    }, [bleConnectedDevice])
-
-    const scanForDevices = useCallback(async () => {
-        const granted = await requestPermissions()
-        if (granted) {
-            scanForPeripherals()
-        } else {
-            Alert.alert('Permission Required', 'Please grant Bluetooth permissions to continue.')
-        }
-    }, [])
 
     const openModal = useCallback(async () => {
         await scanForDevices()
@@ -53,11 +35,7 @@ const BlueToothScan = ({ navigation }: RootStackScreenProps<'BlueToothScan'>) =>
 
     const hideModal = useCallback(() => setIsModalVisible(false), [])
 
-    const handleDevicePress = useCallback(() => navigation.navigate('MyDevice'), [])
-    const handleDisconnect = useCallback(() => {
-        disconnectFromDevice()
-        setConnectedDevice(null)
-    }, [])
+    const handleDevicePress = useCallback(() => navigation.navigate('MyDevice'), [navigation])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -71,25 +49,25 @@ const BlueToothScan = ({ navigation }: RootStackScreenProps<'BlueToothScan'>) =>
                     style={styles.animation}
                 />
 
-                <StatusSection contextDevice={contextDevice} />
+                <StatusSection contextDevice={connectedDevice} />
 
                 {peripheralInfo?.ip_address && <ActionSection onPress={handleDevicePress} />}
 
-                {!peripheralInfo?.ip_address && contextDevice && <WarningSection />}
+                {!peripheralInfo?.ip_address && connectedDevice && <WarningSection />}
             </View>
 
             <ConnectButtonSection
                 isScanning={isLoading}
-                connected={!!contextDevice}
+                connected={!!connectedDevice}
                 onConnect={openModal}
-                onDisconnect={handleDisconnect}
+                onDisconnect={disconnectFromDevice}
             />
 
             <DeviceModal
                 closeModal={hideModal}
                 visible={isModalVisible}
                 connectToPeripheral={connectToDevice}
-                devices={allDevices}
+                devices={allDevices || []}
                 onRefresh={scanForDevices}
                 isScanning={isScanning}
             />

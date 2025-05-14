@@ -23,7 +23,7 @@ export type RootStackParamList = {
     WorkoutHistoryCenter: undefined
     WorkoutSummaryDetail: { workout_id: string }
     CategoryDetail: { category_id: string; exercise_id?: string }
-    ExerciseDetail: { workout_id: string }
+    ExerciseDetail: { exercise_id: string }
     ActivityTracker: undefined
     ProfileManager: undefined
     ActivityList: undefined
@@ -33,6 +33,7 @@ export type RootStackParamList = {
     ContactUs: undefined
     PrivacyPolicy: undefined
     AboutGymBot: undefined
+    Congratulation: undefined
 }
 
 /**

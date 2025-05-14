@@ -63,30 +63,31 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
     }
 }
 
+const DEFAULT_WORKOUT_SUMMARY: workoutHistory = {
+    calories_base: 1,
+    calories_burned: 0,
+    category: 'abdominal muscles',
+    duration_minutes: 0,
+    start_time: new Date().toISOString(),
+    id: '',
+    name: '',
+    reps_count: 1,
+    errors_count: 0,
+    pose_errors: [],
+    elapsed_time: 0
+}
 /** Calculate workout summary progress chart */
 export const calculateWorkoutSummaryChart = (workoutSummaryData?: workoutHistory): ProgressChartData => {
-    const defaultSummary: workoutHistory = {
-        calories_base: 1,
-        calories_burned: 0,
-        category: 'abdominal muscles',
-        duration_minutes: 0,
-        end_time: new Date().toISOString(),
-        start_time: new Date().toISOString(),
-        id: '',
-        name_workout: '',
-        reps_count: 1,
-        errors_count: 0,
-        pose_errors: []
-    }
+    const summary = workoutSummaryData || DEFAULT_WORKOUT_SUMMARY
 
-    const summary = workoutSummaryData || defaultSummary
-    const workoutStartTime = new Date(summary.start_time).getTime()
-    const workoutEndTime = new Date(summary.end_time).getTime()
+    const elapsedMinutes = summary.elapsed_time / 60
+    const workoutDuration = parseFloat(elapsedMinutes.toFixed(2))
 
-    const workoutDuration = Math.max(1, Math.floor((workoutEndTime - workoutStartTime) / 60000))
-    const exerciseProgress = summary.duration_minutes ? workoutDuration / summary.duration_minutes : 0
-    const caloriesProgress = summary.calories_base ? summary.calories_burned / summary.calories_base : 0
-    const formAccuracy = summary.reps_count ? 100 - (summary.errors_count / summary.reps_count) * 100 : 0
+    const exerciseProgress = summary.duration_minutes > 0 ? workoutDuration / summary.duration_minutes : 0
+
+    const caloriesProgress = summary.calories_base > 0 ? summary.calories_burned / summary.calories_base : 0
+
+    const formAccuracy = summary.reps_count > 0 ? 100 - (summary.errors_count / summary.reps_count) * 100 : 0
 
     return {
         labels: ['Exercise Progress', 'Calories Progress', 'Form Accuracy'],

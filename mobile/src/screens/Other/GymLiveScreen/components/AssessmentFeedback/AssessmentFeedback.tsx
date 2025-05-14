@@ -2,12 +2,6 @@ import React from 'react'
 import { Text, StyleSheet, Animated } from 'react-native'
 import { BlurView } from 'expo-blur'
 
-const COLORS = {
-    textPrimary: '#E2E8F0',
-    highlightPositive: '#10B981',
-    highlightNegative: '#F87171'
-}
-
 type Props = {
     assessmentResult: string
     fadeAnim: Animated.Value
@@ -18,7 +12,8 @@ type Props = {
 const AssessmentFeedback = ({ assessmentResult, fadeAnim, slideAnim, blurIntensity = 85 }: Props) => {
     const isPositive =
         assessmentResult.toLowerCase().includes('perfect') || assessmentResult.toLowerCase().includes('good')
-    const highlightColor = isPositive ? COLORS.highlightPositive : COLORS.highlightNegative
+
+    const highlightColor = isPositive ? '#4ADE80' : '#F87171'
 
     return (
         <Animated.View
@@ -50,10 +45,11 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         paddingHorizontal: 24,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.4)'
     },
     text: {
-        color: COLORS.textPrimary,
+        color: '#F1F5F9',
         fontSize: 18,
         fontWeight: '600',
         textAlign: 'center',

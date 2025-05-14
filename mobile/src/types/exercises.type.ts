@@ -1,5 +1,12 @@
 import { categories } from './workoutHistory.type'
 
+export interface BaseExerciseInfo {
+    id: string
+    name: string
+    duration_minutes: number
+    category: Category | categories
+    met?: number
+}
 export interface Exercise {
     id: string
     thumbnail_url: string

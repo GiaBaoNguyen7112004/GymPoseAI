@@ -1,9 +1,10 @@
 import { useState, useRef, useCallback } from 'react'
 import { BleManager, Device, Subscription as BleSubscription } from 'react-native-ble-plx'
-import { Platform, PermissionsAndroid } from 'react-native'
-import { set } from 'lodash'
+import { Platform, PermissionsAndroid, Alert } from 'react-native'
+import { BLE_CONFIG } from '@/constants/ble.constants'
+import BLEManager from '@/utils/BleManager'
 
-const bleManager = new BleManager()
+const bleManager = BLEManager.getInstance()
 
 interface UseBLEProps {
     connectedDeviceProps: Device | null
@@ -11,35 +12,39 @@ interface UseBLEProps {
 
 const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
     const [allDevices, setAllDevices] = useState<Device[]>([])
-    const [connectedDevice, setConnectedDevice] = useState<Device | null>(connectedDeviceProps)
+    const [connectedDevice, setConnectedDevice] = useState<Device | null>(
+        connectedDeviceProps ||
+            ({
+                id: '00:1A:7D:DA:71:13',
+                name: 'Hello GymBot'
+            } as Device)
+    )
     const [isScanning, setIsScanning] = useState(false)
-    const [isDisconnecting, setIsDisconnecting] = useState(false)
     const [isConnecting, setIsConnecting] = useState(false)
+    const [isDisconnecting, setIsDisconnecting] = useState(false)
 
     const monitorSubscription = useRef<BleSubscription | null>(null)
 
     const requestPermissions = useCallback(async (): Promise<boolean> => {
-        if (Platform.OS === 'android') {
-            try {
-                if (Platform.Version < 31) {
-                    const granted = await PermissionsAndroid.request(
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-                    )
-                    return granted === PermissionsAndroid.RESULTS.GRANTED
-                } else {
-                    const result = await PermissionsAndroid.requestMultiple([
-                        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-                        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-                    ])
-                    return Object.values(result).every((r) => r === PermissionsAndroid.RESULTS.GRANTED)
-                }
-            } catch (e) {
-                console.error('Permission error:', e)
-                return false
+        if (Platform.OS !== 'android') return true
+
+        try {
+            if (Platform.Version < 31) {
+                const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+                return granted === PermissionsAndroid.RESULTS.GRANTED
             }
+
+            const permissions = await PermissionsAndroid.requestMultiple([
+                PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+                PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            ])
+
+            return Object.values(permissions).every((result) => result === PermissionsAndroid.RESULTS.GRANTED)
+        } catch (error) {
+            console.error('Permission error:', error)
+            return false
         }
-        return true
     }, [])
 
     const isDuplicateDevice = useCallback(
@@ -47,71 +52,99 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
         []
     )
 
-    const scanForPeripherals = useCallback(() => {
-        setIsScanning(true)
-        setAllDevices([])
-
-        bleManager.startDeviceScan(null, null, (error, device) => {
-            if (error) {
-                setIsScanning(false)
-                return
-            }
-
-            if (device && (device.name == 'RaspberryPi' || device.localName == 'Raspberry Pi')) {
-                setAllDevices((prev) => {
-                    if (!isDuplicateDevice(prev, device)) {
-                        return [...prev, device]
-                    }
-                    return prev
-                })
-            }
-        })
-
-        setTimeout(() => {
-            bleManager.stopDeviceScan()
-            setIsScanning(false)
-        }, 4000)
+    const isTargetDevice = useCallback((device: Device): boolean => {
+        const name = device.name ?? ''
+        const localName = device.localName ?? ''
+        return BLE_CONFIG.TARGET_DEVICE_NAMES.some((target) => name.includes(target) || localName.includes(target))
     }, [])
 
-    const connectToDevice = useCallback(async (device: Device) => {
+    const scanForDevices = useCallback(async (): Promise<Device[]> => {
+        const granted = await requestPermissions()
+        if (!granted) {
+            Alert.alert('Permission Required', 'Please grant Bluetooth permissions to continue.')
+            return []
+        }
+
+        return new Promise((resolve) => {
+            const discoveredDevices: Device[] = []
+            setIsScanning(true)
+            setAllDevices([])
+
+            bleManager.startDeviceScan(null, null, (error, device) => {
+                if (error) {
+                    console.error('Scan error:', error)
+                    bleManager.stopDeviceScan()
+                    setIsScanning(false)
+                    resolve(discoveredDevices)
+                    return
+                }
+
+                if (device && isTargetDevice(device)) {
+                    const alreadyFound = discoveredDevices.find((d) => d.id === device.id)
+                    if (!alreadyFound) {
+                        discoveredDevices.push(device)
+                        setAllDevices((prev) => [...prev, device])
+                    }
+                }
+            })
+
+            setTimeout(() => {
+                bleManager.stopDeviceScan()
+                setIsScanning(false)
+                resolve(discoveredDevices)
+            }, BLE_CONFIG.SCAN_DURATION)
+        })
+    }, [requestPermissions, isDuplicateDevice])
+
+    const connectToDevice = useCallback(async (device: Device) => connectToDeviceById(device.id), [])
+
+    const connectToDeviceById = useCallback(async (deviceId: string): Promise<Device | null> => {
         try {
             setIsConnecting(true)
-            const connected = await bleManager.connectToDevice(device.id, { timeout: 10000 })
-            setConnectedDevice(connected)
 
-            await connected.discoverAllServicesAndCharacteristics()
-        } catch (e) {
-            console.error('Connect error:', e)
+            const device = await bleManager.connectToDevice(deviceId, { timeout: 10000 })
+            const isConnected = await device?.isConnected()
+
+            if (!isConnected) {
+                throw new Error('Device disconnected right after connect')
+            }
+
+            await device.discoverAllServicesAndCharacteristics()
+            setConnectedDevice(device)
+            return device
+        } catch (error) {
+            console.error('Connect error:', error)
+            return null
         } finally {
             setIsConnecting(false)
         }
     }, [])
 
     const disconnectFromDevice = useCallback(async () => {
+        if (!connectedDevice) return
+
         try {
-            if (connectedDevice) {
-                setIsDisconnecting(true)
-                await bleManager.cancelDeviceConnection(connectedDevice.id)
-                monitorSubscription.current?.remove()
-                setConnectedDevice(null)
-            }
-        } catch (e) {
-            console.error('Disconnect error:', e)
+            setIsDisconnecting(true)
+            await bleManager.cancelDeviceConnection(connectedDevice.id)
+            monitorSubscription.current?.remove()
+            setConnectedDevice(null)
+        } catch (error) {
+            console.error('Disconnect error:', error)
         } finally {
             setIsDisconnecting(false)
         }
-    }, [])
+    }, [connectedDevice])
 
     return {
-        scanForPeripherals,
         allDevices,
         bleConnectedDevice: connectedDevice,
+        scanForDevices,
         connectToDevice,
+        connectToDeviceById,
         disconnectFromDevice,
         isScanning,
-        requestPermissions,
-        isDisconnecting,
-        isConnecting
+        isConnecting,
+        isDisconnecting
     }
 }
 

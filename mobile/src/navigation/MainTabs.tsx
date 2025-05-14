@@ -7,11 +7,11 @@ import { MainTabParamList } from './types'
 import Profile from '@/screens/Main/Profile'
 import Notification from '@/screens/Main/Notification'
 import NotificationBadgeIcon from '@/components/NotificationBadgeIcon'
-import useNewNotificationCount from '@/hooks/useNewNotificationCount'
 import TabBarButton from './components/TabBarButton'
 import { IconName } from '@/constants/icon.constants'
 import TabBarSearchIcon from './components/TabBarSearchIcon'
 import TabBarIcon from './components/TabBarIcon'
+import useAutoReconnectBLE from '@/hooks/useAutoReconnectBLE'
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
@@ -26,6 +26,8 @@ const defaultTabOptions: BottomTabNavigationOptions = {
 }
 
 function MainTabs() {
+    useAutoReconnectBLE('once')
+
     const renderTabIcon = useCallback((iconName: IconName, iconActive: IconName) => {
         return ({ focused }: { focused: boolean }) => (
             <TabBarIcon iconName={iconName} iconActive={iconActive} focused={focused} />

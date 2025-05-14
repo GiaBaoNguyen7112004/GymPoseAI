@@ -1,8 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native'
 import { RootStackScreenProps } from '@/navigation/types'
-import { useQuery } from '@tanstack/react-query'
-import { getYouTubeVideoId } from '@/utils/common.util'
-import { workoutApi } from '@/services/rest'
 
 import GradientButton from '@/components/GradientButton'
 import ReadMoreText from '@/components/ReadMoreText'
@@ -14,20 +11,36 @@ import ExerciseInfo from './components/ExerciseInfo'
 import ExerciseSteps from './components/ExerciseSteps/ExerciseSteps'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import { useCallback, useState } from 'react'
-import DeviceModal from '@/components/DeviceConnectionModal'
-import useBLE from '@/hooks/useBLE'
+import NoDeviceModal from '@/components/NoDeviceModal'
+import useBluetoothContext from '@/hooks/useBluetoothContext'
+import useExerciseData from '@/hooks/useExcersieData'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
+    const { connectedDevice, peripheralInfo } = useBluetoothContext()
+    const [isModalVisible, setModalVisible] = useState(false)
     const { isReady } = useInteractionReadyState()
-    const { workout_id } = route.params
-    const { data, isLoading } = useQuery({
-        queryKey: ['workout', workout_id],
-        queryFn: () => workoutApi.getWorkoutById({ id: workout_id }),
-        staleTime: 1000 * 60 * 10
-    })
+    const { exercise_id } = route.params
+    const { workoutData, isLoading, workoutIdYoutube } = useExerciseData({ exercise_id })
+    const handleLetTrainPress = useCallback(() => {
+        if (!peripheralInfo?.id || !connectedDevice) {
+            setModalVisible(true)
+            return
+        }
+        navigation.navigate('GymLiveScreen', {
+            exercise_id: exercise_id
+        })
+    }, [peripheralInfo?.id, connectedDevice])
 
-    const workoutData = data?.data?.data
-    const workoutIdYoutube = getYouTubeVideoId(workoutData?.media_url || '')
+    const handleCloseModal = useCallback(() => {
+        setModalVisible(false)
+    }, [])
+    const handleConnectDevice = useCallback(() => {
+        setModalVisible(false)
+        const isHasDevice = Boolean(peripheralInfo?.id)
+        if (isHasDevice) {
+            navigation.navigate('MyDevice')
+        } else navigation.navigate('BlueToothScan')
+    }, [peripheralInfo?.id])
 
     if (isLoading || !isReady) return <ExerciseDetailSkeleton />
 
@@ -55,10 +68,15 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
 
                     <ExerciseSteps steps={workoutData?.steps || []} />
 
-                    <GradientButton Square containerStyle={styles.buttonSubmit}>
+                    <GradientButton Square containerStyle={styles.buttonSubmit} onPress={handleLetTrainPress}>
                         <Text style={styles.textInnerButtonSubmit}>Let’s Train</Text>
                     </GradientButton>
                 </View>
+                <NoDeviceModal
+                    isVisible={isModalVisible}
+                    onClose={handleCloseModal}
+                    onConnectDevice={handleConnectDevice}
+                />
             </ScrollView>
         </View>
     )

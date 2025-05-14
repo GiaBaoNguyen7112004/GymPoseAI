@@ -26,3 +26,11 @@ export const formatRelativeTimeFromNow = (isoString: string): string => {
     const date = dayjs(isoString).tz('Asia/Ho_Chi_Minh')
     return `About ${now.to(date)}`
 }
+
+export const formatTimeFromSeconds = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    const paddedMins = mins.toString().padStart(2, '0')
+    const paddedSecs = secs.toString().padStart(2, '0')
+    return `${paddedMins}:${paddedSecs}`
+}

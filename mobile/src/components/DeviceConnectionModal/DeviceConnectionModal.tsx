@@ -1,15 +1,7 @@
 import { defaultKeyExtractor } from '@/utils/list'
 import React, { FC, useCallback, memo } from 'react'
-import {
-    FlatList,
-    Modal,
-    SafeAreaView,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-    ActivityIndicator
-} from 'react-native'
+import { FlatList, SafeAreaView, Text, StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native'
+import ReactNativeModal from 'react-native-modal'
 import { Device } from 'react-native-ble-plx'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -70,54 +62,63 @@ const DeviceModal: FC<DeviceModalProps> = ({
     )
 
     return (
-        <Modal animationType='slide' transparent visible={visible} onRequestClose={closeModal}>
-            <View style={styles.modalOverlay}>
-                <SafeAreaView style={styles.modalContent}>
-                    <View style={styles.modalHeader}>
-                        <Text style={styles.modalTitleText}>Select a Device</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={onRefresh} style={{ padding: 5, marginRight: 10 }}>
-                                {isScanning ? (
-                                    <ActivityIndicator size='small' color='#555' />
-                                ) : (
-                                    <Icon name='refresh' size={22} color='#555' />
-                                )}
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-                                <Icon name='close' size={24} color='#555' />
-                            </TouchableOpacity>
-                        </View>
+        <ReactNativeModal
+            isVisible={visible}
+            onBackdropPress={closeModal}
+            onBackButtonPress={closeModal}
+            animationIn='slideInUp'
+            animationOut='slideOutDown'
+            animationInTiming={300}
+            animationOutTiming={300}
+            backdropTransitionInTiming={300}
+            backdropTransitionOutTiming={300}
+            backdropOpacity={0.5}
+            style={styles.modal}
+        >
+            <SafeAreaView style={styles.modalContent}>
+                <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitleText}>Select a Device</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={onRefresh} style={{ padding: 5, marginRight: 10 }}>
+                            {isScanning ? (
+                                <ActivityIndicator size='small' color='#555' />
+                            ) : (
+                                <Icon name='refresh' size={22} color='#555' />
+                            )}
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Icon name='close' size={24} color='#555' />
+                        </TouchableOpacity>
                     </View>
+                </View>
 
-                    {devices.length > 0 ? (
-                        <FlatList
-                            data={devices}
-                            renderItem={renderItem}
-                            keyExtractor={defaultKeyExtractor}
-                            ItemSeparatorComponent={() => <View style={styles.separator} />}
-                            contentContainerStyle={styles.deviceList}
-                            initialNumToRender={10}
-                        />
-                    ) : (
-                        <View style={styles.emptyStateContainer}>
-                            <Icon name='bluetooth-searching' size={60} color='#ccc' />
-                            <Text style={styles.emptyStateText}>
-                                {isScanning ? 'Scanning for devices...' : 'No devices found'}
-                            </Text>
-                            <Text style={styles.emptyStateSubtitle}>Make sure your device is on and nearby.</Text>
-                        </View>
-                    )}
-                </SafeAreaView>
-            </View>
-        </Modal>
+                {devices.length > 0 ? (
+                    <FlatList
+                        data={devices}
+                        renderItem={renderItem}
+                        keyExtractor={defaultKeyExtractor}
+                        ItemSeparatorComponent={() => <View style={styles.separator} />}
+                        contentContainerStyle={styles.deviceList}
+                        initialNumToRender={10}
+                    />
+                ) : (
+                    <View style={styles.emptyStateContainer}>
+                        <Icon name='bluetooth-searching' size={60} color='#ccc' />
+                        <Text style={styles.emptyStateText}>
+                            {isScanning ? 'Scanning for devices...' : 'No devices found'}
+                        </Text>
+                        <Text style={styles.emptyStateSubtitle}>Make sure your device is on and nearby.</Text>
+                    </View>
+                )}
+            </SafeAreaView>
+        </ReactNativeModal>
     )
 }
 
 const styles = StyleSheet.create({
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'flex-end'
+    modal: {
+        justifyContent: 'flex-end',
+        margin: 0
     },
     modalContent: {
         backgroundColor: '#FFF',
