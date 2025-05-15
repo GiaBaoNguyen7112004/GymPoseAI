@@ -1,48 +1,70 @@
-// navigation/types.ts
-import type { CompositeScreenProps } from '@react-navigation/native'
 import type { StackScreenProps } from '@react-navigation/stack'
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
-import { Category } from '../types/exercises.type'
+import type { CompositeScreenProps } from '@react-navigation/native'
+import { VerifyAccountReqBody } from '@/types/auth.type'
 
+/**
+ * Root stack navigator parameter list
+ */
 export type RootStackParamList = {
+    // Authentication screens
     Login: undefined
-    CreateAccount: undefined
+    Register: undefined
     CompleteProfile: undefined
     ConfirmYourGoal: undefined
     ForgotPassword: undefined
+    verifyAccount: VerifyAccountReqBody
+
+    // Main app entry points
     Welcome: undefined
-    MainTab: undefined
-    Notification: undefined
+    MainTab: { screen: string }
+
+    // Feature-specific screens
+    BlueToothScan: undefined
+    MyDevice: undefined
+    WorkoutHistoryCenter: undefined
+    WorkoutSummaryDetail: { workout_id: string }
+    CategoryDetail: { category_id: string; exercise_id?: string }
+    ExerciseDetail: { exercise_id: string }
+    ActivityTracker: undefined
+    ProfileManager: undefined
+    ActivityList: undefined
+    GymLiveScreen: { exercise_id?: string; workout_history_id?: string }
+
+    // Common information screens
     ContactUs: undefined
     PrivacyPolicy: undefined
-    WorkoutHistoryCenter: undefined
-    WorkoutHistoryDetail: { workout_id: string }
-    CategoryDetail: { category: Category }
-    WorkoutDetail: { workout_id: string }
+    AboutGymBot: undefined
+    Congratulation: undefined
 }
 
-export type RootStackScreenProps<T extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, T>
-
+/**
+ * Bottom tab navigator parameter list
+ */
 export type MainTabParamList = {
     Home: undefined
     WorkoutTracker: undefined
     Search: undefined
-    StoryTaker: undefined
+    Notification: undefined
     Profile: undefined
 }
 
-export type ProfileStackParamList = {
-    ManageProfile: undefined
-    Privacy: undefined
-    ActivityHistory: undefined
-    Setting: undefined
-}
+/**
+ * Props for screens in the root stack navigator
+ */
+export type RootStackScreenProps<T extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, T>
 
-export type HomeTabScreenProps<T extends keyof MainTabParamList> = CompositeScreenProps<
+/**
+ * Props for screens in the main tab navigator, composed with root stack props
+ */
+export type MainTabScreenProps<T extends keyof MainTabParamList> = CompositeScreenProps<
     BottomTabScreenProps<MainTabParamList, T>,
     RootStackScreenProps<keyof RootStackParamList>
 >
 
+/**
+ * Extending the global ReactNavigation namespace for type safety with useNavigation and related hooks
+ */
 declare global {
     namespace ReactNavigation {
         interface RootParamList extends RootStackParamList {}

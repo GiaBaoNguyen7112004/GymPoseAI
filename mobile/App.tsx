@@ -1,4 +1,10 @@
+import { StatusBar } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import Toast from 'react-native-toast-message'
 import * as Linking from 'expo-linking'
+
 import {
     useFonts,
     Poppins_300Light,
@@ -7,17 +13,35 @@ import {
     Poppins_600SemiBold,
     Poppins_700Bold
 } from '@expo-google-fonts/poppins'
-import { ActivityIndicator, View } from 'react-native'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+
 import RootStackNavigation from './src/navigation/RootStackNavigation'
-import { NavigationContainer } from '@react-navigation/native'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { AppProvider } from './src/Contexts/App.context'
+import NotificationProvider from './src/Contexts/NotificationContext'
+import AppProvider from './src/Contexts/App.context'
+import BlueToothProvider from './src/Contexts/BluetoothContext'
+
 import storage from './src/utils/StorageManager.util'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { toastFitnessXConfig } from './src/config/toast.config'
+import BlankScreenLoader from './src/components/BlankScreenLoader'
+import * as Notifications from 'expo-notifications'
 
 const prefix = Linking.createURL('/')
+const linking = {
+    prefixes: ['gymposeai-dev://', 'https://gymposeai-dev.com'],
+    screens: {
+        Home: 'home',
+        Login: 'login',
+        Register: 'register',
+        verifyAccount: {
+            path: 'verify-account/:account_verification_token',
+            parse: {
+                account_verification_token: (token: string) => `${token}`
+            }
+        }
+    }
+}
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false
@@ -26,10 +50,16 @@ const queryClient = new QueryClient({
 })
 
 storage.load()
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true
+    })
+})
+
 export default function App() {
-    const linking = {
-        prefixes: [prefix]
-    }
     const [fontsLoaded] = useFonts({
         Poppins_Light: Poppins_300Light,
         Poppins_Regular: Poppins_400Regular,
@@ -39,20 +69,23 @@ export default function App() {
     })
 
     if (!fontsLoaded) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size='large' color='#9DCEFF' />
-            </View>
-        )
+        return <BlankScreenLoader />
     }
-
     return (
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={{ flex: 1 }}>
             <QueryClientProvider client={queryClient}>
                 <AppProvider>
-                    <NavigationContainer linking={linking}>
-                        <RootStackNavigation />
-                    </NavigationContainer>
+                    <NotificationProvider>
+                        <BlueToothProvider>
+                            <BottomSheetModalProvider>
+                                <NavigationContainer linking={linking}>
+                                    <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
+                                    <RootStackNavigation />
+                                </NavigationContainer>
+                            </BottomSheetModalProvider>
+                            <Toast config={toastFitnessXConfig} />
+                        </BlueToothProvider>
+                    </NotificationProvider>
                 </AppProvider>
             </QueryClientProvider>
         </GestureHandlerRootView>

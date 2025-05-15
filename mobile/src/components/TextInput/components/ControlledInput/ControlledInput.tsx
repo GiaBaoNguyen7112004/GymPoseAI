@@ -1,52 +1,76 @@
-import { useState } from 'react'
+import { memo, useState, forwardRef, useCallback } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
-import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native'
+import {
+    KeyboardTypeOptions,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextInput,
+    TextInputProps,
+    TouchableOpacity,
+    View,
+    ViewStyle
+} from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import MyIcon from '@/src/components/Icon'
-import { IconName } from '@/src/constants/icon.constants'
+import MyIcon from '@/components/Icon'
+import { IconName } from '@/constants/icon.constants'
 
 export interface ControllerInputProps extends Omit<TextInputProps, 'defaultValue'>, UseControllerProps {
-    type: KeyboardTypeOptions | 'password'
-    icon: IconName
+    type?: KeyboardTypeOptions | 'password'
+    icon?: IconName
+    containerStyle?: StyleProp<ViewStyle>
 }
 
-function ControlledInput({ type = 'default', icon, name, rules, defaultValue, ...inputProps }: ControllerInputProps) {
-    const { field, fieldState } = useController({ name, rules, defaultValue })
-    const errorMessage = fieldState.error?.message
-    const isPassword = type == 'password'
-    const [isHidePassword, setHidePassword] = useState<boolean>(isPassword)
-    const toggleHidePassword = () => {
-        setHidePassword((prev) => !prev)
+const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
+    (
+        {
+            type = 'default',
+            icon,
+            name,
+            rules,
+            defaultValue,
+            style,
+            containerStyle,
+            ...inputProps
+        }: ControllerInputProps,
+        ref
+    ) => {
+        const { field, fieldState } = useController({ name, rules, defaultValue })
+        const [isHidePassword, setHidePassword] = useState(type === 'password')
+
+        const showError = Boolean(fieldState.error?.message)
+        const togglePasswordVisibility = useCallback(() => setHidePassword((prev) => !prev), [])
+
+        return (
+            <View style={[styles.inputWrapper, containerStyle, showError && styles.errorBorder]}>
+                {icon && <MyIcon name={icon} size={18} style={styles.icon} />}
+                <TextInput
+                    {...inputProps}
+                    ref={ref}
+                    value={field.value?.toString() ?? ''}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholderTextColor='#ADA4A5'
+                    secureTextEntry={isHidePassword}
+                    keyboardType={type !== 'password' ? type : 'default'}
+                    style={[styles.input, style, !icon && { paddingLeft: 4 }]}
+                />
+                {type === 'password' && (
+                    <TouchableOpacity style={styles.passwordToggle} onPress={togglePasswordVisibility}>
+                        <MaterialCommunityIcons
+                            name={isHidePassword ? 'eye-off-outline' : 'eye-outline'}
+                            size={20}
+                            color={isHidePassword ? '#333' : '#318bfb'}
+                        />
+                    </TouchableOpacity>
+                )}
+                {showError && <Text style={styles.errorMessage}>{fieldState.error?.message}</Text>}
+            </View>
+        )
     }
+)
 
-    return (
-        <View style={styles.inputWrapper}>
-            <MyIcon name={icon} size={18} style={styles.icon} />
-            <TextInput
-                secureTextEntry={isHidePassword}
-                style={styles.input}
-                {...inputProps}
-                placeholderTextColor='#ADA4A5'
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                value={field.value}
-                keyboardType={type != 'password' ? type : 'default'}
-            />
-            {isPassword && (
-                <TouchableOpacity style={styles.hidePasswordIcon} onPress={toggleHidePassword}>
-                    <MaterialCommunityIcons
-                        name={isHidePassword ? 'eye-off-outline' : 'eye-outline'}
-                        size={20}
-                        color={isHidePassword ? '#333' : '#318bfb'}
-                    />
-                </TouchableOpacity>
-            )}
-            {errorMessage && <Text style={styles.error_msg}> {errorMessage}</Text>}
-        </View>
-    )
-}
-
-export default ControlledInput
+export default memo(ControlledInput)
 
 const styles = StyleSheet.create({
     inputWrapper: {
@@ -54,33 +78,37 @@ const styles = StyleSheet.create({
         height: 48,
         paddingHorizontal: 15,
         borderRadius: 14,
-        borderColor: '#F7F8F8',
         borderWidth: 1,
+        borderColor: '#F7F8F8',
         backgroundColor: '#F7F8F8',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'relative'
     },
     input: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#F7F8F8',
+        color: '#1D1617'
     },
     icon: {
         marginRight: 10
     },
-    hidePasswordIcon: {
+    passwordToggle: {
         position: 'absolute',
-        height: 30,
-        width: 30,
+        right: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        right: 5,
-        top: (44 - 30) / 2,
-        backgroundColor: '#F7F8F8'
+        height: 30,
+        width: 30
     },
-    error_msg: {
-        color: '#FF0000',
-        fontSize: 12,
+    errorMessage: {
         position: 'absolute',
-        bottom: -14,
-        left: 10
+        bottom: -18,
+        left: 10,
+        color: '#FF0000',
+        fontSize: 12
+    },
+    errorBorder: {
+        borderColor: '#FF0000'
     }
 })

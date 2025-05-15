@@ -1,139 +1,41 @@
-import React, { useContext, useRef, useCallback } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native'
-import BottomSheet, {
-    BottomSheetBackdrop,
-    BottomSheetBackdropProps,
-    BottomSheetFlatList,
-    BottomSheetView,
-    WINDOW_WIDTH
-} from '@gorhom/bottom-sheet'
-import { HomeTabScreenProps } from '@/src/navigation/types'
-import NavigationBar from '@/src/components/NavigationBar'
-import { useQuery } from '@tanstack/react-query'
-import { AppContext } from '@/src/Contexts/App.context'
-import workoutHistoryApi from '@/src/apis/workoutHistory.api'
-import WorkoutChart from '@/src/components/WorkoutChart'
-import { LinearGradient } from 'expo-linear-gradient'
-import { COLOR_BRANDS } from '@/src/constants/common.constants'
-import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
-import categoriesApi from '@/src/apis/categories.api'
-import CategoryCard from '@/src/components/CategoryCard'
-import { Category } from '@/src/types/exercises.type'
+import { View, StyleSheet, SafeAreaView } from 'react-native'
+import { MainTabScreenProps } from '@/navigation/types'
+import { Category } from '@/types/exercises.type'
+import CategoryBottomSheet from './Components/CategoryBottomSheet'
+import LineChartWorkout from './Components/LineChartWorkout'
+import Header from './Components/Header'
+import { useCallback } from 'react'
+import ViewLinerGradient from '@/components/ViewLinerGradient'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 
-const chartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientToOpacity: 0,
-    decimalPlaces: 0,
-    propsForHorizontalLabels: {
-        dx: -15
-    },
-    color: (opacity = 1) => `rgba(134, 174, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    propsForLabels: { fontSize: 12, fontWeight: '400', color: '#FFF' },
-    propsForDots: { r: '2.5', strokeWidth: '1', stroke: '#FFF', fill: '#92A3FD' },
-    propsForBackgroundLines: { strokeDasharray: '', strokeWidth: 1.2, stroke: '#F7F8F8' }
-}
-
-const lineChartColor = (opacity = 1) => `rgba(255, 255, 255, ${opacity})`
-
-function WorkoutTracker({ navigation }: HomeTabScreenProps<'WorkoutTracker'>) {
-    const { profile } = useContext(AppContext)
-
-    const { data: workoutQuery } = useQuery({
-        queryKey: ['workoutHistory', profile?.id],
-        queryFn: () => workoutHistoryApi.getWorkoutHistoryByViewMode({ id: profile?.id as string, viewMode: 'weekly' }),
-        staleTime: 1000 * 60 * 5
-    })
-    const workoutHistoryData = workoutQuery?.data.data || []
-
-    const { data: categoriesQuery } = useQuery({
-        queryKey: ['categories'],
-        queryFn: () => categoriesApi.getCategories(),
-        staleTime: 1000 * 60 * 10
-    })
-    const categoriesData = categoriesQuery?.data.data || []
-
-    const goBackScreen = () => {
+function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
+    const { isReady } = useInteractionReadyState()
+    const handleCategoryPress = useCallback((category: Category) => {
+        navigation.navigate('CategoryDetail', { category_id: category.id })
+    }, [])
+    const goBackScreen = useCallback(() => {
         navigation.goBack()
-    }
-
-    const bottomSheetRef = useRef<BottomSheet>(null)
-
-    const renderBackdrop = (props: BottomSheetBackdropProps) => (
-        <BottomSheetBackdrop
-            {...props}
-            appearsOnIndex={-1}
-            disappearsOnIndex={-1}
-            pressBehavior='none'
-            enableTouchThrough={true}
-        />
-    )
-
-    const handleCategoryPress = (category: Category) => {
-        navigation.navigate('CategoryDetail', { category: category })
-    }
-
-    const renderCategoryItem = useCallback(({ item }: { item: Category }) => {
-        return <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />
     }, [])
 
     return (
-        <LinearGradient
-            colors={COLOR_BRANDS.primary}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 0.02, y: 0 }}
-            style={styles.content}
-        >
+        <ViewLinerGradient style={styles.BackgroundLinerWrapper}>
             <SafeAreaView style={styles.container}>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.header}>
-                        <NavigationBar
-                            title={'Workout Tracker'}
-                            callback={goBackScreen}
-                            headingStyle={styles.headerTitle}
-                        />
-                    </View>
-                    <View style={styles.graphContainer}>
-                        <WorkoutChart
-                            viewMode={'weekly'}
-                            workoutData={workoutHistoryData}
-                            chartConfig={chartConfig}
-                            lineChartColor={lineChartColor}
-                        />
-                    </View>
+                <View style={styles.content}>
+                    <Header goBackScreen={goBackScreen} />
+                    <LineChartWorkout isReadyRender={isReady} />
+                    <CategoryBottomSheet handleCategoryPress={handleCategoryPress} isReady={isReady} />
                 </View>
-                <BottomSheet
-                    ref={bottomSheetRef}
-                    index={0}
-                    snapPoints={['72%']}
-                    backdropComponent={renderBackdrop}
-                    enablePanDownToClose={false}
-                    enableContentPanningGesture={false}
-                    style={{ marginTop: 100 }}
-                >
-                    <BottomSheetView style={styles.bottomSheetContent}>
-                        <View style={styles.trainingSection}>
-                            <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
-                            <BottomSheetFlatList
-                                data={categoriesData}
-                                renderItem={renderCategoryItem}
-                                keyExtractor={(item) => item.id.toString()}
-                                showsVerticalScrollIndicator={false}
-                                contentContainerStyle={{ flexGrow: 1, paddingBottom: 90 }}
-                            />
-                        </View>
-                    </BottomSheetView>
-                </BottomSheet>
             </SafeAreaView>
-        </LinearGradient>
+        </ViewLinerGradient>
     )
 }
 
 export default WorkoutTracker
 
 const styles = StyleSheet.create({
+    BackgroundLinerWrapper: {
+        flex: 1
+    },
     container: {
         flex: 1
     },
@@ -141,31 +43,11 @@ const styles = StyleSheet.create({
         flex: 1
     },
     header: {
-        zIndex: 100
+        marginTop: 10
     },
     headerTitle: {
         color: '#FFF',
         fontSize: 16,
         fontWeight: '700'
-    },
-    graphContainer: {
-        marginTop: 30,
-        flexDirection: 'row',
-        height: 120,
-        width: WINDOW_WIDTH * 0.9,
-        alignSelf: 'center'
-    },
-    bottomSheetContent: {
-        flex: 1
-    },
-    trainingSection: {
-        flex: 1,
-        paddingHorizontal: 20
-    },
-    trainingTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: 19,
-        color: '#1D1617'
     }
 })

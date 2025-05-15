@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { useState } from 'react'
+import { memo, useState, useCallback, useMemo } from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
@@ -11,40 +11,49 @@ interface DatePickerProps {
 }
 
 function DatePicker({ label, value, onChange, onBlur }: DatePickerProps) {
-    const [isShowDatePicker, setShowDatePicker] = useState<boolean>(false)
-    const [datePicked, setDatePicked] = useState<Date | null>(null)
-    const handleToggleShowDatePicker = () => {
-        setShowDatePicker((pre) => !pre)
-    }
+    const [isVisible, setIsVisible] = useState(false)
 
-    const onConfirmPickedDate = (dateValue: Date) => {
-        setDatePicked(dateValue)
-        onChange(dateValue)
-        setShowDatePicker(false)
-        if (onBlur) onBlur()
-    }
+    const handleConfirm = useCallback(
+        (selectedDate: Date) => {
+            onChange(selectedDate)
+            setIsVisible(false)
+            onBlur?.()
+        },
+        [onChange, onBlur]
+    )
+
+    const formattedDate = useMemo(() => {
+        return value ? moment(value).format('DD/MM/YYYY') : label
+    }, [value, label])
+
+    const handlePress = useCallback(() => {
+        setIsVisible(true)
+    }, [])
+
     return (
         <>
-            <Pressable onPress={handleToggleShowDatePicker}>
-                {datePicked ? (
-                    <Text>{moment(datePicked).format('DD/MM/YYYY')}</Text>
-                ) : (
-                    <Text style={styles.label}>{label}</Text>
-                )}
+            <Pressable onPress={handlePress}>
+                <Text style={value ? undefined : styles.label}>{formattedDate}</Text>
             </Pressable>
+
             <DateTimePickerModal
-                isVisible={isShowDatePicker}
+                isVisible={isVisible}
                 mode='date'
-                onConfirm={onConfirmPickedDate}
-                onCancel={handleToggleShowDatePicker}
                 date={value}
+                onConfirm={handleConfirm}
+                onCancel={() => setIsVisible(false)}
             />
         </>
     )
 }
 
-export default DatePicker
+export default memo(DatePicker)
 
 const styles = StyleSheet.create({
-    label: { color: '#ADA4A5', fontSize: 14, fontWeight: '400', lineHeight: 18 }
+    label: {
+        color: '#ADA4A5',
+        fontSize: 14,
+        fontWeight: '400',
+        lineHeight: 18
+    }
 })

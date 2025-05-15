@@ -9,18 +9,17 @@ import {
     Keyboard
 } from 'react-native'
 
-import NavigationBar from '@/src/components/NavigationBar'
+import NavigationBar from '@/components/NavigationBar'
 import FindAccountScreen from './Screens/FindAccountScreen'
 import VerificationScreen from './Screens/VerificationScreen'
 import NewPasswordScreen from './Screens/NewPasswordScreen'
 
-import { RootStackScreenProps } from '@/src/navigation/types'
+import { RootStackScreenProps } from '@/navigation/types'
 
 export interface ForgotPasswordPayload {
     email: string
     otp: string
 }
-
 const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) => {
     const [screenStep, setScreenStep] = useState<1 | 2 | 3>(1)
     const [formData, setFormData] = useState<ForgotPasswordPayload>({ email: '', otp: '' })
@@ -46,13 +45,8 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
             return { ...prev, otp }
         })
     }
-
-    const handleGotoLoginWithFitnessX = () => {
-        navigation.navigate('Login')
-    }
-
     const handleRegister = () => {
-        navigation.navigate('CreateAccount')
+        navigation.navigate('Register')
     }
     const getScreenName = () => {
         if (screenStep == 1) return 'Forgot Password'
@@ -71,7 +65,9 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
                     <FindAccountScreen
                         onSuccess={handleFindAccountSuccess}
                         email={formData.email}
-                        handleGotoLogin={handleGotoLoginWithFitnessX}
+                        handleGotoLogin={() => {
+                            navigation.navigate('Login')
+                        }}
                     />
                 )}
                 {screenStep === 2 && (
@@ -85,11 +81,17 @@ const ForgotPassword = ({ navigation }: RootStackScreenProps<'ForgotPassword'>) 
                     <NewPasswordScreen
                         email={formData.email}
                         otp={formData.otp}
-                        onSuccess={handleGotoLoginWithFitnessX}
+                        onSuccess={() => {
+                            navigation.goBack()
+                        }}
                     />
                 )}
 
-                <TouchableOpacity activeOpacity={1} style={styles.bottomHelp}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.bottomHelp}
+                    onPress={() => navigation.navigate('ContactUs')}
+                >
                     <Text style={{ color: '#318bfb' }}>Need more help?</Text>
                 </TouchableOpacity>
             </SafeAreaView>
@@ -105,7 +107,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     navigationBar: {
-        marginTop: 5
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     bottomHelp: {
         height: 50,

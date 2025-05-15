@@ -1,83 +1,87 @@
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
-import { useContext } from 'react'
-import { AppContext } from '../Contexts/App.context'
 import { RootStackParamList } from './types'
+
+// Auth Screens
+import WelcomeScreen from '@/screens/Auth/Welcome'
+import Login from '@/screens/Auth/Login'
+import ForgotPassword from '@/screens/Auth/ForgotPassword'
+
+// Main Tabs
 import MainTabs from './MainTabs'
-import Login from '../screens/Auth/Login'
-import { Register } from '../screens/Auth/Register'
-import ForgotPassword from '../screens/Auth/ForgotPassword'
-import WelcomeScreen from '../screens/Auth/Welcome'
-import Notification from '../screens/Other/Notification'
-import ContactUs from '../screens/Other/ContactUs'
-import PrivacyPolicy from '../screens/Other/PrivacyPolicy/PrivacyPolicy'
-import WorkoutHistoryCenter from '../screens/Other/WorkoutHistoryCenter/WorkoutHistoryCenter'
-import WorkoutHistoryDetail from '../screens/Other/WorkoutHistoryDetail'
-import CategoryDetail from '../screens/Other/CategoryDetail'
-import WorkoutDetail from '../screens/Other/WorkoutDetail'
+
+// App Screens
+import WorkoutHistoryCenter from '@/screens/Other/WorkoutHistoryCenter'
+import WorkoutSummaryDetail from '@/screens/Other/WorkoutSummaryDetail'
+import CategoryDetail from '@/screens/Other/CategoryDetail'
+import ActivityTracker from '@/screens/Other/ActivityTracker'
+
+// Common Screens
+import ContactUs from '@/screens/Other/ContactUs'
+import PrivacyPolicy from '@/screens/Other/PrivacyPolicy/PrivacyPolicy'
+import ActivityListScreen from '@/screens/Other/ActivityListScreen'
+import CompleteProfile from '@/screens/Other/CompleteProfile'
+import ConfirmYourGoal from '@/screens/Other/ConfirmYourGoal'
+import Register from '@/screens/Auth/Register'
+import ExerciseDetail from '@/screens/Other/ExerciseDetail'
+import GymLiveScreen from '@/screens/Other/GymLiveScreen'
+import useAppContext from '@/hooks/useAppContext'
+import BlueToothScan from '@/screens/Other/BlueToothScan'
+import MyDevice from '@/screens/Other/MyDevice'
+import AboutGymBotScreen from '@/screens/Other/AboutGymBot'
+import Congratulation from '@/screens/Other/Congratulation'
+import VerifyAccountScreen from '@/screens/Auth/VerifyAccount'
 
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootStackNavigation() {
-    const { isAuthenticated } = useContext(AppContext)
-    const navigationOptions: StackNavigationOptions = {
-        headerShown: false,
-        gestureEnabled: true
-    }
+    const { isAuthenticated } = useAppContext()
 
+    const screenOptions: StackNavigationOptions = {
+        headerShown: false,
+        gestureEnabled: true,
+        animationTypeForReplace: 'pop',
+        animation: 'slide_from_right'
+    }
     return (
-        <RootStack.Navigator screenOptions={navigationOptions} initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
-            {!isAuthenticated ? (
-                <>
-                    <RootStack.Screen name='Login' component={Login} />
-                    <RootStack.Group screenOptions={{ headerShown: false }}>
-                        <RootStack.Screen
-                            name='CreateAccount'
-                            component={Register.CreateAccount}
-                            options={{ gestureEnabled: false }}
-                        />
-                        <RootStack.Screen
-                            name='CompleteProfile'
-                            component={Register.CompleteProfile}
-                            options={{ gestureEnabled: false }}
-                        />
-                        <RootStack.Screen
-                            name='ConfirmYourGoal'
-                            component={Register.ConfirmYourGoal}
-                            options={{ gestureEnabled: false }}
-                        />
-                    </RootStack.Group>
-                    <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
-                </>
+        <RootStack.Navigator screenOptions={screenOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>
+            {isAuthenticated ? (
+                <RootStack.Group>
+                    <RootStack.Screen name='Welcome' component={WelcomeScreen} options={{ gestureEnabled: false }} />
+                    <RootStack.Screen name='MainTab' component={MainTabs} options={{}} />
+                    <RootStack.Screen name='BlueToothScan' component={BlueToothScan} />
+                    <RootStack.Screen name='WorkoutHistoryCenter' component={WorkoutHistoryCenter} />
+                    <RootStack.Screen name='WorkoutSummaryDetail' component={WorkoutSummaryDetail} />
+                    <RootStack.Screen name='CategoryDetail' component={CategoryDetail} />
+                    <RootStack.Screen name='ExerciseDetail' component={ExerciseDetail} />
+                    <RootStack.Screen name='ActivityTracker' component={ActivityTracker} />
+                    <RootStack.Screen name='CompleteProfile' component={CompleteProfile} />
+                    <RootStack.Screen name='verifyAccount' component={VerifyAccountScreen} />
+                    <RootStack.Screen
+                        name='ConfirmYourGoal'
+                        component={ConfirmYourGoal}
+                        options={{ gestureEnabled: false }}
+                    />
+                    <RootStack.Screen name='ActivityList' component={ActivityListScreen} />
+                    <RootStack.Screen name='GymLiveScreen' component={GymLiveScreen} />
+                    <RootStack.Screen name='MyDevice' component={MyDevice} />
+                </RootStack.Group>
             ) : (
-                <>
-                    <RootStack.Screen name='MainTab' component={MainTabs} />
-                    <RootStack.Screen name='Notification' component={Notification} options={{ gestureEnabled: true }} />
-                    <RootStack.Screen
-                        name='WorkoutHistoryCenter'
-                        component={WorkoutHistoryCenter}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen
-                        name='WorkoutHistoryDetail'
-                        component={WorkoutHistoryDetail}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen
-                        name='CategoryDetail'
-                        component={CategoryDetail}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen
-                        name='WorkoutDetail'
-                        component={WorkoutDetail}
-                        options={{ gestureEnabled: true }}
-                    />
-                    <RootStack.Screen name='Welcome' component={WelcomeScreen} />
-                </>
+                <RootStack.Group>
+                    <RootStack.Screen name='Login' component={Login} />
+                    <RootStack.Screen name='Register' component={Register} />
+                    <RootStack.Screen name='ForgotPassword' component={ForgotPassword} />
+                </RootStack.Group>
             )}
+
             <RootStack.Group navigationKey={isAuthenticated ? 'user' : 'guest'}>
                 <RootStack.Screen name='ContactUs' component={ContactUs} />
                 <RootStack.Screen name='PrivacyPolicy' component={PrivacyPolicy} />
+                <RootStack.Screen name='AboutGymBot' component={AboutGymBotScreen} />
+                <RootStack.Screen
+                    name='Congratulation'
+                    component={Congratulation}
+                    options={{ gestureEnabled: false }}
+                />
             </RootStack.Group>
         </RootStack.Navigator>
     )

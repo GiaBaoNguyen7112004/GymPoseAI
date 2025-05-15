@@ -1,4 +1,5 @@
-import CustomCheckbox from '@/src/components/CheckInput/Components/CheckBox'
+import CustomCheckbox from '@/components/CheckInput/Components/CheckBox'
+import { memo } from 'react'
 import { useController, UseControllerProps } from 'react-hook-form'
 import { StyleSheet, Text, View } from 'react-native'
 
@@ -20,7 +21,7 @@ function ControlledCheckBox({ label, name, rules, defaultValue }: ControlledChec
     )
 }
 
-export default ControlledCheckBox
+export default memo(ControlledCheckBox)
 
 const styles = StyleSheet.create({
     container: {

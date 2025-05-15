@@ -1,0 +1,30 @@
+{
+    "cli": {
+        "version": ">=3.0.0",
+        "appVersionSource": "remote"
+    },
+    "build": {
+        "development": {
+            "autoIncrement": true,
+            "developmentClient": true,
+            "distribution": "internal",
+            "env": {
+                "APP_VARIANT": "development"
+            },
+            "android": {
+                "resourceClass": "medium"
+            },
+            "ios": {
+                "resourceClass": "medium",
+                "simulator": true
+            }
+        },
+        "preview": {
+            "distribution": "internal",
+            "autoIncrement": true
+        },
+        "production": {
+            "autoIncrement": true
+        }
+    }
+}

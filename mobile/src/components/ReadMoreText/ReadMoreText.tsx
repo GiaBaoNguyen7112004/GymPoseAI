@@ -1,73 +1,71 @@
-import { useState, useRef } from 'react'
-import {
-    Text,
-    View,
-    TouchableOpacity,
-    StyleProp,
-    TextStyle,
-    NativeSyntheticEvent,
-    TextLayoutEventData,
-    StyleSheet
-} from 'react-native'
+import { useState, useCallback, memo } from 'react'
+import { Text, StyleProp, TextStyle, NativeSyntheticEvent, TextLayoutEventData, View, StyleSheet } from 'react-native'
+import TextGradient from '../TextGradient'
 
 interface ReadMoreTextProps {
-    content: string
+    text: string
     numberOfLines?: number
     textStyle?: StyleProp<TextStyle>
+    readMoreStyle?: StyleProp<TextStyle>
     readMoreText?: string
     readLessText?: string
+    lineHeight: number
 }
 
 const ReadMoreText = ({
-    content,
-    numberOfLines = 3,
+    text,
+    numberOfLines = 1,
     textStyle,
+    readMoreStyle,
     readMoreText = 'Read More...',
-    readLessText = 'Read Less...'
+    readLessText = 'Read Less',
+    lineHeight
 }: ReadMoreTextProps) => {
-    const [expanded, setExpanded] = useState(false)
-    const [shouldShowReadMore, setShouldShowReadMore] = useState(false)
-    const textRef = useRef<Text>(null)
+    const [showMoreButton, setShowMoreButton] = useState(false)
+    const [textShown, setTextShown] = useState(false)
+    const [numLines, setNumLines] = useState<number | undefined>(undefined)
 
-    const onTextLayout = (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-        const { lines } = e.nativeEvent
-        if (lines.length > numberOfLines) {
-            setShouldShowReadMore(true)
-        }
-    }
+    const toggleTextShown = useCallback(() => {
+        setTextShown((prev) => !prev)
+        setNumLines((prev) => (prev === numberOfLines ? undefined : numberOfLines))
+    }, [])
 
-    const toggleExpanded = () => setExpanded(!expanded)
+    const onTextLayout = useCallback(
+        (e: NativeSyntheticEvent<TextLayoutEventData>) => {
+            const totalLines = e.nativeEvent.lines.length
+            if (totalLines > numberOfLines && !textShown) {
+                setShowMoreButton(true)
+                setNumLines(numberOfLines)
+            }
+        },
+        [numberOfLines, textShown]
+    )
 
     return (
-        <View>
-            <Text
-                ref={textRef}
-                numberOfLines={expanded ? undefined : numberOfLines}
-                onTextLayout={onTextLayout}
-                style={[styles.contentText, textStyle]}
-            >
-                {content}
+        <View style={styles.textContainer}>
+            <Text onTextLayout={onTextLayout} numberOfLines={numLines} style={textStyle} ellipsizeMode='tail'>
+                {text}
             </Text>
-
-            {shouldShowReadMore && (
-                <TouchableOpacity onPress={toggleExpanded}>
-                    <Text style={styles.readMoreText}>{expanded ? readLessText : readMoreText}</Text>
-                </TouchableOpacity>
+            {showMoreButton && (
+                <Text onPress={toggleTextShown} style={[styles.readMore, { bottom: textShown ? -lineHeight : 0 }]}>
+                    <TextGradient
+                        text={textShown ? readLessText : readMoreText}
+                        textStyle={readMoreStyle || textStyle}
+                    />
+                </Text>
             )}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    contentText: {
-        fontSize: 16,
-        color: '#4A4A4A'
-    },
-    readMoreText: {
-        color: '#8C9EFF',
-        fontWeight: '600',
-        marginTop: 4
+    textContainer: { position: 'relative' },
+    readMore: {
+        position: 'absolute',
+        right: 0,
+        backgroundColor: '#FFF',
+        paddingLeft: 10
     }
 })
 
-export default ReadMoreText
+export default memo(ReadMoreText)

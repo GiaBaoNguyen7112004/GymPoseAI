@@ -1,6 +1,6 @@
-import { IconName, ICONS } from '@/src/constants/icon.constants'
-import { useMemo } from 'react'
-import { StyleProp } from 'react-native'
+import { ICONS, IconName } from '@/constants/icon.constants'
+import { memo } from 'react'
+import type { StyleProp, ViewStyle } from 'react-native'
 
 interface IconProps {
     name: IconName
@@ -9,26 +9,14 @@ interface IconProps {
     height?: number | string
     fill?: string
     stroke?: string
-    style?: StyleProp<any>
+    style?: StyleProp<ViewStyle>
     [key: string]: any
 }
 
 const Icon: React.FC<IconProps> = ({ name, size = 24, width, height, fill, stroke, style, ...props }) => {
-    const SelectedIcon = useMemo(() => ICONS[name], [name, ICONS])
+    const SelectedIcon = ICONS[name]
 
-    const fillColor = fill ? { fill } : {}
-    const strokeColor = stroke ? { stroke: stroke } : {}
-
-    return (
-        <SelectedIcon
-            width={width ? width : size}
-            height={height ? height : size}
-            {...fillColor}
-            {...strokeColor}
-            {...props}
-            style={style}
-        />
-    )
+    return <SelectedIcon width={width ?? size} height={height ?? size} stroke={stroke} style={style} {...props} />
 }
 
-export default Icon
+export default memo(Icon)

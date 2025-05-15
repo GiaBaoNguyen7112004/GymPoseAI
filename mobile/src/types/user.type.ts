@@ -1,3 +1,5 @@
+import { ResponseApi } from './utils.type'
+
 export interface User {
     id: string
     avatar?: string
@@ -8,6 +10,25 @@ export interface User {
     date_of_birth: string
     weight: number
     height: number
+    isProfileComplete: boolean
 }
 
-export type Gender = 'Male' | 'Female' | 'Other'
+export type Gender = 'MALE' | 'FEMALE'
+
+export type UpdateNameReqBody = {
+    first_name: string
+    last_name: string
+}
+
+export type UpdateProfileDetailReqBody = {
+    gender?: Gender
+    date_of_birth: string
+    weight: number
+    height: number
+}
+
+export type UpdateAvatarReqBody = {
+    avatar: string
+}
+
+export type ResponseUserApi = ResponseApi<User, any>

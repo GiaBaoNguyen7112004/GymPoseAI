@@ -1,6 +1,7 @@
 import { useController, UseControllerProps } from 'react-hook-form'
 import CustomDropdown, { CustomDropdownProps } from '../Dropdown'
 import { StyleSheet, Text, View } from 'react-native'
+import { memo } from 'react'
 
 export type ControlledDropdownProps = CustomDropdownProps & UseControllerProps
 
@@ -16,7 +17,7 @@ function ControlledDropdown(props: ControlledDropdownProps) {
     )
 }
 
-export default ControlledDropdown
+export default memo(ControlledDropdown)
 
 const styles = StyleSheet.create({
     container: {

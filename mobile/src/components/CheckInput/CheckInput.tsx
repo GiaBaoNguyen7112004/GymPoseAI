@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import ControlledCheckBox, { ControlledCheckBoxProps } from './Components/ControlledInput'
 import { useFormContext } from 'react-hook-form'
 
@@ -14,4 +15,4 @@ function CheckInput(props: ControlledCheckBoxProps) {
     return <ControlledCheckBox {...props} />
 }
 
-export default CheckInput
+export default memo(CheckInput)

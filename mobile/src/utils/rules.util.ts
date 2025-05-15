@@ -55,4 +55,23 @@ export const schema = yup.object({
         .matches(/^\d{4}$/, 'The verification code must be exactly 4 digits')
 })
 
+export const targetSchema = yup.object({
+    water: yup
+        .number()
+        .typeError('water must be a number')
+        .required('water is required')
+        .positive('water must be a positive number')
+        .min(0, 'water must be at least 0L')
+        .max(8, 'water must be less than 8L'),
+
+    calories: yup
+        .number()
+        .typeError('calories must be a number')
+        .required('calories is required')
+        .positive('calories must be a positive number')
+        .min(0, 'calories must be at least 0Cal')
+        .max(3000, 'calories must be less than 3000Cal')
+})
+
+export type TargetSchemaType = yup.InferType<typeof targetSchema>
 export type SchemaType = yup.InferType<typeof schema>

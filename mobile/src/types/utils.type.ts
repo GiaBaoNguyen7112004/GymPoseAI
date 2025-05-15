@@ -1,5 +1,3 @@
-import { categories } from './workoutHistory.type'
-
 export interface ResponseApi<Data, MetaType> {
     status: string
     message: string
@@ -8,13 +6,11 @@ export interface ResponseApi<Data, MetaType> {
     errors: ErrorField[]
 }
 
-export interface QueryConfigWorkoutHistory {
+export interface BaseQueryConfig {
     page: number
     limit: number
-    order?: 'asc' | 'desc'
     sort_by?: 'createAt'
-    viewMode?: 'weekly' | 'monthly' | 'yearly'
-    category?: categories
+    order?: 'asc' | 'desc'
 }
 
 export interface PaginationMeta {
@@ -28,3 +24,5 @@ export interface ErrorField {
     message: string
     code: number | string
 }
+
+export type ViewModeType = 'daily' | 'weekly' | 'monthly' | 'yearly'

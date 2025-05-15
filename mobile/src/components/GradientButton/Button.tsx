@@ -1,8 +1,6 @@
 import { memo } from 'react'
-import { TouchableOpacity, StyleSheet, ViewStyle, GestureResponderEvent, View } from 'react-native'
+import { Pressable, StyleSheet, GestureResponderEvent, View, StyleProp, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { TouchableOpacityProps } from 'react-native-gesture-handler'
-import { StyleProp } from 'react-native'
 import Loader from '../Loader'
 
 interface ButtonProps {
@@ -13,25 +11,33 @@ interface ButtonProps {
     Square?: boolean
     disabled?: boolean
     isLoading?: boolean
+    rounded?: boolean
+    containerStyle?: StyleProp<ViewStyle>
     [key: string]: any
 }
 
-const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
+const GradientButton: React.FC<ButtonProps> = ({
     onPress,
     children,
-    Square,
+    Square = false,
     linerColors = ['#92A3FD', '#9DCEFF'],
-    disabled,
-    isLoading,
+    disabled = false,
+    isLoading = false,
     style,
     containerStyle,
+    rounded = false,
     ...props
 }) => {
     const gradientColors = linerColors.length >= 2 ? linerColors : ['#92A3FD', '#9DCEFF']
     const isDisabled = disabled || isLoading
 
     return (
-        <TouchableOpacity onPress={onPress} disabled={isDisabled} style={containerStyle} {...props}>
+        <Pressable
+            onPress={onPress}
+            disabled={isDisabled}
+            style={({ pressed }) => [containerStyle, pressed && !isDisabled && styles.pressed]}
+            {...props}
+        >
             <LinearGradient
                 colors={gradientColors as [string, string, ...string[]]}
                 start={{ x: 1, y: 0.5 }}
@@ -39,8 +45,9 @@ const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
                 style={[
                     styles.container,
                     style,
-                    Square ? styles.square : styles.rounded,
-                    { opacity: !isDisabled ? 1 : 0.6 }
+                    Square && styles.square,
+                    rounded && styles.rounded,
+                    { opacity: isDisabled ? 0.6 : 1 }
                 ]}
             >
                 {children}
@@ -50,7 +57,7 @@ const GradientButton: React.FC<ButtonProps & TouchableOpacityProps> = ({
                     </View>
                 )}
             </LinearGradient>
-        </TouchableOpacity>
+        </Pressable>
     )
 }
 
@@ -70,15 +77,13 @@ const styles = StyleSheet.create({
         borderRadius: 999,
         aspectRatio: 1 / 1
     },
-    contentWrapper: {
-        position: 'relative',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
     loaderWrapper: {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute'
+    },
+    pressed: {
+        opacity: 0.7
     }
 })
 

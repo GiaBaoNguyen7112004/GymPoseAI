@@ -1,37 +1,54 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StyleProp, TextStyle } from 'react-native'
-import Icon from '../Icon'
-import { Ionicons } from '@expo/vector-icons'
+import React, { memo, useCallback } from 'react'
+import { StyleSheet, Text, View, Pressable, StyleProp, TextStyle } from 'react-native'
+import { Feather, Ionicons } from '@expo/vector-icons'
+
 export interface NavigationBarProps {
     title: string
     callback?: () => any
     headingStyle?: StyleProp<TextStyle>
     buttonBackStyle?: StyleProp<TextStyle>
     iconColor?: string
+    handleMorePress?: () => void
 }
-const NavigationBar = ({ callback, title, headingStyle, buttonBackStyle, iconColor }: NavigationBarProps) => {
-    const _onCallBack = () => {
+
+const NavigationBar: React.FC<NavigationBarProps> = ({
+    callback,
+    title,
+    headingStyle,
+    buttonBackStyle,
+    iconColor,
+    handleMorePress
+}) => {
+    const handleBackPress = useCallback(() => {
         if (callback) callback()
-    }
+    }, [callback])
+
     return (
         <View style={styles.navigationBar}>
-            <TouchableOpacity onPress={_onCallBack} style={[styles.btnBack, buttonBackStyle]}>
+            <Pressable onPress={handleBackPress} style={[styles.btnBack, buttonBackStyle]}>
                 <Ionicons name='chevron-back' size={20} color={iconColor} />
-            </TouchableOpacity>
+            </Pressable>
             <Text style={[styles.title, headingStyle]}>{title}</Text>
+            {handleMorePress && (
+                <Pressable onPress={handleMorePress} style={[styles.btnBack, buttonBackStyle]}>
+                    <Feather name='more-horizontal' size={20} color={iconColor} />
+                </Pressable>
+            )}
         </View>
     )
 }
 
-export default NavigationBar
+export default memo(NavigationBar)
 
 const styles = StyleSheet.create({
     navigationBar: {
         backgroundColor: 'transparent',
         flexDirection: 'row',
-        height: 32,
+        height: 42,
         paddingHorizontal: 29,
+        paddingVertical: 10,
         alignItems: 'center',
+        justifyContent: 'center',
         position: 'relative'
     },
     btnBack: {
@@ -40,11 +57,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F7F8F8',
-        borderRadius: 8,
-        position: 'absolute',
-        left: 29,
-        top: 0,
-        zIndex: 1
+        borderRadius: 8
     },
     title: {
         flex: 1,

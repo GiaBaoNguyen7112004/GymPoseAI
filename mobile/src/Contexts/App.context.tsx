@@ -1,6 +1,6 @@
-import { createContext, useState } from 'react'
-import { User } from '@/src/types/user.type'
-import storage from '@/src/utils/StorageManager.util'
+import { createContext, useContext, useState } from 'react'
+import { User } from '@/types/user.type'
+import storage from '@/utils/StorageManager.util'
 interface AppContextInterface {
     isAuthenticated: boolean
     profile: User | null
@@ -16,7 +16,7 @@ const initialAppContext: AppContextInterface = {
 }
 export const AppContext = createContext<AppContextInterface>(initialAppContext)
 
-export function AppProvider({ children }: { children: React.ReactNode }) {
+function AppProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
     const [profile, setProfile] = useState<User | null>(initialAppContext.profile)
     return (
@@ -32,3 +32,5 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         </AppContext.Provider>
     )
 }
+
+export default AppProvider

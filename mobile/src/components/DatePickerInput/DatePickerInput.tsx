@@ -1,5 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import ControlledDatePicker, { ControlledDatePickerProps } from './Components/ControlledDatePicker'
+import { memo } from 'react'
 
 function DatePickerInput(props: ControlledDatePickerProps) {
     const { name } = props
@@ -14,4 +15,4 @@ function DatePickerInput(props: ControlledDatePickerProps) {
     return <ControlledDatePicker {...props} />
 }
 
-export default DatePickerInput
+export default memo(DatePickerInput)
