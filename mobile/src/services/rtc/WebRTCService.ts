@@ -115,11 +115,9 @@ class WebRTCService {
 
     private initSignalingListeners(): void {
         this.signaling.on('answer', async (data) => {
-            console.log('[WebRTC] Received answer:', data)
             await this.peerConnection.setRemoteDescription(new RTCSessionDescription(data))
         })
         this.signaling.on('icecandidate', async (data) => {
-            console.log('[WebRTC] Received ICE candidate:', data)
             await this.peerConnection.addIceCandidate(new RTCIceCandidate(data))
         })
         this.signaling.on('error', this.handleSignalingError)
@@ -177,17 +175,16 @@ class WebRTCService {
             ['closed'].includes(this.peerConnection.connectionState)
         ) {
             this.peerConnection = this.createPeerConnection()
-            this.peerConnection.addTransceiver('video', { direction: 'sendrecv' })
             this.initPeerListeners()
         }
 
         this.createDataChannel()
-        const offer = await this.peerConnection.createOffer({})
-        await this.peerConnection.setLocalDescription(offer)
-        this.sendSignal('offer', {
-            sdp: offer.sdp,
-            type: offer.type
+        const offer = await this.peerConnection.createOffer({
+            offerToReceiveAudio: false,
+            offerToReceiveVideo: true
         })
+        await this.peerConnection.setLocalDescription(offer)
+        this.sendSignal('offer', offer)
     }
 
     onSignalingError(handler: (error: Event) => void): void {
