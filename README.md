@@ -1,10 +1,10 @@
 # GymPoseAI – Smart AI-Powered Training App
 
-![Thumbnail](./docs//images//thumbnail_1.png)
+![Thumbnail]([./docs//images//thumbnail_1.png])
 
 ## 🎥 Demo Video
 
-![](./docs/videos/demo1.gif)
+[Video](https://drive.google.com/file/d/1_HYK0VyCR20v1MPl7OJjiNL2PoHr1yEw/view?usp=drive_link)
 
 ## 🏋️ Introduction
 
