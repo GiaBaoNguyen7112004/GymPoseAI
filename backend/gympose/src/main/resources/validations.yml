@@ -1,0 +1,51 @@
+#authentication
+sign_up_request:
+  email:
+    not_blank:
+      code: VAL.SU0101
+      message: Email must not be blank
+    email:
+      code: VAL.SU0102
+      message: Email must be a well-formed email address
+  first_name:
+    not_blank:
+      code: VAL.SU0201
+      message: First name must not be blank
+    size:
+      code: VAL.SU0202
+      message: First name size must be between 1 and 100
+  last_name:
+    not_blank:
+      code: VAL.SU0301
+      message: Last name must not be blank
+    size:
+      code: VAL.SU0302
+      message: Last name size must be between 1 and 100
+  password:
+    not_blank:
+      code: VAL.SU0401
+      message: Password must not be blank
+    pattern:
+      code: VAL.SU0402
+      message: Password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+  password_confirmation:
+    not_blank:
+      code: VAL.SU0501
+      message: Password confirmation must not be blank
+
+logout_request:
+  access_token:
+    not_blank:
+      code: VAL.LO0101
+      message: Access token must not be blank !
+  refresh_token:
+    not_blank:
+      code: VAL.LO0102
+      message: Refresh token must not be blank !
+
+#category
+category_creation_request:
+  name:
+    not_blank:
+      code: VAL.CA0101
+      message: Category's name must not be blank !
