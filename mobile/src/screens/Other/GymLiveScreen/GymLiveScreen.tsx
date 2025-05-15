@@ -87,7 +87,7 @@ const GymLiveScreen = ({ navigation, route }: RootStackScreenProps<'GymLiveScree
     const { sendTrainingRequest, sendStartTraining, sendStopTraining, sendPauseTraining, isWebRTConnected } = useWebRTC(
         {
             //peripheralInfo?.ip_address
-            wsSignalingUrl: `ws://${'192.168.174.135'}:8080`,
+            wsSignalingUrl: `ws://${'192.168.1.3'}:8080`,
             onRemoteStream: (stream) => setRemoteStream(stream),
             onAIResponse: handleAIResponse
         }
