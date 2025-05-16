@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet, StyleProp, ViewStyle } from 'react-n
 import AvatarWithIcon from '../AvatarWithIcon'
 import MyIcon from '@/components/Icon'
 import Progress from '@/components/Progress'
-import { workoutHistory } from '@/types/workoutHistory.type'
+import { categories, workoutHistory } from '@/types/workoutHistory.type'
 import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
 
 interface TrainingSessionCardProps {
@@ -22,18 +22,24 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
     }, [item.category])
 
     const icon = useMemo(() => {
-        return ICONS_CATEGORY_MAP.get(item.category) || 'movement1'
+        return ICONS_CATEGORY_MAP.get(item.category as categories) || 'movement1'
     }, [item.category])
 
     return (
         <Pressable style={[styles.container, style]} onPress={onPress}>
             <AvatarWithIcon size={50} colors={colors} icon={icon} />
             <View style={styles.content}>
-                <Text style={styles.name}>{item.name_workout}</Text>
+                <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.stats}>
                     {item.calories_burned} Calories Burned | {item.duration_minutes} minutes
                 </Text>
-                <Progress.Bar progress={progress} barHeight={191} barWidth={10} style={styles.progressBar} />
+                <Progress.Bar
+                    progress={progress}
+                    barHeight={191}
+                    barWidth={10}
+                    style={styles.progressBar}
+                    orientation='horizontal'
+                />
             </View>
             <MyIcon name='arroWRightOutline' size={24} />
         </Pressable>
@@ -81,6 +87,9 @@ const styles = StyleSheet.create({
         lineHeight: 15
     },
     progressBar: {
-        transform: [{ rotate: '90deg' }, { translateY: -95 }, { translateX: -80 }]
+        marginTop: 10,
+        width: '100%',
+        height: 10,
+        borderRadius: 5
     }
 })

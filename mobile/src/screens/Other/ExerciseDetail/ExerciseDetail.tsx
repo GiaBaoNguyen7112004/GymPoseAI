@@ -22,10 +22,10 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
     const { exercise_id } = route.params
     const { workoutData, isLoading, workoutIdYoutube } = useExerciseData({ exercise_id })
     const handleLetTrainPress = useCallback(() => {
-        // if (!peripheralInfo?.id || !connectedDevice) {
-        //     setModalVisible(true)
-        //     return
-        // }
+        if (!peripheralInfo?.id || !connectedDevice) {
+            setModalVisible(true)
+            return
+        }
         navigation.navigate('GymLiveScreen', {
             exercise_id: exercise_id
         })
@@ -36,8 +36,7 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
     }, [])
     const handleConnectDevice = useCallback(() => {
         setModalVisible(false)
-        //peripheralInfo?.id
-        const isHasDevice = Boolean(true)
+        const isHasDevice = Boolean(peripheralInfo?.id)
         if (isHasDevice) {
             navigation.navigate('MyDevice')
         } else navigation.navigate('BlueToothScan')

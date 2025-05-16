@@ -86,6 +86,10 @@ Built with PostgreSQL and Redis to store user profiles, exercise data, personal 
 
 ![ System Communication Flow](./docs//images//System%20Architecture.png)
 
+### IOT FLOW
+
+![ IOT Communication Flow](./docs//images//IOT_Flow.png)
+
 ### UX/UI
 
 -   Optimized for mobile experience.

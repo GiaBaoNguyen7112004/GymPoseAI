@@ -6,6 +6,18 @@ interface WebsocketServiceOptions {
     reconnectInterval?: number // ms
 }
 
+type ConnectionStatus = 'closed' | 'reconnecting' | 'reconnect_failed' | 'connected'
+type ConnectionStatusCallback = (status: ConnectionStatus) => void
+
+const MESSAGES = {
+    PARSE_ERROR: '[WebSocket] Failed to parse message:',
+    ERROR: '[WebSocket] Error:',
+    CONNECTION_CLOSED: '[WebSocket] Connection closed',
+    RECONNECT_ATTEMPT: (attempt: number) => `[WebSocket] Attempting reconnect #${attempt}`,
+    RECONNECT_LIMIT: '[WebSocket] Reconnect limit reached. Giving up.',
+    NOT_CONNECTED: '[WebSocket] Socket not connected, queueing message'
+} as const
+
 class WebSocketService {
     private socket: WebSocket | null = null
     private connected = false
@@ -13,6 +25,7 @@ class WebSocketService {
 
     private eventHandlers: eventHandlerObjType = {}
     private onOpenCallbacks: (() => void)[] = []
+    private connectionStatusCallback: ConnectionStatusCallback | null = null
 
     private shouldReconnect = true
     private reconnectAttempts = 0
@@ -39,6 +52,7 @@ class WebSocketService {
             this.onOpenCallbacks.forEach((cb) => cb())
             this.onOpenCallbacks = []
             this.flushPendingMessages()
+            this.connectionStatusCallback?.('connected')
         }
     }
 
@@ -55,12 +69,12 @@ class WebSocketService {
             const handler = this.eventHandlers[message.type]
             handler?.(message.data)
         } catch (error) {
-            console.error('[WebSocket] Failed to parse message:', error)
+            console.error(MESSAGES.PARSE_ERROR, error)
         }
     }
 
     private handleError = (error: Event): void => {
-        console.error('[WebSocket] Error:', error)
+        console.error(MESSAGES.ERROR, error)
         const handler = this.eventHandlers['error']
         handler?.(error)
     }
@@ -68,14 +82,17 @@ class WebSocketService {
     private handleClose = (): void => {
         this.connected = false
         this.socket = null
-        console.log('[WebSocket] Connection closed')
+        console.log(MESSAGES.CONNECTION_CLOSED)
+        this.connectionStatusCallback?.('closed')
 
         if (this.shouldReconnect && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.reconnectAttempts++
-            console.log(`[WebSocket] Attempting reconnect #${this.reconnectAttempts}`)
+            console.log(MESSAGES.RECONNECT_ATTEMPT(this.reconnectAttempts))
+            this.connectionStatusCallback?.('reconnecting')
             setTimeout(() => this.connect(), this.reconnectInterval)
         } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.warn('[WebSocket] Reconnect limit reached. Giving up.')
+            console.warn(MESSAGES.RECONNECT_LIMIT)
+            this.connectionStatusCallback?.('reconnect_failed')
         }
     }
 
@@ -84,7 +101,7 @@ class WebSocketService {
         if (this.socket && this.connected && this.socket.readyState === WebSocket.OPEN) {
             this.socket.send(json)
         } else {
-            console.warn('[WebSocket] Socket not connected, queueing message')
+            console.warn(MESSAGES.NOT_CONNECTED)
             this.pendingMessages.push(json)
         }
     }
@@ -97,6 +114,7 @@ class WebSocketService {
             if (msg) this.socket.send(msg)
         }
     }
+
     on(eventType: string, handler: EventHandlerType): void {
         this.eventHandlers[eventType] = handler
     }
@@ -122,6 +140,10 @@ class WebSocketService {
                 this.onOpenCallbacks.push(resolve)
             }
         })
+    }
+
+    onConnectionStatusChange(callback: ConnectionStatusCallback): void {
+        this.connectionStatusCallback = callback
     }
 }
 

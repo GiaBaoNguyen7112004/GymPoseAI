@@ -9,6 +9,7 @@ export interface workoutHistory extends BaseExerciseInfo {
     errors_count: number
     pose_errors: pose_error[]
     elapsed_time: number // in seconds
+    category: categories
 }
 
 export interface pose_error {

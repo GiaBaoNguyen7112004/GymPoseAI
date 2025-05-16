@@ -1,21 +1,17 @@
+import { extend } from 'lodash'
 import { categories } from './workoutHistory.type'
 
 export interface BaseExerciseInfo {
     id: string
     name: string
     duration_minutes: number
-    category: Category | categories
     met?: number
 }
-export interface Exercise {
-    id: string
+export interface Exercise extends BaseExerciseInfo {
     thumbnail_url: string
-    name: string
-    duration_minutes: number
     description: string
     media_url: string
     category: Category
-    met?: number
     steps?: StepOfExercise[]
 }
 

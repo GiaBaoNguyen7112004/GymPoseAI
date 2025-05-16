@@ -78,7 +78,12 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
                     const alreadyFound = discoveredDevices.find((d) => d.id === device.id)
                     if (!alreadyFound) {
                         discoveredDevices.push(device)
-                        setAllDevices((prev) => [...prev, device])
+                        setAllDevices((prevState: Device[]) => {
+                            if (!isDuplicateDevice(prevState, device)) {
+                                return [...prevState, device]
+                            }
+                            return prevState
+                        })
                     }
                 }
             })
@@ -106,6 +111,14 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
 
             await device.discoverAllServicesAndCharacteristics()
             setConnectedDevice(device)
+
+            monitorSubscription.current = device.onDisconnected((error, disconnectedDevice) => {
+                console.log('Device disconnected:', disconnectedDevice.id, error)
+                setConnectedDevice(null)
+                setIsConnecting(false)
+                monitorSubscription.current?.remove()
+            })
+
             return device
         } catch (error) {
             console.error('Connect error:', error)
@@ -114,7 +127,6 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
             setIsConnecting(false)
         }
     }, [])
-
     const disconnectFromDevice = useCallback(async () => {
         if (!connectedDevice) return
 
