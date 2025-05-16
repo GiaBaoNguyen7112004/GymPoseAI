@@ -4,6 +4,8 @@
 
 ![App UI Preview](../docs/images/mobile-preview.png)
 
+
+![App UI Preview](../docs/images/mobile-preview.png)
 ---
 
 ## ✨ Key Features
