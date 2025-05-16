@@ -15,7 +15,7 @@ const targetApi = {
         return http.get<DailyWaterTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/water`)
     },
     getDailyTarget() {
-        return http.get<DailyTargetResponseAPI>(process.env.EXPO_PUBLIC_URL_TARGETS)
+        return http.get<DailyTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/today`)
     },
     updateDailyTarget(body: DailyUpdateTargetReqBody) {
         return http.put<DailyTargetResponseAPI>(process.env.EXPO_PUBLIC_URL_TARGETS, body)
