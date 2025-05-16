@@ -2,11 +2,7 @@
 
 🌐 Official React Native (Expo) mobile app for **GymPoseAI** — a smart AI-powered home workout assistant providing real-time posture analysis using an external device (e.g. Raspberry Pi).
 
-![App UI Preview](../docs/images/mobile-preview.png)
-
-
-![App UI Preview](../docs/images/mobile-preview.png)
----
+## ![App UI Preview](../docs/images/mobile-preview.png)
 
 ## ✨ Key Features
 
