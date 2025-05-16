@@ -9,18 +9,24 @@ import WebSocketService from '../socket/WebSocketService'
 import { MessageKey } from '@/constants/messageKey'
 import { DataChannelMessage } from '@/types/transport'
 import { DataChannelMessageMap, isMessageKey } from '@/types/messagePayloadMap'
-import { ResponseTrainingPayload, TrainingPayload } from '@/types/payloadWithWebRTCTypes'
+import { ResponseTrainingPayload, StatusPayload, TrainingPayload } from '@/types/payloadWithWebRTCTypes'
 
 type EventHandlerMap = {
     [K in keyof DataChannelMessageMap]?: (data: DataChannelMessageMap[K]) => void
 }
-
+export type WebRTCConnectionStatus =
+    | 'connected'
+    | 'disconnected'
+    | 'reconnecting'
+    | 'reconnect_failed'
+    | 'signaling_failed'
+export type WebRTCConnectionStatusCallback = (status: WebRTCConnectionStatus, details?: string) => void
 interface WebRTCServiceOptions {
     wsSignalingUrl: string
 }
 
 class WebRTCService {
-    private static instance: WebRTCService
+    private static instance: WebRTCService | null
     private peerConnection: RTCPeerConnection
     private dataChannel: RTCDataChannel | null = null
     private localStream: MediaStream | null = null
@@ -31,6 +37,11 @@ class WebRTCService {
     private isTrainingActive = false
     private userId: string = ''
     private signalingErrorHandler: (error: Event) => void = () => {}
+    private connectionStatusCallbacks: WebRTCConnectionStatusCallback[] = []
+    private currentConnectionStatus: WebRTCConnectionStatus = 'disconnected'
+    private reconnectAttempts = 0
+    private maxReconnectAttempts = 5
+    private reconnectTimer: NodeJS.Timeout | null = null
 
     private constructor(options: WebRTCServiceOptions) {
         this.signaling = new WebSocketService({ url: options.wsSignalingUrl })
@@ -39,6 +50,67 @@ class WebRTCService {
         this.peerConnection = this.createPeerConnection()
         this.initPeerListeners()
         this.initSignalingListeners()
+        this.initSignalingConnectionMonitoring()
+    }
+
+    private initSignalingConnectionMonitoring(): void {
+        this.signaling.onConnectionStatusChange((status) => {
+            switch (status) {
+                case 'closed':
+                    // Only update our status if we're not already in a reconnecting state
+                    if (this.currentConnectionStatus !== 'reconnecting') {
+                        this.updateConnectionStatus('disconnected', 'WebSocket connection closed')
+                    }
+                    break
+
+                case 'reconnecting':
+                    this.updateConnectionStatus('reconnecting', 'WebSocket signaling reconnecting')
+                    break
+
+                case 'reconnect_failed':
+                    this.updateConnectionStatus('signaling_failed', 'WebSocket signaling reconnect failed')
+                    break
+                case 'connected':
+                    this.updateConnectionStatus('connected', 'WebSocket connected')
+                    break
+            }
+        })
+    }
+
+    /**
+     * Register a callback to monitor connection status changes
+     * @param callback Function that will be called when connection status changes
+     */
+    onConnectionStatusChange(callback: WebRTCConnectionStatusCallback): void {
+        this.connectionStatusCallbacks.push(callback)
+
+        // Immediately call with current status
+        callback(this.currentConnectionStatus)
+    }
+
+    /**
+     * Remove a previously registered connection status callback
+     * @param callback The callback function to remove
+     */
+    offConnectionStatusChange(callback: WebRTCConnectionStatusCallback): void {
+        this.connectionStatusCallbacks = this.connectionStatusCallbacks.filter((cb) => cb !== callback)
+    }
+
+    /**
+     * Update the current connection status and notify all registered callbacks
+     * @param status New connection status
+     * @param details Optional details about the status change
+     */
+    private updateConnectionStatus(status: WebRTCConnectionStatus, details?: string): void {
+        this.currentConnectionStatus = status
+
+        this.connectionStatusCallbacks.forEach((callback) => {
+            try {
+                callback(status, details)
+            } catch (error) {
+                console.error('[WebRTC] Error in connection status callback:', error)
+            }
+        })
     }
 
     public static getInstance(options: WebRTCServiceOptions): WebRTCService {
@@ -65,12 +137,27 @@ class WebRTCService {
         if (['failed', 'disconnected', 'closed'].includes(state)) {
             this.attemptReconnect()
         }
+        if (state === 'connected') {
+            this.updateConnectionStatus('connected', 'Peer connection established')
+        } else if (state === 'disconnected') {
+            this.updateConnectionStatus('disconnected', 'Peer connection disconnected')
+        } else if (state === 'closed') {
+            this.updateConnectionStatus('disconnected', 'Peer connection closed')
+        }
     }
 
     private async attemptReconnect(): Promise<void> {
         if (this.isReconnecting) return
         this.isReconnecting = true
-        console.log('[WebRTC] Attempting to reconnect...')
+
+        this.reconnectAttempts++
+        console.log(`[WebRTC] Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`)
+
+        if (this.reconnectAttempts > this.maxReconnectAttempts) {
+            this.isReconnecting = false
+            this.updateConnectionStatus('reconnect_failed', 'Max reconnect attempts reached')
+            return
+        }
 
         try {
             this.peerConnection.close()
@@ -78,8 +165,17 @@ class WebRTCService {
             console.warn('[WebRTC] Failed to close peer connection:', e)
         }
 
-        this.startConnection()
-        this.isReconnecting = false
+        try {
+            await this.startConnection()
+            this.isReconnecting = false
+        } catch (error) {
+            console.error('[WebRTC] Reconnection failed:', error)
+            this.isReconnecting = false
+
+            // Schedule another attempt with exponential backoff
+            const backoffTime = Math.min(1000 * 2 ** this.reconnectAttempts, 30000)
+            this.reconnectTimer = setTimeout(() => this.attemptReconnect(), backoffTime)
+        }
     }
     isConnected(): boolean {
         return this.peerConnection.connectionState === 'connected'
@@ -224,10 +320,16 @@ class WebRTCService {
         this.remoteStreamHandler = undefined
         this.eventHandlers = {}
     }
-
+    static destroyInstance(): void {
+        if (WebRTCService.instance) {
+            console.log('[WebRTC] Destroying WebRTCService instance')
+            WebRTCService.instance.closeConnection()
+            WebRTCService.instance = null
+        }
+    }
     /** ========== FLOW LOGIC ========== */
 
-    async sendTrainingRequest(payload: TrainingPayload): Promise<'OK' | 'BUSY'> {
+    async sendTrainingRequest(payload: TrainingPayload): Promise<StatusPayload> {
         this.userId = payload.user_id
         this.sendData({ key: MessageKey.TRAINING, data: payload })
 
@@ -239,12 +341,15 @@ class WebRTCService {
         })
     }
 
-    sendStartTraining(): void {
+    async sendStartTraining(): Promise<ResponseTrainingPayload> {
         if (!this.isTrainingActive) {
             console.warn('[WebRTC] Cannot start training, not ready')
-            return
+            return Promise.reject('Training not active')
         }
         this.sendData({ key: MessageKey.REQUEST_TRAINING, data: 'START' })
+        return new Promise((resolve) => {
+            this.on(MessageKey.RESPONSE_TRAINING, (data) => resolve(data))
+        })
     }
 
     sendStopTraining(): void {
@@ -252,11 +357,11 @@ class WebRTCService {
         this.isTrainingActive = false
     }
 
-    async sendPauseTraining(): Promise<ResponseTrainingPayload> {
+    async sendPauseTraining(): Promise<StatusPayload> {
         this.sendData({ key: MessageKey.REQUEST_TRAINING, data: 'PAUSE' })
 
         return new Promise((resolve) => {
-            this.on(MessageKey.RESPONSE_TRAINING, (data) => resolve(data))
+            this.on(MessageKey.STATUS, (data) => resolve(data))
         })
     }
 }

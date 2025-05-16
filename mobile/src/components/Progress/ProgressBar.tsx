@@ -2,12 +2,13 @@ import React, { memo } from 'react'
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-interface progressBarParams {
-    progress: number
-    barHeight?: number
-    barWidth?: number
-    colors?: [string, string, ...string[]]
-    style?: StyleProp<ViewStyle>
+interface ProgressBarParams {
+    progress: number // Giá trị tiến trình (0 đến 1)
+    barHeight?: number // Chiều cao (dọc) hoặc chiều dài (ngang)
+    barWidth?: number // Chiều rộng của thanh
+    colors?: [string, string, ...string[]] // Màu gradient
+    style?: StyleProp<ViewStyle> // Style tùy chỉnh
+    orientation?: 'vertical' | 'horizontal'
     [key: string]: any
 }
 
@@ -16,18 +17,33 @@ const ProgressBar = ({
     barHeight = 275,
     barWidth = 20,
     colors = ['#92A3FD', '#9DCEFF'],
+    orientation = 'vertical',
     style
-}: progressBarParams) => {
-    const fillHeight = progress * barHeight
+}: ProgressBarParams) => {
+    const fillSize = progress * barHeight
+
+    const fillTrackStyle = {
+        [orientation === 'vertical' ? 'height' : 'width']: fillSize,
+        [orientation === 'vertical' ? 'width' : 'height']: '100%'
+    }
+
+    const gradientProps =
+        orientation === 'vertical'
+            ? { start: { x: 0.4, y: 0 }, end: { x: 0.2, y: 1 } }
+            : { start: { x: 0, y: 0.4 }, end: { x: 1, y: 0.2 } }
 
     return (
-        <View style={[styles.progressBar, { width: barWidth, height: barHeight }, style]}>
-            <LinearGradient
-                style={[styles.fillTrack, { height: fillHeight }]}
-                colors={colors}
-                start={{ x: 0.4, y: 0 }}
-                end={{ x: 0.2, y: 1 }}
-            />
+        <View
+            style={[
+                styles.progressBar,
+                {
+                    width: orientation === 'vertical' ? barWidth : barHeight,
+                    height: orientation === 'vertical' ? barHeight : barWidth
+                },
+                style
+            ]}
+        >
+            <LinearGradient style={[styles.fillTrack, fillTrackStyle]} colors={colors} {...gradientProps} />
         </View>
     )
 }
@@ -39,9 +55,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         justifyContent: 'flex-end'
     },
-    fillTrack: {
-        width: '100%'
-    }
+    fillTrack: {}
 })
 
 export default memo(ProgressBar)

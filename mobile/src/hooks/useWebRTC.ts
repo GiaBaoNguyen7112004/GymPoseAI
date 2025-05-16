@@ -1,18 +1,24 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
-import WebRTCService from '../services/rtc/WebRTCService'
+import WebRTCService, { WebRTCConnectionStatusCallback } from '../services/rtc/WebRTCService'
 import { MediaStream } from 'react-native-webrtc'
 import { MessageKey } from '@/constants/messageKey'
-import { AIResponsePayload, TrainingPayload } from '@/types/payloadWithWebRTCTypes'
+import {
+    AIResponsePayload,
+    ResponseTrainingPayload,
+    StatusPayload,
+    TrainingPayload
+} from '@/types/payloadWithWebRTCTypes'
 import useBluetoothContext from './useBluetoothContext'
 
 interface UseWebRTCProps {
     wsSignalingUrl: string
     onRemoteStream: (stream: MediaStream) => void
     onAIResponse?: (data: AIResponsePayload) => void
+    onStatusChange?: WebRTCConnectionStatusCallback
 }
 
-const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse }: UseWebRTCProps) => {
+const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse, onStatusChange }: UseWebRTCProps) => {
     const webRTCServiceRef = useRef<WebRTCService | null>(null)
     const { reReadInfoDevice } = useBluetoothContext()
 
@@ -20,13 +26,9 @@ const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse }: UseWebRTCPr
         const webRTCService = WebRTCService.getInstance({ wsSignalingUrl })
         webRTCServiceRef.current = webRTCService
         webRTCService.setRemoteStreamHandler(onRemoteStream)
-        webRTCService.onSignalingError((error) => {
-            // reReadInfoDevice()
-        })
+        if (typeof onStatusChange == 'function') webRTCService.onConnectionStatusChange(onStatusChange)
 
-        if (onAIResponse) {
-            webRTCService.on(MessageKey.AI_RESPONSE, onAIResponse)
-        }
+        if (onAIResponse) webRTCService.on(MessageKey.AI_RESPONSE, onAIResponse)
     }, [wsSignalingUrl, onRemoteStream, onAIResponse, reReadInfoDevice])
 
     useFocusEffect(
@@ -34,29 +36,36 @@ const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse }: UseWebRTCPr
             const start = async () => {
                 await webRTCServiceRef.current?.startConnection()
             }
-
             start()
 
             return () => {
-                webRTCServiceRef.current?.closeConnection()
+                WebRTCService.destroyInstance()
             }
         }, [])
     )
 
-    const sendTrainingRequest = useCallback(async (payload: TrainingPayload): Promise<'OK' | 'BUSY'> => {
+    const sendTrainingRequest = useCallback(async (payload: TrainingPayload): Promise<StatusPayload> => {
         if (!webRTCServiceRef.current) throw new Error('WebRTC has not been initialized')
         return await webRTCServiceRef.current.sendTrainingRequest(payload)
     }, [])
 
-    const sendStartTraining = useCallback(() => {
-        webRTCServiceRef.current?.sendStartTraining()
+    const sendStartTraining = useCallback(async (): Promise<ResponseTrainingPayload> => {
+        let response: ResponseTrainingPayload
+        if (!webRTCServiceRef.current) throw new Error('WebRTC has not been initialized')
+        try {
+            response = await webRTCServiceRef.current.sendStartTraining()
+        } catch (error) {
+            console.error('Error sending start training:', error)
+            throw error
+        }
+        return response
     }, [])
 
     const sendStopTraining = useCallback(() => {
         webRTCServiceRef.current?.sendStopTraining()
     }, [])
 
-    const sendPauseTraining = useCallback(async (): Promise<{ workout_summary_id: string }> => {
+    const sendPauseTraining = useCallback(async (): Promise<StatusPayload> => {
         if (!webRTCServiceRef.current) throw new Error('WebRTC has not been initialized')
         return await webRTCServiceRef.current.sendPauseTraining()
     }, [])
