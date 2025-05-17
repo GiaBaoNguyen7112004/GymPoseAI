@@ -14,6 +14,8 @@ public interface NotificationService {
 
     void readNotification(UUID notificationId);
 
+    void readAllNotifications(UUID userId);
+
     Notification findById(UUID notificationId);
 
     void deleteById(UUID notificationId);

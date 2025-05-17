@@ -62,11 +62,19 @@ public class NotificationController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
-    @DeleteMapping(ApiPath.NEW_NOTIFICATIONS_NUMBER)
+    @GetMapping(ApiPath.NEW_NOTIFICATIONS_NUMBER)
     public ResponseEntity<ResponseData> getNewNotificationNumber(@CurrentUser UserPrincipal userPrincipal) {
         ResponseData responseData = ResponseData
                 .success(notificationService.getNewNotificationNumber(userPrincipal.getId()),
                         FeedbackMessage.NEW_NOTIFICATIONS_NUMBER_RETRIEVED);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping(ApiPath.NOTIFICATION_RESET)
+    public ResponseEntity<ResponseData> resetNewNotificationsNumber(@CurrentUser UserPrincipal userPrincipal) {
+        notificationService.resetNewNotifications(userPrincipal.getId());
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NEW_NOTIFICATIONS_NUMBER_RESET);
         return ResponseEntity.ok(responseData);
     }
 

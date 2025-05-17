@@ -24,6 +24,7 @@ public class WorkoutSummary extends AbstractEntity {
     LocalDateTime startTime;
     Integer elapsedTime = 0;
     Integer repCount;
+    Integer durationMinutes;
 
     @ManyToOne
     @JoinColumn(name = "exercise_id")
