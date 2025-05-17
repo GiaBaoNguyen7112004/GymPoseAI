@@ -73,6 +73,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void readAllNotifications(UUID userId) {
+        notificationRepository.findAllByUser_Id(userId).forEach(notification -> notification.setIsRead(true));
+    }
+
+    @Override
     public Notification findById(UUID notificationId) {
         return notificationRepository.findById(notificationId).orElseThrow(()
                 -> new NotFoundException(ErrorMessage.NOTIFICATION_NOT_FOUND));

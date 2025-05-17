@@ -48,6 +48,8 @@ public final class ApiPath {
     public static final String NOTIFICATION_BY_ID = "/{notification-id}";
     public static final String NOTIFICATION_RESET = "/new/reset";
     public static final String NEW_NOTIFICATIONS_NUMBER = "/new/number";
+    public static final String NOTIFICATION_REGISTER = "/register";
+
 
     //JWT
     public static final String JWT = API + "/jwt";

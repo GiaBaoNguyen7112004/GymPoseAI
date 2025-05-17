@@ -19,6 +19,7 @@ public class WorkoutSummaryDetailResponse {
     String name;
     LocalDateTime startTime;
     Integer durationMinutes;
+    Integer elapsedTime;
     Double caloriesBurned;
     Double caloriesBase;
     String category;
