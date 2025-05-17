@@ -20,7 +20,7 @@ public class WebsocketConsumer {
 
     @RabbitListener(queues = RabbitMQConstant.AI_RESULT_WS_QUEUE)
     public void handleResult(AIResultMessage message) {
-        rawWebSocketHandler.sendToUser(message.getUserId(), CommonFunction.toJsonString(message));
+        rawWebSocketHandler.sendResultToClient(message.getSessionId(), CommonFunction.toJsonString(message));
         stompWebSocketSender.sendAIResult(message);
     }
 }

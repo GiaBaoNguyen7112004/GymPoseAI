@@ -63,16 +63,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseData> handlingMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ObjectError> errors = ex.getBindingResult().getAllErrors();
         LogUtils.error("Loi method argument not valid");
-        LogUtils.info(ex.getMessage());
+        LogUtils.error(ex.getMessage());
         List<ErrorResponse> errorResponses = new ArrayList<>();
         errors.stream().forEach(objectError -> {
             String error = ErrorUtils.convertToSnakeCase(Objects.requireNonNull(objectError.getCode()));
-            LogUtils.info(error);
-            LogUtils.info(objectError.getCode());
+            LogUtils.error(error);
+            LogUtils.error(objectError.getCode());
             String fieldName = ErrorUtils.convertToSnakeCase(((FieldError) objectError).getField());
-            LogUtils.info(((FieldError) objectError).getField());
+            LogUtils.error(((FieldError) objectError).getField());
             String resource = ErrorUtils.convertToSnakeCase(objectError.getObjectName());
-            LogUtils.info(objectError.getObjectName());
+            LogUtils.error(objectError.getObjectName());
 
             ErrorResponse errorResponse = ErrorUtils.getValidationError(resource, fieldName, error);
             errorResponses.add(errorResponse);
@@ -92,8 +92,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseData> handlingException(Exception ex) {
-        LogUtils.info(ex.getMessage());
-        LogUtils.info(ex.getClass().getName());
+        LogUtils.error(ex.getMessage());
+        LogUtils.error(ex.getClass().getName());
         ErrorResponse error = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .build();
