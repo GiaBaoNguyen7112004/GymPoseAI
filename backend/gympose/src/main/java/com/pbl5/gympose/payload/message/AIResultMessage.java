@@ -18,5 +18,6 @@ public class AIResultMessage implements Serializable {
     String content;
     String time;
     String repNum;
+    String sessionId;
     String userId;
 }
