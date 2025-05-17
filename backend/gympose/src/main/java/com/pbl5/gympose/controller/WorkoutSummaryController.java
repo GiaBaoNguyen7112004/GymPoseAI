@@ -37,10 +37,10 @@ public class WorkoutSummaryController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_HISTORY)
-    public ResponseEntity<ResponseData> getWorkoutHistory(@RequestParam(name = "sort", defaultValue = "created_at") String sortBy,
+    public ResponseEntity<ResponseData> getWorkoutHistory(@RequestParam(name = "sort_by", defaultValue = "created_at") String sortBy,
                                                           @RequestParam(name = "order", defaultValue = "desc") String order,
                                                           @RequestParam(name = "page", defaultValue = "1") int page,
-                                                          @RequestParam(name = "paging", defaultValue = "10") int paging,
+                                                          @RequestParam(name = "limit", defaultValue = "10") int paging,
                                                           @RequestParam(name = "viewMode", defaultValue = "daily") String viewMode,
                                                           @RequestParam(name = "category", required = false) UUID category,
                                                           @CurrentUser UserPrincipal userPrincipal) {

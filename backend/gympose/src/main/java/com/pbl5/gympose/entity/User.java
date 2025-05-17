@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +51,7 @@ public class User extends AbstractEntity {
     Double height;
     Double weight;
 
+
     LocalDateTime accountVerifiedAt;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Token> tokens;
@@ -75,12 +77,9 @@ public class User extends AbstractEntity {
     List<Target> targets;
 
     public int getAge() {
-        return LocalDate.now().getYear() - this.getDateOfBirth().getYear();
-    }
-
-    public double getKcal() {
-        double bmr = 10 * this.weight + 6.25 * height - 5 * this.getAge() + 5;
-        double tdee = bmr * 1.55;
-        return tdee;
+        if (this.dateOfBirth == null) {
+            return 0;
+        }
+        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
 }

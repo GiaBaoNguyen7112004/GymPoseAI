@@ -176,17 +176,17 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
         List<PoseError> errors = sessionPoseErrors.get(user.getId().toString());
         UUID workoutSummaryId = UUID.fromString(session.getAttributes().get(SESSION_ATTRIBUTE_WORKOUT_SUMMARY_ID)
                 .toString());
-        int sessionDurationMinutes = (int) Duration.between(startTime, LocalDateTime.now()).toMinutes();
+        int sessionDurationMinutes = (int) Duration.between(startTime, LocalDateTime.now()).toSeconds();
 
         WorkoutSummary workoutSummary = null;
         if (session.getAttributes().containsKey(SESSION_ATTRIBUTE_IS_CONTINUE)) {
             workoutSummary = workoutSummaryService.findById(workoutSummaryId);
-            workoutSummary.setDurationMinutes(workoutSummary.getDurationMinutes() + sessionDurationMinutes);
+            workoutSummary.setElapsedTime(workoutSummary.getElapsedTime() + sessionDurationMinutes);
             workoutSummary.getPoseErrors().addAll(errors);
         } else {
             workoutSummary = new WorkoutSummary();
             workoutSummary.setStartTime(startTime);
-            workoutSummary.setDurationMinutes(sessionDurationMinutes);
+            workoutSummary.setElapsedTime(sessionDurationMinutes);
             workoutSummary.setExercise(exercise);
             workoutSummary.setUser(user);
             workoutSummary.getPoseErrors().addAll(errors);

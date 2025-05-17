@@ -21,4 +21,5 @@ public class UserResponse {
     String firstName;
     String lastName;
     Boolean isEnabled = false;
+    Boolean isProfileComplete;
 }

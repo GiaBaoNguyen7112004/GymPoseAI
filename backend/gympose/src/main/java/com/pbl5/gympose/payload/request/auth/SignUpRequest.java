@@ -32,7 +32,4 @@ public class SignUpRequest {
     @NotBlank
     @Pattern(regexp = CommonConstant.PASSWORD_RULE)
     String password;
-
-    @NotBlank
-    String passwordConfirmation;
 }

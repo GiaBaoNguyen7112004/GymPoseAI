@@ -29,4 +29,5 @@ public class UserDetailResponse {
     Double weight;
     List<UserProviderResponse> userProviders;
     List<RoleResponse> roles;
+    Boolean isProfileComplete;
 }

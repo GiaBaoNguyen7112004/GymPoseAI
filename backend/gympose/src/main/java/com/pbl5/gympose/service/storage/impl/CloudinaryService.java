@@ -47,6 +47,7 @@ public class CloudinaryService implements StorageService {
         String fileUrl = null;
         File file = FileUtils.convertMultiPartToFile(multipartFile);
         try {
+            FileUtils.checkSizeFile(file);
             String mimeType = FileUtils.getMineType(file);
             if (FileUtils.checkMimeType(mimeType)) {
                 Map uploadResult = cloudinary.uploader().upload(file,

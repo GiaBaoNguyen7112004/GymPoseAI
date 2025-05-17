@@ -36,6 +36,9 @@ public class ResponseData {
     }
 
     public static ResponseData error(Object error) {
-        return ResponseData.builder().status(CommonConstant.FAILURE).errors(error).build();
+        ErrorResponse errorResponse = (ErrorResponse) error;
+        return ResponseData.builder().status(CommonConstant.FAILURE)
+                .message(errorResponse.getMessage())
+                .errors(error).build();
     }
 }
