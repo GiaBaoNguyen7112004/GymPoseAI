@@ -3,6 +3,7 @@ package com.pbl5.gympose.controller;
 import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.payload.request.notification.NotificationRegisterRequest;
+import com.pbl5.gympose.payload.response.notification.PagingNotificationsResponse;
 import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.NotificationService;
 import com.pbl5.gympose.utils.ApiPath;
@@ -38,15 +39,17 @@ public class NotificationController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
-    public ResponseEntity<ResponseData> getUserNotifications(@RequestParam(name = "sort", defaultValue = "created_at") String sortBy,
+    public ResponseEntity<ResponseData> getUserNotifications(@RequestParam(name = "sort_by", defaultValue = "created_at") String sortBy,
                                                              @RequestParam(name = "order", defaultValue = "desc") String order,
                                                              @RequestParam(name = "page", defaultValue = "1") int page,
-                                                             @RequestParam(name = "paging", defaultValue = "10") int paging,
+                                                             @RequestParam(name = "limit", defaultValue = "10") int paging,
                                                              @CurrentUser UserPrincipal userPrincipal
     ) {
         Pageable pageable = PagingUtils.makePageRequest(sortBy, order, page, paging);
-        ResponseData responseData = ResponseData.success(notificationService.getAllNotifications(userPrincipal.getId(),
-                pageable), FeedbackMessage.NOTIFICATIONS_RETRIEVED);
+        PagingNotificationsResponse pagingNotificationsResponse =
+                notificationService.getAllNotifications(userPrincipal.getId(), pageable);
+        ResponseData responseData = ResponseData.successWithMeta(pagingNotificationsResponse.getNotifications()
+                , pagingNotificationsResponse.getPageInfo(), FeedbackMessage.NOTIFICATIONS_RETRIEVED);
         return ResponseEntity.ok(responseData);
     }
 
@@ -59,11 +62,19 @@ public class NotificationController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
-    @DeleteMapping(ApiPath.NEW_NOTIFICATIONS_NUMBER)
+    @GetMapping(ApiPath.NEW_NOTIFICATIONS_NUMBER)
     public ResponseEntity<ResponseData> getNewNotificationNumber(@CurrentUser UserPrincipal userPrincipal) {
         ResponseData responseData = ResponseData
                 .success(notificationService.getNewNotificationNumber(userPrincipal.getId()),
                         FeedbackMessage.NEW_NOTIFICATIONS_NUMBER_RETRIEVED);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping(ApiPath.NOTIFICATION_RESET)
+    public ResponseEntity<ResponseData> resetNewNotificationsNumber(@CurrentUser UserPrincipal userPrincipal) {
+        notificationService.resetNewNotifications(userPrincipal.getId());
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NEW_NOTIFICATIONS_NUMBER_RESET);
         return ResponseEntity.ok(responseData);
     }
 

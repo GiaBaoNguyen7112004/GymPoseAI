@@ -49,7 +49,7 @@ public class TargetController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
-    @PatchMapping(ApiPath.TARGET_WEEKLY)
+    @GetMapping(ApiPath.TARGET_WEEKLY)
     public ResponseEntity<ResponseData> getWeeklyTarget(@CurrentUser UserPrincipal userPrincipal) {
         ResponseData responseData = ResponseData.success(targetService.getWeeklyTarget(userPrincipal.getId()),
                 FeedbackMessage.TARGET_WEEKLY_RETRIEVED);

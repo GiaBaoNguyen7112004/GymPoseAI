@@ -82,7 +82,7 @@ public class ExerciseController {
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.EXERCISES + ApiPath.UPLOAD_IMAGE)
-    public ResponseEntity<ResponseData> uploadExerciseImage(@RequestParam MultipartFile file) {
+    public ResponseEntity<ResponseData> uploadExerciseImage(@RequestBody MultipartFile file) {
         ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "exercises"),
                 FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);

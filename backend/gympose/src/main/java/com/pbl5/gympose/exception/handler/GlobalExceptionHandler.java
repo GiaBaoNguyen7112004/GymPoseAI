@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
 
         ResponseData responseData = ResponseData.error(errorResponses);
 
-        return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseData, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -90,14 +90,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseData, HttpStatus.FORBIDDEN);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ResponseData> handlingException(Exception ex) {
-//        LogUtils.info(ex.getMessage());
-//        LogUtils.info(ex.getClass().getName());
-//        ErrorResponse error = ErrorResponse.builder()
-//                .message(ex.getMessage())
-//                .build();
-//        ResponseData responseData = ResponseData.error(error);
-//        return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseData> handlingException(Exception ex) {
+        LogUtils.info(ex.getMessage());
+        LogUtils.info(ex.getClass().getName());
+        ErrorResponse error = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .build();
+        ResponseData responseData = ResponseData.error(error);
+        return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

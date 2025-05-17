@@ -45,10 +45,13 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                         exercise))
                 .caloriesBase(WorkoutUtils.getCaloriesBase(userWeight, exercise))
                 .startTime(workoutSummary.getStartTime())
-                .durationMinutes(workoutSummary.getDurationMinutes())
+                .durationMinutes(exercise.getDurationMinutes())
+                .elapsedTime(workoutSummary.getElapsedTime())
                 .category(workoutSummary.getExercise().getCategory().getName())
                 .errorsCount(workoutSummary.getPoseErrors().size())
                 .poseErrors(poseErrors)
+                .met(exercise.getMet())
+                .name(exercise.getName())
                 .build();
     }
 

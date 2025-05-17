@@ -18,7 +18,7 @@ public class AIMessageProducer {
     public void sendMessage(AIProcessMessage message) {
         rabbitTemplate.convertAndSend(RabbitMQConstant.AI_PROCESS_EXCHANGE,
                 RabbitMQConstant.AI_PROCESS_ROUTING_KEY, message);
-        LogUtils.info("process : " + message.getUserId());
-        LogUtils.info("process : " + message.getKeyPoints());
+        LogUtils.info("Data from raspberry - user id: " + message.getUserId());
+        LogUtils.info("Data from raspberry - key points: " + message.getKeyPoints());
     }
 }

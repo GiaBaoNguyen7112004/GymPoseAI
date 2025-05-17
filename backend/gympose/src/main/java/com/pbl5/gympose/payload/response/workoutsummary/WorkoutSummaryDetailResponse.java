@@ -16,13 +16,15 @@ import java.util.UUID;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class WorkoutSummaryDetailResponse {
     UUID id;
-    String nameExercise;
+    String name;
     LocalDateTime startTime;
     Integer durationMinutes;
+    Integer elapsedTime;
     Double caloriesBurned;
     Double caloriesBase;
     String category;
     Integer repCount;
     Integer errorsCount;
+    Double met;
     List<PoseErrorResponse> poseErrors;
 }
