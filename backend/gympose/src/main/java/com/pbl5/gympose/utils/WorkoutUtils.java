@@ -19,7 +19,7 @@ public class WorkoutUtils {
 
     public static Double getCaloriesBurned(WorkoutSummary workoutSummary, Double userWeight, Exercise exercise) {
         Double met = exercise.getMet();
-        int durationMinutes = workoutSummary.getDurationMinutes();
+        int durationMinutes = workoutSummary.getElapsedTime() / 60;
 
         return Objects.isNull(userWeight) ? met * CommonConstant.DEFAULT_WEIGHT * durationMinutes / 60.0
                 : met * userWeight * durationMinutes / 60.0;

@@ -6,13 +6,17 @@ server:
       charset: UTF-8
       force: true
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   messages:
     basename: messages
     encoding: UTF-8
   thymeleaf:
     mode: HTML
   profiles:
-    active: dev
+    active: prod
   hikari:
     max-lifetime: 60000
   jpa:

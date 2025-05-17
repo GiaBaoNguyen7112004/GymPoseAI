@@ -22,7 +22,7 @@ public class WorkoutSummary extends AbstractEntity {
     @GeneratedValue
     UUID id;
     LocalDateTime startTime;
-    Integer durationMinutes = 0;
+    Integer elapsedTime = 0;
     Integer repCount;
 
     @ManyToOne
