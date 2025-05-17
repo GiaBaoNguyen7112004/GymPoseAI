@@ -56,7 +56,6 @@ public class JwtAuthServiceImpl implements AuthService {
     ApplicationEventPublisher eventPublisher;
     TokenService tokenService;
     CacheService cacheService;
-    ApplicationEventPublisher applicationEventPublisher;
     FacebookService facebookService;
     UserProviderService userProviderService;
 
@@ -189,7 +188,7 @@ public class JwtAuthServiceImpl implements AuthService {
 
         Optional<UserProvider> optionalUserProvider = userProviderService
                 .findByAuthProviderAndProviderId(AuthProvider.FACEBOOK, userFbId);
-        UUID userId = null;
+        UUID userId;
         if (optionalUserProvider.isPresent()) {
             userId = optionalUserProvider.get().getUser().getId();
         } else {

@@ -20,7 +20,6 @@ import com.pbl5.gympose.utils.TokenUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +36,6 @@ public class EventHandler {
     TokenService tokenService;
     TargetService targetService;
     NotificationService notificationService;
-    MessageSource messageSource;
 
     @EventListener
     private void handleUserRegistrationEvent(UserRegistrationEvent event) {

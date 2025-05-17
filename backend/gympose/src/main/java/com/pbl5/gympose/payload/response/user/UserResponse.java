@@ -20,6 +20,6 @@ public class UserResponse {
     String email;
     String firstName;
     String lastName;
-    Boolean isEnabled = false;
+    Boolean isEnabled;
     Boolean isProfileComplete;
 }

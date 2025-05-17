@@ -25,8 +25,4 @@ public class ErrorResponse {
         this.message = message;
         this.code = code;
     }
-
-    public ErrorResponse(String code) {
-        this.code = code;
-    }
 }
