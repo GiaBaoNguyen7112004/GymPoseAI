@@ -16,7 +16,7 @@ spring:
   thymeleaf:
     mode: HTML
   profiles:
-    active: dev
+    active: prod
   hikari:
     max-lifetime: 60000
   jpa:
