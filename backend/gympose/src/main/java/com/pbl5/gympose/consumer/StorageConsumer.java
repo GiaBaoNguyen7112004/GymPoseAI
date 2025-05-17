@@ -22,6 +22,6 @@ public class StorageConsumer {
         poseError.setAiResult(message.getContent());
         poseError.setRepIndex(message.getRepNum());
 
-        rawWebSocketHandler.addSessionPoseError(message.getUserId(), poseError);
+        rawWebSocketHandler.addSessionPoseError(message.getSessionId(), poseError);
     }
 }
