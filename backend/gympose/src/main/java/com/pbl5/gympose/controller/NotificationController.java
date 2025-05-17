@@ -78,11 +78,11 @@ public class NotificationController {
         return ResponseEntity.ok(responseData);
     }
 
-    @SecurityRequirement(name = "bearerAuth")
-    @DeleteMapping(ApiPath.NOTIFICATION_RESET)
-    public ResponseEntity<ResponseData> resetNewNotificationsNumber(@CurrentUser UserPrincipal userPrincipal) {
-        notificationService.resetNewNotifications(userPrincipal.getId());
-        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NEW_NOTIFICATIONS_NUMBER_RESET);
-        return ResponseEntity.ok(responseData);
-    }
+//    @SecurityRequirement(name = "bearerAuth")
+//    @DeleteMapping(ApiPath.NOTIFICATION_RESET)
+//    public ResponseEntity<ResponseData> resetNewNotificationsNumber(@CurrentUser UserPrincipal userPrincipal) {
+//        notificationService.resetNewNotifications(userPrincipal.getId());
+//        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NEW_NOTIFICATIONS_NUMBER_RESET);
+//        return ResponseEntity.ok(responseData);
+//    }
 }
