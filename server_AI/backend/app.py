@@ -1,11 +1,23 @@
 from fastapi import FastAPI
+import threading
+from rabbitMQ import start_server
 import uvicorn
-from backend.ws_handler import websocket_endpoint
+import os
 
 app = FastAPI()
 
-# Đăng ký WebSocket endpoint
-app.websocket("/ws")(websocket_endpoint)
+@app.get("/")
+def home():
+    return {"message": "AI Server is running..."}
+
+# Khởi chạy server xử lý AI trong luồng song song
+def run_background_ai():
+    print("🚀 Starting AI server in the background...")
+    thread = threading.Thread(target=start_server, daemon=True)
+    thread.start()
+
+run_background_ai()
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 5000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
