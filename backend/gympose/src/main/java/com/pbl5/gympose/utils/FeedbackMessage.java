@@ -64,6 +64,9 @@ public final class FeedbackMessage {
     public static final String TARGET_TODAY_UPDATED = "Target today updated successfully";
     public static final String TARGET_WEEKLY_RETRIEVED = "Target weekly retrieved successfully";
 
+    //ACTIVITY
+    public static final String ACTIVITIES_RETRIEVED = "Activities retrieved successfully";
+
     private FeedbackMessage() {
     }
 }
