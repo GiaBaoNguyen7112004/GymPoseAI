@@ -5,6 +5,7 @@ import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.payload.message.AIProcessMessage;
 import com.pbl5.gympose.producer.AIMessageProducer;
 import com.pbl5.gympose.service.WorkoutSessionService;
+import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.LogUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,7 +40,12 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         try {
-            session.sendMessage(new TextMessage(workoutSessionService.startWorkoutSession(session)));
+            Object workoutSummaryId = workoutSessionService.startWorkoutSession(session);
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("workout_summary_id", workoutSummaryId);
+            responseMap.put("session_id", session.getId());
+
+            session.sendMessage(new TextMessage(CommonFunction.toJsonString(responseMap)));
             sessions.put(session.getId(), new WebSocketSessionInfo(session, new ArrayList<>()));
             LogUtils.info("INFO - New websocket connection : " + session.getId());
         } catch (Exception e) {
