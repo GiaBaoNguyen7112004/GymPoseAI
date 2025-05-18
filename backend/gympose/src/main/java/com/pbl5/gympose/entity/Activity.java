@@ -1,5 +1,7 @@
 package com.pbl5.gympose.entity;
 
+
+import com.pbl5.gympose.enums.ActivityType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,13 +13,15 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pose_errors")
+@Table(name = "activities")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PoseError extends AbstractEntity {
+public class Activity extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
     UUID id;
-    String aiResult;
-    String repIndex;
-    String imageUrl;
+    ActivityType activity;
+    String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 }

@@ -62,6 +62,9 @@ public final class ApiPath {
     public static final String TARGET_CALORIES_TODAY = TARGET_TODAY + "/calories";
     public static final String TARGET_WEEKLY = "/weekly";
 
+    //ACTIVITY
+    public static final String ACTIVITIES = API + "/activities";
+
     // SWAGGER
     public static final String SWAGGER = "/swagger-ui.html";
 
