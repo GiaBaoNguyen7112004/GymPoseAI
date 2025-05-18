@@ -53,7 +53,7 @@ public class User extends AbstractEntity {
 
 
     LocalDateTime accountVerifiedAt;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Token> tokens;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

@@ -1,14 +1,15 @@
 package com.pbl5.gympose.service;
 
 import com.pbl5.gympose.entity.Notification;
-import com.pbl5.gympose.payload.request.notification.NotificationRegisterRequest;
+import com.pbl5.gympose.entity.WorkoutSummary;
+import com.pbl5.gympose.payload.request.notification.NotificationRequest;
 import com.pbl5.gympose.payload.response.notification.PagingNotificationsResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
 public interface NotificationService {
-    void register(UUID userId, NotificationRegisterRequest request);
+    void register(UUID userId, NotificationRequest request);
 
     PagingNotificationsResponse getAllNotifications(UUID userId, Pageable pageable);
 
@@ -27,4 +28,8 @@ public interface NotificationService {
     void resetNewNotifications(UUID userId);
 
     Notification save(Notification notification);
+
+    void unregister(NotificationRequest request);
+
+    void notifyWorkoutFinish(WorkoutSummary workoutSummary);
 }

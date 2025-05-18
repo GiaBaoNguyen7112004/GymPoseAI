@@ -6,14 +6,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pbl5.gympose.entity.Notification;
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
+import com.pbl5.gympose.entity.WorkoutSummary;
+import com.pbl5.gympose.enums.NotificationType;
 import com.pbl5.gympose.enums.TokenType;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.NotificationMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
-import com.pbl5.gympose.payload.request.notification.NotificationRegisterRequest;
+import com.pbl5.gympose.payload.request.notification.NotificationRequest;
 import com.pbl5.gympose.payload.response.notification.PagingNotificationsResponse;
 import com.pbl5.gympose.repository.NotificationRepository;
 import com.pbl5.gympose.service.NotificationService;
+import com.pbl5.gympose.service.TokenService;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
@@ -29,6 +32,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -39,12 +43,13 @@ public class NotificationServiceImpl implements NotificationService {
     final NotificationMapper notificationMapper;
     final NotificationRepository notificationRepository;
     final UserService userService;
+    final TokenService tokenService;
 
     @Value("${expo-url}")
     String expoUrl;
 
     @Override
-    public void register(UUID userId, NotificationRegisterRequest request) {
+    public void register(UUID userId, NotificationRequest request) {
         User user = userService.findById(userId);
         Token token = new Token();
         token.setType(TokenType.EXPO_PUSH_NOTIFICATION);
@@ -128,5 +133,27 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification save(Notification notification) {
         return notificationRepository.save(notification);
+    }
+
+    @Override
+    public void unregister(NotificationRequest request) {
+        tokenService.deleteToken(request.getPushToken());
+    }
+
+    @Override
+    public void notifyWorkoutFinish(WorkoutSummary workoutSummary) {
+        Map<String, Object> metadata = new HashMap<>();
+        User user = workoutSummary.getUser();
+        metadata.put("workout_id", workoutSummary.getId());
+
+        Notification notification = new Notification();
+        notification.setTitle("Congratulation! You just finished the workout");
+        notification.setDescription("You have a new exercise in today plan");
+        notification.setUser(user);
+        notification.setType(NotificationType.WORKOUT);
+        notification.setMetaData(metadata);
+
+        tokenService.findAllByTypeAndUserId(TokenType.EXPO_PUSH_NOTIFICATION, user.getId()).forEach(
+                token -> sendPushNotification(token.getToken(), save(notification)));
     }
 }

@@ -48,7 +48,8 @@ public final class ApiPath {
     public static final String NOTIFICATION_BY_ID = "/{notification-id}";
     public static final String NOTIFICATION_RESET = "/new/reset";
     public static final String NEW_NOTIFICATIONS_NUMBER = "/new/number";
-    public static final String NOTIFICATION_REGISTER = "/register";
+    public static final String NOTIFICATIONS_READ = "/read";
+    public static final String NOTIFICATION_UNREGISTER = "/unregister";
 
 
     //JWT
@@ -60,6 +61,9 @@ public final class ApiPath {
     public static final String TARGET_TODAY = "/today";
     public static final String TARGET_CALORIES_TODAY = TARGET_TODAY + "/calories";
     public static final String TARGET_WEEKLY = "/weekly";
+
+    //ACTIVITY
+    public static final String ACTIVITIES = API + "/activities";
 
     // SWAGGER
     public static final String SWAGGER = "/swagger-ui.html";

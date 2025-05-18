@@ -7,6 +7,7 @@ import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.TargetService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
@@ -25,6 +26,7 @@ public class TargetController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.TARGET_CALORIES_TODAY)
+    @Operation(summary = "get target calories today")
     public ResponseEntity<ResponseData> getTargetCaloriesToday(@CurrentUser UserPrincipal userPrincipal) {
         ResponseData responseData = ResponseData.success(targetService.getCaloriesTargetToday(userPrincipal.getId()),
                 FeedbackMessage.TARGET_CALORIES_RETRIEVED);
@@ -33,12 +35,14 @@ public class TargetController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.TARGET_TODAY)
+    @Operation(summary = "get today target")
     public ResponseEntity<ResponseData> getTodayTarget(@CurrentUser UserPrincipal userPrincipal) {
         ResponseData responseData = ResponseData.success(targetService.getTarget(userPrincipal.getId()),
                 FeedbackMessage.TARGET_TODAY_RETRIEVED);
         return ResponseEntity.ok(responseData);
     }
 
+    @Operation(summary = "update target today")
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping(ApiPath.TARGET_TODAY)
     public ResponseEntity<ResponseData> updateTodayTarget(@CurrentUser UserPrincipal userPrincipal,
@@ -49,6 +53,7 @@ public class TargetController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "get weekly target")
     @GetMapping(ApiPath.TARGET_WEEKLY)
     public ResponseEntity<ResponseData> getWeeklyTarget(@CurrentUser UserPrincipal userPrincipal) {
         ResponseData responseData = ResponseData.success(targetService.getWeeklyTarget(userPrincipal.getId()),
