@@ -52,6 +52,8 @@ public final class FeedbackMessage {
     public static final String NOTIFICATION_DELETED = "Notification deleted successfully";
     public static final String NEW_NOTIFICATIONS_NUMBER_RETRIEVED = "New Notifications number retrieved successfully";
     public static final String NEW_NOTIFICATIONS_NUMBER_RESET = "New Notifications number reset successfully";
+    public static final String NOTIFICATIONS_READ = "Notifications read successfully";
+    public static final String NOTIFICATION_UNREGISTERD = "Notification unregistered successfully";
 
     //JWT
     public static final String JWT_REFRESHED = "JWT refreshed successfully";

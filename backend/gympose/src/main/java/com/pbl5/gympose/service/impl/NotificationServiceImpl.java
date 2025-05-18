@@ -10,10 +10,11 @@ import com.pbl5.gympose.enums.TokenType;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.NotificationMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
-import com.pbl5.gympose.payload.request.notification.NotificationRegisterRequest;
+import com.pbl5.gympose.payload.request.notification.NotificationRequest;
 import com.pbl5.gympose.payload.response.notification.PagingNotificationsResponse;
 import com.pbl5.gympose.repository.NotificationRepository;
 import com.pbl5.gympose.service.NotificationService;
+import com.pbl5.gympose.service.TokenService;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
@@ -39,12 +40,13 @@ public class NotificationServiceImpl implements NotificationService {
     final NotificationMapper notificationMapper;
     final NotificationRepository notificationRepository;
     final UserService userService;
+    final TokenService tokenService;
 
     @Value("${expo-url}")
     String expoUrl;
 
     @Override
-    public void register(UUID userId, NotificationRegisterRequest request) {
+    public void register(UUID userId, NotificationRequest request) {
         User user = userService.findById(userId);
         Token token = new Token();
         token.setType(TokenType.EXPO_PUSH_NOTIFICATION);
@@ -128,5 +130,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification save(Notification notification) {
         return notificationRepository.save(notification);
+    }
+
+    @Override
+    public void unregister(NotificationRequest request) {
+        tokenService.deleteToken(request.getPushToken());
     }
 }
