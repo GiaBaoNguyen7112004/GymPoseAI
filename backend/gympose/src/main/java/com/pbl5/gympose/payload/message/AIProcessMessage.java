@@ -17,4 +17,5 @@ import java.io.Serializable;
 public class AIProcessMessage implements Serializable {
     JsonNode keyPoints;
     String userId;
+    String sessionId;
 }
