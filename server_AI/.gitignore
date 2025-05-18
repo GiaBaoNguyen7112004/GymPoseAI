@@ -1,0 +1,14 @@
+# Bỏ qua thư mục môi trường ảo
+.venv/
+
+# Bỏ qua thư mục test
+test/
+
+cache/
+
+FE/
+
+data/
+
+AI/GRU/scaler_GRU_LOSO.pkl
+AI/GRU/Squat_detection_GRU_LOSO.keras
