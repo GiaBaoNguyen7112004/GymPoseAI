@@ -12,4 +12,6 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ActivityMapper {
     List<ActivityResponse> toActivityResponses(List<Activity> activities);
+
+    ActivityResponse toActivityResponse(Activity activity);
 }

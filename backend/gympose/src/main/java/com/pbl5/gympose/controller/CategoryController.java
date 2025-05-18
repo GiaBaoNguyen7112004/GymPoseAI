@@ -6,6 +6,7 @@ import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
 import com.pbl5.gympose.service.CategoryService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ public class CategoryController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "create category")
     @PostMapping
     public ResponseEntity<ResponseData> createCategory(@Valid @RequestBody CategoryCreationRequest categoryCreationRequest) {
         ResponseData responseData = ResponseData.success(categoryService.createCategory(categoryCreationRequest),
@@ -35,6 +37,7 @@ public class CategoryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @Operation(summary = "get all categories")
     @GetMapping
     public ResponseEntity<ResponseData> getAllCategories() {
         ResponseData responseData = ResponseData.success(categoryService.getAllCategories(),
@@ -43,6 +46,7 @@ public class CategoryController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "update categories")
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(ApiPath.CATEGORY_BY_ID)
     public ResponseEntity<ResponseData> updateCategory(@PathVariable(name = "category-id") UUID categoryId,
@@ -53,6 +57,7 @@ public class CategoryController {
     }
 
     @GetMapping(ApiPath.CATEGORY_BY_ID)
+    @Operation(summary = "get category by id")
     public ResponseEntity<ResponseData> getCategoryById(@PathVariable(name = "category-id") UUID categoryId) {
         ResponseData responseData = ResponseData.success(categoryService.getCategoryById(categoryId),
                 FeedbackMessage.CATEGORY_RETRIEVED);
@@ -60,6 +65,7 @@ public class CategoryController {
     }
 
     @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "delete category by id")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(ApiPath.CATEGORY_BY_ID)
     public ResponseEntity<ResponseData> deleteCategory(@PathVariable(name = "category-id") UUID categoryId) {

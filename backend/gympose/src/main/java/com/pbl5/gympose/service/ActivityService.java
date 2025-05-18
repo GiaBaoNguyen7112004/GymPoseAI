@@ -2,10 +2,10 @@ package com.pbl5.gympose.service;
 
 import com.pbl5.gympose.entity.Activity;
 import com.pbl5.gympose.entity.WorkoutSummary;
-import com.pbl5.gympose.payload.response.activity.ActivityResponse;
+import com.pbl5.gympose.payload.response.activity.PagingActivitiesResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ActivityService {
@@ -14,5 +14,5 @@ public interface ActivityService {
     @Async("taskExecutor")
     void createCaloriesConsumption(WorkoutSummary workoutSummary);
 
-    List<ActivityResponse> getUserActivities(UUID userId);
+    PagingActivitiesResponse getUserActivities(UUID userId, Pageable pageable);
 }
