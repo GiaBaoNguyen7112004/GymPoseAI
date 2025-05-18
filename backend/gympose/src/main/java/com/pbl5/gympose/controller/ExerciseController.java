@@ -7,6 +7,7 @@ import com.pbl5.gympose.service.ExerciseService;
 import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ public class ExerciseController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "create exercise")
     @PostMapping(ApiPath.CATEGORY_EXERCISES)
     public ResponseEntity<ResponseData> createExercise(@PathVariable(name = "category-id") UUID categoryId,
                                                        @RequestBody @Valid ExerciseCreationRequest request) {
@@ -40,6 +42,7 @@ public class ExerciseController {
     }
 
     @GetMapping(ApiPath.CATEGORY_EXERCISES)
+    @Operation(summary = "get exercises by category id")
     public ResponseEntity<ResponseData> getExercisesByCategoryId(@PathVariable(name = "category-id") UUID categoryId) {
         ResponseData responseData = ResponseData.success(exerciseService.getExercisesByCategoryId(categoryId),
                 FeedbackMessage.EXERCISES_BY_CATEGORY_RETRIEVED);
@@ -48,6 +51,7 @@ public class ExerciseController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "delete exercise by id")
     @DeleteMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
     public ResponseEntity<ResponseData> deleteExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId) {
         exerciseService.deleteExerciseById(exerciseId);
@@ -56,6 +60,7 @@ public class ExerciseController {
     }
 
     @GetMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
+    @Operation(summary = "get exercise by id")
     public ResponseEntity<ResponseData> getExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId) {
         ResponseData responseData = ResponseData.success(exerciseService.getExerciseById(exerciseId),
                 FeedbackMessage.EXERCISE_RETRIEVED);
@@ -64,6 +69,7 @@ public class ExerciseController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "update exercise by id")
     @PatchMapping(ApiPath.EXERCISES + ApiPath.EXERCISE_BY_ID)
     public ResponseEntity<ResponseData> updateExerciseById(@PathVariable(name = "exercise-id") UUID exerciseId,
                                                            @RequestBody ExerciseUpdatingRequest exerciseUpdatingRequest) {
@@ -73,6 +79,7 @@ public class ExerciseController {
     }
 
     @GetMapping(ApiPath.EXERCISES)
+    @Operation(summary = "get all exercises")
     public ResponseEntity<ResponseData> getAllExercises() {
         ResponseData responseData = ResponseData.success(exerciseService.getAllExercises(),
                 FeedbackMessage.EXERCISES_RETRIEVED);
@@ -81,6 +88,7 @@ public class ExerciseController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "upload image exercise")
     @PostMapping(ApiPath.EXERCISES + ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadExerciseImage(@RequestBody MultipartFile file) {
         ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "exercises"),
@@ -89,6 +97,7 @@ public class ExerciseController {
     }
 
     @GetMapping(ApiPath.EXERCISES + ApiPath.EXERCISES_SEARCH)
+    @Operation(summary = "search exercise")
     public ResponseEntity<ResponseData> searchExercises(@RequestParam String query, @RequestParam String type) {
         ResponseData responseData = ResponseData.success(exerciseService.searchByName(query, type),
                 FeedbackMessage.EXERCISE_SEARCHED);

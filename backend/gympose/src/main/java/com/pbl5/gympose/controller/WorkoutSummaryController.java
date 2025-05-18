@@ -8,6 +8,7 @@ import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
 import com.pbl5.gympose.utils.PagingUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
@@ -28,6 +29,7 @@ public class WorkoutSummaryController {
     WorkoutSummaryService workoutSummaryService;
 
     @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "get workout summary by id")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID)
     public ResponseEntity<ResponseData> getWorkoutSummaryById(@PathVariable(name = "workout-summary-id") UUID id) {
         ResponseData responseData = ResponseData.success(workoutSummaryService.getWorkoutSummaryDetail(id),
@@ -37,6 +39,7 @@ public class WorkoutSummaryController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_HISTORY)
+    @Operation(summary = "get workout histories")
     public ResponseEntity<ResponseData> getWorkoutHistory(@RequestParam(name = "sort_by", defaultValue = "created_at") String sortBy,
                                                           @RequestParam(name = "order", defaultValue = "desc") String order,
                                                           @RequestParam(name = "page", defaultValue = "1") int page,
@@ -54,7 +57,8 @@ public class WorkoutSummaryController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_SUMMARY_BY_ID + ApiPath.WORKOUT_SUMMARY_ERROR)
-    public ResponseEntity<ResponseData> getWorkoutPoseErros(@PathVariable(name = "workout-summary-id") UUID id) {
+    @Operation(summary = "get workout pose errors")
+    public ResponseEntity<ResponseData> getWorkoutPoseErrors(@PathVariable(name = "workout-summary-id") UUID id) {
         ResponseData responseData = ResponseData.success(workoutSummaryService.getPoseErrors(id),
                 FeedbackMessage.POSE_ERRORS_RETRIEVED);
         return ResponseEntity.ok(responseData);
@@ -62,6 +66,7 @@ public class WorkoutSummaryController {
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(ApiPath.WORKOUT_STATISTICS)
+    @Operation(summary = "get workout statistics")
     public ResponseEntity<ResponseData> getWorkoutStatistics(@CurrentUser UserPrincipal userPrincipal,
                                                              @RequestParam(name = "viewMode", defaultValue = "weekly") String viewMode) {
         ResponseData responseData = ResponseData
