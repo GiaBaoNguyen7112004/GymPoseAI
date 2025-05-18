@@ -12,7 +12,9 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "exercises")
+@Table(name = "exercises", indexes = {
+        @Index(name = "idx_exercise_name", columnList = "name")
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Exercise extends AbstractEntity {
     @Id
