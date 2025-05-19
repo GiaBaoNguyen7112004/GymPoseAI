@@ -1,10 +1,14 @@
 package com.pbl5.gympose.service;
 
-import com.pbl5.gympose.websocket.WebSocketSessionInfo;
 import org.springframework.web.socket.WebSocketSession;
 
-public interface WorkoutSessionService {
-    String startWorkoutSession(WebSocketSession session);
+import java.util.UUID;
 
-    void endWorkoutSession(WebSocketSessionInfo webSocketSessionInfo);
+public interface WorkoutSessionService {
+
+    UUID startWorkoutSession(WebSocketSession session, UUID userId, UUID exerciseId, UUID workoutSummaryId);
+
+    void endWorkoutSession(WebSocketSession session);
+
+//    void saveSessionPoseErrors(String sessionId, Map<String, String> poseErrorsImageUrl);
 }

@@ -29,6 +29,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
+    
+
     public final String[] PUBLIC_ENDPOINT = {
             ApiPath.AUTH + "/**",
             ApiPath.SWAGGER,
@@ -47,6 +49,14 @@ public class SecurityConfig {
             ApiPath.CATEGORIES + "/**",
             ApiPath.CATEGORY_EXERCISES + "/**",
             ApiPath.USERS + "/**",
+    };
+
+    public final String[] PUBLIC_POST_ENDPOINT = {
+            ApiPath.WORKOUT_SUMMARY + ApiPath.WORKOUT_SUMMARY_ERROR + ApiPath.UPLOAD_IMAGE
+    };
+
+    public final String[] PUBLIC_PATCH_ENDPOINT = {
+            ApiPath.WORKOUT_SUMMARY + ApiPath.WORKOUT_SUMMARY_ERROR + ApiPath.WORKOUT_SUMMARY_IMAGES
     };
 
     CustomUserDetailsService customUserDetailsService;
@@ -88,6 +98,8 @@ public class SecurityConfig {
                         .requestMatchers(ApiPath.USERS + ApiPath.USER_PROFILE).authenticated()
                         .requestMatchers(PUBLIC_ENDPOINT).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINT).permitAll()
+                        .requestMatchers(PUBLIC_POST_ENDPOINT).permitAll()
+                        .requestMatchers(PUBLIC_PATCH_ENDPOINT).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -2,9 +2,10 @@ package com.pbl5.gympose.consumer;
 
 import com.pbl5.gympose.payload.message.AIResultMessage;
 import com.pbl5.gympose.utils.CommonFunction;
+import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.rabbitmq.RabbitMQConstant;
-import com.pbl5.gympose.websocket.RawWebSocketHandler;
 import com.pbl5.gympose.websocket.StompWebSocketSender;
+import com.pbl5.gympose.websocket.WebSocketSessionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,12 +16,21 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebsocketConsumer {
-    RawWebSocketHandler rawWebSocketHandler;
+    WebSocketSessionService sessionService;
     StompWebSocketSender stompWebSocketSender;
 
     @RabbitListener(queues = RabbitMQConstant.AI_RESULT_WS_QUEUE)
     public void handleResult(AIResultMessage message) {
-        rawWebSocketHandler.sendResultToClient(message.getSessionId(), CommonFunction.toJsonString(message));
+        try {
+            sessionService.sendMessageResultToClient(message.getSessionId(), CommonFunction.toJsonString(message));
+        } catch (Exception e) {
+            LogUtils.error("ERROR - send Message result to client " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                LogUtils.error("ERROR - Cause: " + cause.getMessage());
+                cause.printStackTrace();
+            }
+        }
         stompWebSocketSender.sendAIResult(message);
     }
 }

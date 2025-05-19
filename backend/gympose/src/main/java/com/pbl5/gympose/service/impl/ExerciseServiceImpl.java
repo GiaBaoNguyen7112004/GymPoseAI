@@ -33,6 +33,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     ExerciseRepository exerciseRepository;
     StepMapper stepMapper;
 
+
     @Override
     public ExerciseResponse createExercise(UUID categoryId, ExerciseCreationRequest exerciseCreationRequest) {
         Category category = categoryService.findById(categoryId);
