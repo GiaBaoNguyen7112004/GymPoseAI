@@ -2,6 +2,9 @@
 internal_server_error:
   code: ERR.SER0101
   message: Internal server error!
+url_not_found:
+  code: ERR.NFN0101
+  message: URL not found!
 
 #authentication
 unauthenticated:

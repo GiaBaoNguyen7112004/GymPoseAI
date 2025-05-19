@@ -1,6 +1,9 @@
 package com.pbl5.gympose.utils.exception;
 
 public final class ErrorMessage {
+    //NOT FOUND
+    public static final String URL_NOT_FOUND = "url_not_found";
+
     //Authentication
     public static final String UNAUTHENTICATED = "unauthenticated";
     public static final String UNAUTHORIZED = "unauthorized";

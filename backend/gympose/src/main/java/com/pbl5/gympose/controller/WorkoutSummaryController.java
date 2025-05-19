@@ -2,12 +2,15 @@ package com.pbl5.gympose.controller;
 
 import com.pbl5.gympose.entity.UserPrincipal;
 import com.pbl5.gympose.payload.general.ResponseData;
+import com.pbl5.gympose.payload.request.workoutsummary.WorkoutSummaryImagesRequest;
 import com.pbl5.gympose.payload.response.workoutsummary.PagingWorkoutSummariesResponse;
 import com.pbl5.gympose.security.annotation.CurrentUser;
 import com.pbl5.gympose.service.WorkoutSummaryService;
+import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
 import com.pbl5.gympose.utils.PagingUtils;
+import com.pbl5.gympose.websocket.WebSocketSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -27,6 +31,8 @@ import java.util.UUID;
 @Tag(name = "WorkoutSumamry API", description = "Workout summary management")
 public class WorkoutSummaryController {
     WorkoutSummaryService workoutSummaryService;
+    WebSocketSessionService webSocketSessionService;
+    StorageService storageService;
 
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "get workout summary by id")
@@ -75,4 +81,22 @@ public class WorkoutSummaryController {
         return ResponseEntity.ok(responseData);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping(ApiPath.WORKOUT_SUMMARY_ERROR + ApiPath.WORKOUT_SUMMARY_IMAGES)
+    @Operation(summary = "add image urls to pose errors")
+    public ResponseEntity<ResponseData> addImageUrlsToPoseErrors(@RequestBody WorkoutSummaryImagesRequest request) {
+        webSocketSessionService.addImageUrlsToPoseErrors(request.getSessionId(), request.getPoseErrorImages());
+        ResponseData responseData = ResponseData
+                .successWithoutMetaAndData(FeedbackMessage.WORKOUT_SUMMARY_IMAGES_ADDED);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "upload pose error images")
+    @PostMapping(ApiPath.WORKOUT_SUMMARY_ERROR + ApiPath.UPLOAD_IMAGE)
+    public ResponseEntity<ResponseData> uploadExerciseImage(@RequestBody MultipartFile file) {
+        ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "pose-errors"),
+                FeedbackMessage.IMAGE_UPLOADED);
+        return ResponseEntity.ok(responseData);
+    }
 }

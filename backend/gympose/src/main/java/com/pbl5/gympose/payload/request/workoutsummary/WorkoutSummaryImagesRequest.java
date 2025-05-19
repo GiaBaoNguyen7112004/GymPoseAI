@@ -1,4 +1,4 @@
-package com.pbl5.gympose.payload.message;
+package com.pbl5.gympose.payload.request.workoutsummary;
 
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -9,16 +9,13 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AIResultMessage implements Serializable {
-    String content;
-    String time;
-    String repIndex;
+public class WorkoutSummaryImagesRequest implements Serializable {
     String sessionId;
-    String userId;
-    String imageId;
+    List<PoseErrorImageRequest> poseErrorImages;
 }

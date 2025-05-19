@@ -2,7 +2,6 @@ package com.pbl5.gympose.event.handler;
 
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
-import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.enums.TokenType;
 import com.pbl5.gympose.event.RequestResetPasswordEvent;
 import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
@@ -64,9 +63,13 @@ public class EventHandler {
     }
 
     @EventListener
-    private void handleWorkoutFinishEvent(WorkoutFinishEvent event) {
-        WorkoutSummary workoutSummary = event.getWorkoutSummary();
-        notificationService.notifyWorkoutFinish(workoutSummary);
-        activityService.createCaloriesConsumption(workoutSummary);
+    private void notifyUserWhenWorkoutFinished(WorkoutFinishEvent event) {
+        notificationService.notifyWorkoutFinish(event.getWorkoutSummary());
     }
+
+    @EventListener
+    private void createCaloriesWhenWorkoutFinished(WorkoutFinishEvent event) {
+        activityService.createCaloriesConsumption(event.getWorkoutSummary());
+    }
+
 }

@@ -42,6 +42,7 @@ public final class ApiPath {
     public static final String WORKOUT_SUMMARY_ERROR = "/errors";
     public static final String WORKOUT_SUMMARY_HISTORY = "/history";
     public static final String WORKOUT_STATISTICS = "/statistics";
+    public static final String WORKOUT_SUMMARY_IMAGES = "/images";
 
     // NOTIFICATION
     public static final String NOTIFICATIONS = API + "/notifications";
