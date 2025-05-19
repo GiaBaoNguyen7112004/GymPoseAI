@@ -102,4 +102,13 @@ public class NotificationController {
         ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NOTIFICATION_UNREGISTERD);
         return ResponseEntity.ok(responseData);
     }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping(ApiPath.NOTIFICATION_BY_ID)
+    @Operation(summary = "unregister notifications")
+    public ResponseEntity<ResponseData> deleteNotification(@PathVariable(name = "notification-id") UUID notificationId) {
+        notificationService.deleteById(notificationId);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.NOTIFICATION_DELETED);
+        return ResponseEntity.ok(responseData);
+    }
 }

@@ -46,6 +46,7 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
             responseMap.put("session_id", session.getId());
 
             session.sendMessage(new TextMessage(CommonFunction.toJsonString(responseMap)));
+            LogUtils.info("INFO - AFTER CONNECTION: " + responseMap);
             sessions.put(session.getId(), new WebSocketSessionInfo(session, new ArrayList<>()));
             LogUtils.info("INFO - New websocket connection : " + session.getId());
         } catch (Exception e) {
@@ -95,9 +96,14 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        workoutSessionService.endWorkoutSession(sessions.get(session.getId()));
-        sessions.remove(session.getId());
-        LogUtils.info("INFO - WebSocket connection closed: " + session.getId());
+        try {
+            workoutSessionService.endWorkoutSession(sessions.get(session.getId()));
+            sessions.remove(session.getId());
+            LogUtils.info("INFO - WebSocket connection closed: " + session.getId());
+        } catch (Exception e) {
+            LogUtils.error("ERROR - After connection closed with error message " + e.getMessage());
+            LogUtils.error("ERROR - After connection closed with unknow session with id: " + session.getId());
+        }
     }
 
     @Override
@@ -108,13 +114,17 @@ public class RawWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void addSessionPoseError(String sessionId, PoseError poseError) {
-        WebSocketSessionInfo sessionInfo = sessions.get(sessionId);
-        if (sessionInfo != null) {
-            synchronized (sessionInfo) {
-                sessionInfo.getPoseErrors().add(poseError);
+        try {
+            WebSocketSessionInfo sessionInfo = sessions.get(sessionId);
+            if (sessionInfo != null) {
+                synchronized (sessionInfo) {
+                    sessionInfo.getPoseErrors().add(poseError);
+                }
+            } else {
+                LogUtils.error("ERROR - Session " + sessionId + " not found to add pose Errors");
             }
-        } else {
-            LogUtils.error("ERROR - Session " + sessionId + " not found to add pose Errors");
+        } catch (Exception e) {
+            LogUtils.error("ERROR - Cannot add session pose errors in session with Id: " + sessionId);
         }
     }
 }

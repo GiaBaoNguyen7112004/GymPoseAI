@@ -33,8 +33,8 @@ public class WorkoutSummary extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
- 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "workout_summary_id")
     List<PoseError> poseErrors = new ArrayList<>();
 
