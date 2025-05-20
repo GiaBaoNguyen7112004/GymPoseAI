@@ -15,11 +15,7 @@ function Thumbnail({ category }: ThumbnailProps) {
         return ICONS_CATEGORY_MAP.get(category?.name as categories) || 'movement1'
     }, [category?.name])
 
-    return (
-        <View style={styles.container}>
-            <MyIcon name={iconName} size={316} />
-        </View>
-    )
+    return <View style={styles.container}>{category && <MyIcon name={iconName} size={316} />}</View>
 }
 
 const styles = StyleSheet.create({

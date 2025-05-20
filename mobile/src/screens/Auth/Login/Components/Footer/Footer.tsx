@@ -18,13 +18,7 @@ interface FooterProps {
 const Footer = ({ goToRegister, onSubmit, formState, isLoginIn, loginWithFacebook }: FooterProps) => {
     return (
         <View style={styles.container}>
-            <GradientButton
-                style={styles.loginButton}
-                disabled={!formState}
-                onPress={onSubmit}
-                Square
-                isLoading={isLoginIn}
-            >
+            <GradientButton style={styles.loginButton} onPress={onSubmit} Square isLoading={isLoginIn}>
                 <MyIcon name='loginIcon' />
                 <Text style={styles.loginText}>Login</Text>
             </GradientButton>

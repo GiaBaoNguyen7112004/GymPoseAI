@@ -42,7 +42,7 @@ function FormUpdateDailyTarget({ waterVal, caloriesVal, onUpdate, onCancel, visi
                 showToast({ title: message })
             },
             onError: () => {
-                showErrorAlert('default')
+                showErrorAlert({ statusCode: 'default' })
             }
         })
     })

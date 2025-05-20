@@ -1,5 +1,4 @@
 import { SafeAreaView, StyleSheet, View } from 'react-native'
-import NavigationBar from '@/components/NavigationBar/NavigationBar'
 import LoaderModal from '@/components/LoaderModal'
 import NotificationList from './components/NotificationList'
 import DynamicBottomSheet from '@/components/DynamicBottomSheet'
@@ -8,6 +7,8 @@ import { useResetNotificationCountOnFocus } from '@/hooks/useResetNotificationCo
 import { MainTabScreenProps } from '@/navigation/types'
 import useNotifications from '@/hooks/useNotifications'
 import useNotificationHandlers from '@/hooks/useNotificationHandlers'
+import NavigationBarV2 from '@/components/NavigationBarV2'
+import { useCallback } from 'react'
 
 const NotificationScreen = ({ navigation }: MainTabScreenProps<'Notification'>) => {
     useResetNotificationCountOnFocus()
@@ -19,18 +20,16 @@ const NotificationScreen = ({ navigation }: MainTabScreenProps<'Notification'>) 
 
     const notifications = data?.pages.flatMap((page) => page.data) || []
 
+    const gotoSearchWorkout = useCallback(() => {
+        navigation.navigate('Search')
+    }, [])
     return (
         <View style={styles.wrapperScreen}>
-            <SafeAreaView style={styles.navBar}>
-                <NavigationBar
-                    title='Notifications'
-                    callback={navigation.goBack}
-                    handleMorePress={handlePressNavMore}
-                />
-            </SafeAreaView>
             <View style={styles.content}>
                 <LoaderModal isVisible={isLoading} />
                 <NotificationList
+                    gotoSearchWorkout={gotoSearchWorkout}
+                    handlePressNavMore={handlePressNavMore}
                     notifications={notifications}
                     onRefresh={refetch}
                     isFetching={isFetching}
@@ -51,23 +50,7 @@ export default NotificationScreen
 const styles = StyleSheet.create({
     wrapperScreen: {
         flex: 1,
-        backgroundColor: '#F7F8F8'
-    },
-    navBar: {
-        height: 60,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#E5E5E5',
-        backgroundColor: '#FFF',
-        // iOS shadow
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 3
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
+        backgroundColor: '#FFF'
     },
     content: {
         flex: 1

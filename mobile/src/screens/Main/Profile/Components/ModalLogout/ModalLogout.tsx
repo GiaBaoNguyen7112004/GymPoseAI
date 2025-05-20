@@ -1,9 +1,9 @@
-import { SCREEN_WIDTH } from '@/constants/devices.constant'
-import { AppContext } from '@/Contexts/App.context'
+import useAppContext from '@/hooks/useAppContext'
+import useNotification from '@/hooks/useNotificationContext'
 import { authApi } from '@/services/rest'
 import { showErrorAlert } from '@/utils/alert.util'
 import { useMutation } from '@tanstack/react-query'
-import { memo, useCallback, useContext } from 'react'
+import { memo, useCallback } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import Modal from 'react-native-modal'
 
@@ -15,7 +15,8 @@ interface ModalLogoutProps {
 }
 
 const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLoggingOut }: ModalLogoutProps) => {
-    const { setAuthenticated } = useContext(AppContext)
+    const { setAuthenticated } = useAppContext()
+    const { setAllowNotification } = useNotification()
     const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
 
     const handleLogout = useCallback(async () => {
@@ -25,10 +26,11 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
         setIsLoggingOut(true)
 
         try {
+            setAllowNotification(false)
             await logout()
             setAuthenticated(false)
         } catch {
-            showErrorAlert('default')
+            showErrorAlert({ statusCode: 'default' })
         } finally {
             setIsLoggingOut(false)
         }

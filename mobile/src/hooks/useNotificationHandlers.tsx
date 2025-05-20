@@ -21,13 +21,14 @@ export default function useNotificationHandlers(refetch: () => void) {
             showToast({ title: res.data.message })
             refetch()
         },
-        onErrorCallback: () => showErrorAlert('default')
+        onErrorCallback: () => showErrorAlert({ statusCode: 'default' })
     })
 
     const handleMarkAllAsRead = useCallback(() => {
         closeBottomSheet()
         markAllAsRead()
-    }, [])
+        refetch()
+    }, [refetch])
 
     const handlePressNotificationCardMore = useCallback((item: Notification) => {
         openBottomSheet(

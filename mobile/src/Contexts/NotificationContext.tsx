@@ -60,6 +60,7 @@ function NotificationProvider({ children }: NotificationProviderProps) {
 
     const unregisterFromBackend = useCallback(
         async (token: string) => {
+            if (!token) return
             try {
                 await deleteFCMMutateAsync({ push_token: token })
                 await StorageManager.savePushToken('')
@@ -108,7 +109,7 @@ function NotificationProvider({ children }: NotificationProviderProps) {
     useEffect(() => {
         if (isAuthenticated && allowNotification && expoPushToken) {
             registerWithBackend(expoPushToken)
-        } else if (expoPushToken && (!isAuthenticated || !allowNotification)) {
+        } else if (expoPushToken && !allowNotification) {
             unregisterFromBackend(expoPushToken)
         }
     }, [isAuthenticated, allowNotification, expoPushToken])

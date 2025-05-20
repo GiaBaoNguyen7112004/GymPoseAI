@@ -125,7 +125,22 @@ class WebSocketService {
 
     disconnect(): void {
         this.shouldReconnect = false
-        this.socket?.close()
+
+        if (this.socket) {
+            this.socket.onmessage = null
+            this.socket.onopen = null
+            this.socket.onclose = null
+            this.socket.onerror = null
+            this.socket.close()
+        }
+
+        this.socket = null
+        this.connected = false
+
+        this.eventHandlers = {}
+        this.onOpenCallbacks = []
+        this.pendingMessages = []
+        this.connectionStatusCallback = null
     }
 
     isConnected(): boolean {

@@ -5,24 +5,29 @@ import DailyTarget from './Components/DailyTarget'
 import ActivityProgress from './Components/ActivityProgress'
 import LatestActivity from './Components/LatestActivity'
 import { RootStackScreenProps } from '@/navigation/types'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import FormUpdateDailyTarget from './Components/FormUpdateDailyTarget'
 import { targetApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
 import useScrollListener from '@/hooks/useScrollListener'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
 
 function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>) {
     const { isReady } = useInteractionReadyState()
     const [modalUpdateTargetVisible, setModalUpdateTargetVisible] = useState<boolean>(false)
     const { isScrolled, handleScroll } = useScrollListener()
-    const toggleModalUpdateTarget = () => {
+    const toggleModalUpdateTarget = useCallback(() => {
         setModalUpdateTargetVisible((prev) => !prev)
         refetch()
-    }
+    }, [])
 
     const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getDailyTarget })
     const todayTargetData = data?.data.data
+
+    if (!isReady) {
+        return <BlankScreenLoader />
+    }
 
     return (
         <View style={styles.container}>
@@ -46,11 +51,11 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 </View>
 
                 <View style={styles.activityProgressCard}>
-                    <ActivityProgress isReadyRender={isReady} />
+                    <ActivityProgress />
                 </View>
 
                 <View style={styles.latestActivityCard}>
-                    <LatestActivity isReadyRender={isReady} />
+                    <LatestActivity />
                 </View>
                 <FormUpdateDailyTarget
                     visible={modalUpdateTargetVisible}

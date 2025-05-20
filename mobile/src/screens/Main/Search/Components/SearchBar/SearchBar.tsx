@@ -1,13 +1,6 @@
-import React, { useState, useEffect, useCallback, memo, useMemo } from 'react'
+import React, { useState, useCallback, memo, useMemo } from 'react'
 import { StyleSheet, TextInput, View, ActivityIndicator, Keyboard, Text, Pressable } from 'react-native'
-import Animated, {
-    FadeInRight,
-    FadeOutRight,
-    useAnimatedStyle,
-    withTiming,
-    Easing,
-    useSharedValue
-} from 'react-native-reanimated'
+import Animated, { FadeInRight, FadeOutRight, Easing } from 'react-native-reanimated'
 import MyIcon from '@/components/Icon'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -18,7 +11,7 @@ interface SearchBarProps {
     onFocusChange?: (isFocused: boolean) => void
 }
 
-const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) => {
+function SearchBar({ isLoading, onChange, onFocusChange }: SearchBarProps) {
     const [searchText, setSearchText] = useState('')
     const [isInputFocused, setIsInputFocused] = useState(false)
 
@@ -101,6 +94,7 @@ const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) 
                             onBlur={handleBlur}
                             returnKeyType='search'
                             onSubmitEditing={handleSubmitEditing}
+                            autoFocus={true}
                         />
                     </View>
                     {renderRightIcon}
@@ -120,9 +114,9 @@ const SearchBar = memo(({ isLoading, onChange, onFocusChange }: SearchBarProps) 
             </View>
         </View>
     )
-})
+}
 
-export default SearchBar
+export default memo(SearchBar)
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -147,7 +141,7 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         color: '#1D1617',
-        fontSize: 16,
+        fontSize: 14,
         paddingVertical: 0
     },
     divider: {

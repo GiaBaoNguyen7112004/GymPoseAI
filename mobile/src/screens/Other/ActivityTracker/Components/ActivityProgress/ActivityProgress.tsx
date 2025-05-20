@@ -10,11 +10,7 @@ import BarChartSkeleton from '@/components/BarChartSkeleton'
 
 const screenWidth = Dimensions.get('window').width - 80 + 32
 
-interface ActivityProgressProps {
-    isReadyRender?: boolean
-}
-
-function ActivityProgress({ isReadyRender }: ActivityProgressProps) {
+function ActivityProgress() {
     const { data, isLoading } = useQuery({
         queryKey: ['activity'],
         queryFn: targetApi.getWeeklyStatisticsTarget
@@ -25,7 +21,7 @@ function ActivityProgress({ isReadyRender }: ActivityProgressProps) {
         return calculateActivityProgressChart(activityData || [])
     }, [data])
 
-    const canRender = !isLoading && isReadyRender
+    const canRender = !isLoading
 
     return (
         <View style={styles.activityProgressCard}>

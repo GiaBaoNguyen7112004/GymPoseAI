@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect } from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
+import AntDesign from '@expo/vector-icons/AntDesign'
 
 import WorkoutCard from '@/components/WorkoutCard'
 import { SCREEN_WIDTH } from '@/constants/devices.constant'
@@ -23,8 +24,8 @@ function SearchResults({ searchText, handleWorkoutCardPress, setIsLoading }: Sea
         queryKey: ['search', trimmedSearchText],
         queryFn: () =>
             searchApi.search({
-                q: trimmedSearchText,
-                type: 'less'
+                query: trimmedSearchText,
+                type: 'hard'
             }),
         enabled: isSearchActive
     })
@@ -42,22 +43,28 @@ function SearchResults({ searchText, handleWorkoutCardPress, setIsLoading }: Sea
         [handleWorkoutCardPress]
     )
 
-    const renderNoResults = () => {
-        if (isSearchActive && exerciseList.length === 0) {
-            return (
-                <View style={styles.emptyResult}>
-                    <Text style={styles.emptyResultText}>No results found.</Text>
-                </View>
-            )
-        }
-        return null
-    }
+    const renderNoResults = useCallback(() => {
+        return (
+            <View style={styles.emptyResult}>
+                <AntDesign name='search1' size={60} color='#888' />
+                <Text style={styles.emptyResultText}>No results found.</Text>
+            </View>
+        )
+    }, [])
 
-    const renderInitialPrompt = () => (
-        <View style={styles.noSearchContainer}>
-            <LottieView source={require('@/assets/animations/search.json')} autoPlay loop style={styles.searchIcon} />
-            <Text style={styles.searchPrompt}>Start searching for workouts...</Text>
-        </View>
+    const renderInitialPrompt = useCallback(
+        () => (
+            <View style={styles.noSearchContainer}>
+                <LottieView
+                    source={require('@/assets/animations/search.json')}
+                    autoPlay
+                    loop
+                    style={styles.searchIcon}
+                />
+                <Text style={styles.searchPrompt}>Start searching for workouts...</Text>
+            </View>
+        ),
+        []
     )
 
     return (
@@ -73,7 +80,7 @@ function SearchResults({ searchText, handleWorkoutCardPress, setIsLoading }: Sea
                     keyboardShouldPersistTaps='handled'
                     showsVerticalScrollIndicator={false}
                     style={styles.searchContainer}
-                    contentContainerStyle={[styles.searchResults, exerciseList.length === 0 && styles.flexFill]}
+                    contentContainerStyle={[styles.searchResults, !exerciseList.length && styles.flexFill]}
                 />
             )}
         </View>
@@ -96,6 +103,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     emptyResultText: {
+        marginTop: 10,
         color: '#888',
         fontSize: 14
     },
@@ -112,12 +120,13 @@ const styles = StyleSheet.create({
     },
     searchPrompt: {
         color: '#888',
-        fontSize: 16,
+        fontSize: 14,
         fontStyle: 'italic'
     },
     flexFill: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     searchContainer: {
         flex: 1,

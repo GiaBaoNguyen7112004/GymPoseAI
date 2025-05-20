@@ -65,7 +65,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 20,
         // Android shadow
-        elevation: 10
+        elevation: 10,
+        borderWidth: 0.5,
+        borderColor: 'rgba(0, 0, 0, 0.1)'
     },
     content: {
         flex: 1,

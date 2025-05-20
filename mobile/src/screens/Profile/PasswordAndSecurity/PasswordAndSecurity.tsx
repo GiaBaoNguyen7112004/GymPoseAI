@@ -15,6 +15,7 @@ import TextInputCustom from '@/components/TextInput'
 import handleFormError from '@/utils/handleFormError'
 import React, { useCallback, memo } from 'react'
 import KeyboardDismissWrapper from '@/components/KeyboardDismissWrapper'
+import { ChangePasswordReqBody } from '@/types/auth.type'
 
 type FormData = Pick<SchemaType, 'password' | 'old_password' | 'confirm_password'>
 const formSchema = schema.pick(['password', 'old_password', 'confirm_password'])
@@ -42,7 +43,11 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
 
     const onSubmit = useCallback(
         methods.handleSubmit((data) => {
-            const body = omit(data, 'confirm_password')
+            const body: ChangePasswordReqBody = {
+                old_password: data.old_password,
+                new_password: data.password,
+                new_password_confirmation: data.confirm_password
+            }
             changePasswordMutate(body, {
                 onSuccess: (res) => {
                     onClose()
@@ -92,7 +97,7 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
                                         type='password'
                                         placeholder='Old password'
                                         returnKeyType='next'
-                                        containerStyle={styles.input}
+                                        inPutStyle={styles.input}
                                         onSubmitEditing={() => {
                                             methods.setFocus('password')
                                         }}
@@ -103,7 +108,7 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
                                         type='password'
                                         placeholder='New password'
                                         returnKeyType='next'
-                                        containerStyle={styles.input}
+                                        inPutStyle={styles.input}
                                         onSubmitEditing={() => {
                                             methods.setFocus('confirm_password')
                                         }}
@@ -114,7 +119,7 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
                                         type='password'
                                         placeholder='Confirm password'
                                         returnKeyType='done'
-                                        containerStyle={styles.input}
+                                        inPutStyle={styles.input}
                                         onSubmitEditing={onSubmit}
                                     />
                                 </View>
@@ -122,13 +127,7 @@ function PasswordAndSecurity({ onClose }: UpdatePasswordScreenProps) {
                         </View>
 
                         <View style={styles.formBottom}>
-                            <GradientButton
-                                Square
-                                style={styles.reviewButton}
-                                disabled={!methods.formState.isValid}
-                                onPress={onSubmit}
-                                isLoading={isPending}
-                            >
+                            <GradientButton Square style={styles.reviewButton} onPress={onSubmit} isLoading={isPending}>
                                 <Text style={styles.reviewButtonText}>Save</Text>
                             </GradientButton>
                         </View>

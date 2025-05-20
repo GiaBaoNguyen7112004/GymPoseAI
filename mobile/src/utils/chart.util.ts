@@ -1,9 +1,10 @@
 import { ChartData } from 'react-native-chart-kit/dist/HelperTypes'
 import { StatsTargetOfDay } from '../types/target.type'
-import { workoutHistory, workoutHistoryOfDay } from '../types/workoutHistory.type'
-import { ProgressChartData } from 'react-native-chart-kit/dist/ProgressChart'
+import { pose_error, workoutHistoryOfDay } from '../types/workoutHistory.type'
 import { Dimensions } from 'react-native'
 import { ViewModeType } from '../types/utils.type'
+import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
+import { pose_error_Data } from '@/screens/Other/WorkoutSummaryDetail/Components/PoseErrorChart/PoseErrorChart'
 
 // Constants for days of the week
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -21,7 +22,8 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
     const backgroundData = new Array(7).fill(100)
 
     stats.forEach(({ calories, water }) => {
-        const dayIndex = new Date(calories.date).getDay()
+        const dateStr = calories.date.replace(' ', 'T')
+        const dayIndex = new Date(dateStr).getDay()
 
         const caloriesProgress = calories.calories_target
             ? (calories.calories_burned / calories.calories_target) * 100
@@ -45,54 +47,14 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
         (opacity = 1) => '#D8B4FE'
     ]
 
-    // Màu nâu cho phần chưa hoàn thành (background)
-    const backgroundColorPalette = new Array(7).fill((opacity = 1) => 'rgba(165, 120, 90, 0.6)')
-
     return {
         labels: WEEKDAYS,
         datasets: [
             {
                 data: progressData,
                 colors: progressColorPalette
-            },
-            {
-                data: backgroundData,
-                colors: backgroundColorPalette
             }
         ]
-    }
-}
-
-const DEFAULT_WORKOUT_SUMMARY: workoutHistory = {
-    calories_base: 1,
-    calories_burned: 0,
-    category: 'abdominal muscles',
-    duration_minutes: 0,
-    start_time: new Date().toISOString(),
-    id: '',
-    name: '',
-    reps_count: 1,
-    errors_count: 0,
-    pose_errors: [],
-    elapsed_time: 0
-}
-/** Calculate workout summary progress chart */
-export const calculateWorkoutSummaryChart = (workoutSummaryData?: workoutHistory): ProgressChartData => {
-    const summary = workoutSummaryData || DEFAULT_WORKOUT_SUMMARY
-
-    const elapsedMinutes = summary.elapsed_time / 60
-    const workoutDuration = parseFloat(elapsedMinutes.toFixed(2))
-
-    const exerciseProgress = summary.duration_minutes > 0 ? workoutDuration / summary.duration_minutes : 0
-
-    const caloriesProgress = summary.calories_base > 0 ? summary.calories_burned / summary.calories_base : 0
-
-    const formAccuracy = summary.reps_count > 0 ? 100 - (summary.errors_count / summary.reps_count) * 100 : 0
-
-    return {
-        labels: ['Exercise Progress', 'Calories Progress', 'Form Accuracy'],
-        data: [exerciseProgress, caloriesProgress, formAccuracy],
-        colors: ['#9DCEFF', '#FF8DA8', '#0284C7']
     }
 }
 
@@ -158,7 +120,6 @@ const createEmptyDataPoint = (date: Date): DataPoint => ({
     totalCaloriesBurned: 0
 })
 
-/** Convert workout data into chart data */
 export const calculateWorkoutHistoryChart = (
     workoutData: workoutHistoryOfDay[],
     viewMode: ViewModeType
@@ -198,4 +159,20 @@ export const getChartWidth = (viewMode: ViewModeType, dataLength: number) => {
     if (viewMode === 'yearly') return dataLength * 40
 
     return screenWidth
+}
+
+export const transformPoseErrors = (errors: pose_error[]): pose_error_Data[] => {
+    const total = errors.length
+    const errorMap = new Map()
+
+    for (const item of errors) {
+        const key = item.ai_result
+        errorMap.set(key, (errorMap.get(key) || 0) + 1)
+    }
+
+    return Array.from(errorMap.entries()).map(([label, count]) => ({
+        label,
+        count: count.toString(),
+        percent: parseFloat(((count / total) * 100).toFixed(2))
+    }))
 }

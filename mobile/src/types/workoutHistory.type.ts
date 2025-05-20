@@ -8,7 +8,7 @@ export interface workoutHistory extends BaseExerciseInfo {
     reps_count: number
     errors_count: number
     pose_errors: pose_error[]
-    elapsed_time: number // in seconds
+    elapsed_time: number
     category: categories
 }
 
@@ -17,6 +17,7 @@ export interface pose_error {
     ai_result: string
     created_at: string
     rep_index: number
+    image_url: string
 }
 
 export interface workoutHistoryOfDay {

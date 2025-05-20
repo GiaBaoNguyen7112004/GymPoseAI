@@ -8,19 +8,19 @@ const notificationApi = {
         return http.get<ResponseAPINotificationPage>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, { params })
     },
     readNotification({ id }: { id: string }) {
-        return http.put(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}/read`)
+        return http.patch(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}`)
     },
     deleteNotification({ id }: { id: string }) {
         return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/${id}`)
     },
     getNewNotificationCount() {
-        return http.get<ResponseNewNotificationCount>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new`)
+        return http.get<ResponseNewNotificationCount>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new/number`)
     },
     resetNewNotificationCount() {
-        return http.put<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/reset-new`)
+        return http.put<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new/reset`)
     },
     readAllNotification() {
-        return http.put<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/read-all`)
+        return http.patch<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/read`)
     }
 }
 

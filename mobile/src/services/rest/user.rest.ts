@@ -19,7 +19,7 @@ const userApi = {
         return http.patch<ResponseUserApi>(process.env.EXPO_PUBLIC_URL_USER, body)
     },
     changePassword(body: ChangePasswordReqBody) {
-        return http.put<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_CHANGE_PASSWORD, body)
+        return http.patch<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_CHANGE_PASSWORD, body)
     }
 }
 

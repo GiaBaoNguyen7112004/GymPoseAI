@@ -10,8 +10,11 @@ import Header from './Components/Header'
 import ViewLinerGradient from '@/components/ViewLinerGradient'
 import useCategoryData from '@/hooks/useCategoryData'
 import InvisibleBackdrop from '@/components/InvisibleBackdrop'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
 
 function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDetail'>) {
+    const { isReady } = useInteractionReadyState()
     const { category_id, exercise_id } = route.params
 
     const { category } = useCategoryData({ category_id })
@@ -20,7 +23,7 @@ function CategoryDetail({ route, navigation }: RootStackScreenProps<'CategoryDet
         (id: string) => navigation.navigate('ExerciseDetail', { exercise_id: id }),
         [navigation]
     )
-
+    if (!isReady) return <BlankScreenLoader />
     return (
         <ViewLinerGradient style={styles.content}>
             <SafeAreaView style={styles.container}>

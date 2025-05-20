@@ -13,13 +13,21 @@ export const schema = yup.object({
     password: yup
         .string()
         .required('Password is required')
-        .min(6, 'Length from 6-160 characters')
-        .max(160, 'Length from 6-160 characters'),
+        .matches(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}$/,
+            'Password must be 8-32 characters and include at least one uppercase letter, one lowercase letter, and one number'
+        ),
     confirm_password: yup
         .string()
-        .oneOf([yup.ref('password')], 'Confirmation password does not match')
-        .required('Confirm password is required'),
-    old_password: yup.string().required('Old password is required'),
+        .required('Confirm password is required')
+        .oneOf([yup.ref('password')], 'Confirmation password does not match'),
+    old_password: yup
+        .string()
+        .required('Old password is required')
+        .matches(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}$/,
+            'Old password must be 8-32 characters and include at least one uppercase letter, one lowercase letter, and one number'
+        ),
     avatar: yup.string().trim(),
 
     weight: yup

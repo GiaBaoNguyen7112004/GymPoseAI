@@ -1,43 +1,131 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
-import NavigationBar from '@/components/NavigationBar'
-import WorkoutSummary from './Components/WorkoutSummary'
-import FormFeedBack from './Components/FormFeedBack'
-import ImprovementTips from './Components/ImprovementTips'
+import { ActivityIndicator, ScrollView, StyleSheet, View, Text } from 'react-native'
+import { Suspense, useCallback } from 'react'
+
 import LoaderModal from '@/components/LoaderModal'
-import { RootStackScreenProps } from '@/navigation/types'
-import useScrollListener from '@/hooks/useScrollListener'
+import DynamicBottomSheet from '@/components/DynamicBottomSheet'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
+import PoseErrorView from './Components/PoseErrorViewer'
+import Header from './Components/Header'
+import StatsSection from './Components/StatsSection'
+import WorkoutDetailsTable from './Components/WorkoutDetailsTable'
+import PoseErrorChart from './Components/PoseErrorChart'
+import MoreActionNavBar from './Components/MoreActionNavBar'
+
 import { useWorkoutSummaryData } from '@/hooks/useWorkoutSummaryData'
+import useUserData from '@/hooks/useUserData'
+import useBottomSheetController from '@/hooks/useBottomSheetController'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+
+import { pose_error } from '@/types/workoutHistory.type'
+import { RootStackScreenProps } from '@/navigation/types'
+import NoDeviceModal from '@/components/NoDeviceModal'
+import LottieView from 'lottie-react-native'
+import WorkoutSection from './Components/WorkoutSection'
+import useRequireDevice from '@/hooks/useRequireDevice'
 
 function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'WorkoutSummaryDetail'>) {
+    const { userData } = useUserData()
     const { workout_id } = route.params
-    const { workoutData, poseErrors, workoutDuration, progressData, isLoading } = useWorkoutSummaryData(workout_id)
+    const { workoutData, poseErrors, isLoading, progressPercentage, poseErrorsCount, repCount, formAccuracy } =
+        useWorkoutSummaryData(workout_id)
+    const { isReady } = useInteractionReadyState()
+    const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
+    const { requireDevice, isModalVisible, handleCloseModal, handleConnectDevice } = useRequireDevice()
 
-    const { isScrolled, handleScroll } = useScrollListener()
+    const navigateBack = useCallback(() => navigation.goBack(), [navigation])
+
+    const handleDeleteWorkoutPress = useCallback(() => {
+        // TODO: Implement delete logic
+    }, [])
+
+    const handleResumeWorkoutPress = useCallback(() => {
+        closeBottomSheet()
+        requireDevice(() => {
+            navigation.navigate('GymLiveScreen', {
+                workout_history_id: workout_id
+            })
+        })
+    }, [closeBottomSheet, navigation, workout_id])
+
+    const handlePoseErrorPress = useCallback(
+        (item: pose_error) => {
+            openBottomSheet(
+                <Suspense fallback={<ActivityIndicator />}>
+                    <PoseErrorView poseError={item} />
+                </Suspense>
+            )
+        },
+        [openBottomSheet]
+    )
+
+    const handleMorePress = useCallback(() => {
+        openBottomSheet(
+            <Suspense fallback={<ActivityIndicator />}>
+                <MoreActionNavBar
+                    handleDeleteWorkout={handleDeleteWorkoutPress}
+                    handleResumeWorkout={handleResumeWorkoutPress}
+                    isCompleteWorkout={progressPercentage >= 99.9}
+                />
+            </Suspense>
+        )
+    }, [openBottomSheet, handleDeleteWorkoutPress, handleResumeWorkoutPress, progressPercentage])
+
+    if (!isReady) return <BlankScreenLoader />
 
     return (
         <View style={styles.container}>
             <LoaderModal isVisible={isLoading} title='Loading' />
-            <SafeAreaView style={[styles.navbar, isScrolled && styles.navbarWithBorder]}>
-                <NavigationBar title='Summary' callback={navigation.goBack} />
-            </SafeAreaView>
-            <ScrollView style={styles.scrollView} onScroll={handleScroll} scrollEventThrottle={16}>
-                <View style={styles.section}>
-                    <WorkoutSummary
-                        workout={workoutData}
-                        workoutDuration={workoutDuration}
-                        progressData={progressData}
-                        poseErrorCount={poseErrors.length}
-                    />
-                </View>
 
-                <View style={styles.section}>
-                    <FormFeedBack pose_errors={poseErrors} />
-                </View>
+            <Header
+                headerTitle={workoutData?.name ?? '_ _'}
+                handleBack={navigateBack}
+                handleMorePress={handleMorePress}
+            />
 
-                <View style={styles.section}>
-                    <ImprovementTips />
-                </View>
+            <ScrollView style={styles.scrollView} scrollEventThrottle={16}>
+                <WorkoutSection
+                    userData={userData}
+                    startTime={workoutData?.start_time ?? '_ _'}
+                    progress={progressPercentage}
+                />
+
+                <StatsSection
+                    elapsedTime={workoutData?.elapsed_time ?? 0}
+                    durationMinutes={workoutData?.duration_minutes ?? 0}
+                    repCount={repCount}
+                    formAccuracy={formAccuracy}
+                    poseErrorsCount={poseErrorsCount}
+                />
+                {poseErrorsCount > 0 ? (
+                    <>
+                        <PoseErrorChart poseErrors={poseErrors} />
+                        <WorkoutDetailsTable poseErrors={poseErrors} handlePoseErrorPress={handlePoseErrorPress} />
+                    </>
+                ) : (
+                    <View style={styles.congratsContainer}>
+                        <LottieView
+                            source={require('@/assets/animations/workout_summary_conguration.json')}
+                            autoPlay
+                            loop
+                            style={styles.banner}
+                        />
+                        <Text style={styles.congratsTitle}>
+                            {userData?.first_name ? `Great job, ${userData.first_name}!` : 'Great job!'}
+                        </Text>
+                        <Text style={styles.congratsMessage}>
+                            You nailed your {workoutData?.name || 'workout'} with perfect form! No pose errors detected.
+                            Keep up the amazing work!
+                        </Text>
+                    </View>
+                )}
             </ScrollView>
+
+            <DynamicBottomSheet ref={bottomSheetRef} enableDynamicSizing />
+            <NoDeviceModal
+                isVisible={isModalVisible}
+                onClose={handleCloseModal}
+                onConnectDevice={handleConnectDevice}
+            />
         </View>
     )
 }
@@ -51,17 +139,29 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F7F8F8'
     },
-    navbar: {
-        height: 60,
+    banner: {
+        width: 375,
+        height: 350,
+        flexShrink: 0
+    },
+    congratsContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#F7F8F8'
+        paddingHorizontal: 16,
+        paddingBottom: 20
     },
-    navbarWithBorder: {
-        borderBottomColor: '#E5E5E5'
+    congratsTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#1F2937',
+        marginTop: 10,
+        textAlign: 'center'
     },
-    section: {
-        marginTop: 20,
+    congratsMessage: {
+        fontSize: 14,
+        color: '#4B5563',
+        textAlign: 'center',
+        marginTop: 8,
+        lineHeight: 20,
         paddingHorizontal: 16
     }
 })

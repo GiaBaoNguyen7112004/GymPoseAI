@@ -89,6 +89,7 @@ class Http {
                 return Promise.reject(refreshError)
             }
         }
+        console.error('API Error:', error.request)
         return Promise.reject(error)
     }
 }

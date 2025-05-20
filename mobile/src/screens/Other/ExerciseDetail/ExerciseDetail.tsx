@@ -4,45 +4,34 @@ import { RootStackScreenProps } from '@/navigation/types'
 import GradientButton from '@/components/GradientButton'
 import ReadMoreText from '@/components/ReadMoreText'
 import ExerciseDetailSkeleton from './components/ExerciseDetailSkeleton'
-
 import ExerciseHeader from './components/ExerciseHeader'
 import ExerciseVideoPlayer from './components/ExerciseVideoPlayer'
 import ExerciseInfo from './components/ExerciseInfo'
 import ExerciseSteps from './components/ExerciseSteps/ExerciseSteps'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import NoDeviceModal from '@/components/NoDeviceModal'
-import useBluetoothContext from '@/hooks/useBluetoothContext'
 import useExerciseData from '@/hooks/useExcersieData'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
+import useRequireDevice from '@/hooks/useRequireDevice'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
-    const { connectedDevice, peripheralInfo } = useBluetoothContext()
-    const [isModalVisible, setModalVisible] = useState(false)
     const { isReady } = useInteractionReadyState()
     const { exercise_id } = route.params
     const { workoutData, isLoading, workoutIdYoutube } = useExerciseData({ exercise_id })
+
+    const { requireDevice, isModalVisible, handleCloseModal, handleConnectDevice } = useRequireDevice()
+
     const handleLetTrainPress = useCallback(() => {
-        if (!peripheralInfo?.id || !connectedDevice) {
-            setModalVisible(true)
-            return
-        }
-        navigation.navigate('GymLiveScreen', {
-            exercise_id: exercise_id
+        requireDevice(() => {
+            navigation.navigate('GymLiveScreen', {
+                exercise_id: exercise_id
+            })
         })
-    }, [peripheralInfo?.id, connectedDevice])
+    }, [requireDevice, exercise_id])
 
-    const handleCloseModal = useCallback(() => {
-        setModalVisible(false)
-    }, [])
-    const handleConnectDevice = useCallback(() => {
-        setModalVisible(false)
-        const isHasDevice = Boolean(peripheralInfo?.id)
-        if (isHasDevice) {
-            navigation.navigate('MyDevice')
-        } else navigation.navigate('BlueToothScan')
-    }, [peripheralInfo?.id])
-
-    if (isLoading || !isReady) return <ExerciseDetailSkeleton />
+    if (!isReady) return <BlankScreenLoader />
+    if (isLoading) return <ExerciseDetailSkeleton />
 
     return (
         <View style={styles.container}>
@@ -72,6 +61,7 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
                         <Text style={styles.textInnerButtonSubmit}>Let’s Train</Text>
                     </GradientButton>
                 </View>
+
                 <NoDeviceModal
                     isVisible={isModalVisible}
                     onClose={handleCloseModal}

@@ -47,7 +47,7 @@ function UpdateNameScreen({ onGoBack, goToTop }: ScreenComponentProps) {
                 showToast({ title: message, position: 'bottom' })
             },
             onError: () => {
-                showErrorAlert('default')
+                showErrorAlert({ statusCode: 'default' })
             }
         })
     })

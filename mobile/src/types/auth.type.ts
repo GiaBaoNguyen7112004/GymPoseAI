@@ -18,13 +18,6 @@ export type RefreshTokenResponse = ResponseApi<
     any
 >
 
-export type FindAccountResponse = ResponseApi<
-    {
-        user: User
-    },
-    any
->
-
 // request body types
 export type RegisterReqBody = {
     first_name: string
@@ -55,7 +48,8 @@ export type ResetPasswordReqBody = {
 
 export type ChangePasswordReqBody = {
     old_password: string
-    password: string
+    new_password: string
+    new_password_confirmation: string
 }
 
 export type LoginWithFacebookReqBody = {

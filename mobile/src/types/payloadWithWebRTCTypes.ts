@@ -16,7 +16,7 @@ export interface ResponseTrainingPayload {
 }
 
 export interface AIResponsePayload {
-    rep_num: number
+    rep_index: number
     content: string
     time: string
     user_id: string

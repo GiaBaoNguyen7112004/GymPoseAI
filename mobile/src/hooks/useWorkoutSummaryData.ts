@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { workoutHistoryApi } from '@/services/rest'
-import { calculateWorkoutSummaryChart } from '@/utils/chart.util'
 import { useMemo } from 'react'
+import { clamp } from 'lodash'
 
 export function useWorkoutSummaryData(workout_id?: string) {
     const {
@@ -9,20 +9,39 @@ export function useWorkoutSummaryData(workout_id?: string) {
         isPending,
         ...rest
     } = useQuery({
-        queryKey: ['workout_id', workout_id],
+        queryKey: ['workout-summary', workout_id],
         queryFn: () => workoutHistoryApi.getWorkoutSummaryById({ id: workout_id as string }),
         enabled: !!workout_id
     })
 
     const workoutData = workoutRes?.data.data
-    const poseErrors = workoutData?.pose_errors || []
+    const poseErrors = workoutData?.pose_errors ?? []
 
-    const workoutDuration = useMemo(() => {
-        const elapsedMinutes = (workoutData?.elapsed_time || 0) / 60
-        return parseFloat(elapsedMinutes.toFixed(2))
-    }, [workoutData?.elapsed_time])
+    const repCount = useMemo(() => workoutData?.reps_count ?? 1, [workoutData?.reps_count])
+    const poseErrorsCount = useMemo(() => poseErrors.length, [poseErrors])
 
-    const progressData = useMemo(() => calculateWorkoutSummaryChart(workoutData), [workoutData])
+    const formAccuracy = useMemo(() => {
+        if (!repCount || poseErrorsCount === 0) return 100
+        const accuracy = ((repCount - poseErrorsCount) / repCount) * 100
+        return clamp(Math.round(accuracy), 0, 100)
+    }, [repCount, poseErrorsCount])
 
-    return { workoutData, poseErrors, workoutDuration, progressData, ...rest, isLoading: isPending }
+    const progressPercentage = useMemo(() => {
+        const elapsed = workoutData?.elapsed_time ?? 0
+        const duration = workoutData?.duration_minutes ?? 0
+        if (!duration) return 0
+        const progress = (elapsed / (duration * 60)) * 100
+        return clamp(Number(progress.toFixed(2)), 0, 100)
+    }, [workoutData?.elapsed_time, workoutData?.duration_minutes])
+
+    return {
+        workoutData,
+        poseErrors,
+        repCount,
+        poseErrorsCount,
+        formAccuracy,
+        progressPercentage,
+        ...rest,
+        isLoading: isPending
+    }
 }

@@ -7,7 +7,7 @@ const FCMApi = {
         return http.post<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, body)
     },
     deleteFCMToken: (body: RegisterFCMReqBody) => {
-        return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}`, { data: body })
+        return http.post<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/unregister`, body)
     }
 }
 

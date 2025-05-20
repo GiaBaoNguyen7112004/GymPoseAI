@@ -7,6 +7,7 @@ import Header from './Components/Header'
 import { useCallback } from 'react'
 import ViewLinerGradient from '@/components/ViewLinerGradient'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
 
 function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
     const { isReady } = useInteractionReadyState()
@@ -16,14 +17,14 @@ function WorkoutTracker({ navigation }: MainTabScreenProps<'WorkoutTracker'>) {
     const goBackScreen = useCallback(() => {
         navigation.goBack()
     }, [])
-
+    if (!isReady) return <BlankScreenLoader />
     return (
         <ViewLinerGradient style={styles.BackgroundLinerWrapper}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.content}>
                     <Header goBackScreen={goBackScreen} />
-                    <LineChartWorkout isReadyRender={isReady} />
-                    <CategoryBottomSheet handleCategoryPress={handleCategoryPress} isReady={isReady} />
+                    <LineChartWorkout />
+                    <CategoryBottomSheet handleCategoryPress={handleCategoryPress} />
                 </View>
             </SafeAreaView>
         </ViewLinerGradient>

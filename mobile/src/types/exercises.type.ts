@@ -1,4 +1,3 @@
-import { extend } from 'lodash'
 import { categories } from './workoutHistory.type'
 
 export interface BaseExerciseInfo {
@@ -21,6 +20,7 @@ export interface Category {
     exercise_count: number
     duration_minutes: number
     calories_burned: number
+    media_url: string
 }
 
 export interface StepOfExercise {
