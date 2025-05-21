@@ -8,12 +8,11 @@ interface NavbarProps {
     MoreActions?: () => void
     searchAction?: () => void
     containerStyle?: StyleProp<ViewStyle>
-    blurIntensity?: number
 }
 
-const NavigationBarV2 = ({ title, MoreActions, searchAction, containerStyle, blurIntensity = 50 }: NavbarProps) => {
+const NavigationBarV2 = ({ title, MoreActions, searchAction, containerStyle }: NavbarProps) => {
     return (
-        <BlurView intensity={blurIntensity} tint='light' style={[styles.container, containerStyle]}>
+        <View style={[styles.container, containerStyle]}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.iconContainer}>
                 {MoreActions && (
@@ -27,7 +26,7 @@ const NavigationBarV2 = ({ title, MoreActions, searchAction, containerStyle, blu
                     </TouchableOpacity>
                 )}
             </View>
-        </BlurView>
+        </View>
     )
 }
 
@@ -38,8 +37,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingVertical: 12,
-        overflow: 'hidden',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+        overflow: 'hidden'
     },
     title: {
         fontSize: 26,

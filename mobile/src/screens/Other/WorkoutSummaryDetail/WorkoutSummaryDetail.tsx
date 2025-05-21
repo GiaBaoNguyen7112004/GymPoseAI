@@ -22,6 +22,9 @@ import NoDeviceModal from '@/components/NoDeviceModal'
 import LottieView from 'lottie-react-native'
 import WorkoutSection from './Components/WorkoutSection'
 import useRequireDevice from '@/hooks/useRequireDevice'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { workoutHistoryApi } from '@/services/rest'
+import showToast from '@/utils/toast.util'
 
 function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'WorkoutSummaryDetail'>) {
     const { userData } = useUserData()
@@ -32,10 +35,25 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
     const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
     const { requireDevice, isModalVisible, handleCloseModal, handleConnectDevice } = useRequireDevice()
 
-    const navigateBack = useCallback(() => navigation.goBack(), [navigation])
+    const { mutateAsync: deleteWorkoutSummaryMutateAsync } = useMutation({
+        mutationFn: workoutHistoryApi.deleteWorkoutSummaryById
+    })
+    const queryClient = useQueryClient()
 
-    const handleDeleteWorkoutPress = useCallback(() => {
-        // TODO: Implement delete logic
+    const handleDeleteWorkoutPress = useCallback(async () => {
+        try {
+            const body = {
+                id: workout_id
+            }
+            const res = await deleteWorkoutSummaryMutateAsync(body)
+            const { message } = res.data
+            showToast({ title: message, position: 'bottom' })
+            queryClient.invalidateQueries({ queryKey: ['workout-history'] })
+            closeBottomSheet()
+            navigation.goBack()
+        } catch (error) {
+            showToast({ title: 'Failed to delete workout summary', position: 'bottom' })
+        }
     }, [])
 
     const handleResumeWorkoutPress = useCallback(() => {
@@ -78,7 +96,7 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
 
             <Header
                 headerTitle={workoutData?.name ?? '_ _'}
-                handleBack={navigateBack}
+                handleBack={navigation.goBack}
                 handleMorePress={handleMorePress}
             />
 

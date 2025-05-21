@@ -12,7 +12,7 @@ const AnimatedBottomSheetLayout = forwardRef<AnimatedBottomSheetLayoutRef, Props
     const animatedIndex = useSharedValue(-1)
 
     const containerStyle = useAnimatedStyle(() => ({
-        backgroundColor: interpolateColor(animatedIndex.value, [-1, 0], ['#FFFFFF', 'rgba(0,0,0,0.4)'])
+        backgroundColor: interpolateColor(animatedIndex.value, [-1, 0], ['#FFFFFF', 'rgba(0,0,0,0.5)'])
     }))
 
     const contentStyle = useAnimatedStyle(() => {

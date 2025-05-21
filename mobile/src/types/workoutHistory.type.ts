@@ -1,4 +1,4 @@
-import { BaseExerciseInfo } from './exercises.type'
+import { BaseExerciseInfo, Category } from './exercises.type'
 import { BaseQueryConfig, PaginationMeta, ResponseApi, ViewModeType } from './utils.type'
 
 export interface workoutHistory extends BaseExerciseInfo {
@@ -9,7 +9,7 @@ export interface workoutHistory extends BaseExerciseInfo {
     errors_count: number
     pose_errors: pose_error[]
     elapsed_time: number
-    category: categories
+    category: Category
 }
 
 export interface pose_error {
@@ -24,13 +24,11 @@ export interface workoutHistoryOfDay {
     date: string
     calories_burned: number
     calories_base: number
-    category: categories[]
+    category: Category[]
 }
 
-export type categories = 'abdominal muscles' | 'lower body' | 'full body'
-
 export interface QueryConfigWorkoutHistory extends BaseQueryConfig {
-    category?: categories
+    category?: string
     viewMode?: ViewModeType
 }
 

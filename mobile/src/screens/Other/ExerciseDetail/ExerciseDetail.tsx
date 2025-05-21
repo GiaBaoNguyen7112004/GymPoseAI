@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native'
 import { RootStackScreenProps } from '@/navigation/types'
 
 import GradientButton from '@/components/GradientButton'
@@ -14,6 +14,7 @@ import NoDeviceModal from '@/components/NoDeviceModal'
 import useExerciseData from '@/hooks/useExcersieData'
 import BlankScreenLoader from '@/components/BlankScreenLoader'
 import useRequireDevice from '@/hooks/useRequireDevice'
+import { useFocusEffect } from '@react-navigation/native'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
     const { isReady } = useInteractionReadyState()
@@ -29,6 +30,14 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
             })
         })
     }, [requireDevice, exercise_id])
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!workoutData?.is_training_supported) {
+                Alert.alert('Training Unavailable', 'This workout does not support training mode.', [{ text: 'OK' }])
+            }
+        }, [workoutData?.is_training_supported, handleConnectDevice])
+    )
 
     if (!isReady) return <BlankScreenLoader />
     if (isLoading) return <ExerciseDetailSkeleton />
@@ -57,7 +66,12 @@ function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDet
 
                     <ExerciseSteps steps={workoutData?.steps || []} />
 
-                    <GradientButton Square containerStyle={styles.buttonSubmit} onPress={handleLetTrainPress}>
+                    <GradientButton
+                        Square
+                        containerStyle={styles.buttonSubmit}
+                        disabled={!workoutData?.is_training_supported}
+                        onPress={handleLetTrainPress}
+                    >
                         <Text style={styles.textInnerButtonSubmit}>Let’s Train</Text>
                     </GradientButton>
                 </View>

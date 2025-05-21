@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { View, StyleSheet, SafeAreaView } from 'react-native'
 import { RTCView, MediaStream } from 'react-native-webrtc'
 import { useIsFocused } from '@react-navigation/native'
@@ -26,6 +26,9 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
     const { peripheralInfo } = useBluetoothContext()
     const { userData } = useUserData()
     const { workout_history_id, exercise_id } = route.params
+
+    const isTrainMode = Boolean(workout_history_id || exercise_id)
+
     const isFocused = useIsFocused()
 
     const [workoutHistoryId, setWorkoutHistoryId] = useState<string | undefined>(workout_history_id)
@@ -74,6 +77,10 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
         refetchWorkoutSummary
     })
 
+    const handleStopSteaming = useCallback(() => {
+        navigation.goBack
+    }, [])
+
     return (
         <View style={styles.container}>
             <LoaderModal isVisible={isLoading || isStarting || isReconnecting} />
@@ -84,20 +91,24 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
             )}
             <View style={styles.overlay} />
             <SafeAreaView style={styles.safeArea}>
-                {assessmentResult && (
+                {assessmentResult && isTrainMode && (
                     <AssessmentFeedback assessmentResult={assessmentResult} fadeAnim={fadeAnim} slideAnim={slideAnim} />
                 )}
                 <Countdown initialCount={3} ref={countdownRef} onFinish={triggerStartWorkout} />
-                <MetricsBar
-                    exerciseName={exerciseData?.name}
-                    caloriesBurned={caloriesBurned}
-                    timeLeft={exerciseData ? formatTimeFromSeconds(timeLeft) : undefined}
-                />
+                {isTrainMode && (
+                    <MetricsBar
+                        exerciseName={exerciseData?.name}
+                        caloriesBurned={caloriesBurned}
+                        timeLeft={exerciseData ? formatTimeFromSeconds(timeLeft) : undefined}
+                    />
+                )}
                 <ControlButtons
+                    isTrainMode={isTrainMode}
                     isPaused={isPaused}
                     onStartWorkout={handleStart}
                     onTogglePause={handlePause}
                     onStopWorkout={handleStop}
+                    onStopSteaming={handleStopSteaming}
                 />
             </SafeAreaView>
         </View>

@@ -23,6 +23,9 @@ const workoutHistoryApi = {
             `${process.env.EXPO_PUBLIC_URL_GET_WORKOUT_HISTORY}/statistics`,
             { params }
         )
+    },
+    deleteWorkoutSummaryById({ id }: { id: string }) {
+        return http.delete<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_GET_WORKOUT_HISTORY}/${id}`)
     }
 }
 

@@ -1,26 +1,26 @@
 import React, { memo } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
-import { categories } from '@/types/workoutHistory.type'
 import { ViewModeType } from '@/types/utils.type'
 import { WINDOW_WIDTH } from '@gorhom/bottom-sheet'
 import TabBar from '@/screens/Other/WorkoutHistoryCenter/Components/TabBar'
 import FilterBar from '@/screens/Other/WorkoutHistoryCenter/Components/FilterBar'
 import SortButton from '../SortButton'
+import { Filter } from '../FilterBar/FilterBar'
 
 interface Props {
-    category: categories
-    viewMode: ViewModeType
+    category_id: string
+    viewMode: Filter
     order: 'asc' | 'desc'
-    onCategoryChange: (value: categories) => void
-    onViewModeChange: (value: ViewModeType) => void
+    onCategoryChange: (value: string) => void
+    onViewModeChange: (value: Filter) => void
     onOrderChange: () => void
 }
 
-const FilterControls = ({ category, viewMode, order, onCategoryChange, onViewModeChange, onOrderChange }: Props) => {
+const FilterControls = ({ category_id, viewMode, order, onCategoryChange, onViewModeChange, onOrderChange }: Props) => {
     return (
         <View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
-                <TabBar activeTab={category} onChangeTab={onCategoryChange} />
+                <TabBar activeTab={category_id} onChangeTab={onCategoryChange} />
             </ScrollView>
 
             <View style={styles.filters}>

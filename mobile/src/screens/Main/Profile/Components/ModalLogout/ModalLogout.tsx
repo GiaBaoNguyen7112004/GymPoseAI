@@ -26,7 +26,7 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
         setIsLoggingOut(true)
 
         try {
-            setAllowNotification(false)
+            setAllowNotification(false, false)
             await logout()
             setAuthenticated(false)
         } catch {

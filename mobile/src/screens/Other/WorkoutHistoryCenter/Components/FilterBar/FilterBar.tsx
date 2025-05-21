@@ -1,17 +1,16 @@
-import { ViewModeType } from '@/types/utils.type'
 import { memo, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-const FILTERS = ['daily', 'weekly', 'monthly', 'yearly'] as const
-type Filter = (typeof FILTERS)[number]
+const FILTERS = ['daily', 'weekly'] as const
+export type Filter = (typeof FILTERS)[number]
 
 interface FilterBarProps {
-    onChangeFilter?: (value: ViewModeType) => void
+    onChangeFilter?: (value: Filter) => void
     activeFilterProp?: Filter
 }
 
 function FilterBar({ activeFilterProp, onChangeFilter }: FilterBarProps) {
-    const [activeFilter, setActiveFilter] = useState<Filter>(activeFilterProp || 'weekly')
+    const [activeFilter, setActiveFilter] = useState<Filter>(activeFilterProp || 'daily')
     const handleChangeViewMode = (value: Filter) => {
         setActiveFilter(value)
         onChangeFilter?.(value)

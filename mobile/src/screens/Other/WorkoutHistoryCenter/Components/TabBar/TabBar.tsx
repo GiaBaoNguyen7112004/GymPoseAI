@@ -1,17 +1,18 @@
+import { useCategories } from '@/hooks/useCategoriesData'
+import { Category } from '@/types/exercises.type'
 import React, { memo, useCallback } from 'react'
-import { categories } from '@/types/workoutHistory.type'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 interface TabBarProps {
-    onChangeTab?: (tab: categories) => void
-    activeTab: categories
+    onChangeTab?: (tab: string) => void
+    activeTab: string
 }
 
-const TABS: categories[] = ['full body', 'lower body', 'abdominal muscles']
-
 const TabBar = ({ onChangeTab, activeTab }: TabBarProps) => {
+    const { categoriesData, isPending } = useCategories()
+
     const handleTabChange = useCallback(
-        (tab: categories) => {
+        (tab: string) => {
             if (tab !== activeTab) {
                 onChangeTab?.(tab)
             }
@@ -21,22 +22,22 @@ const TabBar = ({ onChangeTab, activeTab }: TabBarProps) => {
     )
 
     const renderTab = useCallback(
-        (tab: categories) => {
-            const isActive = tab == activeTab
+        (tab: Category) => {
+            const isActive = tab.id == activeTab
             return (
                 <TouchableOpacity
-                    key={tab}
+                    key={tab.id}
                     style={[styles.tab, isActive && styles.activeTab]}
-                    onPress={() => handleTabChange(tab)}
+                    onPress={() => handleTabChange(tab.id)}
                 >
-                    <Text style={[styles.tabText, isActive && styles.activeTabText]}>{tab}</Text>
+                    <Text style={[styles.tabText, isActive && styles.activeTabText]}>{tab.name}</Text>
                 </TouchableOpacity>
             )
         },
         [activeTab]
     )
 
-    return <View style={styles.tabs}>{TABS.map(renderTab)}</View>
+    return <View style={styles.tabs}>{categoriesData.map(renderTab)}</View>
 }
 
 export default memo(TabBar)

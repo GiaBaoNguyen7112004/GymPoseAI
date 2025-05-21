@@ -49,6 +49,10 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
             console.error('Error disconnecting from device:', error)
         }
     }, [disconnectFromDevice])
+
+    const handleSteamCamera = useCallback(() => {
+        navigation.navigate('GymLiveScreen', {})
+    }, [navigation])
     return (
         <ScrollView>
             <SafeAreaView style={styles.container}>
@@ -86,6 +90,14 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
                         title='Bluetooth Address'
                         subText={peripheralInfo?.id}
                         disabled={isConnecting}
+                    />
+
+                    <MenuItem
+                        icon={<Icon name='video-camera-back' size={18} color='#FFF' />}
+                        iconBg='#4CD7D0'
+                        title='Steam Camera'
+                        disabled={isConnecting}
+                        onPress={handleSteamCamera}
                     />
 
                     <MenuItem

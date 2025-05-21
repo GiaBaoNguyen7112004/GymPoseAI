@@ -81,7 +81,6 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
                 ...config
             }
         }
-        console.log('Updated Peripheral:', updatedPeripheral)
         setDeviceInfo(updatedPeripheral)
         await StorageManagerUtil.savePeripheral(updatedPeripheral)
     }

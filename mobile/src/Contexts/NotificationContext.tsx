@@ -15,7 +15,7 @@ interface NotificationContextType {
     notification: Notifications.Notification | null
     error: string | null
     allowNotification: boolean
-    setAllowNotification: (value: boolean) => Promise<void>
+    setAllowNotification: (value: boolean, showToast?: boolean) => Promise<void>
 }
 
 export const NotificationContext = createContext<NotificationContextType | undefined>(undefined)
@@ -72,7 +72,7 @@ function NotificationProvider({ children }: NotificationProviderProps) {
     )
 
     const setAllowNotification = useCallback(
-        async (value: boolean) => {
+        async (value: boolean, showToast: boolean = true) => {
             try {
                 setAllowNotificationState(value)
                 await StorageManager.saveAllowNotification(value)
@@ -80,7 +80,7 @@ function NotificationProvider({ children }: NotificationProviderProps) {
                 if (!value && expoPushToken) {
                     await unregisterFromBackend(expoPushToken)
                     cleanup()
-                    if (isAuthenticated) {
+                    if (isAuthenticated && showToast) {
                         Alert.alert('Notifications Disabled', 'You will no longer receive notifications.')
                     }
                 } else if (value && isAuthenticated && expoPushToken) {

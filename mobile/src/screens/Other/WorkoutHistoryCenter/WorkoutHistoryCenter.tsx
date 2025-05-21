@@ -2,16 +2,15 @@ import { useCallback, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useWorkoutHistory } from '@/hooks/useWorkoutHistory'
 import LoaderModal from '@/components/LoaderModal'
-import { categories } from '@/types/workoutHistory.type'
-import { ViewModeType } from '@/types/utils.type'
 import { RootStackScreenProps } from '@/navigation/types'
 import Header from './Components/Header'
 import FilterControls from './Components/FilterControls'
 import WorkoutList from './Components/WorkoutList'
+import { Filter } from './Components/FilterBar/FilterBar'
 
 export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
-    const [category, setCategory] = useState<categories>('full body')
-    const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
+    const [category, setCategory] = useState<string>('')
+    const [viewMode, setViewMode] = useState<Filter>('weekly')
     const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
     const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } = useWorkoutHistory(
@@ -33,7 +32,7 @@ export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProp
             <Header onBack={navigation.goBack} />
             <View style={styles.mainContent}>
                 <FilterControls
-                    category={category}
+                    category_id={category}
                     viewMode={viewMode}
                     order={order}
                     onCategoryChange={setCategory}
