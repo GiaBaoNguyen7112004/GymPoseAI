@@ -187,7 +187,6 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                     responses.add(response);
                 }
                 break;
-
             default:
                 throw new IllegalArgumentException("Invalid viewMode: " + viewMode);
         }
