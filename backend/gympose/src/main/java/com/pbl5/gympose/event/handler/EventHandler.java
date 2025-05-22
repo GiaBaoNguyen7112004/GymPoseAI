@@ -35,13 +35,17 @@ public class EventHandler {
     ActivityService activityService;
 
     @EventListener
-    private void handleUserRegistrationEvent(UserRegistrationEvent event) {
+    private void createVerificationToken(UserRegistrationEvent event) {
         User user = event.getUser();
         Token token = tokenService.createToken(user, TokenType.ACCOUNT_VERIFICATION);
-        targetService.createUserTarget(user.getId());
-
         emailService.sendMailConfirmRegister(user.getFirstName(), user.getLastName(), user.getEmail(),
                 token.getToken(), CommonConstant.LANGUAGE_CODE);
+    }
+
+    @EventListener
+    private void createUserTarget(UserRegistrationEvent event) {
+        User user = event.getUser();
+        targetService.createUserTarget(user.getId());
     }
 
     @EventListener
@@ -71,5 +75,4 @@ public class EventHandler {
     private void createCaloriesWhenWorkoutFinished(WorkoutFinishEvent event) {
         activityService.createCaloriesConsumption(event.getWorkoutSummary());
     }
-
 }

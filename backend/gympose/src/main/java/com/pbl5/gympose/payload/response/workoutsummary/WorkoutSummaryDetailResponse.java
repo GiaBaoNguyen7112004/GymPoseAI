@@ -25,6 +25,7 @@ public class WorkoutSummaryDetailResponse {
     String category;
     Integer repCount;
     Integer errorsCount;
+    String thumbnailUrl;
     Double met;
     List<PoseErrorResponse> poseErrors;
 }

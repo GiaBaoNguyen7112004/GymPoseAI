@@ -44,6 +44,7 @@ public final class CommonFunction {
             case "weekly" -> now.with(DayOfWeek.MONDAY).truncatedTo(ChronoUnit.DAYS);
             case "monthly" -> now.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
             case "yearly" -> now.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+            case "all" -> LocalDateTime.MIN;
             default -> now.truncatedTo(ChronoUnit.DAYS);
         };
     }

@@ -4,6 +4,7 @@ import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.payload.request.category.CategoryCreationRequest;
 import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
 import com.pbl5.gympose.service.CategoryService;
+import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -26,6 +28,7 @@ import java.util.UUID;
 @Tag(name = "Category API", description = "Category management")
 public class CategoryController {
     CategoryService categoryService;
+    StorageService storageService;
 
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
@@ -71,6 +74,16 @@ public class CategoryController {
     public ResponseEntity<ResponseData> deleteCategory(@PathVariable(name = "category-id") UUID categoryId) {
         categoryService.deleteCategoryById(categoryId);
         ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.CATEGORY_DELETED);
+        return ResponseEntity.ok(responseData);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "upload category image")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(ApiPath.UPLOAD_IMAGE)
+    public ResponseEntity<ResponseData> uploadCategoryImage(@RequestBody MultipartFile file) {
+        ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "category"),
+                FeedbackMessage.CATEGORY_IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }
 

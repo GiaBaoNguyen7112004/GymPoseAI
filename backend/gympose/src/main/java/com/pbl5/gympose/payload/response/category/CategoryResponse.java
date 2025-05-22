@@ -21,4 +21,5 @@ public class CategoryResponse {
     Integer exerciseCount;
     Integer durationMinutes;
     Double caloriesBurned;
+    String thumbnailUrl;
 }

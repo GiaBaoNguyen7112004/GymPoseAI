@@ -21,4 +21,5 @@ public class ExerciseUpdatingRequest {
     Integer durationMinutes;
     Double met;
     List<StepCreationRequest> steps;
+    Boolean isTrainingSupported;
 }

@@ -13,4 +13,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryUpdatingRequest {
     String name;
+    String thumbnailUrl;
 }
