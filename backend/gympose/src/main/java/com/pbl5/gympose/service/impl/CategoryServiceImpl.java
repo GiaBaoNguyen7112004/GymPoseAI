@@ -60,4 +60,5 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(()
                 -> new NotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
     }
+
 }

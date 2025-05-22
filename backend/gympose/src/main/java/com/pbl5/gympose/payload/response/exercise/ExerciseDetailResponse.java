@@ -26,5 +26,6 @@ public class ExerciseDetailResponse {
     Integer durationMinutes;
     Double met;
     UUID categoryId;
+    Boolean isTrainingSupported;
     List<StepRespone> steps;
 }

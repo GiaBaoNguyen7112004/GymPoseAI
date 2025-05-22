@@ -36,6 +36,8 @@ public class Exercise extends AbstractEntity {
 
     Integer durationMinutes = 0;
 
+    Boolean isTrainingSupported = false;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "category_id", nullable = false)
     Category category;

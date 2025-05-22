@@ -115,3 +115,8 @@ workout_summary_not_found:
 notification_not_found:
   code: ERR.NOT0101
   message: Notification not found!
+
+#target
+target_not_found:
+  code: ERR.TGE0101
+  message: Only verified accounts have target

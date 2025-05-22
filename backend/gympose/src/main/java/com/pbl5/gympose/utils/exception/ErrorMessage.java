@@ -55,6 +55,9 @@ public final class ErrorMessage {
     //NOTIFICATION
     public static final String NOTIFICATION_NOT_FOUND = "notification_not_found";
 
+    //TARGET
+    public static final String TARGET_NOT_FOUND = "target_not_found";
+
     private ErrorMessage() {
     }
 }

@@ -18,6 +18,7 @@ public final class FeedbackMessage {
     public static final String CATEGORY_RETRIEVED = "Category retrieved successfully";
     public static final String CATEGORY_UPDATED = "Category updated successfully";
     public static final String CATEGORY_DELETED = "Category deleted successfully";
+    public static final String CATEGORY_IMAGE_UPLOADED = "Category image uploaded successfully";
 
     // Exercise
     public static final String EXERCISE_CREATED = "Exercise created successfully";
