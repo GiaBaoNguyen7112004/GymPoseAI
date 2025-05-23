@@ -69,6 +69,7 @@ public class JwtAuthServiceImpl implements AuthService {
         User user = userMapper.toUser(signUpRequest);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRoles(Stream.of(new Role(RoleName.USER.name())).toList());
+        user.setIsEnabled(true);
         User savedUser = userService.save(user);
 
         eventPublisher.publishEvent(new UserRegistrationEvent(savedUser));

@@ -25,7 +25,8 @@ public class WorkoutSummary extends AbstractEntity {
     Integer elapsedTime = 0;
     Integer repCount;
     Integer durationMinutes;
-
+    String thumbnailUrl;
+    
     @ManyToOne
     @JoinColumn(name = "exercise_id")
     Exercise exercise;
@@ -33,8 +34,8 @@ public class WorkoutSummary extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
- 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "workout_summary_id")
     List<PoseError> poseErrors = new ArrayList<>();
 

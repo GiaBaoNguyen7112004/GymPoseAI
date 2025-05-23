@@ -2,6 +2,9 @@
 internal_server_error:
   code: ERR.SER0101
   message: Internal server error!
+url_not_found:
+  code: ERR.NFN0101
+  message: URL not found!
 
 #authentication
 unauthenticated:
@@ -112,3 +115,8 @@ workout_summary_not_found:
 notification_not_found:
   code: ERR.NOT0101
   message: Notification not found!
+
+#target
+target_not_found:
+  code: ERR.TGE0101
+  message: Only verified accounts have target

@@ -9,6 +9,7 @@ import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.enums.NotificationType;
 import com.pbl5.gympose.enums.TokenType;
+import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.NotificationMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
@@ -33,6 +34,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -79,7 +81,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void readAllNotifications(UUID userId) {
-        notificationRepository.findAllByUser_Id(userId).forEach(notification -> notification.setIsRead(true));
+        List<Notification> notifications = notificationRepository.findAllByUser_Id(userId);
+        notifications.forEach(notification -> notification.setIsRead(true));
+        notificationRepository.saveAll(notifications);
     }
 
     @Override
@@ -126,8 +130,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void resetNewNotifications(UUID userId) {
-        notificationRepository.findAllByUser_IdAndIsNew(userId, Boolean.TRUE)
-                .forEach(notification -> notification.setIsNew(Boolean.FALSE));
+        List<Notification> notifications = notificationRepository.findAllByUser_IdAndIsNew(userId, Boolean.TRUE);
+        if (notifications.isEmpty()) throw new BadRequestException(ErrorMessage.NOTIFICATION_NOT_FOUND);
+        notifications.forEach(notification -> notification.setIsNew(false));
+        notificationRepository.saveAll(notifications);
     }
 
     @Override

@@ -24,4 +24,5 @@ public class ExerciseResponse {
     Integer durationMinutes;
     Double met;
     UUID categoryId;
+    Boolean isTrainingSupported;
 }

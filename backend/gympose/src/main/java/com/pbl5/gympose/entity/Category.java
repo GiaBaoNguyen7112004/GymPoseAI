@@ -22,6 +22,8 @@ public class Category extends AbstractEntity {
     UUID id;
     String name;
 
+    String thumbnailUrl;
+
     @OneToMany(mappedBy = "category", orphanRemoval = true, fetch = FetchType.EAGER)
     List<Exercise> exercises;
 

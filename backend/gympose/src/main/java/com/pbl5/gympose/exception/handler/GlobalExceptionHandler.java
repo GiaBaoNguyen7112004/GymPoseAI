@@ -15,6 +15,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,13 @@ import java.util.Objects;
 @Hidden
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ResponseData> handleNotFound(NoHandlerFoundException ex) {
+        ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessage.URL_NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ResponseData.error(error));
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ResponseData> handlingBadRequestException(BadRequestException ex) {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());

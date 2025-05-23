@@ -17,7 +17,8 @@ import java.io.Serializable;
 public class AIResultMessage implements Serializable {
     String content;
     String time;
-    String repNum;
+    String repIndex;
     String sessionId;
     String userId;
+    String imageId;
 }

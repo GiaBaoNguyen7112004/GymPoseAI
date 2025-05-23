@@ -1,25 +1,21 @@
-package com.pbl5.gympose.payload.response.category;
+package com.pbl5.gympose.payload.request.workoutsummary;
+
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryResponse {
-    UUID id;
-    String name;
-    Integer exerciseCount;
-    Integer durationMinutes;
-    Double caloriesBurned;
-    String thumbnailUrl;
+public class WorkoutSummaryImagesRequest implements Serializable {
+    String sessionId;
+    List<PoseErrorImageRequest> poseErrorImages;
 }
