@@ -31,14 +31,14 @@ public class AuthController {
     }
 
     @PostMapping(ApiPath.LOGIN)
-    public ResponseEntity<ResponseData> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ResponseData> login(@Valid @RequestBody LoginRequest loginRequest) {
         ResponseData responseData = ResponseData.success(authService.login(loginRequest),
                 FeedbackMessage.LOGGED_IN);
         return ResponseEntity.ok(responseData);
     }
 
     @PatchMapping(ApiPath.VERIFY_ACCOUNT)
-    public ResponseEntity<ResponseData> verifyAccount(@RequestBody AccountVerificationRequest
+    public ResponseEntity<ResponseData> verifyAccount(@Valid @RequestBody AccountVerificationRequest
                                                               accountVerificationRequest) {
         authService.verifyAccount(accountVerificationRequest);
         ResponseData responseData = ResponseData
@@ -91,7 +91,7 @@ public class AuthController {
     }
 
     @PostMapping(ApiPath.LOGIN_WITH_FACEBOOK)
-    public ResponseEntity<ResponseData> loginWithFacebook(@RequestBody FacebookLoginRequest request) {
+    public ResponseEntity<ResponseData> loginWithFacebook(@Valid @RequestBody FacebookLoginRequest request) {
         ResponseData responseData = ResponseData.success(authService.loginWithFacebook(request.getAccessToken()),
                 FeedbackMessage.FACEBOOK_LOGGED_IN);
         return ResponseEntity.ok(responseData);

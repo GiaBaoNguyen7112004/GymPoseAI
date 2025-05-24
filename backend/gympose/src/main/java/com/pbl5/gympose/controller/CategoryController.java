@@ -1,5 +1,6 @@
 package com.pbl5.gympose.controller;
 
+import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.payload.general.ResponseData;
 import com.pbl5.gympose.payload.request.category.CategoryCreationRequest;
 import com.pbl5.gympose.payload.request.category.CategoryUpdatingRequest;
@@ -7,6 +8,7 @@ import com.pbl5.gympose.service.CategoryService;
 import com.pbl5.gympose.service.storage.StorageService;
 import com.pbl5.gympose.utils.ApiPath;
 import com.pbl5.gympose.utils.FeedbackMessage;
+import com.pbl5.gympose.utils.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -82,6 +84,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadCategoryImage(@RequestBody MultipartFile file) {
+        if (file.isEmpty()) throw new BadRequestException(ErrorMessage.FILE_MISSING);
         ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "category"),
                 FeedbackMessage.CATEGORY_IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);

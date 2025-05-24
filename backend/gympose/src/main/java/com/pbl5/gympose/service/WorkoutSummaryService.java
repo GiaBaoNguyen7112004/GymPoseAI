@@ -25,4 +25,6 @@ public interface WorkoutSummaryService {
     WorkoutSummaryDetailResponse getWorkoutSummaryDetail(UUID workoutSummaryId);
 
     WorkoutSummary save(WorkoutSummary workoutSummary);
+
+    void delete(UUID workoutSummaryId);
 }

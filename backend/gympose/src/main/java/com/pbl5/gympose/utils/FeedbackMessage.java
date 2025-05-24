@@ -46,6 +46,7 @@ public final class FeedbackMessage {
     public static final String WORKOUT_SUMMARY_CREATED = "Workout summary created successfully";
     public static final String WORKOUT_STATISTICS_RETRIEVED = "Workout statistics retrieved successfully";
     public static final String WORKOUT_SUMMARY_IMAGES_ADDED = "Workout summary images added successfully";
+    public static final String WORKOUT_SUMMARY_DELETED = "Workout summary deleted successfully";
 
     //NOTIFICATION
     public static final String NOTIFICATION_REGISTERED = "Notification registered successfully";

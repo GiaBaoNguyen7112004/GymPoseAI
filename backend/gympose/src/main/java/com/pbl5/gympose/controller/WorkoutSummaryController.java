@@ -99,4 +99,13 @@ public class WorkoutSummaryController {
                 FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "delete workout summary ")
+    @DeleteMapping(ApiPath.WORKOUT_SUMMARY_BY_ID)
+    public ResponseEntity<ResponseData> deleteWorkoutSummary(@PathVariable(name = "workout-summary-id") UUID id) {
+        workoutSummaryService.delete(id);
+        ResponseData responseData = ResponseData.successWithoutMetaAndData(FeedbackMessage.WORKOUT_SUMMARY_DELETED);
+        return ResponseEntity.ok(responseData);
+    }
 }
