@@ -1,6 +1,9 @@
 package com.pbl5.gympose.utils.exception;
 
 public final class ErrorMessage {
+    //INCORRECT FIELD
+    public static final String FIELD_NOT_MATCH = "field_not_match";
+
     //NOT FOUND
     public static final String URL_NOT_FOUND = "url_not_found";
 
@@ -16,6 +19,7 @@ public final class ErrorMessage {
     public static final String OLD_PASSWORD_NOT_MATCH = "old_password_not_match";
     public static final String FACEBOOK_UNAUTHENTICATED = "facebook_unauthenticated";
     public static final String MISSING_FACEBOOK_EMAIL = "missing_facebook_email";
+    public static final String MISSING_JWT = "missing_jwt";
 
     //Internal server error
     public static final String INTERNAL_SERVER_ERROR = "internal_server_error";
@@ -45,6 +49,7 @@ public final class ErrorMessage {
     public static final String FILE_DELETE_FAILED = "file_delete_failed";
     public static final String FILE_SIZE_EXCEEDED = "file_size_exceeded";
     public static final String FILE_NOT_FORMATTED = "file_not_formatted";
+    public static final String FILE_MISSING = "file_missing";
 
     //IMAGE
     public static final String IMAGE_DELETE_FAILED = "image_delete_failed";

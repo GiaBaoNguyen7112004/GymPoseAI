@@ -62,6 +62,7 @@ public final class ApiPath {
     public static final String TARGET_TODAY = "/today";
     public static final String TARGET_CALORIES_TODAY = TARGET_TODAY + "/calories";
     public static final String TARGET_WEEKLY = "/weekly";
+    public static final String TARGET_WATER_INTAKE = "/water-intake";
 
     //ACTIVITY
     public static final String ACTIVITIES = API + "/activities";

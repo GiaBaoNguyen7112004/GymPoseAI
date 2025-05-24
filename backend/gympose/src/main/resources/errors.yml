@@ -5,6 +5,9 @@ internal_server_error:
 url_not_found:
   code: ERR.NFN0101
   message: URL not found!
+field_not_match:
+  code: ERR.FNM0101
+  message: Your field is not match!
 
 #authentication
 unauthenticated:
@@ -28,7 +31,9 @@ account_already_active:
 unauthorized:
   code: ERR.AUTH0201
   message: Unauthorized, You do not have permission to access this page!
-
+missing_jwt:
+  code: ERR.AUTH0301
+  message: Missing jwt !
 #facebook
 facebook_unauthenticated:
   code: ERR.FB0101
@@ -100,6 +105,9 @@ file_size_exceeded:
 file_not_formatted:
   code: ERR.FIL0103
   message: File is not formatted!
+file_missing:
+  code: ERR.FIL0104
+  message: File is missing!
 
 #image
 image_delete_failed:

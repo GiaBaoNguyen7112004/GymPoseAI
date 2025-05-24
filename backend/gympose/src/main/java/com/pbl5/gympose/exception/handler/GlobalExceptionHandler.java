@@ -9,6 +9,7 @@ import com.pbl5.gympose.utils.exception.ErrorUtils;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -29,6 +30,13 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessage.URL_NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ResponseData.error(error));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleInvalidJson(HttpMessageNotReadableException ex) {
+        ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessage.FIELD_NOT_MATCH);
+        ResponseData responseData = ResponseData.error(error);
+        return new ResponseEntity<>(responseData, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -108,4 +116,5 @@ public class GlobalExceptionHandler {
         ResponseData responseData = ResponseData.error(error);
         return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

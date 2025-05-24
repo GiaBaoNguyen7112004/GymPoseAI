@@ -209,4 +209,9 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
     public WorkoutSummary save(WorkoutSummary workoutSummary) {
         return workoutSummaryRepository.save(workoutSummary);
     }
+
+    @Override
+    public void delete(UUID workoutSummaryId) {
+        workoutSummaryRepository.deleteById(workoutSummaryId);
+    }
 }
