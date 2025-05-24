@@ -61,4 +61,13 @@ public class TargetController {
         return ResponseEntity.ok(responseData);
     }
 
+//    @SecurityRequirement(name = "bearerAuth")
+//    @GetMapping(ApiPath.TARGET_CALORIES_TODAY)
+//    @Operation(summary = "get target calories today")
+//    public ResponseEntity<ResponseData> getWaterIntakes(@CurrentUser UserPrincipal userPrincipal) {
+//        ResponseData responseData = ResponseData.success(targetService.getCaloriesTargetToday(userPrincipal.getId()),
+//                FeedbackMessage.TARGET_CALORIES_RETRIEVED);
+//        return ResponseEntity.ok(responseData);
+//    }
+
 }

@@ -38,9 +38,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+        String token = parseJwt(request);
         try {
             LogUtils.info(request.getRequestURI());
-            String token = parseJwt(request);
             if (StringUtils.hasText(token)) {
                 Claims claims = jwtUtils.verifyToken(token, false);
                 UserDetails userDetails = customUserDetailsService
@@ -52,6 +52,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (UnauthenticatedException unauthenticatedException) {
+            if (!StringUtils.hasText(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessage.MISSING_JWT);
+                ResponseData responseData = ResponseData.error(error);
+                response
+                        .getWriter()
+                        .write(Objects.requireNonNull(CommonFunction.toJsonString(responseData)));
+                return;
+            }
             LogUtils.error(request.getMethod(), request.getRequestURL().toString(), unauthenticatedException.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
