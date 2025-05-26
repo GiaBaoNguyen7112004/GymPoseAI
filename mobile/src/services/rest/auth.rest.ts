@@ -23,7 +23,6 @@ const authApi = {
 
     logout() {
         const body = { refresh_token: storage.getRefreshToken() }
-        console.log(storage.getRefreshToken())
         return http.post(process.env.EXPO_PUBLIC_URL_LOGOUT, body)
     },
 
@@ -36,6 +35,7 @@ const authApi = {
     },
 
     resentOTPForgotPassword(body: Omit<ForgotPasswordReqBody, 'otp'>) {
+        console.log('Resending OTP for forgot password:', body)
         return http.post<ResponseApi<any, any>>(process.env.EXPO_PUBLIC_URL_RESEND_OTP_FORGOT_PASSWORD, body)
     },
 

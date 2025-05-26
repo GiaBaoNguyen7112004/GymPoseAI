@@ -21,7 +21,7 @@ function Register({ navigation }: RootStackScreenProps<'Register'>) {
                         isValid={methods.formState.isValid}
                         isLoading={registerMutation.isPending}
                         onSubmit={handleRegister}
-                        goToLogin={() => navigation.navigate('Login')}
+                        goToLogin={() => navigation.replace('Login')}
                     />
                 </View>
             </TouchableWithoutFeedback>
