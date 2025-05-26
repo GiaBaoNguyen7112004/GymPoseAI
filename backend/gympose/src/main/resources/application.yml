@@ -6,6 +6,9 @@ server:
       charset: UTF-8
       force: true
 spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -21,7 +24,7 @@ spring:
   thymeleaf:
     mode: HTML
   profiles:
-    active: dev
+    active: prod
   hikari:
     max-lifetime: 60000
   jpa:
