@@ -28,7 +28,7 @@ export interface IntakeSlot {
     label: string // e.g. "6am - 8am"
     start: string // e.g. "06:00"
     end: string // e.g. "08:00"
-    amountMl: number // e.g. 600
+    amount_ml: number // e.g. 600
 }
 
 export interface WaterIntake {

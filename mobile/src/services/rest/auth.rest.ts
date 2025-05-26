@@ -23,6 +23,7 @@ const authApi = {
 
     logout() {
         const body = { refresh_token: storage.getRefreshToken() }
+        console.log('Logging out with body:', body)
         return http.post(process.env.EXPO_PUBLIC_URL_LOGOUT, body)
     },
 

@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 30,
         marginTop: 12,
-        fontSize: 16,
-        color: '#9E9E9E',
+        fontSize: 12,
+        color: '#ADA4A5',
         textAlign: 'center'
     }
 })

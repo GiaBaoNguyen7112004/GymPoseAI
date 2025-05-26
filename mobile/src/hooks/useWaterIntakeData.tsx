@@ -21,7 +21,7 @@ export const useWaterIntakeData = () => {
 
     const transformedIntakes: waterLogIntake[] = waterIntake.map((intake, index) => ({
         id: index + 1,
-        value: intake.amountMl,
+        value: intake.amount_ml,
         time: intake.label,
         start: intake.start,
         end: intake.end
