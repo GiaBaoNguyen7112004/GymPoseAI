@@ -9,7 +9,6 @@ import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.enums.NotificationType;
 import com.pbl5.gympose.enums.TokenType;
-import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.NotificationMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
@@ -131,7 +130,6 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void resetNewNotifications(UUID userId) {
         List<Notification> notifications = notificationRepository.findAllByUser_IdAndIsNew(userId, Boolean.TRUE);
-        if (notifications.isEmpty()) throw new BadRequestException(ErrorMessage.NOTIFICATION_NOT_FOUND);
         notifications.forEach(notification -> notification.setIsNew(false));
         notificationRepository.saveAll(notifications);
     }

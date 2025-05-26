@@ -44,6 +44,7 @@ public class CloudinaryService implements StorageService {
 
     @Override
     public String uploadFileWithFolder(MultipartFile multipartFile, String folder) {
+        if (multipartFile == null) throw new BadRequestException(ErrorMessage.FILE_MISSING);
         String fileUrl = null;
         File file = FileUtils.convertMultiPartToFile(multipartFile);
         try {

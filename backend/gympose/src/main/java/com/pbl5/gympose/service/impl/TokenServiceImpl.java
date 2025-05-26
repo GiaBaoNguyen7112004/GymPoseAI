@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,9 +33,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token findOtp(UUID userId) {
-        return tokenRepository.findByTypeAndUser_Id(TokenType.RESET_PASSWORD, userId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.TOKEN_NOT_FOUND));
+    public Optional<Token> findOtp(UUID userId) {
+        return tokenRepository.findByTypeAndUser_Id(TokenType.RESET_PASSWORD, userId);
     }
 
     @Override

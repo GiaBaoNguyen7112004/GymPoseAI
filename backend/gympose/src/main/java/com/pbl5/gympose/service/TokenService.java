@@ -5,12 +5,13 @@ import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.enums.TokenType;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TokenService {
     Token findToken(String token);
 
-    Token findOtp(UUID userId);
+    Optional<Token> findOtp(UUID userId);
 
     Token createToken(User user, TokenType type);
 

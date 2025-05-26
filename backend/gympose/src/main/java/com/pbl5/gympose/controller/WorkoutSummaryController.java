@@ -51,7 +51,7 @@ public class WorkoutSummaryController {
                                                           @RequestParam(name = "page", defaultValue = "1") int page,
                                                           @RequestParam(name = "limit", defaultValue = "10") int paging,
                                                           @RequestParam(name = "viewMode", defaultValue = "daily") String viewMode,
-                                                          @RequestParam(name = "category", required = false) UUID category,
+                                                          @RequestParam(name = "categoryId", required = false) UUID category,
                                                           @CurrentUser UserPrincipal userPrincipal) {
         Pageable pageable = PagingUtils.makePageRequest(sortBy, order, page, paging);
         PagingWorkoutSummariesResponse response = workoutSummaryService

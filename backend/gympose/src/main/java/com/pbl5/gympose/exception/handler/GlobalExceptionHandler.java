@@ -1,5 +1,6 @@
 package com.pbl5.gympose.exception.handler;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.pbl5.gympose.exception.*;
 import com.pbl5.gympose.payload.general.ErrorResponse;
 import com.pbl5.gympose.payload.general.ResponseData;
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleInvalidJson(HttpMessageNotReadableException ex) {
+    public ResponseEntity<Object> handleInvalidJson(UnrecognizedPropertyException ex) {
         ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessage.FIELD_NOT_MATCH);
         ResponseData responseData = ResponseData.error(error);
         return new ResponseEntity<>(responseData, HttpStatus.UNPROCESSABLE_ENTITY);
