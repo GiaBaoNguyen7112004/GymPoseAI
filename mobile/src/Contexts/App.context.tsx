@@ -1,15 +1,17 @@
 import { createContext, useContext, useState } from 'react'
 import { User } from '@/types/user.type'
 import storage from '@/utils/StorageManager.util'
+
 interface AppContextInterface {
     isAuthenticated: boolean
     profile: User | null
     setProfile: React.Dispatch<React.SetStateAction<User | null>>
     setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
 }
+const token = storage.getRefreshToken()
 
 const initialAppContext: AppContextInterface = {
-    isAuthenticated: Boolean(storage.getRefreshToken()),
+    isAuthenticated: Boolean(token),
     setAuthenticated: () => null,
     profile: storage.getProfile(),
     setProfile: () => null

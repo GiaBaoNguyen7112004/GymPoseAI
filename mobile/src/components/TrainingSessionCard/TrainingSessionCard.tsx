@@ -1,10 +1,10 @@
-import { memo, useMemo } from 'react'
-import { View, Text, Pressable, StyleSheet, StyleProp, ViewStyle } from 'react-native'
+import { memo, useMemo, useState } from 'react'
+import { View, Text, Pressable, StyleSheet, StyleProp, ViewStyle, Image } from 'react-native'
 import AvatarWithIcon from '../AvatarWithIcon'
 import MyIcon from '@/components/Icon'
 import Progress from '@/components/Progress'
-import { categories, workoutHistory } from '@/types/workoutHistory.type'
-import { COLOR_BRANDS, ICONS_CATEGORY_MAP } from '@/constants/common.constants'
+import { workoutHistory } from '@/types/workoutHistory.type'
+import { COLOR_BRANDS } from '@/constants/common.constants'
 
 interface TrainingSessionCardProps {
     item: workoutHistory
@@ -13,21 +13,28 @@ interface TrainingSessionCardProps {
 }
 
 function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps) {
+    const [imageLoaded, setImageLoaded] = useState(false)
+
     const progress = useMemo(() => {
-        return item.calories_burned / item.calories_base
+        return item.calories_base ? item.calories_burned / item.calories_base : 0
     }, [item.calories_burned, item.calories_base])
-
-    const colors = useMemo(() => {
-        return item.category === 'lower body' ? COLOR_BRANDS.primary : COLOR_BRANDS.secondary
-    }, [item.category])
-
-    const icon = useMemo(() => {
-        return ICONS_CATEGORY_MAP.get(item.category as categories) || 'movement1'
-    }, [item.category])
 
     return (
         <Pressable style={[styles.container, style]} onPress={onPress}>
-            <AvatarWithIcon size={50} colors={colors} icon={icon} />
+            {item.thumbnail_url ? (
+                <View style={styles.avatarContainer}>
+                    {!imageLoaded && <View style={styles.imagePlaceholder} />}
+                    <Image
+                        source={{ uri: item.thumbnail_url }}
+                        style={styles.avatar}
+                        resizeMode='cover'
+                        onLoad={() => setImageLoaded(true)}
+                    />
+                </View>
+            ) : (
+                <AvatarWithIcon size={50} colors={COLOR_BRANDS.primary} icon='FullBodyWorkout' />
+            )}
+
             <View style={styles.content}>
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.stats}>
@@ -59,13 +66,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         columnGap: 10,
         alignSelf: 'center',
+
         // iOS shadow
-        shadowColor: 'rgba(29, 22, 23, 0.1)',
-        shadowOffset: { width: 1, height: 10 },
-        shadowOpacity: 1,
-        shadowRadius: 20,
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+
         // Android shadow
-        elevation: 10
+        elevation: 3,
+
+        borderWidth: 0.5,
+        borderColor: 'rgba(0, 0, 0, 0.05)'
     },
     content: {
         flex: 1,
@@ -91,5 +103,32 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 10,
         borderRadius: 5
+    },
+    avatarContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 999,
+        overflow: 'hidden',
+        backgroundColor: '#FFF',
+        borderWidth: 1,
+        borderColor: '#E4E4E7',
+
+        // iOS shadow
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+
+        // Android shadow
+        elevation: 4
+    },
+    avatar: {
+        width: '100%',
+        height: '100%'
+    },
+    imagePlaceholder: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: '#F3F4F6',
+        borderRadius: 999
     }
 })

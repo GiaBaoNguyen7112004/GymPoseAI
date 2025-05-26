@@ -2,31 +2,36 @@ import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 
 // ** Line Chart configuration **
 const lineChartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientToOpacity: 0,
+    backgroundGradientFrom: '#F9FAFB',
+    backgroundGradientTo: '#FFFFFF',
+    backgroundGradientFromOpacity: 0.8,
+    backgroundGradientToOpacity: 0.2,
     decimalPlaces: 0,
-    propsForHorizontalLabels: { dx: -15 },
-    color: (opacity = 1) => `rgba(134, 174, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(128, 128, 128, ${opacity})`,
+    propsForHorizontalLabels: {
+        dx: -10,
+        fontSize: 13,
+        fontWeight: '500',
+        color: '#6B7280'
+    },
+    color: (opacity = 1) => `rgba(99, 102, 241, ${opacity})`,
+    labelColor: (opacity = 1) => `#6B7280`,
     propsForLabels: {
-        fontSize: 12,
-        fontWeight: '400',
-        color: '#7B6F72'
+        fontSize: 13,
+        fontWeight: '500',
+        color: '#6B7280'
     },
     propsForDots: {
-        r: '1',
-        strokeWidth: '1',
-        stroke: '#86aeff'
+        r: '2',
+        strokeWidth: '2',
+        stroke: '#6366F1',
+        fill: '#FFFFFF'
     },
     propsForBackgroundLines: {
-        strokeDasharray: '',
-        strokeWidth: 1.2,
-        stroke: '#F7F8F8'
+        strokeDasharray: '5,5',
+        strokeWidth: 1,
+        stroke: '#E5E7EB'
     }
 }
-
 const lineChartColor = (opacity = 1) => `rgba(134, 174, 255, ${opacity})`
 
 export const workoutHistoryLineChart = {
@@ -49,27 +54,34 @@ export const workoutSummaryProgressRingChart = {
     progressRingChartConfig
 }
 
-// ** Bar Chart configuration **
 const activityTrackerBarChartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: '#FFFFFF',
-    backgroundGradientTo: '#FFFFFF',
+    backgroundGradientFrom: '#FFF',
+    backgroundGradientTo: '#FFF',
     decimalPlaces: 0,
-    color: (opacity, index) => {
-        return 'rgba(0, 0, 0, 0.1)'
+    color: (opacity = 1, index) => {
+        const colors = ['#4A90E2', '#50C878', '#FF6B6B', '#FFD166']
+        return index !== undefined ? colors[index % colors.length] : `rgba(74, 144, 226, ${opacity})`
     },
     labelColor: () => '#7B6F72',
-    style: {},
-    barPercentage: 0.8,
+    style: {
+        borderRadius: 8,
+        padding: 8
+    },
+    barPercentage: 0.75,
+    barRadius: 4,
     propsForBackgroundLines: {
-        strokeWidth: 1
+        strokeWidth: 1,
+        stroke: '#E0E4E8',
+        strokeDasharray: '3, 3'
     },
-    barRadius: 12,
     propsForLabels: {
-        fontSize: 12,
-        fontWeight: '400',
-        color: '#7B6F72'
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#333333'
     },
-    stackedBar: true
+    stackedBar: true,
+    fillShadowGradient: '#4A90E2',
+    fillShadowGradientOpacity: 0.2
 }
 
 export const activityTrackerBarChart = {

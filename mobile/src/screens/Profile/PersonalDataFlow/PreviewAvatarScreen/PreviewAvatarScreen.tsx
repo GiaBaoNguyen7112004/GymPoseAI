@@ -6,7 +6,7 @@ import { ImageEditor, ImageData } from 'expo-crop-image'
 import GradientButton from '@/components/GradientButton'
 import { ScreenComponentProps } from '../routes.config'
 import { useMutation } from '@tanstack/react-query'
-import { uploadApi, userApi } from '@/services/rest'
+import { userApi } from '@/services/rest'
 import showToast from '@/utils/toast.util'
 import { showErrorAlert } from '@/utils/alert.util'
 import useUserData from '@/hooks/useUserData'
@@ -45,7 +45,7 @@ function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
             const imageUrl = await uploadImageFromUri(avatarUri)
 
             if (!imageUrl) {
-                showErrorAlert('default')
+                showErrorAlert({ statusCode: 'default' })
                 return
             }
 
@@ -55,7 +55,7 @@ function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
             goToTop?.()
         } catch (error) {
             console.error(error)
-            showErrorAlert('default')
+            showErrorAlert({ statusCode: 'default' })
         }
     }
 

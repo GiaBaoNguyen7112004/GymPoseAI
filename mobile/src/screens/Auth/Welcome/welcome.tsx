@@ -13,7 +13,7 @@ const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
     const { isNavigating } = useNavigationState(navigation)
     const { userData } = useUserData()
 
-    const isProfileComplete = useMemo(() => Boolean(userData?.isProfileComplete), [userData])
+    const isProfileComplete = useMemo(() => Boolean(userData?.is_profile_complete), [userData])
 
     const handleNavigate = useCallback(() => {
         if (isProfileComplete) {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         maxWidth: 214
     },
     heading: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: '700',
         lineHeight: 30,
         color: '#1D1617'

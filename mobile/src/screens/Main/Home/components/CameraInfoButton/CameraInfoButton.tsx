@@ -8,21 +8,16 @@ function CameraInfoButton() {
     const { peripheralInfo } = useBluetoothContext()
     const navigation = useNavigation()
     const isHasCamera = Boolean(peripheralInfo?.id)
+
     const handlePress = useCallback(() => {
-        if (isHasCamera) {
-            navigation.navigate('MyDevice')
-        } else {
-            navigation.navigate('BlueToothScan')
-        }
+        navigation.navigate(isHasCamera ? 'MyDevice' : 'BlueToothScan')
     }, [isHasCamera, navigation])
+
+    const iconName = isHasCamera ? 'photo-camera' : 'add'
 
     return (
         <TouchableOpacity style={styles.button} onPress={handlePress}>
-            {isHasCamera ? (
-                <MaterialIcons name='photo-camera' size={22} color='#000' />
-            ) : (
-                <MaterialIcons name='add' size={22} color='#000' />
-            )}
+            <MaterialIcons name={iconName} size={22} color='#000' />
         </TouchableOpacity>
     )
 }
@@ -34,27 +29,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F7F8F8',
         borderRadius: 8,
         justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative'
-    },
-    badge: {
-        position: 'absolute',
-        top: 1,
-        right: 1,
-        backgroundColor: 'red',
-        borderRadius: 10,
-        paddingHorizontal: 4,
-        minWidth: 18,
-        height: 18,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#F7F8F8'
-    },
-    badgeText: {
-        color: 'white',
-        fontSize: 10,
-        fontWeight: 'bold'
+        alignItems: 'center'
     }
 })
 

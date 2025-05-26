@@ -35,6 +35,7 @@ class WebRTCService {
     private eventHandlers: EventHandlerMap = {}
     private isReconnecting = false
     private isTrainingActive = false
+    private isTraining = false
     private userId: string = ''
     private signalingErrorHandler: (error: Event) => void = () => {}
     private connectionStatusCallbacks: WebRTCConnectionStatusCallback[] = []
@@ -314,11 +315,27 @@ class WebRTCService {
         this.peerConnection.removeEventListener('icecandidate', this.handleIceCandidate)
         this.peerConnection.removeEventListener('track', this.handleTrack)
         this.peerConnection.removeEventListener('datachannel', this.handleDataChannel)
+        this.peerConnection.removeEventListener('connectionstatechange', this.handleConnectionStateChange)
         this.peerConnection.close()
 
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer)
+            this.reconnectTimer = null
+        }
+
+        this.signaling.off('answer')
+        this.signaling.off('icecandidate')
+        this.signaling.off('error')
         this.signaling.disconnect()
+
         this.remoteStreamHandler = undefined
+        this.signalingErrorHandler = () => {}
         this.eventHandlers = {}
+        this.connectionStatusCallbacks = []
+        this.userId = ''
+        this.isTrainingActive = false
+        this.isReconnecting = false
+        this.reconnectAttempts = 0
     }
     static destroyInstance(): void {
         if (WebRTCService.instance) {
@@ -327,7 +344,7 @@ class WebRTCService {
             WebRTCService.instance = null
         }
     }
-    /** ========== FLOW LOGIC ========== */
+    /** ========== FLOW TRAINING LOGIC ========== */
 
     async sendTrainingRequest(payload: TrainingPayload): Promise<StatusPayload> {
         this.userId = payload.user_id
@@ -343,24 +360,29 @@ class WebRTCService {
 
     async sendStartTraining(): Promise<ResponseTrainingPayload> {
         if (!this.isTrainingActive) {
-            console.warn('[WebRTC] Cannot start training, not ready')
             return Promise.reject('Training not active')
         }
         this.sendData({ key: MessageKey.REQUEST_TRAINING, data: 'START' })
         return new Promise((resolve) => {
+            this.isTraining = true
             this.on(MessageKey.RESPONSE_TRAINING, (data) => resolve(data))
         })
     }
 
     sendStopTraining(): void {
+        if (!this.isTraining) {
+            return
+        }
         this.sendData({ key: MessageKey.REQUEST_TRAINING, data: 'STOP' })
         this.isTrainingActive = false
+        this.isTraining = false
     }
 
     async sendPauseTraining(): Promise<StatusPayload> {
         this.sendData({ key: MessageKey.REQUEST_TRAINING, data: 'PAUSE' })
 
         return new Promise((resolve) => {
+            this.isTraining = false
             this.on(MessageKey.STATUS, (data) => resolve(data))
         })
     }

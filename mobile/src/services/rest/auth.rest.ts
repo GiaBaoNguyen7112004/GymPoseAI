@@ -3,7 +3,6 @@ import storage from '@/utils/StorageManager.util'
 
 import {
     AuthResponse,
-    FindAccountResponse,
     ForgotPasswordReqBody,
     LoginReqBody,
     RegisterReqBody,
@@ -23,13 +22,13 @@ const authApi = {
     },
 
     logout() {
-        return http.post(process.env.EXPO_PUBLIC_URL_LOGOUT, {
-            body: { refresh_token: storage.getRefreshToken() }
-        })
+        const body = { refresh_token: storage.getRefreshToken() }
+        console.log(storage.getRefreshToken())
+        return http.post(process.env.EXPO_PUBLIC_URL_LOGOUT, body)
     },
 
     findAccount(body: Omit<ForgotPasswordReqBody, 'otp'>) {
-        return http.post<FindAccountResponse>(process.env.EXPO_PUBLIC_URL_FORGOT_PASSWORD, body)
+        return http.post(process.env.EXPO_PUBLIC_URL_FORGOT_PASSWORD, body)
     },
 
     verifyOtpForgotPassword(body: ForgotPasswordReqBody) {

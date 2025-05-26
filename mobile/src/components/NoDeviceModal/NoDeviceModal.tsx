@@ -1,7 +1,7 @@
+import { BlurView } from 'expo-blur'
 import React, { memo } from 'react'
 import { View, Text, StyleSheet, Pressable, Dimensions, Platform } from 'react-native'
 import Modal from 'react-native-modal'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 interface NoDeviceModalProps {
     isVisible: boolean
@@ -13,54 +13,62 @@ interface NoDeviceModalProps {
 
 const { width } = Dimensions.get('window')
 
+const INSTAGRAM_COLORS = {
+    primaryAction: '#0095F6',
+    secondaryText: '#8e8e8e',
+    textPrimary: '#262626',
+    textSecondary: '#8e8e8e',
+    separator: '#dbdbdb',
+    background: '#FFFFFF'
+}
+
 const NoDeviceModal = ({
     isVisible,
     onClose,
     onConnectDevice,
     title = 'No Device Connected',
-    message = 'To start your workout, please connect to a compatible device.'
+    message = 'Please connect a compatible device to start your workout.'
 }: NoDeviceModalProps) => {
     return (
         <Modal
             isVisible={isVisible}
             onBackdropPress={onClose}
             onBackButtonPress={onClose}
-            backdropOpacity={0.6}
-            animationIn='zoomInUp'
-            animationOut='zoomOutDown'
-            animationInTiming={500}
-            animationOutTiming={400}
+            backdropOpacity={0.2}
+            animationIn='fadeInUp'
+            animationOut='fadeOutDown'
+            animationInTiming={300}
+            animationOutTiming={300}
             useNativeDriverForBackdrop
             style={styles.modal}
+            hideModalContentWhileAnimating
         >
-            <View style={styles.container}>
-                <Icon name='bluetooth-off' size={48} color='#FF6B6B' style={styles.icon} />
+            <BlurView style={styles.blurContainer} tint='extraLight' intensity={0}>
+                <View style={styles.innerContainer}>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.message}>{message}</Text>
 
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.message}>{message}</Text>
+                    <View style={styles.buttonContainer}>
+                        <Pressable
+                            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+                            onPress={onConnectDevice}
+                            android_ripple={{ color: 'rgba(0, 149, 246, 0.1)' }}
+                        >
+                            <Text style={[styles.buttonText, styles.connectButtonText]}>Connect Device</Text>
+                        </Pressable>
 
-                <View style={styles.buttonContainer}>
-                    <Pressable
-                        style={({ pressed }) => [styles.button, styles.connectButton, pressed && styles.buttonPressed]}
-                        onPress={onConnectDevice}
-                        android_ripple={{ color: 'rgba(255,255,255,0.3)' }}
-                    >
-                        <Text style={[styles.buttonText, styles.connectButtonText]}>Connect Device</Text>
-                    </Pressable>
+                        <View style={styles.separator} />
 
-                    <Pressable
-                        style={({ pressed }) => [
-                            styles.button,
-                            styles.cancelButton,
-                            pressed && styles.buttonPressedSecondary
-                        ]}
-                        onPress={onClose}
-                        android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
-                    >
-                        <Text style={[styles.buttonText, styles.cancelButtonText]}>Cancel</Text>
-                    </Pressable>
+                        <Pressable
+                            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+                            onPress={onClose}
+                            android_ripple={{ color: 'rgba(0, 0, 0, 0.05)' }}
+                        >
+                            <Text style={[styles.buttonText, styles.cancelButtonText]}>Cancel</Text>
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
+            </BlurView>
         </Modal>
     )
 }
@@ -71,69 +79,63 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    container: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 24,
-        paddingVertical: 30,
-        paddingHorizontal: 25,
-        alignItems: 'center',
-        width: width * 0.85,
-        maxWidth: 380,
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.15,
-        shadowRadius: 15,
-        elevation: 10
+    blurContainer: {
+        borderRadius: 14,
+        overflow: 'hidden',
+        width: width * 0.75,
+        maxWidth: 300
     },
-    icon: {
-        marginBottom: 20
+    innerContainer: {
+        paddingTop: 24,
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)'
     },
     title: {
-        fontSize: 22,
-        fontWeight: Platform.OS === 'ios' ? '700' : 'bold',
-        color: '#1A202C',
-        marginBottom: 12,
-        textAlign: 'center'
+        fontSize: 18,
+        fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
+        color: INSTAGRAM_COLORS.textPrimary,
+        marginBottom: 8,
+        textAlign: 'center',
+        paddingHorizontal: 20
     },
     message: {
-        fontSize: 16,
-        color: '#4A5568',
+        fontSize: 14,
+        color: INSTAGRAM_COLORS.textSecondary,
         textAlign: 'center',
-        marginBottom: 30,
-        lineHeight: 24
+        marginBottom: 24,
+        lineHeight: 20,
+        paddingHorizontal: 20
     },
     buttonContainer: {
-        width: '100%'
+        width: '100%',
+        borderTopWidth: 1,
+        borderTopColor: INSTAGRAM_COLORS.separator
     },
     button: {
         paddingVertical: 14,
-        borderRadius: 12,
         width: '100%',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10
-    },
-    connectButton: {
-        backgroundColor: '#4A90E2'
-    },
-    cancelButton: {
-        backgroundColor: '#F0F2F5'
+        justifyContent: 'center'
     },
     buttonText: {
         fontSize: 16,
-        fontWeight: Platform.OS === 'ios' ? '600' : 'bold'
+        textAlign: 'center'
     },
     connectButtonText: {
-        color: '#FFFFFF'
+        color: INSTAGRAM_COLORS.primaryAction,
+        fontWeight: Platform.OS === 'ios' ? '600' : 'bold'
     },
     cancelButtonText: {
-        color: '#4A5568'
+        color: INSTAGRAM_COLORS.secondaryText,
+        fontWeight: Platform.OS === 'ios' ? '400' : 'normal'
+    },
+    separator: {
+        height: 1,
+        backgroundColor: INSTAGRAM_COLORS.separator,
+        width: '100%'
     },
     buttonPressed: {
-        opacity: 0.8
-    },
-    buttonPressedSecondary: {
-        backgroundColor: '#E2E8F0'
+        backgroundColor: 'rgba(0, 0, 0, 0.05)'
     }
 })
 

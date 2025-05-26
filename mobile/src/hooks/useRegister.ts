@@ -8,14 +8,14 @@ import showToast from '@/utils/toast.util'
 import { useForm } from 'react-hook-form'
 import { schema, SchemaType } from '@/utils/rules.util'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useNavigation } from '@react-navigation/native'
 
 type FormDataRegister = Pick<SchemaType, 'email' | 'first_name' | 'last_name' | 'password' | 'policy'>
 
 const FormSchemaRegister = schema.pick(['email', 'password', 'first_name', 'last_name', 'policy'])
 
 const useRegister = () => {
-    const { setAuthenticated, setProfile } = useContext(AppContext)
-
+    const navigation = useNavigation()
     const methods = useForm<FormDataRegister>({
         defaultValues: {
             email: '',
@@ -35,9 +35,7 @@ const useRegister = () => {
         const body = omit(data, 'policy')
         await registerMutation.mutateAsync(body, {
             onSuccess: (res) => {
-                const user = res.data.data.user
-                setProfile(user)
-                setAuthenticated(true)
+                navigation.navigate('Login')
                 showToast({ title: res.data.message, position: 'top' })
             },
             onError: (errors) => handleFormError(errors, methods.setError)

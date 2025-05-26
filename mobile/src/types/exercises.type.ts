@@ -1,26 +1,25 @@
-import { extend } from 'lodash'
-import { categories } from './workoutHistory.type'
-
 export interface BaseExerciseInfo {
     id: string
     name: string
     duration_minutes: number
     met?: number
+    thumbnail_url: string
 }
 export interface Exercise extends BaseExerciseInfo {
-    thumbnail_url: string
     description: string
     media_url: string
     category: Category
     steps?: StepOfExercise[]
+    is_training_supported: boolean
 }
 
 export interface Category {
     id: string
-    name: categories | string
+    name: string
     exercise_count: number
     duration_minutes: number
     calories_burned: number
+    thumbnail_url: string
 }
 
 export interface StepOfExercise {

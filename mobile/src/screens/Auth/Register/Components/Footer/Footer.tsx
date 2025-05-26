@@ -12,7 +12,7 @@ interface FooterProps {
 
 const Footer = ({ isValid, isLoading, onSubmit, goToLogin }: FooterProps) => (
     <View style={styles.wrapper}>
-        <GradientButton onPress={onSubmit} disabled={!isValid} Square isLoading={isLoading} style={styles.btnRegister}>
+        <GradientButton onPress={onSubmit} Square isLoading={isLoading} style={styles.btnRegister}>
             <Text style={styles.btnText}>Register</Text>
         </GradientButton>
         <Pressable style={styles.loginWrapper} onPress={goToLogin}>

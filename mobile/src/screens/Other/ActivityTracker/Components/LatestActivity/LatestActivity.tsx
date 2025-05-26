@@ -9,11 +9,7 @@ import EmptyComponentV2 from '@/components/EmptyComponentV2'
 import { defaultKeyExtractor } from '@/utils/list'
 import { UserActivity } from '@/types/userActivity.type'
 
-interface LatestActivityProps {
-    isReadyRender?: boolean
-}
-
-function LatestActivity({ isReadyRender }: LatestActivityProps) {
+function LatestActivity() {
     const navigation = useNavigation()
 
     const { data, isLoading } = useQuery({
@@ -33,7 +29,7 @@ function LatestActivity({ isReadyRender }: LatestActivityProps) {
 
     const renderItem = useCallback(({ item }: ListRenderItemInfo<UserActivity>) => <ActivityItem data={item} />, [])
 
-    const canRender = !isLoading && isReadyRender
+    const canRender = !isLoading
     return (
         <View style={styles.container}>
             <View style={styles.header}>

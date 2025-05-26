@@ -3,11 +3,11 @@ import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 interface ProgressBarParams {
-    progress: number // Giá trị tiến trình (0 đến 1)
-    barHeight?: number // Chiều cao (dọc) hoặc chiều dài (ngang)
-    barWidth?: number // Chiều rộng của thanh
-    colors?: [string, string, ...string[]] // Màu gradient
-    style?: StyleProp<ViewStyle> // Style tùy chỉnh
+    progress: number
+    barHeight?: number
+    barWidth?: number
+    colors?: [string, string, ...string[]]
+    style?: StyleProp<ViewStyle>
     orientation?: 'vertical' | 'horizontal'
     [key: string]: any
 }

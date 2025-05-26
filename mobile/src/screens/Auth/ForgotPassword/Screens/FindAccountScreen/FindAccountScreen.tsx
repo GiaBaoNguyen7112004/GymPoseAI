@@ -27,8 +27,7 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
     const { loginWithFacebook } = useFacebookLogin()
     const methods = useForm<FormData>({
         defaultValues: { email },
-        resolver: yupResolver(FormSchema),
-        mode: 'onBlur'
+        resolver: yupResolver(FormSchema)
     })
 
     const { formState, handleSubmit, setError } = methods
@@ -36,7 +35,10 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
 
     const { mutate, isPending } = useMutation({
         mutationFn: authApi.findAccount,
-        onSuccess: (res) => onSuccess(res.data.data.user.email),
+        onSuccess: (res) => {
+            const email = methods.getValues('email')
+            onSuccess(email)
+        },
         onError: (error) => handleFormError<FormData>(error, setError)
     })
 
@@ -65,7 +67,6 @@ function FindAccountScreen({ onSuccess, email, handleGotoLogin }: FindAccountScr
                         activeOpacity={0.8}
                         containerStyle={styles.btnNext}
                         Square
-                        disabled={!isValid}
                         isLoading={isPending}
                         onPress={handleFindAccount}
                     >
@@ -109,7 +110,8 @@ const styles = StyleSheet.create({
     descriptionText: {
         marginVertical: 20,
         color: '#666',
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingHorizontal: 20
     },
     formWrapper: {
         width: SCREEN_WIDTH * 0.9,

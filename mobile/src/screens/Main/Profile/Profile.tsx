@@ -3,12 +3,10 @@ import { ScrollView, StyleSheet, View, ActivityIndicator, Alert } from 'react-na
 
 import AnimatedBottomSheetLayout from '@/components/layouts/AnimatedBottomSheetLayout'
 import { MainTabScreenProps } from '@/navigation/types'
-import useScrollListener from '@/hooks/useScrollListener'
 import useBottomSheetController from '@/hooks/useBottomSheetController'
 
 import UserInfo from './Components/UserInfo'
 import SettingItem from './Components/SettingItem'
-import HeaderNav from './Components/HeaderNav'
 import SettingSection from './Components/SettingSection'
 import NotificationToggle from './Components/NotificationToggle'
 import LogoutButton from './Components/LogoutButton'
@@ -18,6 +16,7 @@ import PersonalDataFlow from '@/screens/Profile/PersonalDataFlow'
 import useNotification from '@/hooks/useNotificationContext'
 import useBluetoothContext from '@/hooks/useBluetoothContext'
 import AddDeviceButton from './Components/AddDeviceButton/AddDeviceButton'
+import NavigationBarV2 from '@/components/NavigationBarV2'
 
 function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { allowNotification, setAllowNotification } = useNotification()
@@ -25,8 +24,6 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const { peripheralInfo, isConnecting, connectedDevice } = useBluetoothContext()
 
     const [logoutState, setLogoutState] = useState({ visible: false, loading: false })
-
-    const { isScrolled, handleScroll } = useScrollListener()
 
     const isHasDevice = Boolean(peripheralInfo?.id)
 
@@ -78,7 +75,9 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     const handleGotoDevice = useCallback(() => {
         navigation.navigate('MyDevice')
     }, [])
-
+    const gotoSearchWorkout = useCallback(() => {
+        navigation.navigate('Search')
+    }, [navigation])
     const deviceStatus = useMemo(() => {
         if (isConnecting) return 'Connecting...'
         if (connectedDevice) return 'Connected'
@@ -88,15 +87,14 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
     return (
         <AnimatedBottomSheetLayout ref={bottomSheetRef}>
             <View style={styles.mainContent}>
-                <HeaderNav isScrolled={isScrolled} onBack={navigation.goBack} />
-
                 <ScrollView
                     style={styles.scrollView}
-                    onScroll={handleScroll}
                     scrollEventThrottle={16}
                     removeClippedSubviews
                     keyboardShouldPersistTaps='handled'
                 >
+                    <NavigationBarV2 title='Profile' searchAction={gotoSearchWorkout} containerStyle={styles.header} />
+
                     <UserInfo editPress={openEditProfile} />
 
                     <View style={styles.sectionWrapper}>
@@ -155,11 +153,11 @@ function Profile({ navigation }: MainTabScreenProps<'Profile'>) {
 
 const styles = StyleSheet.create({
     scrollView: {
-        flex: 1,
-        paddingTop: 10
+        flex: 1
     },
     mainContent: {
         flex: 1,
+
         backgroundColor: '#FFF',
         borderRadius: 30
     },
@@ -169,6 +167,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '90%',
         flex: 1
+    },
+    header: {
+        marginBottom: 10
     }
 })
 

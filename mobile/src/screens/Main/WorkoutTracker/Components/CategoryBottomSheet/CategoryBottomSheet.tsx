@@ -12,53 +12,47 @@ import { defaultKeyExtractor } from '@/utils/list'
 
 interface CategoryBottomSheetProps {
     handleCategoryPress: (category: Category) => void
-    isReady?: boolean
 }
 
-const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(
-    ({ handleCategoryPress, isReady }, ref) => {
-        const { categoriesData, categoriesLoading } = useCategories()
-        const renderCategoryItem = useCallback(
-            ({ item }: { item: Category }) => (
-                <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />
-            ),
-            [handleCategoryPress]
-        )
+const CategoryBottomSheet = forwardRef<BottomSheet, CategoryBottomSheetProps>(({ handleCategoryPress }, ref) => {
+    const { categoriesData, categoriesLoading } = useCategories()
+    const renderCategoryItem = useCallback(
+        ({ item }: { item: Category }) => <CategoryCard itemData={item} onPress={() => handleCategoryPress(item)} />,
+        [handleCategoryPress]
+    )
 
-        const contentReady = isReady && !categoriesLoading
-        return (
-            <BottomSheet
-                ref={ref}
-                index={0}
-                snapPoints={['55%', '90%']}
-                backdropComponent={InvisibleBackdrop}
-                enablePanDownToClose={false}
-                enableDynamicSizing={false}
-                enableContentPanningGesture={false}
-            >
-                <BottomSheetView style={styles.bottomSheetContent}>
-                    <View style={styles.trainingSection}>
-                        <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
-                        {contentReady ? (
-                            <BottomSheetFlatList
-                                data={categoriesData}
-                                scrollEnabled
-                                renderItem={renderCategoryItem}
-                                keyExtractor={defaultKeyExtractor}
-                                showsVerticalScrollIndicator={false}
-                                keyboardShouldPersistTaps='handled'
-                                bounces={false}
-                                ListEmptyComponent={EmptyComponent}
-                            />
-                        ) : (
-                            <CategorySkeletonList />
-                        )}
-                    </View>
-                </BottomSheetView>
-            </BottomSheet>
-        )
-    }
-)
+    return (
+        <BottomSheet
+            ref={ref}
+            index={0}
+            snapPoints={['55%', '90%']}
+            backdropComponent={InvisibleBackdrop}
+            enablePanDownToClose={false}
+            enableDynamicSizing={false}
+            enableContentPanningGesture={false}
+        >
+            <BottomSheetView style={styles.bottomSheetContent}>
+                <View style={styles.trainingSection}>
+                    <Text style={styles.trainingTitle}>What Do You Want to Train</Text>
+                    {!categoriesLoading ? (
+                        <BottomSheetFlatList
+                            data={categoriesData}
+                            scrollEnabled
+                            renderItem={renderCategoryItem}
+                            keyExtractor={defaultKeyExtractor}
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps='handled'
+                            bounces={false}
+                            ListEmptyComponent={EmptyComponent}
+                        />
+                    ) : (
+                        <CategorySkeletonList />
+                    )}
+                </View>
+            </BottomSheetView>
+        </BottomSheet>
+    )
+})
 
 const styles = StyleSheet.create({
     bottomSheetContent: {

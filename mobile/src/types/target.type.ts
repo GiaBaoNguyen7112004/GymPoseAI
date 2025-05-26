@@ -18,8 +18,11 @@ export interface StatsTargetOfDay {
 }
 
 export interface DailyTarget {
-    water: number
-    calories: number
+    id?: string
+    calories_burned?: number
+    calories_target: number
+    water_intake?: number
+    water_target: number
 }
 export interface IntakeSlot {
     label: string // e.g. "6am - 8am"
@@ -41,4 +44,7 @@ export type DailyTargetResponseAPI = ResponseApi<DailyTarget, any>
 
 export type DailyWaterTargetResponseAPI = ResponseApi<WaterIntake, any>
 export type DailyCaloriesTargetResponseAPI = ResponseApi<CaloriesTargetOfDay, any>
-export type DailyUpdateTargetReqBody = DailyTarget
+export type DailyUpdateTargetReqBody = {
+    calories_target: number
+    water_target: number
+}

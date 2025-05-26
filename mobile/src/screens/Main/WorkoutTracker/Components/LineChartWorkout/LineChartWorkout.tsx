@@ -4,14 +4,11 @@ import { SCREEN_WIDTH } from '@/constants/devices.constant'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import { workoutHistoryApi } from '@/services/rest'
 import { useQuery } from '@tanstack/react-query'
+import { memo } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 
-interface LineChartWorkoutProps {
-    isReadyRender?: boolean
-}
-
-function LineChartWorkout({ isReadyRender }: LineChartWorkoutProps) {
+function LineChartWorkout() {
     const { data: workoutQuery } = useQuery({
         queryKey: ['workoutHistory', 'weekly'],
         queryFn: () => workoutHistoryApi.getWorkoutSummaryStatistics({ viewMode: 'weekly' }),
@@ -19,7 +16,7 @@ function LineChartWorkout({ isReadyRender }: LineChartWorkoutProps) {
     })
     const workoutHistoryData = workoutQuery?.data.data || []
 
-    const isChartReady = isReadyRender && workoutHistoryData?.length > 0
+    const isChartReady = workoutHistoryData?.length > 0
 
     return (
         <View style={styles.graphContainer}>
@@ -47,7 +44,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LineChartWorkout
+export default memo(LineChartWorkout)
 
 const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: '#fff',

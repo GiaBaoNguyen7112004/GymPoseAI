@@ -2,7 +2,7 @@ import { Exercise } from './exercises.type'
 import { ResponseApi } from './utils.type'
 
 export interface SearchParams {
-    q: string
+    query: string
     type: 'less' | 'hard'
 }
 

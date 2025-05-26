@@ -1,244 +1,89 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react'
-import { View, StyleSheet, SafeAreaView, Animated, Easing, Alert } from 'react-native'
+import React, { useCallback, useRef, useState } from 'react'
+import { View, StyleSheet, SafeAreaView } from 'react-native'
 import { RTCView, MediaStream } from 'react-native-webrtc'
 import { useIsFocused } from '@react-navigation/native'
 import AssessmentFeedback from './components/AssessmentFeedback'
 import MetricsBar from './components/MetricsBar'
 import ControlButtons from './components/ControlButtons'
-import useWebRTC from '@/hooks/useWebRTC'
-import { RootStackScreenProps } from '@/navigation/types'
-import useAppContext from '@/hooks/useAppContext'
-import useBluetoothContext from '@/hooks/useBluetoothContext'
-import { useWorkoutSummaryData } from '@/hooks/useWorkoutSummaryData'
-import { formatTimeFromSeconds } from '@/utils/format.util'
-import { calculateCaloriesBurned } from '@/utils/training.util'
-import { AIResponsePayload, TrainingPayload } from '@/types/payloadWithWebRTCTypes'
 import Countdown, { CountdownRef } from '@/components/Countdown'
 import LoaderModal from '@/components/LoaderModal'
-import { workoutHistory } from '@/types/workoutHistory.type'
 import PreCallBackgroundGradient from './components/backgroundPlaceholder'
+import { RootStackScreenProps } from '@/navigation/types'
+import { TrainingPayload } from '@/types/payloadWithWebRTCTypes'
 import { DeviceConfig } from '@/types/peripheral.type'
-import useExerciseData from '@/hooks/useExcersieData'
-import { WebRTCConnectionStatus } from '@/services/rtc/WebRTCService'
+import useSlideAnimations from '@/hooks/useSlideAnimations'
+import { formatTimeFromSeconds } from '@/utils/format.util'
+import useWebRTCHandlers from '@/hooks/useWebRTCGymLiveHandlers'
+import useWorkoutLogic from '@/hooks/useWorkoutGymeLiveLogic'
+import useBluetoothContext from '@/hooks/useBluetoothContext'
+import useUserData from '@/hooks/useUserData'
 
-type GymLiveMode = 'NEW' | 'RESUME'
+const ANIMATION_DURATION = 600
 
 interface GymLiveScreenProps extends RootStackScreenProps<'GymLiveScreen'> {}
 
-// Constants
-const ANIMATION_DURATION = 600
-const WORKOUT_MINUTES_TO_SECONDS = 60
-
 const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
-    const { workout_history_id, exercise_id } = route.params
-    const { profile } = useAppContext()
     const { peripheralInfo } = useBluetoothContext()
+    const { userData } = useUserData()
+    const { workout_history_id, exercise_id } = route.params
+
+    const isTrainMode = Boolean(workout_history_id || exercise_id)
 
     const isFocused = useIsFocused()
 
-    const previousErrorRef = useRef<string | null>(null)
-
-    // State
     const [workoutHistoryId, setWorkoutHistoryId] = useState<string | undefined>(workout_history_id)
     const [assessmentResult, setAssessmentResult] = useState<string>('')
-    const [isPaused, setIsPaused] = useState<boolean>(true)
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null)
-    const [timeLeft, setTimeLeft] = useState<number>(-1)
-    const [isStarting, setIsStarting] = useState<boolean>(false)
-    const [isReconnecting, setIsReconnecting] = useState<boolean>(false)
-
-    // Refs
-    const countdownRef = useRef<CountdownRef>(null)
-    const fadeAnim = useRef(new Animated.Value(0)).current
-    const slideAnim = useRef(new Animated.Value(20)).current
-
-    // Data hooks
-    const {
-        workoutData: workoutSummary,
-        isLoading: isLoadingWorkoutSummary,
-        refetch: refetchWorkoutSummary
-    } = useWorkoutSummaryData(workoutHistoryId)
-    const { workoutData, isLoading: isLoadingExercise } = useExerciseData({ exercise_id })
-
-    const mode: GymLiveMode = workoutHistoryId ? 'RESUME' : 'NEW'
-    const isLoading = mode === 'NEW' ? isLoadingExercise : isLoadingWorkoutSummary
-    const exerciseData = mode === 'NEW' ? workoutData : workoutSummary
-
     const [trainingPayload, setTrainingPayload] = useState<TrainingPayload>({
         exercise_id: exercise_id ?? null,
-        workout_summary_id: workoutHistoryId ?? null,
-        user_id: profile?.id as string,
+        workout_summary_id: workout_history_id ?? null,
+        user_id: userData?.id ?? '',
         config: peripheralInfo?.config as DeviceConfig
     })
 
-    const workoutDurationSeconds = useMemo(
-        () => (exerciseData?.duration_minutes ?? 0) * WORKOUT_MINUTES_TO_SECONDS,
-        [exerciseData?.duration_minutes]
-    )
+    const countdownRef = useRef<CountdownRef>(null)
+    const previousErrorRef = useRef<string | null>(null)
 
-    const timeLeftInitial = useMemo(() => {
-        if (!exerciseData) return 0
-        if (mode === 'NEW') return Math.ceil(workoutDurationSeconds)
-        const elapsedSeconds = (exerciseData as workoutHistory)?.elapsed_time ?? 0
-        return Math.max(Math.ceil(workoutDurationSeconds - elapsedSeconds), 0)
-    }, [mode, exerciseData, workoutDurationSeconds])
-
-    const caloriesBurned = useMemo(
-        () =>
-            calculateCaloriesBurned({
-                durationSeconds: workoutDurationSeconds - timeLeft,
-                met: exerciseData?.met ?? 0,
-                weightKg: profile?.weight ?? 0
-            }),
-        [workoutDurationSeconds, timeLeft, exerciseData?.met, profile?.weight]
-    )
-
-    const handleStatusWebRTCChange = useCallback(
-        (status: WebRTCConnectionStatus, details?: string) => {
-            if (status === 'reconnect_failed' || status === 'signaling_failed') {
-                handleConnectionError('Reconnect failed')
-            } else if (status === 'reconnecting') {
-                setIsReconnecting(true)
-                setIsPaused(true)
-            } else if (status === 'connected') {
-                setIsReconnecting(false)
-            }
-        },
-        [navigation]
-    )
-
-    const listenAIResponse = useCallback(({ content }: AIResponsePayload) => {
-        setAssessmentResult(content)
-        setTimeout(() => setAssessmentResult('Good depth and form!'), 1500)
-    }, [])
-
-    // WebRTC hook
-    const { sendTrainingRequest, sendStartTraining, sendStopTraining, sendPauseTraining } = useWebRTC({
-        wsSignalingUrl: `ws://${peripheralInfo?.ip_address}:8000`,
-        onRemoteStream: setRemoteStream,
-        onAIResponse: listenAIResponse,
-        onStatusChange: handleStatusWebRTCChange
+    const { fadeAnim, slideAnim } = useSlideAnimations({ assessmentResult, duration: ANIMATION_DURATION })
+    const {
+        isPaused,
+        setIsPaused,
+        timeLeft,
+        isStarting,
+        setIsStarting,
+        caloriesBurned,
+        isLoading,
+        exerciseData,
+        refetchWorkoutSummary
+    } = useWorkoutLogic({
+        workoutHistoryId,
+        exercise_id,
+        setTrainingPayload
     })
 
-    // Effects
-    useEffect(() => {
-        Animated.parallel([
-            Animated.timing(fadeAnim, {
-                toValue: 1,
-                duration: ANIMATION_DURATION,
-                easing: Easing.ease,
-                useNativeDriver: true
-            }),
-            Animated.timing(slideAnim, {
-                toValue: 0,
-                duration: ANIMATION_DURATION,
-                easing: Easing.ease,
-                useNativeDriver: true
-            })
-        ]).start()
-    }, [assessmentResult, fadeAnim, slideAnim])
+    const { handleStart, handlePause, handleStop, triggerStartWorkout, isReconnecting } = useWebRTCHandlers({
+        trainingPayload,
+        setWorkoutHistoryId,
+        isPaused,
+        setIsPaused,
+        setIsStarting,
+        setRemoteStream,
+        setAssessmentResult,
+        navigation,
+        isFocused,
+        previousErrorRef,
+        countdownRef,
+        workoutHistoryId,
+        refetchWorkoutSummary
+    })
 
-    useEffect(() => {
-        setTimeLeft(timeLeftInitial)
-    }, [timeLeftInitial])
-
-    useEffect(() => {
-        if (isPaused || timeLeft <= 0) return
-        const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000)
-        return () => clearInterval(timer)
-    }, [isPaused, timeLeft])
-
-    useEffect(() => {
-        if (timeLeft === 0) sendStopTraining()
-    }, [timeLeft, isLoading, sendStopTraining])
-
-    // Handlers
-    const handleConnectionError = useCallback(
-        (errorDetails?: string) => {
-            if (!isFocused) return
-
-            const currentError = errorDetails || 'Unknown error'
-
-            if (previousErrorRef.current === currentError) return
-
-            previousErrorRef.current = currentError
-
-            Alert.alert(
-                'Connection Error',
-                'There was a problem connecting to the GymBot device. Please restart the device and try again.',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            previousErrorRef.current = null
-                            navigation.pop(1)
-                        }
-                    }
-                ]
-            )
-        },
-        [isFocused, navigation]
-    )
-
-    const handleStart = useCallback(async () => {
-        if (!profile?.id) return
-        setIsStarting(true)
-        try {
-            const result = await sendTrainingRequest(trainingPayload)
-            if (result !== 'OK') throw new Error('Device is busy')
-            countdownRef.current?.start(3)
-        } catch (error) {
-            console.error('Error sending training request:', error)
-            handleConnectionError('Device is busy')
-        } finally {
-            setIsStarting(false)
-        }
-    }, [trainingPayload, profile?.id, sendTrainingRequest, handleConnectionError, setIsStarting])
-
-    const handlePause = useCallback(async () => {
-        console.log('handlePause', isPaused)
-        if (isPaused) {
-            console.log('handleStart', isPaused)
-            await handleStart()
-        } else {
-            console.log('handlePause', isPaused)
-            setIsPaused(true)
-            try {
-                const res = await sendPauseTraining()
-                if (res !== 'OK') throw new Error('Device is busy')
-                refetchWorkoutSummary()
-            } catch (error) {
-                handleConnectionError('Device is busy')
-            }
-        }
-    }, [isPaused, handleStart, sendPauseTraining, refetchWorkoutSummary, handleConnectionError])
-
-    const handleStop = useCallback(() => {
-        sendStopTraining()
-        navigation.navigate('Congratulation')
-    }, [sendStopTraining, navigation])
-
-    const triggerStartWorkout = useCallback(async () => {
-        try {
-            const { workout_summary_id } = await sendStartTraining()
-            if (!workout_summary_id) throw new Error('Invalid workout summary ID')
-            setTrainingPayload((prev) => ({ ...prev, workout_summary_id }))
-            setWorkoutHistoryId(workout_summary_id)
-            setIsPaused(false)
-        } catch (error) {
-            console.error('Error starting workout:', error)
-            handleConnectionError('Invalid workout summary ID')
-            setIsPaused(true)
-        }
-    }, [sendStartTraining, handleConnectionError])
+    const handleStopSteaming = useCallback(() => {
+        navigation.goBack
+    }, [])
 
     return (
         <View style={styles.container}>
-            <LoaderModal
-                isVisible={(isLoading || isStarting) && !isReconnecting}
-                title={isLoading ? 'Loading' : 'Starting'}
-            />
-            <LoaderModal isVisible={isReconnecting} title='Reconnecting' />
+            <LoaderModal isVisible={isLoading || isStarting || isReconnecting} />
             {remoteStream ? (
                 <RTCView streamURL={remoteStream.toURL()} style={styles.background} objectFit='cover' />
             ) : (
@@ -246,20 +91,24 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
             )}
             <View style={styles.overlay} />
             <SafeAreaView style={styles.safeArea}>
-                {assessmentResult && (
+                {assessmentResult && isTrainMode && (
                     <AssessmentFeedback assessmentResult={assessmentResult} fadeAnim={fadeAnim} slideAnim={slideAnim} />
                 )}
                 <Countdown initialCount={3} ref={countdownRef} onFinish={triggerStartWorkout} />
-                <MetricsBar
-                    exerciseName={exerciseData?.name}
-                    caloriesBurned={caloriesBurned}
-                    timeLeft={formatTimeFromSeconds(timeLeft)}
-                />
+                {isTrainMode && (
+                    <MetricsBar
+                        exerciseName={exerciseData?.name}
+                        caloriesBurned={caloriesBurned}
+                        timeLeft={exerciseData ? formatTimeFromSeconds(timeLeft) : undefined}
+                    />
+                )}
                 <ControlButtons
+                    isTrainMode={isTrainMode}
                     isPaused={isPaused}
                     onStartWorkout={handleStart}
                     onTogglePause={handlePause}
                     onStopWorkout={handleStop}
+                    onStopSteaming={handleStopSteaming}
                 />
             </SafeAreaView>
         </View>

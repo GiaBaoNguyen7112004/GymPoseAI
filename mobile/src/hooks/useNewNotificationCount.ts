@@ -5,7 +5,7 @@ function useNewNotificationCount() {
     const { data } = useQuery({
         queryKey: ['new-notification'],
         queryFn: notificationApi.getNewNotificationCount,
-        staleTime: 1000 * 60 * 5
+        staleTime: 1000 * 60 * 3
     })
     const notificationCount = data?.data?.data?.new_notification_count ?? 0
     return { notificationCount }

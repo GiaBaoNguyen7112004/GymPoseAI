@@ -14,11 +14,13 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyIcon from '@/components/Icon'
 import { IconName } from '@/constants/icon.constants'
+import { wrap } from 'lodash'
 
 export interface ControllerInputProps extends Omit<TextInputProps, 'defaultValue'>, UseControllerProps {
     type?: KeyboardTypeOptions | 'password'
     icon?: IconName
     containerStyle?: StyleProp<ViewStyle>
+    inPutStyle?: StyleProp<ViewStyle>
 }
 
 const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
@@ -31,6 +33,7 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
             defaultValue,
             style,
             containerStyle,
+            inPutStyle,
             ...inputProps
         }: ControllerInputProps,
         ref
@@ -42,28 +45,31 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
         const togglePasswordVisibility = useCallback(() => setHidePassword((prev) => !prev), [])
 
         return (
-            <View style={[styles.inputWrapper, containerStyle, showError && styles.errorBorder]}>
-                {icon && <MyIcon name={icon} size={18} style={styles.icon} />}
-                <TextInput
-                    {...inputProps}
-                    ref={ref}
-                    value={field.value?.toString() ?? ''}
-                    onChangeText={field.onChange}
-                    onBlur={field.onBlur}
-                    placeholderTextColor='#ADA4A5'
-                    secureTextEntry={isHidePassword}
-                    keyboardType={type !== 'password' ? type : 'default'}
-                    style={[styles.input, style, !icon && { paddingLeft: 4 }]}
-                />
-                {type === 'password' && (
-                    <TouchableOpacity style={styles.passwordToggle} onPress={togglePasswordVisibility}>
-                        <MaterialCommunityIcons
-                            name={isHidePassword ? 'eye-off-outline' : 'eye-outline'}
-                            size={20}
-                            color={isHidePassword ? '#333' : '#318bfb'}
-                        />
-                    </TouchableOpacity>
-                )}
+            <View style={[styles.wrapper, containerStyle]}>
+                <View style={[styles.inputWrapper, inPutStyle, showError && styles.errorBorder]}>
+                    {icon && <MyIcon name={icon} size={18} style={styles.icon} />}
+                    <TextInput
+                        {...inputProps}
+                        ref={ref}
+                        value={field.value?.toString() ?? ''}
+                        onChangeText={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholderTextColor='#ADA4A5'
+                        secureTextEntry={isHidePassword}
+                        keyboardType={type !== 'password' ? type : 'default'}
+                        style={[styles.input, style, !icon && { paddingLeft: 4 }]}
+                    />
+                    {type === 'password' && (
+                        <TouchableOpacity style={styles.passwordToggle} onPress={togglePasswordVisibility}>
+                            <MaterialCommunityIcons
+                                name={isHidePassword ? 'eye-off-outline' : 'eye-outline'}
+                                size={20}
+                                color={isHidePassword ? '#333' : '#318bfb'}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
+
                 {showError && <Text style={styles.errorMessage}>{fieldState.error?.message}</Text>}
             </View>
         )
@@ -73,6 +79,9 @@ const ControlledInput = forwardRef<TextInput, ControllerInputProps>(
 export default memo(ControlledInput)
 
 const styles = StyleSheet.create({
+    wrapper: {
+        width: '100%'
+    },
     inputWrapper: {
         width: '100%',
         height: 48,
@@ -102,9 +111,7 @@ const styles = StyleSheet.create({
         width: 30
     },
     errorMessage: {
-        position: 'absolute',
-        bottom: -18,
-        left: 10,
+        marginTop: 5,
         color: '#FF0000',
         fontSize: 12
     },

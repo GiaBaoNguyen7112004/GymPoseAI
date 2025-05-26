@@ -1,30 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MyIcon from '@/components/Icon'
 import { Category } from '@/types/exercises.type'
-import { categories } from '@/types/workoutHistory.type'
-import { ICONS_CATEGORY_MAP } from '@/constants/common.constants'
-import { memo, useMemo } from 'react'
+import { memo } from 'react'
 
 interface CategoryCardProps {
     onPress?: () => void
     itemData: Category
 }
 
-const mapSizeImageToData: Record<categories, number> = {
-    'abdominal muscles': 121,
-    'lower body': 73,
-    'full body': 110
-}
-
 function CategoryCard({ onPress, itemData }: CategoryCardProps) {
-    const IconObj = useMemo(() => {
-        const iconName = ICONS_CATEGORY_MAP.get(itemData.name as categories) || 'movement1'
-        const size = mapSizeImageToData[itemData.name as categories] || 110
-        return {
-            iconName,
-            size
-        }
-    }, [itemData.name])
     return (
         <View style={styles.exerciseCard}>
             <View style={styles.exerciseInfo}>
@@ -37,7 +21,11 @@ function CategoryCard({ onPress, itemData }: CategoryCardProps) {
                 </TouchableOpacity>
             </View>
             <View style={styles.exerciseImageContainer}>
-                <MyIcon name={IconObj.iconName} size={IconObj.size} />
+                {itemData.thumbnail_url ? (
+                    <Image source={{ uri: itemData.thumbnail_url }} style={styles.exerciseImage} resizeMode='cover' />
+                ) : (
+                    <MyIcon name='movement1' size={110} />
+                )}
             </View>
         </View>
     )
@@ -90,10 +78,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#FFF',
-        borderRadius: 999
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: '#E4E4E7',
+        shadowColor: '#7B6F72',
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+
+        elevation: 1
     },
     exerciseImage: {
-        width: 70,
-        height: 70
+        width: '100%',
+        height: '100%'
     }
 })

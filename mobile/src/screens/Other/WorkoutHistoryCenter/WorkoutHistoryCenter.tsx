@@ -1,72 +1,125 @@
-import { useCallback, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import React, { useState, useCallback, useMemo } from 'react'
+import { View, StyleSheet, SafeAreaView, ListRenderItem } from 'react-native'
 import { useWorkoutHistory } from '@/hooks/useWorkoutHistory'
-import LoaderModal from '@/components/LoaderModal'
-import { categories } from '@/types/workoutHistory.type'
-import { ViewModeType } from '@/types/utils.type'
+import { useCategories } from '@/hooks/useCategoriesData'
+import useDebounce from '@/hooks/useDebounce'
 import { RootStackScreenProps } from '@/navigation/types'
-import Header from './Components/Header'
-import FilterControls from './Components/FilterControls'
-import WorkoutList from './Components/WorkoutList'
+import { workoutHistory } from '@/types/workoutHistory.type'
 
-export default function WorkoutHistoryScreen({ navigation }: RootStackScreenProps<'WorkoutHistoryCenter'>) {
-    const [category, setCategory] = useState<categories>('full body')
+import TrainingSessionCard from '@/components/TrainingSessionCard'
+import Header from './components/Header'
+import ModalSelectCategory from './components/ModalSelectCategory'
+import BottomNavigation from './components/BottomNavigation'
+import WorkoutList from './components/WorkoutlList/WorkoutList'
+import useInteractionReadyState from '@/hooks/useInteractionReadyState'
+import BlankScreenLoader from '@/components/BlankScreenLoader'
+
+type ViewModeType = 'weekly' | 'monthly' | 'all'
+
+const WorkoutHistoryCenter: React.FC<RootStackScreenProps<'WorkoutHistoryCenter'>> = ({ navigation }) => {
+    const { isReady } = useInteractionReadyState()
+
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selectedWorkout, setSelectedWorkout] = useState<string>('All workout')
+    const [categoryId, setCategoryId] = useState<string | null>(null)
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
-    const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
-    const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } = useWorkoutHistory(
-        category,
-        viewMode,
-        order
+    const debouncedCategoryId = useDebounce(categoryId, 200)
+    const debouncedViewMode = useDebounce(viewMode, 200)
+
+    const { categoriesData, categoriesLoading } = useCategories()
+    const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = useWorkoutHistory(
+        debouncedCategoryId,
+        debouncedViewMode
     )
 
-    const handleChangeSortMode = useCallback(() => setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc')), [])
+    const workouts = useMemo(() => data?.pages.flatMap((page) => page.data) || [], [data])
+    const handleSelectWorkout = (id: string | null, name: string = 'All workout') => {
+        setSelectedWorkout(name)
+        setCategoryId(id)
+        setModalVisible(false)
+    }
 
-    const handleItemPress = useCallback((id: string) => {
-        navigation.navigate('WorkoutSummaryDetail', { workout_id: id })
+    const toggleModal = useCallback(() => {
+        setModalVisible((prev) => !prev)
     }, [])
 
-    const workouts = data?.pages.flatMap((page) => page.data) || []
+    const handleItemPress = useCallback(
+        (id: string) => {
+            navigation.navigate('WorkoutSummaryDetail', { workout_id: id })
+        },
+        [navigation]
+    )
 
+    const renderItem: ListRenderItem<workoutHistory> = useCallback(
+        ({ item }) => (
+            <View style={styles.cardWrapper}>
+                <TrainingSessionCard item={item} onPress={() => handleItemPress(item.id)} />
+            </View>
+        ),
+        [handleItemPress]
+    )
+
+    if (!isReady) {
+        return <BlankScreenLoader />
+    }
     return (
-        <View style={styles.container}>
-            <Header onBack={navigation.goBack} />
-            <View style={styles.mainContent}>
-                <FilterControls
-                    category={category}
-                    viewMode={viewMode}
-                    order={order}
-                    onCategoryChange={setCategory}
-                    onViewModeChange={setViewMode}
-                    onOrderChange={handleChangeSortMode}
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <Header
+                    style={styles.header}
+                    headerTitle={selectedWorkout}
+                    onBackPress={navigation.goBack}
+                    onTitlePress={toggleModal}
                 />
-                <View style={{ flex: 1 }}>
-                    <LoaderModal isVisible={isLoading} />
+
+                <View style={styles.content}>
                     <WorkoutList
-                        data={workouts}
+                        fetchNextPage={fetchNextPage}
+                        hasNextPage={hasNextPage}
                         isFetching={isFetching}
                         isFetchingNextPage={isFetchingNextPage}
-                        hasNextPage={hasNextPage}
-                        fetchNextPage={fetchNextPage}
-                        onRefresh={refetch}
-                        onPressItem={handleItemPress}
+                        isLoading={isLoading}
+                        renderItem={renderItem}
+                        workouts={workouts}
                     />
                 </View>
+
+                <BottomNavigation viewMode={viewMode} setViewMode={setViewMode} />
+
+                <ModalSelectCategory
+                    categoriesData={categoriesData}
+                    modalVisible={modalVisible}
+                    onCloseModal={toggleModal}
+                    selectedWorkout={selectedWorkout}
+                    setSelectedWorkout={handleSelectWorkout}
+                    isLoading={categoriesLoading}
+                />
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#92A3FD'
+    safeArea: {
+        flex: 1
     },
-    mainContent: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-        borderTopLeftRadius: 40,
-        marginTop: 8,
-        paddingTop: 16
+    container: {
+        flex: 1
+    },
+    header: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10
+    },
+    content: {
+        flex: 1
+    },
+    cardWrapper: {
+        paddingHorizontal: 10
     }
 })
+
+export default WorkoutHistoryCenter

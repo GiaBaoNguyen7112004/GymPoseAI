@@ -39,9 +39,10 @@ const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse, onStatusChang
             start()
 
             return () => {
+                webRTCServiceRef.current?.sendStopTraining()
                 WebRTCService.destroyInstance()
             }
-        }, [])
+        }, [WebRTCService])
     )
 
     const sendTrainingRequest = useCallback(async (payload: TrainingPayload): Promise<StatusPayload> => {
@@ -63,7 +64,8 @@ const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse, onStatusChang
 
     const sendStopTraining = useCallback(() => {
         webRTCServiceRef.current?.sendStopTraining()
-    }, [])
+        WebRTCService.destroyInstance()
+    }, [WebRTCService])
 
     const sendPauseTraining = useCallback(async (): Promise<StatusPayload> => {
         if (!webRTCServiceRef.current) throw new Error('WebRTC has not been initialized')
