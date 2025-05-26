@@ -46,7 +46,6 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
                         </Text>
                         {countdown === 0 && <TextGradient style={styles.resendStrong} text=' Resend' />}
                     </TouchableOpacity>
-
                     {/* Submit Button */}
                     <GradientButton
                         Square
@@ -57,20 +56,18 @@ function VerificationScreen({ onSuccess, email, onSingUp }: VerificationScreenPr
                     >
                         <Text style={styles.submitText}>Send</Text>
                     </GradientButton>
-
                     {/* Sign Up */}
                     <Text style={styles.haveAccountText}>Do you have an account?</Text>
                     <TouchableOpacity style={styles.signupBtn} onPress={onSingUp}>
                         <Text style={styles.signupText}>Sign up</Text>
                     </TouchableOpacity>
-
-                    {/* Facebook Login */}
+                    {/* Facebook Login
                     <TouchableOpacity style={styles.facebookBtn} onPress={loginWithFacebook}>
                         <View style={styles.facebookContent}>
                             <FontAwesome name='facebook' size={20} color='#8F8F8F' style={{ marginRight: 8 }} />
                             <Text style={styles.facebookText}>Login with Facebook</Text>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         </FormProvider>

@@ -18,7 +18,7 @@ function Login({ navigation }: RootStackScreenProps<'Login'>) {
     }, [navigation])
 
     const handleGoToRegister = useCallback(() => {
-        navigation.navigate('Register')
+        navigation.replace('Register')
     }, [navigation])
 
     return (
