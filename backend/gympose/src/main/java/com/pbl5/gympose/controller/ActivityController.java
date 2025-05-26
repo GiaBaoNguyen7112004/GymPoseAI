@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ApiPath.AUTH)
+@RequestMapping(ApiPath.ACTIVITIES)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Tag(name = "Activity API", description = "Activity API")
@@ -31,7 +31,7 @@ public class ActivityController {
 
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "get user activities")
-    @GetMapping(ApiPath.ACTIVITIES)
+    @GetMapping
     public ResponseEntity<ResponseData> getUserActivities(@RequestParam(name = "sort_by", defaultValue = "created_at") String sortBy,
                                                           @RequestParam(name = "order", defaultValue = "desc") String order,
                                                           @RequestParam(name = "page", defaultValue = "1") int page,
