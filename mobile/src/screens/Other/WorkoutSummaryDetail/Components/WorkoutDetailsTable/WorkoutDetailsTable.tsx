@@ -23,7 +23,7 @@ const WorkoutDetailsTable = ({ poseErrors, handlePoseErrorPress }: WorkoutDetail
     )
 
     const handleViewMore = useCallback(() => {
-        setVisibleItems((prev) => prev + 3)
+        setVisibleItems((prev) => prev + 6)
     }, [])
 
     return (
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 10 },
         shadowOpacity: 1,
         shadowRadius: 20,
-        elevation: 2
+        elevation: 2,
+        marginBottom: 50
     },
     headingWrapper: {
         flexDirection: 'row',

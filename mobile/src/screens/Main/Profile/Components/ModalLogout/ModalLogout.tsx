@@ -4,8 +4,9 @@ import { authApi } from '@/services/rest'
 import { showErrorAlert } from '@/utils/alert.util'
 import { useMutation } from '@tanstack/react-query'
 import { memo, useCallback } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View, Dimensions, Platform } from 'react-native'
 import Modal from 'react-native-modal'
+import { BlurView } from 'expo-blur'
 
 interface ModalLogoutProps {
     isLogoutModalVisible: boolean
@@ -13,6 +14,8 @@ interface ModalLogoutProps {
     isLoggingOut: boolean
     setIsLoggingOut: (value: boolean) => void
 }
+
+const { width } = Dimensions.get('window')
 
 const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLoggingOut }: ModalLogoutProps) => {
     const { setAuthenticated } = useAppContext()
@@ -34,7 +37,7 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
         } finally {
             setIsLoggingOut(false)
         }
-    }, [isLoggingOut, logout, setAuthenticated, toggleModal, setIsLoggingOut])
+    }, [isLoggingOut, logout, setAuthenticated, toggleModal, setIsLoggingOut, setAllowNotification])
 
     const handleCancel = useCallback(() => {
         if (isLoggingOut) return
@@ -43,76 +46,100 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
 
     return (
         <Modal
-            animationIn='zoomIn'
-            animationOut='zoomOut'
-            animationInTiming={400}
-            animationOutTiming={400}
-            onBackdropPress={handleCancel}
             isVisible={isLogoutModalVisible}
+            onBackdropPress={handleCancel}
+            onBackButtonPress={handleCancel}
+            backdropOpacity={0.2}
+            animationIn='fadeInUp'
+            animationOut='fadeOutDown'
+            animationInTiming={300}
+            animationOutTiming={300}
+            style={styles.modal}
+            hideModalContentWhileAnimating
         >
-            <View style={styles.container}>
-                <Text style={styles.title}>Are you sure you want to log out?</Text>
-                <View style={styles.buttonGroup}>
-                    <Pressable
-                        style={[styles.button, styles.cancelButton]}
-                        onPress={() => toggleModal(false)}
-                        disabled={isLoggingOut}
-                    >
-                        <Text style={[styles.buttonText, styles.cancelButtonText]}>Cancel</Text>
-                    </Pressable>
-                    <Pressable
-                        style={[styles.button, styles.confirmButton]}
-                        onPress={handleLogout}
-                        disabled={isLoggingOut}
-                    >
-                        <Text style={styles.buttonText}>Confirm</Text>
-                    </Pressable>
+            <BlurView style={styles.blurContainer} tint='extraLight' intensity={0}>
+                <View style={styles.innerContainer}>
+                    <Text style={styles.title}>Log Out of Your Account?</Text>
+
+                    <View style={styles.buttonContainer}>
+                        <Pressable
+                            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+                            onPress={handleLogout}
+                            disabled={isLoggingOut}
+                            android_ripple={{ color: 'rgba(237, 73, 86, 0.1)' }}
+                        >
+                            <Text style={[styles.buttonText, styles.logoutButtonText]}>Log Out</Text>
+                        </Pressable>
+
+                        <View style={styles.separator} />
+
+                        <Pressable
+                            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+                            onPress={handleCancel}
+                            disabled={isLoggingOut}
+                            android_ripple={{ color: 'rgba(0, 0, 0, 0.05)' }}
+                        >
+                            <Text style={styles.buttonText}>Cancel</Text>
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
+            </BlurView>
         </Modal>
     )
 }
 
-export default memo(ModalLogout)
-
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 20
+    modal: {
+        margin: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    blurContainer: {
+        borderRadius: 14,
+        overflow: 'hidden',
+        width: width * 0.75,
+        maxWidth: 300
+    },
+    innerContainer: {
+        paddingTop: 16,
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)'
     },
     title: {
         fontSize: 16,
-        fontWeight: '600',
-        color: '#1D1617',
-        marginBottom: 20,
-        textAlign: 'center'
+        fontWeight: '500',
+        marginBottom: 16,
+        textAlign: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 2
     },
-    buttonGroup: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+    buttonContainer: {
+        width: '100%',
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: '#dbdbdb'
     },
     button: {
-        flex: 1,
-        marginHorizontal: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        marginTop: 10,
-        alignItems: 'center'
+        paddingVertical: 14,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     buttonText: {
         fontSize: 16,
-        fontWeight: '500',
-        color: '#1D1617'
+        textAlign: 'center'
     },
-    cancelButton: {
-        backgroundColor: '#007AFF'
+    logoutButtonText: {
+        color: '#ED4956',
+        fontWeight: Platform.OS === 'ios' ? '600' : 'bold'
     },
-    cancelButtonText: {
-        color: '#FFF'
+    separator: {
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: '#dbdbdb',
+        width: '100%'
     },
-    confirmButton: {
-        backgroundColor: '#F0F0F0'
+    buttonPressed: {
+        backgroundColor: 'rgba(0, 0, 0, 0.05)'
     }
 })
+
+export default memo(ModalLogout)

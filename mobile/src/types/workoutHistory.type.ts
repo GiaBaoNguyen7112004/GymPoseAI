@@ -24,12 +24,12 @@ export interface workoutHistoryOfDay {
     date: string
     calories_burned: number
     calories_base: number
-    category: Category[]
+    categories: Category[]
 }
 
 export interface QueryConfigWorkoutHistory extends BaseQueryConfig {
-    category?: string
-    viewMode?: ViewModeType
+    categoryId?: string
+    viewMode?: ViewModeType | string
 }
 
 export type ResponseAPIWorkoutHistoryPage = ResponseApi<workoutHistory[], PaginationMeta>

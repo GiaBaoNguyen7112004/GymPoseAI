@@ -1,38 +1,55 @@
-// components/workout-history/Header.tsx
+import { Ionicons } from '@expo/vector-icons'
 import React, { memo } from 'react'
-import { SafeAreaView, StyleSheet } from 'react-native'
-import NavigationBar from '@/components/NavigationBar'
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { BlurView } from 'expo-blur'
 
 interface HeaderProps {
-    onBack: () => void
+    headerTitle: string
+    onBackPress: () => void
+    onTitlePress: () => void
+    style?: StyleProp<ViewStyle>
 }
 
-const Header = ({ onBack }: HeaderProps) => {
+function Header({ headerTitle, onBackPress, onTitlePress, style }: HeaderProps) {
     return (
-        <SafeAreaView style={styles.header}>
-            <NavigationBar
-                title='Workout History'
-                callback={onBack}
-                buttonBackStyle={styles.buttonBack}
-                headingStyle={styles.headerTitle}
-            />
-        </SafeAreaView>
+        <BlurView intensity={50} blurReductionFactor={50} tint='light' style={[styles.container, style]}>
+            <Pressable onPress={onBackPress}>
+                <Ionicons name='chevron-back' size={28} color='#1D1617' />
+            </Pressable>
+
+            <Pressable style={styles.titleContainer} onPress={onTitlePress}>
+                <Text style={styles.titleText}>{headerTitle}</Text>
+                <Ionicons name='chevron-down-circle' size={20} color='#1D1617' />
+            </Pressable>
+
+            <View style={styles.spacer} />
+        </BlurView>
     )
 }
 
 const styles = StyleSheet.create({
-    header: {
-        height: 70,
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        justifyContent: 'center'
+        paddingHorizontal: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: 'rgba(230, 240, 250, 0.8)'
     },
-    headerTitle: {
-        color: '#FFF',
+    titleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 1
+    },
+    titleText: {
+        color: '#1D1617',
         fontSize: 16,
-        fontWeight: '700'
+        fontWeight: '400',
+        marginRight: 5
     },
-    buttonBack: {
-        backgroundColor: '#FFF'
+    spacer: {
+        width: 28
     }
 })
 

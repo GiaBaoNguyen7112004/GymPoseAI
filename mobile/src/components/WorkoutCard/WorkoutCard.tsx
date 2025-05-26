@@ -1,6 +1,7 @@
 import { Exercise } from '@/types/exercises.type'
 import { Ionicons } from '@expo/vector-icons'
-import React, { useEffect, useMemo, useRef } from 'react'
+import { Skeleton } from 'moti/skeleton'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { View, Text, Image, StyleSheet, Pressable, Animated, StyleProp, ViewStyle } from 'react-native'
 
 interface WorkoutCardProps {

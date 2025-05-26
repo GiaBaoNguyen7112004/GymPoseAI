@@ -46,7 +46,7 @@ class Http {
         const { url } = response.config
         const data = response.data as AuthResponse
 
-        if (url.includes(process.env.EXPO_PUBLIC_URL_LOGIN) || url.includes(process.env.EXPO_PUBLIC_URL_REGISTER)) {
+        if (url.includes(process.env.EXPO_PUBLIC_URL_LOGIN)) {
             const { access_token, refresh_token, user } = data.data
             this.accessToken = access_token
             storage.saveAccessToken(access_token)

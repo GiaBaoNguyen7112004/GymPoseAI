@@ -1,8 +1,6 @@
-// WorkoutSummaryDetail/HeaderSection.tsx
 import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
 import { formatReadableDateTime } from '@/utils/format.util'
 import { User } from '@/types/user.type'
-import Header from '../Header/Header'
 import { memo } from 'react'
 
 interface HeaderSectionProps {
@@ -37,8 +35,13 @@ const WorkoutSection = ({ userData, startTime, progress }: HeaderSectionProps) =
                         </View>
                     </View>
                     <View style={styles.distanceContainer}>
-                        <Text style={styles.distanceValue}>{progress}</Text>
-                        <Text style={styles.distanceUnit}>%</Text>
+                        <View>
+                            <View style={styles.progressRow}>
+                                <Text style={styles.distanceValue}>{progress}</Text>
+                                <Text style={styles.distanceUnit}>%</Text>
+                            </View>
+                            <Text style={styles.progressLabel}>Progress</Text>
+                        </View>
                     </View>
                 </View>
             </ImageBackground>
@@ -86,6 +89,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end'
     },
+    progressRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+    },
     distanceValue: {
         fontSize: 48,
         fontWeight: '400',
@@ -96,6 +103,12 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         marginLeft: 4,
         color: '#fff'
+    },
+    progressLabel: {
+        fontSize: 13,
+        color: '#ADA4A5',
+        textAlign: 'center',
+        marginTop: 4
     }
 })
 

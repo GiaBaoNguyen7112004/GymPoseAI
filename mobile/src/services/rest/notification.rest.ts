@@ -17,7 +17,7 @@ const notificationApi = {
         return http.get<ResponseNewNotificationCount>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new/number`)
     },
     resetNewNotificationCount() {
-        return http.put<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new/reset`)
+        return http.patch<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/new/reset`)
     },
     readAllNotification() {
         return http.patch<ResponseApi<any, any>>(`${process.env.EXPO_PUBLIC_URL_NOTIFICATION}/read`)

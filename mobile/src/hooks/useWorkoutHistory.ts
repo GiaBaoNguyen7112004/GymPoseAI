@@ -1,27 +1,34 @@
 import { useInfiniteQuery, keepPreviousData } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { workoutHistoryApi } from '@/services/rest'
-import { QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage, categories } from '@/types/workoutHistory.type'
-import { ViewModeType } from '@/types/utils.type'
+import { QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/types/workoutHistory.type'
+import { isNull, isUndefined, omit, omitBy } from 'lodash'
 
-export const useWorkoutHistory = (category: categories, viewMode: ViewModeType, order: 'asc' | 'desc') => {
+export const useWorkoutHistory = (categoryId: string | null, viewMode: string, order: 'asc' | 'desc' = 'asc') => {
     const queryConfig = useMemo<QueryConfigWorkoutHistory>(
         () => ({
             page: 1,
             limit: 10,
-            category,
+            category: categoryId,
             viewMode,
-            sort_by: 'createAt',
+            sort_by: 'created_at',
             order
         }),
-        [category, viewMode, order]
+        [categoryId, viewMode, order]
     )
 
     return useInfiniteQuery<ResponseAPIWorkoutHistoryPage, Error>({
-        queryKey: ['workout-history-screen', category, viewMode, order],
+        queryKey: ['workout-history-screen', categoryId, viewMode, order],
         queryFn: async ({ pageParam = 1 }) => {
+            const queryParams = omitBy(
+                {
+                    ...queryConfig
+                },
+                [isUndefined, isNull]
+            )
             const response = await workoutHistoryApi.getWorkoutSummaryList({
-                ...queryConfig,
+                ...queryParams,
+                limit: queryConfig.limit,
                 page: pageParam as number
             })
             return response.data

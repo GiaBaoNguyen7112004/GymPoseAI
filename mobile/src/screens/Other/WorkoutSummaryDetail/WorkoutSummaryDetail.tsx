@@ -47,12 +47,12 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
             }
             const res = await deleteWorkoutSummaryMutateAsync(body)
             const { message } = res.data
-            showToast({ title: message, position: 'bottom' })
+            showToast({ title: message, position: 'top' })
             queryClient.invalidateQueries({ queryKey: ['workout-history'] })
             closeBottomSheet()
             navigation.goBack()
         } catch (error) {
-            showToast({ title: 'Failed to delete workout summary', position: 'bottom' })
+            showToast({ title: 'Failed to delete workout summary', position: 'top' })
         }
     }, [])
 

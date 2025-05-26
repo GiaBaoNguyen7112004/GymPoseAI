@@ -14,7 +14,7 @@ export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'
             workoutHistoryApi.getWorkoutSummaryList({
                 page: 1,
                 limit: 3,
-                sort_by: 'createAt',
+                sort_by: 'created_at',
                 viewMode: 'daily'
             }),
         staleTime: 1000 * 60 * 5

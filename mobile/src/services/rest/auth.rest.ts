@@ -28,7 +28,6 @@ const authApi = {
     },
 
     findAccount(body: Omit<ForgotPasswordReqBody, 'otp'>) {
-        console.log('findAccount', process.env.EXPO_PUBLIC_URL_FORGOT_PASSWORD)
         return http.post(process.env.EXPO_PUBLIC_URL_FORGOT_PASSWORD, body)
     },
 

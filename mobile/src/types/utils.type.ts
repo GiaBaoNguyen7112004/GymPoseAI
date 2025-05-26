@@ -9,7 +9,7 @@ export interface ResponseApi<Data, MetaType> {
 export interface BaseQueryConfig {
     page: number
     limit: number
-    sort_by?: 'createAt'
+    sort_by?: 'created_at'
     order?: 'asc' | 'desc'
 }
 
@@ -25,4 +25,4 @@ export interface ErrorField {
     code: number | string
 }
 
-export type ViewModeType = 'daily' | 'weekly' | 'monthly' | 'yearly'
+export type ViewModeType = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all'

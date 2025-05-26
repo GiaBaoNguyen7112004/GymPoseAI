@@ -23,7 +23,7 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
     }, [])
 
     const { data, refetch } = useQuery({ queryKey: ['today-target'], queryFn: targetApi.getDailyTarget })
-    const todayTargetData = data?.data.data
+    const { water_target = 0, calories_target = 0 } = data?.data?.data ?? {}
 
     if (!isReady) {
         return <BlankScreenLoader />
@@ -44,8 +44,8 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
             >
                 <View style={styles.todayTargetCard}>
                     <DailyTarget
-                        caloriesVal={todayTargetData?.calories || 0}
-                        waterVal={todayTargetData?.water || 0}
+                        caloriesVal={calories_target}
+                        waterVal={water_target}
                         updateDailyTargetPress={toggleModalUpdateTarget}
                     />
                 </View>
@@ -59,8 +59,6 @@ function ActivityTracker({ navigation }: RootStackScreenProps<'ActivityTracker'>
                 </View>
                 <FormUpdateDailyTarget
                     visible={modalUpdateTargetVisible}
-                    caloriesVal={todayTargetData?.calories || 0}
-                    waterVal={todayTargetData?.water || 0}
                     onCancel={toggleModalUpdateTarget}
                     onUpdate={toggleModalUpdateTarget}
                 />

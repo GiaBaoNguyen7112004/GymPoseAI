@@ -27,7 +27,9 @@ export default function useNotificationHandlers(refetch: () => void) {
     const handleMarkAllAsRead = useCallback(() => {
         closeBottomSheet()
         markAllAsRead()
-        refetch()
+        setTimeout(() => {
+            refetch()
+        }, 500)
     }, [refetch])
 
     const handlePressNotificationCardMore = useCallback((item: Notification) => {

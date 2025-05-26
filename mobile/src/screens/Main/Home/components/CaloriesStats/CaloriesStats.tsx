@@ -25,7 +25,7 @@ function CaloriesStats() {
             <View style={styles.chartContainer}>
                 <Progress.Circle progress={progress} size={66}>
                     <GradientButton rounded containerStyle={styles.button}>
-                        <Text style={styles.buttonText}>{left}kCal left</Text>
+                        <Text style={styles.buttonText}>{left} kCal left</Text>
                     </GradientButton>
                 </Progress.Circle>
             </View>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 36,
         textAlign: 'center',
-        fontSize: 8,
+        fontSize: 9,
         lineHeight: 12,
         fontWeight: '400',
         color: '#FFF'
