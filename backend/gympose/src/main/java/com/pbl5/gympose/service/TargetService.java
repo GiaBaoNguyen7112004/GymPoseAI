@@ -4,6 +4,7 @@ import com.pbl5.gympose.payload.request.target.TargetRequest;
 import com.pbl5.gympose.payload.response.target.DetailTargetResponse;
 import com.pbl5.gympose.payload.response.target.TargetCaloriesResponse;
 import com.pbl5.gympose.payload.response.target.TargetResponse;
+import com.pbl5.gympose.payload.response.target.WaterIntakesResponse;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -24,4 +25,6 @@ public interface TargetService {
 
     @Async("taskExecutor")
     void createUserTarget(UUID userId);
+
+    WaterIntakesResponse getMockWaterIntake();
 }

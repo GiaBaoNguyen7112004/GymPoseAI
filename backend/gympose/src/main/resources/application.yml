@@ -6,6 +6,9 @@ server:
       charset: UTF-8
       force: true
 spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
   mvc:
     throw-exception-if-no-handler-found: true
   web:

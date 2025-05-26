@@ -22,6 +22,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Component
@@ -51,7 +52,17 @@ public class EventHandler {
     @EventListener
     private void handleRequestResetPasswordEvent(RequestResetPasswordEvent event) {
         User user = event.getUser();
-        Token token = tokenService.createToken(user, TokenType.RESET_PASSWORD);
+
+        Optional<Token> tokenResult = tokenService.findOtp(user.getId());
+        Token token;
+        if (tokenResult.isPresent()) {
+            token = tokenResult.get();
+            token.setToken(String.valueOf(CommonFunction.getRandomFourDigitNumber()));
+            token.setExpireTime(LocalDateTime.now().plusMinutes(TokenUtils.OTP_EXPIRATION_MINUTES));
+            tokenService.save(token);
+        } else {
+            token = tokenService.createToken(user, TokenType.RESET_PASSWORD);
+        }
 
         emailService.sendMailForgetPassword(user.getEmail(), token.getToken(), CommonConstant.LANGUAGE_CODE);
     }
@@ -59,7 +70,9 @@ public class EventHandler {
     @EventListener
     private void handleResendRequestResetPasswordEvent(ResendRequestResetPasswordEvent event) {
         User user = event.getUser();
-        Token token = tokenService.findOtp(user.getId());
+        Optional<Token> tokenResult = tokenService.findOtp(user.getId());
+        Token token;
+        token = tokenResult.orElseGet(() -> tokenService.createToken(user, TokenType.RESET_PASSWORD));
         token.setToken(String.valueOf(CommonFunction.getRandomFourDigitNumber()));
         token.setExpireTime(LocalDateTime.now().plusMinutes(TokenUtils.OTP_EXPIRATION_MINUTES));
         tokenService.save(token);

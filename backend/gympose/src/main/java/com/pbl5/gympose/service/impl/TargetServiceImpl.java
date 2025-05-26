@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -112,6 +113,27 @@ public class TargetServiceImpl implements TargetService {
         Target target = new Target();
         target.setUser(userService.findById(userId));
         targetRepository.save(target);
+    }
+
+    @Override
+    public WaterIntakesResponse getMockWaterIntake() {
+        List<IntakeResponse> intakes = Arrays.asList(
+                new IntakeResponse("6am - 8am", "06:00", "08:00", 600.0),
+                new IntakeResponse("8am - 10am", "08:00", "10:00", 500.0),
+                new IntakeResponse("10am - 12pm", "10:00", "12:00", 0.0),
+                new IntakeResponse("12pm - 2pm", "12:00", "14:00", 0.0),
+                new IntakeResponse("2pm - 4pm", "14:00", "16:00", 0.0),
+                new IntakeResponse("4pm - 6pm", "16:00", "18:00", 0.0),
+                new IntakeResponse("6pm - 8pm", "18:00", "20:00", 0.0),
+                new IntakeResponse("8pm - 10pm", "20:00", "22:00", 0.0)
+        );
+
+        return new WaterIntakesResponse(
+                4.0,                    // target (lit)
+                0.5,                    // progress
+                LocalDate.of(2025, 4, 30),
+                intakes
+        );
     }
 
 }
