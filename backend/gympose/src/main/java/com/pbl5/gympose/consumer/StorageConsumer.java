@@ -2,6 +2,7 @@ package com.pbl5.gympose.consumer;
 
 import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.payload.message.AIResultMessage;
+import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.rabbitmq.RabbitMQConstant;
 import com.pbl5.gympose.websocket.WebSocketSessionService;
 import lombok.AccessLevel;
@@ -18,10 +19,18 @@ public class StorageConsumer {
 
     @RabbitListener(queues = RabbitMQConstant.AI_RESULT_DB_QUEUE)
     public void handleResult(AIResultMessage message) {
-        PoseError poseError = new PoseError();
-        poseError.setAiResult(message.getContent());
-        poseError.setRepIndex(message.getRepIndex());
+        try {
+            PoseError poseError = new PoseError();
+            poseError.setAiResult(message.getContent());
+            poseError.setRepIndex(message.getRepIndex());
 
-        sessionService.addSessionPoseError(message.getSessionId(), poseError);
+            sessionService.addSessionPoseError(message.getSessionId(), poseError);
+        } catch (Exception e) {
+            LogUtils.error("ERROR - Storage consumer " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                cause.printStackTrace();
+            }
+        }
     }
 }

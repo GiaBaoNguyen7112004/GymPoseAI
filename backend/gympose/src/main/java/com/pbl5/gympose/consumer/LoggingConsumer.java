@@ -16,10 +16,19 @@ import org.springframework.stereotype.Component;
 public class LoggingConsumer {
     @RabbitListener(queues = RabbitMQConstant.AI_RESULT_LOG_QUEUE)
     public void handleResult(AIResultMessage message) {
-        LogUtils.info("INFO - Result from AI SERVER -Time: " + message.getTime());
-        LogUtils.info("INFO - Result from AI SERVER -Content: " + message.getContent());
-        LogUtils.info("INFO - Result from AI SERVER -Rep number: " + message.getRepIndex());
-        LogUtils.info("INFO - Result from AI SERVER -User Id: " + message.getUserId());
-        LogUtils.info("INFO - Result from AI SERVER - SessionId: " + message.getSessionId());
+        try {
+            LogUtils.info("INFO - Result from AI SERVER -Time: " + message.getTime());
+            LogUtils.info("INFO - Result from AI SERVER -Content: " + message.getContent());
+            LogUtils.info("INFO - Result from AI SERVER -Rep number: " + message.getRepIndex());
+            LogUtils.info("INFO - Result from AI SERVER -User Id: " + message.getUserId());
+            LogUtils.info("INFO - Result from AI SERVER - SessionId: " + message.getSessionId());
+        } catch (Exception e) {
+            LogUtils.error("ERROR - AI Result consumer " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                LogUtils.error("ERROR - Cause: " + cause.getMessage());
+                cause.printStackTrace();
+            }
+        }
     }
 }

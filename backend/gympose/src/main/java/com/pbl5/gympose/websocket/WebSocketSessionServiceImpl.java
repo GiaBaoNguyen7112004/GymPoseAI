@@ -3,6 +3,7 @@ package com.pbl5.gympose.websocket;
 import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.payload.request.workoutsummary.PoseErrorImageRequest;
 import com.pbl5.gympose.utils.CommonFunction;
+import com.pbl5.gympose.utils.LogUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -55,8 +56,16 @@ public class WebSocketSessionServiceImpl implements WebSocketSessionService {
 
     @Override
     public void addSessionPoseError(final String sessionId, PoseError poseError) {
-        WebSocketSession session = getSession(sessionId);
-        WebSocketSessionUtils.addPoseErrorsAttribute(session, poseError);
+        try {
+            WebSocketSession session = getSession(sessionId);
+            WebSocketSessionUtils.addPoseErrorsAttribute(session, poseError);
+        } catch (Exception e) {
+            LogUtils.error("ERROR - add Session pose error failed " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                cause.printStackTrace();
+            }
+        }
     }
 
     @Override

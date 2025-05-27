@@ -1,6 +1,7 @@
 package com.pbl5.gympose.consumer;
 
 import com.pbl5.gympose.payload.message.AIResultMessage;
+import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.rabbitmq.RabbitMQConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,15 @@ public class AIResultConsumer {
 
     @RabbitListener(queues = RabbitMQConstant.AI_RESULT_QUEUE)
     public void handleResult(AIResultMessage message) {
-        rabbitTemplate.convertAndSend(RabbitMQConstant.AI_RESULT_FANOUT_EXCHANGE, "", message);
+        try {
+            rabbitTemplate.convertAndSend(RabbitMQConstant.AI_RESULT_FANOUT_EXCHANGE, "", message);
+        } catch (Exception e) {
+            LogUtils.error("ERROR - AI Result consumer " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                LogUtils.error("ERROR - Cause: " + cause.getMessage());
+                cause.printStackTrace();
+            }
+        }
     }
 }
