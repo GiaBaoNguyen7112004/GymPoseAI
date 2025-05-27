@@ -1,51 +1,31 @@
-import useNotification from '@/hooks/useNotificationContext'
-import { authApi } from '@/services/rest'
-import { showErrorAlert } from '@/utils/alert.util'
-import { useMutation } from '@tanstack/react-query'
-import { memo, useCallback } from 'react'
-import { Pressable, StyleSheet, Text, View, Dimensions, Platform } from 'react-native'
-import Modal from 'react-native-modal'
 import { BlurView } from 'expo-blur'
+import React, { memo, useCallback } from 'react'
+import { View, Text, StyleSheet, Pressable, Dimensions, Platform } from 'react-native'
+import Modal from 'react-native-modal'
 
-interface ModalLogoutProps {
-    isLogoutModalVisible: boolean
-    toggleModal: (value: boolean) => void
-    isLoggingOut: boolean
-    setIsLoggingOut: (value: boolean) => void
+interface DeleteWorkoutModalProps {
+    isVisible: boolean
+    onClose: () => void
+    onDelete: () => void
+    isDeleting: boolean
 }
 
 const { width } = Dimensions.get('window')
 
-const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLoggingOut }: ModalLogoutProps) => {
-    const { setAllowNotification } = useNotification()
-    const { mutateAsync: logout } = useMutation({ mutationFn: authApi.logout })
-
-    const handleLogout = useCallback(async () => {
-        if (isLoggingOut) return
-
-        toggleModal(false)
-        setIsLoggingOut(true)
-
-        try {
-            setAllowNotification(false, false)
-            await logout()
-        } catch (error) {
-            console.error('Logout error:', error)
-
-            showErrorAlert({ statusCode: 'default' })
-        } finally {
-            setIsLoggingOut(false)
-        }
-    }, [isLoggingOut, logout, toggleModal, setIsLoggingOut, setAllowNotification])
+const DeleteWorkoutModal = ({ isVisible, onClose, onDelete, isDeleting }: DeleteWorkoutModalProps) => {
+    const handleDelete = useCallback(() => {
+        if (isDeleting) return
+        onDelete()
+    }, [isDeleting, onDelete])
 
     const handleCancel = useCallback(() => {
-        if (isLoggingOut) return
-        toggleModal(false)
-    }, [isLoggingOut, toggleModal])
+        if (isDeleting) return
+        onClose()
+    }, [isDeleting, onClose])
 
     return (
         <Modal
-            isVisible={isLogoutModalVisible}
+            isVisible={isVisible}
             onBackdropPress={handleCancel}
             onBackButtonPress={handleCancel}
             backdropOpacity={0.2}
@@ -58,16 +38,17 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
         >
             <BlurView style={styles.blurContainer} tint='extraLight' intensity={0}>
                 <View style={styles.innerContainer}>
-                    <Text style={styles.title}>Log Out of Your Account?</Text>
+                    <Text style={styles.title}>Delete This Workout?</Text>
+                    <Text style={styles.message}>This action cannot be undone.</Text>
 
                     <View style={styles.buttonContainer}>
                         <Pressable
                             style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-                            onPress={handleLogout}
-                            disabled={isLoggingOut}
+                            onPress={handleDelete}
+                            disabled={isDeleting}
                             android_ripple={{ color: 'rgba(237, 73, 86, 0.1)' }}
                         >
-                            <Text style={[styles.buttonText, styles.logoutButtonText]}>Log Out</Text>
+                            <Text style={[styles.buttonText, styles.deleteButtonText]}>Delete</Text>
                         </Pressable>
 
                         <View style={styles.separator} />
@@ -75,7 +56,7 @@ const ModalLogout = ({ toggleModal, isLogoutModalVisible, isLoggingOut, setIsLog
                         <Pressable
                             style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
                             onPress={handleCancel}
-                            disabled={isLoggingOut}
+                            disabled={isDeleting}
                             android_ripple={{ color: 'rgba(0, 0, 0, 0.05)' }}
                         >
                             <Text style={styles.buttonText}>Cancel</Text>
@@ -107,10 +88,18 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: '500',
-        marginBottom: 16,
+        color: '#262626',
+        marginBottom: 8,
         textAlign: 'center',
         paddingHorizontal: 20,
         paddingVertical: 2
+    },
+    message: {
+        fontSize: 14,
+        color: '#8e8e8e',
+        marginBottom: 16,
+        textAlign: 'center',
+        paddingHorizontal: 20
     },
     buttonContainer: {
         width: '100%',
@@ -125,9 +114,10 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 16,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: '#262626'
     },
-    logoutButtonText: {
+    deleteButtonText: {
         color: '#ED4956',
         fontWeight: Platform.OS === 'ios' ? '600' : 'bold'
     },
@@ -141,4 +131,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default memo(ModalLogout)
+export default memo(DeleteWorkoutModal)

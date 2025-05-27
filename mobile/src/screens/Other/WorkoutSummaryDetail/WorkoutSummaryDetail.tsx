@@ -1,5 +1,5 @@
 import { ActivityIndicator, ScrollView, StyleSheet, View, Text } from 'react-native'
-import { Suspense, useCallback } from 'react'
+import { Suspense, useCallback, useState } from 'react'
 
 import LoaderModal from '@/components/LoaderModal'
 import DynamicBottomSheet from '@/components/DynamicBottomSheet'
@@ -10,6 +10,7 @@ import StatsSection from './Components/StatsSection'
 import WorkoutDetailsTable from './Components/WorkoutDetailsTable'
 import PoseErrorChart from './Components/PoseErrorChart'
 import MoreActionNavBar from './Components/MoreActionNavBar'
+import DeleteWorkoutModal from './Components/DeleteWorkoutModal'
 
 import { useWorkoutSummaryData } from '@/hooks/useWorkoutSummaryData'
 import useUserData from '@/hooks/useUserData'
@@ -35,6 +36,9 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
     const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
     const { requireDevice, isModalVisible, handleCloseModal, handleConnectDevice } = useRequireDevice()
 
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+
     const { mutateAsync: deleteWorkoutSummaryMutateAsync } = useMutation({
         mutationFn: workoutHistoryApi.deleteWorkoutSummaryById
     })
@@ -42,18 +46,40 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
 
     const handleDeleteWorkoutPress = useCallback(async () => {
         try {
+            closeBottomSheet()
+            setIsDeleteModalVisible(true)
+        } catch (error) {
+            showToast({ title: 'Failed to delete workout summary', position: 'top' })
+        }
+    }, [closeBottomSheet])
+
+    const handleDeleteConfirm = useCallback(async () => {
+        try {
+            setIsDeleting(true)
             const body = {
                 id: workout_id
             }
             const res = await deleteWorkoutSummaryMutateAsync(body)
             const { message } = res.data
             showToast({ title: message, position: 'top' })
+
+            // Invalidate all related queries to refetch data
             queryClient.invalidateQueries({ queryKey: ['workout-history'] })
-            closeBottomSheet()
+            queryClient.invalidateQueries({ queryKey: ['workout-history-screen'] })
+            queryClient.invalidateQueries({ queryKey: ['workoutHistory'] })
+
+            setIsDeleteModalVisible(false)
             navigation.goBack()
         } catch (error) {
             showToast({ title: 'Failed to delete workout summary', position: 'top' })
+        } finally {
+            setIsDeleting(false)
+            setIsDeleteModalVisible(false)
         }
+    }, [deleteWorkoutSummaryMutateAsync, navigation, queryClient, workout_id])
+
+    const handleDeleteCancel = useCallback(() => {
+        setIsDeleteModalVisible(false)
     }, [])
 
     const handleResumeWorkoutPress = useCallback(() => {
@@ -80,13 +106,13 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
         openBottomSheet(
             <Suspense fallback={<ActivityIndicator />}>
                 <MoreActionNavBar
-                    handleDeleteWorkout={handleDeleteWorkoutPress}
+                    handleDeleteWorkout={() => setIsDeleteModalVisible(true)}
                     handleResumeWorkout={handleResumeWorkoutPress}
                     isCompleteWorkout={progressPercentage >= 99.9}
                 />
             </Suspense>
         )
-    }, [openBottomSheet, handleDeleteWorkoutPress, handleResumeWorkoutPress, progressPercentage])
+    }, [openBottomSheet, handleResumeWorkoutPress, progressPercentage])
 
     if (!isReady) return <BlankScreenLoader />
 
@@ -143,6 +169,12 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
                 isVisible={isModalVisible}
                 onClose={handleCloseModal}
                 onConnectDevice={handleConnectDevice}
+            />
+            <DeleteWorkoutModal
+                isVisible={isDeleteModalVisible}
+                onClose={handleDeleteCancel}
+                onDelete={handleDeleteConfirm}
+                isDeleting={isDeleting}
             />
         </View>
     )

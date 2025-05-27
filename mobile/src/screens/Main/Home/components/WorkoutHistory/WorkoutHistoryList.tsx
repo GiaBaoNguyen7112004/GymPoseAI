@@ -36,7 +36,7 @@ function WorkoutHistoryList({ data, isLoading, onPressItem }: Props) {
             data={data}
             keyExtractor={defaultKeyExtractor}
             renderItem={renderItem}
-            ListEmptyComponent={<EmptyComponentV2 message='No workouts yet.' />}
+            ListEmptyComponent={<EmptyComponentV2 message='No history data this day.' />}
             scrollEnabled={false}
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={false}

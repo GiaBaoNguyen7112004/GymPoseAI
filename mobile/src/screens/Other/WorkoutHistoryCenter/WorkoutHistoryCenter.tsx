@@ -24,8 +24,8 @@ const WorkoutHistoryCenter: React.FC<RootStackScreenProps<'WorkoutHistoryCenter'
     const [categoryId, setCategoryId] = useState<string | null>(null)
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
 
-    const debouncedCategoryId = useDebounce(categoryId, 200)
-    const debouncedViewMode = useDebounce(viewMode, 200)
+    const debouncedCategoryId = useDebounce(categoryId, 500)
+    const debouncedViewMode = useDebounce(viewMode, 500)
 
     const { categoriesData, categoriesLoading } = useCategories()
     const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = useWorkoutHistory(

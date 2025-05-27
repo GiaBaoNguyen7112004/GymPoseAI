@@ -3,12 +3,12 @@ import axios, { AxiosError } from 'axios'
 
 import storage from '@/utils/StorageManager.util'
 import { RefreshTokenResponse } from '@/types/auth.type'
+import { logoutGlobally } from '@/utils/auth.util'
 
 export const refreshToken = async (): Promise<string> => {
     const refresh_token = storage.getRefreshToken()
     if (!refresh_token) {
-        storage.clearStorage()
-        throw new Error('No refresh token available')
+        logoutGlobally()
     }
 
     try {
@@ -18,7 +18,7 @@ export const refreshToken = async (): Promise<string> => {
         storage.saveRefreshToken(new_refresh_token)
         return access_token
     } catch (error) {
-        storage.clearStorage()
+        logoutGlobally()
         throw (error as AxiosError).response
     }
 }

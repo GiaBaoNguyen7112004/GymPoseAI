@@ -12,7 +12,7 @@ const targetApi = {
         return http.get<DailyCaloriesTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/today/calories`)
     },
     getDailyWaterTarget() {
-        return http.get<DailyWaterTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/today/water`)
+        return http.get<DailyWaterTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/water-intake`)
     },
     getDailyTarget() {
         return http.get<DailyTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/today`)
@@ -21,7 +21,7 @@ const targetApi = {
         return http.patch<DailyTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/today`, body)
     },
     getWeeklyStatisticsTarget() {
-        return http.put<WeekTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/target/weekly`)
+        return http.get<WeekTargetResponseAPI>(`${process.env.EXPO_PUBLIC_URL_TARGETS}/weekly`)
     }
 }
 

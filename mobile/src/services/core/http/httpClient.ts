@@ -4,6 +4,7 @@ import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
 import storage from '@/utils/StorageManager.util'
 import { AuthResponse } from '@/types/auth.type'
 import { refreshToken } from './refreshToken'
+import { logoutGlobally } from '@/utils/auth.util'
 
 console.log('API URL:', process.env.EXPO_PUBLIC_API_URL)
 
@@ -55,7 +56,7 @@ class Http {
         }
 
         if (url.includes(process.env.EXPO_PUBLIC_URL_LOGOUT)) {
-            storage.clearStorage()
+            logoutGlobally()
         }
 
         return response
@@ -66,7 +67,7 @@ class Http {
 
         const isUnauthorized =
             error.response?.status === HttpStatusCode.Unauthorized &&
-            (error.response?.data as any)?.message === 'Unauthorized'
+            (error.response?.data as any)?.message === 'Expired access token!'
 
         if (isUnauthorized && originalRequest) {
             if (!this.refreshTokenRequest) {

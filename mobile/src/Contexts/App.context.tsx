@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '@/types/user.type'
 import storage from '@/utils/StorageManager.util'
+import { EventRegister } from 'react-native-event-listeners'
 
 interface AppContextInterface {
     isAuthenticated: boolean
@@ -21,6 +22,24 @@ export const AppContext = createContext<AppContextInterface>(initialAppContext)
 function AppProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
     const [profile, setProfile] = useState<User | null>(initialAppContext.profile)
+
+    useEffect(() => {
+        const handleLogout = () => {
+            setAuthenticated(false)
+            setProfile(null)
+        }
+
+        // Subscribe to logout event
+        const eventListener = EventRegister.addEventListener('logout', handleLogout)
+
+        return () => {
+            // Cleanup event listener
+            if (typeof eventListener === 'string') {
+                EventRegister.removeEventListener(eventListener)
+            }
+        }
+    }, [])
+
     return (
         <AppContext.Provider
             value={{
