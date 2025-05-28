@@ -56,12 +56,12 @@ public class TargetServiceImpl implements TargetService {
                     .calories(CaloriesTargetResponse.builder()
                             .caloriesTarget(target.getCaloriesTarget())
                             .caloriesBurned(target.getCaloriesBurned())
-                            .date(target.getCaloriesTargetFinishedTime())
+                            .date(target.getCreatedAt())
                             .build())
                     .water(WaterTargetResponse.builder()
                             .waterTarget(target.getWaterTarget())
                             .waterIntake(target.getWaterIntake())
-                            .date(target.getWaterTargetFinishedTime())
+                            .date(target.getCreatedAt())
                             .build())
                     .build();
         }).toList();
@@ -74,7 +74,7 @@ public class TargetServiceImpl implements TargetService {
 
 
         List<Target> targets = targetRepository.findByUser_IdAndCreatedAtBetween(userId, startOfDay, endOfDay);
-        if (targets != null) {
+        if (!targets.isEmpty()) {
             return targets.get(0);
         } else {
             User user = userService.findById(userId);

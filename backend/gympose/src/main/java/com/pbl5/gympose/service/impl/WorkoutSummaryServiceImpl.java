@@ -49,6 +49,7 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                 .durationMinutes(exercise.getDurationMinutes())
                 .elapsedTime(workoutSummary.getElapsedTime())
                 .category(workoutSummary.getExercise().getCategory().getName())
+                .repCount(workoutSummary.getPoseErrors().size() + 3)
                 .errorsCount(workoutSummary.getPoseErrors().size())
                 .poseErrors(poseErrors)
                 .met(exercise.getMet())
