@@ -1,7 +1,9 @@
 package com.pbl5.gympose.websocket;
 
 import com.pbl5.gympose.entity.PoseError;
+import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.payload.request.workoutsummary.PoseErrorImageRequest;
+import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.LogUtils;
 import lombok.AccessLevel;
@@ -20,6 +22,7 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebSocketSessionServiceImpl implements WebSocketSessionService {
     WebSocketSessionStorage sessionStorage;
+    WorkoutSummaryService workoutSummaryService;
 
     @Override
     public WebSocketSession getSession(final String sessionId) {
@@ -101,21 +104,21 @@ public class WebSocketSessionServiceImpl implements WebSocketSessionService {
             LogUtils.info("REQUEST - " + poseErrorImageRequest.getRepIndex());
         });
 
+        UUID workoutSummaryId = WebSocketSessionUtils.getWorkoutSummaryIdAttribute(getSession(sessionId));
+        WorkoutSummary workoutSummary = workoutSummaryService.findById(workoutSummaryId);
+
         LogUtils.info("INFO - ADD IMAGES TO URL");
         List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(getSession(sessionId));
         LogUtils.info("INFO - ADD IMAGES : SIZE POSE ERRROS" + poseErrors.size());
         poseErrors.forEach(poseError -> {
             String repIndex = String.valueOf(poseError.getRepIndex());
-            LogUtils.info("INFO - ADD IMAGES: " + repIndex);
-            LogUtils.info("INFO - ADD IMAGES" + poseError.getImageUrl());
-            LogUtils.info("INFO - ADD IMAGES" + poseError.getId());
-            LogUtils.info("INFO - ADD IMAGES" + poseError.getAiResult());
-
             poseErrorsImages.stream()
                     .filter(imageReq -> repIndex.equals(imageReq.getRepIndex()))
                     .findFirst()
                     .ifPresent(imageReq -> poseError.setImageUrl(imageReq.getUrl()));
         });
+        workoutSummary.setPoseErrors(poseErrors);
+        workoutSummaryService.save(workoutSummary);
     }
 
 }

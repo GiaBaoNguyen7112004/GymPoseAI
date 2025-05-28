@@ -1,7 +1,6 @@
 package com.pbl5.gympose.service.impl;
 
 import com.pbl5.gympose.entity.Exercise;
-import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.event.WorkoutFinishEvent;
@@ -20,7 +19,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -70,8 +68,8 @@ public class WorkoutSessionServiceImpl implements WorkoutSessionService {
                 ? (workoutSummary.getElapsedTime() + sessionDurationMinutes)
                 : sessionDurationMinutes);
         workoutSummary.getPoseErrors().clear();
-        List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(session);
-        workoutSummary.setPoseErrors(poseErrors);
+//        List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(session);
+//        workoutSummary.setPoseErrors(poseErrors);
         WorkoutSummary savedWorkoutSummary = workoutSummaryService.save(workoutSummary);
         eventPublisher.publishEvent(new WorkoutFinishEvent(savedWorkoutSummary));
     }
