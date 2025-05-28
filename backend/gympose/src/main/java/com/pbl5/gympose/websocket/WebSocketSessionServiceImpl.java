@@ -98,10 +98,13 @@ public class WebSocketSessionServiceImpl implements WebSocketSessionService {
     public void addImageUrlsToPoseErrors(String sessionId, List<PoseErrorImageRequest> poseErrorsImages) {
         LogUtils.info("INFO - ADD IMAGES TO URL");
         List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(getSession(sessionId));
-        LogUtils.info(poseErrors.toString());
-
+        LogUtils.info("INFO - ADD IMAGES : SIZE POSE ERRROS" + poseErrors.size());
         poseErrors.forEach(poseError -> {
             String repIndex = String.valueOf(poseError.getRepIndex());
+            LogUtils.info("INFO - ADD IMAGES: " + repIndex);
+            LogUtils.info("INFO - ADD IMAGES" + poseError.getImageUrl());
+            LogUtils.info("INFO - ADD IMAGES" + poseError.getId());
+            LogUtils.info("INFO - ADD IMAGES" + poseError.getAiResult());
 
             poseErrorsImages.stream()
                     .filter(imageReq -> repIndex.equals(imageReq.getRepIndex()))

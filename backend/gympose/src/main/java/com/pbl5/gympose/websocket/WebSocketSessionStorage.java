@@ -14,6 +14,7 @@ public class WebSocketSessionStorage {
     public WebSocketSession getSession(final String sessionId) {
         try {
             synchronized (sessions) {
+                LogUtils.info("INFO - SESSION ID FROM GET SESSION IN STORAGE " + sessionId);
                 return sessions.get(sessionId);
             }
         } catch (Exception e) {
