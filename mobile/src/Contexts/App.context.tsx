@@ -8,44 +8,57 @@ interface AppContextInterface {
     profile: User | null
     setProfile: React.Dispatch<React.SetStateAction<User | null>>
     setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
+    isInitializing: boolean
 }
-const token = storage.getRefreshToken()
 
 const initialAppContext: AppContextInterface = {
-    isAuthenticated: Boolean(token),
+    isAuthenticated: false, // Start with false until storage is loaded
     setAuthenticated: () => null,
-    profile: storage.getProfile(),
-    setProfile: () => null
+    profile: null, // Start with null until storage is loaded
+    setProfile: () => null,
+    isInitializing: true // Start with true until storage is loaded
 }
+
 export const AppContext = createContext<AppContextInterface>(initialAppContext)
 
 function AppProvider({ children }: { children: React.ReactNode }) {
-    const [isAuthenticated, setAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
-    const [profile, setProfile] = useState<User | null>(initialAppContext.profile)
+    const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
+    const [profile, setProfile] = useState<User | null>(null)
+    const [isInitializing, setIsInitializing] = useState<boolean>(true)
 
-    // Sync with storage after it's loaded (fixes issue after app restart)
+    // Initialize state from storage after storage is loaded
     useEffect(() => {
-        const syncWithStorage = () => {
-            const token = storage.getRefreshToken()
-            const userProfile = storage.getProfile()
+        const initializeFromStorage = async () => {
+            try {
+                // Wait for storage to be properly loaded
+                await storage.waitForLoad()
 
-            if (token && !isAuthenticated) {
-                setAuthenticated(true)
-            }
-            if (userProfile && !profile) {
-                setProfile(userProfile)
+                // Now safely get the values
+                const token = storage.getRefreshToken()
+                const userProfile = storage.getProfile()
+
+                if (token) {
+                    setAuthenticated(true)
+                }
+                if (userProfile) {
+                    setProfile(userProfile)
+                }
+            } catch (error) {
+                console.error('Error initializing from storage:', error)
+            } finally {
+                // Always set initializing to false when done
+                setIsInitializing(false)
             }
         }
-
-        // Small delay to ensure storage.load() has completed
-        const timer = setTimeout(syncWithStorage, 100)
-        return () => clearTimeout(timer)
-    }, [isAuthenticated, profile])
+        initializeFromStorage()
+    }, [])
 
     useEffect(() => {
         const handleLogout = () => {
             setAuthenticated(false)
             setProfile(null)
+            // No need to set isInitializing to true on logout
+            // as it's only for initial app load
         }
 
         // Subscribe to logout event
@@ -65,7 +78,8 @@ function AppProvider({ children }: { children: React.ReactNode }) {
                 isAuthenticated,
                 setAuthenticated,
                 setProfile,
-                profile
+                profile,
+                isInitializing
             }}
         >
             {children}
@@ -74,3 +88,11 @@ function AppProvider({ children }: { children: React.ReactNode }) {
 }
 
 export default AppProvider
+
+export const useAppContext = () => {
+    const context = useContext(AppContext)
+    if (!context) {
+        throw new Error('useAppContext must be used within an AppProvider')
+    }
+    return context
+}

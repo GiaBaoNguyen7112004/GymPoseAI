@@ -24,6 +24,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { toastFitnessXConfig } from './src/config/toast.config'
 import BlankScreenLoader from './src/components/BlankScreenLoader'
 import * as Notifications from 'expo-notifications'
+import { useAppContext } from './src/Contexts/App.context'
 
 const prefix = Linking.createURL('/')
 const linking = {
@@ -59,6 +60,22 @@ Notifications.setNotificationHandler({
     })
 })
 
+// Component wrapper để sử dụng AppContext
+function AppContent() {
+    const { isInitializing } = useAppContext()
+
+    if (isInitializing) {
+        return <BlankScreenLoader />
+    }
+
+    return (
+        <NavigationContainer linking={linking}>
+            <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
+            <RootStackNavigation />
+        </NavigationContainer>
+    )
+}
+
 export default function App() {
     const [fontsLoaded] = useFonts({
         Poppins_Light: Poppins_300Light,
@@ -78,10 +95,7 @@ export default function App() {
                     <NotificationProvider>
                         <BlueToothProvider>
                             <BottomSheetModalProvider>
-                                <NavigationContainer linking={linking}>
-                                    <StatusBar backgroundColor='#FFFFFF' barStyle='dark-content' />
-                                    <RootStackNavigation />
-                                </NavigationContainer>
+                                <AppContent />
                             </BottomSheetModalProvider>
                             <Toast config={toastFitnessXConfig} />
                         </BlueToothProvider>
