@@ -11,7 +11,9 @@ const InfoRow = ({ label, value }: { label: string; value: string | number | und
     return (
         <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>{label}</Text>
-            <Text style={styles.infoValue}>{value ?? 'N/A'}</Text>
+            <Text style={styles.infoValue} numberOfLines={1}>
+                {value ?? 'N/A'}
+            </Text>
         </View>
     )
 }
@@ -79,7 +81,8 @@ const styles = StyleSheet.create({
     infoValue: {
         fontSize: 14,
         fontWeight: '500',
-        color: '#1D1617'
+        color: '#1D1617',
+        width: '60%'
     }
 })
 

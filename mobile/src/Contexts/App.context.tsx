@@ -23,6 +23,25 @@ function AppProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
     const [profile, setProfile] = useState<User | null>(initialAppContext.profile)
 
+    // Sync with storage after it's loaded (fixes issue after app restart)
+    useEffect(() => {
+        const syncWithStorage = () => {
+            const token = storage.getRefreshToken()
+            const userProfile = storage.getProfile()
+
+            if (token && !isAuthenticated) {
+                setAuthenticated(true)
+            }
+            if (userProfile && !profile) {
+                setProfile(userProfile)
+            }
+        }
+
+        // Small delay to ensure storage.load() has completed
+        const timer = setTimeout(syncWithStorage, 100)
+        return () => clearTimeout(timer)
+    }, [isAuthenticated, profile])
+
     useEffect(() => {
         const handleLogout = () => {
             setAuthenticated(false)

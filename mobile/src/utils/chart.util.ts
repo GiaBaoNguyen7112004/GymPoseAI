@@ -16,10 +16,25 @@ export interface DataPoint {
     totalCaloriesBurned: number
 }
 
-/** Calculate progress chart data for activity tracking */
+/**
+ * Calculate progress chart data for activity tracking
+ */
 export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): ChartData {
     const progressData = new Array(7).fill(0)
     const backgroundData = new Array(7).fill(100)
+
+    // Handle empty array case - return default empty state
+    if (!stats || stats.length === 0) {
+        return {
+            labels: WEEKDAYS,
+            datasets: [
+                {
+                    data: progressData, // All zeros for empty state
+                    colors: getProgressColorPalette()
+                }
+            ]
+        }
+    }
 
     stats.forEach(({ calories, water }) => {
         const dateStr = calories.date.replace(' ', 'T')
@@ -32,12 +47,26 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
         const waterProgress = water.water_target ? (water.water_intake / water.water_target) * 100 : 0
 
         const averageProgress = (caloriesProgress + waterProgress) / 2
-        progressData[dayIndex] = Math.round(averageProgress)
+        progressData[dayIndex] = Math.round(Math.min(averageProgress, 100)) // Cap at 100%
         backgroundData[dayIndex] = 100 - progressData[dayIndex]
     })
 
-    // Màu cho phần đã hoàn thành (progress)
-    const progressColorPalette = [
+    return {
+        labels: WEEKDAYS,
+        datasets: [
+            {
+                data: progressData,
+                colors: getProgressColorPalette()
+            }
+        ]
+    }
+}
+
+/**
+ * Get consistent color palette for progress chart
+ */
+function getProgressColorPalette() {
+    return [
         (opacity = 1) => '#D8B4FE',
         (opacity = 1) => '#A5B4FC',
         (opacity = 1) => '#D8B4FE',
@@ -46,13 +75,46 @@ export function calculateActivityProgressChart(stats: StatsTargetOfDay[]): Chart
         (opacity = 1) => '#A5B4FC',
         (opacity = 1) => '#D8B4FE'
     ]
+}
+
+// Alternative approach with more visual feedback for empty state
+export function calculateActivityProgressChartWithEmptyState(stats: StatsTargetOfDay[]): ChartData {
+    const progressData = new Array(7).fill(0)
+
+    // For empty state, you might want to show a subtle background pattern
+    if (!stats || stats.length === 0) {
+        return {
+            labels: WEEKDAYS,
+            datasets: [
+                {
+                    data: new Array(7).fill(5), // Small value to show empty bars
+                    colors: new Array(7).fill((opacity = 1) => '#F3F4F6') // Light gray for empty state
+                }
+            ]
+        }
+    }
+
+    // ... rest of the logic remains the same
+    stats.forEach(({ calories, water }) => {
+        const dateStr = calories.date.replace(' ', 'T')
+        const dayIndex = new Date(dateStr).getDay()
+
+        const caloriesProgress = calories.calories_target
+            ? (calories.calories_burned / calories.calories_target) * 100
+            : 0
+
+        const waterProgress = water.water_target ? (water.water_intake / water.water_target) * 100 : 0
+
+        const averageProgress = (caloriesProgress + waterProgress) / 2
+        progressData[dayIndex] = Math.round(Math.min(averageProgress, 100))
+    })
 
     return {
         labels: WEEKDAYS,
         datasets: [
             {
                 data: progressData,
-                colors: progressColorPalette
+                colors: getProgressColorPalette()
             }
         ]
     }
