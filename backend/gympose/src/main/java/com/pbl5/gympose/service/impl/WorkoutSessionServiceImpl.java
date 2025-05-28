@@ -49,6 +49,7 @@ public class WorkoutSessionServiceImpl implements WorkoutSessionService {
                 WorkoutSummary savedWorkoutSummary = workoutSummaryService.save(workoutSummary);
                 workoutSummaryId = savedWorkoutSummary.getId();
             }
+            LogUtils.info("START WORKOUT SESSION with workout id: " + workoutSummaryId);
             return workoutSummaryId;
         } catch (Exception e) {
             throw new IllegalArgumentException("ERROR - Failed to start workout session", e);
@@ -67,7 +68,7 @@ public class WorkoutSessionServiceImpl implements WorkoutSessionService {
         workoutSummary.setElapsedTime(isContinueWorkout(session)
                 ? (workoutSummary.getElapsedTime() + sessionDurationMinutes)
                 : sessionDurationMinutes);
-        workoutSummary.getPoseErrors().clear();
+//        workoutSummary.getPoseErrors().clear();
 //        List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(session);
 //        workoutSummary.setPoseErrors(poseErrors);
         WorkoutSummary savedWorkoutSummary = workoutSummaryService.save(workoutSummary);
