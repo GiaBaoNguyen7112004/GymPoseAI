@@ -14,6 +14,7 @@ import com.pbl5.gympose.repository.WorkoutSummaryRepository;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.CommonFunction;
+import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.utils.WorkoutUtils;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import lombok.AccessLevel;
@@ -65,6 +66,7 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                 fromDate, toDate, pageable);
         PageInfo pageInfo =
                 new PageInfo(pageable.getPageNumber() + 1, pages.getTotalPages(), pages.getTotalElements());
+        LogUtils.info("INFO - SO WORKOUT:" + pages.getContent().size());
 
         return PagingWorkoutSummariesResponse.builder()
                 .pageInfo(pageInfo)

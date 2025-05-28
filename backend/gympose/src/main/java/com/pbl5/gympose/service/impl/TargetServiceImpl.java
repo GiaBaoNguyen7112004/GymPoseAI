@@ -2,14 +2,12 @@ package com.pbl5.gympose.service.impl;
 
 import com.pbl5.gympose.entity.Target;
 import com.pbl5.gympose.entity.User;
-import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.mapper.TargetMapper;
 import com.pbl5.gympose.payload.request.target.TargetRequest;
 import com.pbl5.gympose.payload.response.target.*;
 import com.pbl5.gympose.repository.TargetRepository;
 import com.pbl5.gympose.service.TargetService;
 import com.pbl5.gympose.service.UserService;
-import com.pbl5.gympose.utils.exception.ErrorMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -74,10 +72,18 @@ public class TargetServiceImpl implements TargetService {
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
+
         List<Target> targets = targetRepository.findByUser_IdAndCreatedAtBetween(userId, startOfDay, endOfDay);
         if (targets != null) {
             return targets.get(0);
-        } else throw new BadRequestException(ErrorMessage.TARGET_NOT_FOUND);
+        } else {
+            User user = userService.findById(userId);
+            Target target = new Target();
+            target.setCaloriesTarget(500.0);
+            target.setWaterTarget(2.0);
+            target.setUser(user);
+            return targetRepository.save(target);
+        }
     }
 
     public List<Target> getThisWeekTarget(UUID userId) {
