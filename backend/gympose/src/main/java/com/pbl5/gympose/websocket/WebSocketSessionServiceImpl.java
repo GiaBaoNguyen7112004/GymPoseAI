@@ -117,7 +117,8 @@ public class WebSocketSessionServiceImpl implements WebSocketSessionService {
                     .findFirst()
                     .ifPresent(imageReq -> poseError.setImageUrl(imageReq.getUrl()));
         });
-        workoutSummary.setPoseErrors(poseErrors);
+        workoutSummary.getPoseErrors().clear();
+        workoutSummary.getPoseErrors().addAll(poseErrors);
         workoutSummaryService.save(workoutSummary);
     }
 
