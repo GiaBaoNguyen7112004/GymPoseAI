@@ -97,4 +97,9 @@ public class TokenServiceImpl implements TokenService {
     public List<Token> findAllByTypeAndUserId(TokenType type, UUID userId) {
         return tokenRepository.findAllByTypeAndUser_Id(type, userId);
     }
+
+    @Override
+    public Optional<Token> findByUserIdAndType(UUID userId, TokenType type) {
+        return tokenRepository.findByUserIdAndType(userId, type);
+    }
 }

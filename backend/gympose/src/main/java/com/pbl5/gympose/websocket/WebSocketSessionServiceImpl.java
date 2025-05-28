@@ -96,7 +96,9 @@ public class WebSocketSessionServiceImpl implements WebSocketSessionService {
 
     @Override
     public void addImageUrlsToPoseErrors(String sessionId, List<PoseErrorImageRequest> poseErrorsImages) {
+        LogUtils.info("INFO - ADD IMAGES TO URL");
         List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(getSession(sessionId));
+        LogUtils.info(poseErrors.toString());
 
         poseErrors.forEach(poseError -> {
             String repIndex = String.valueOf(poseError.getRepIndex());

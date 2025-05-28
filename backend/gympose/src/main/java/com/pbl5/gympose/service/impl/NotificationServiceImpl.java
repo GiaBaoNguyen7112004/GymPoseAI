@@ -32,10 +32,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -52,12 +49,19 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void register(UUID userId, NotificationRequest request) {
         User user = userService.findById(userId);
-        Token token = new Token();
-        token.setType(TokenType.EXPO_PUSH_NOTIFICATION);
-        token.setToken(request.getPushToken());
-        user.getTokens().add(token);
-        token.setUser(user);
-        userService.save(user);
+        Optional<Token> tokenResult = tokenService.findByUserIdAndType(userId, TokenType.EXPO_PUSH_NOTIFICATION);
+        if (tokenResult.isPresent()) {
+            Token token = tokenResult.get();
+            token.setToken(request.getPushToken());
+            tokenService.save(token);
+        } else {
+            Token token = new Token();
+            token.setType(TokenType.EXPO_PUSH_NOTIFICATION);
+            token.setToken(request.getPushToken());
+            user.getTokens().add(token);
+            token.setUser(user);
+            userService.save(user);
+        }
     }
 
     @Override

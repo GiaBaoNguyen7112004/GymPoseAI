@@ -9,6 +9,7 @@ import com.pbl5.gympose.service.ExerciseService;
 import com.pbl5.gympose.service.UserService;
 import com.pbl5.gympose.service.WorkoutSessionService;
 import com.pbl5.gympose.service.WorkoutSummaryService;
+import com.pbl5.gympose.utils.LogUtils;
 import com.pbl5.gympose.websocket.WebSocketSessionUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,7 @@ public class WorkoutSessionServiceImpl implements WorkoutSessionService {
 
     @Override
     public void endWorkoutSession(WebSocketSession session) {
+        LogUtils.info("INFO - VAO END WORKOUT SESSION");
         UUID workoutSummaryId = WebSocketSessionUtils.getWorkoutSummaryIdAttribute(session);
         WorkoutSummary workoutSummary = workoutSummaryService.findById(workoutSummaryId);
 

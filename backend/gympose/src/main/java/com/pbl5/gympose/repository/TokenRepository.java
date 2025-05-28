@@ -20,4 +20,6 @@ public interface TokenRepository extends JpaRepository<Token, UUID> {
     Optional<Token> findByTypeAndUser_Id(TokenType type, UUID userId);
 
     List<Token> findAllByTypeAndUser_Id(TokenType type, UUID userId);
+
+    Optional<Token> findByUserIdAndType(UUID userId, TokenType type);
 }

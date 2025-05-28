@@ -1,5 +1,6 @@
 package com.pbl5.gympose.websocket;
 
+import com.pbl5.gympose.utils.LogUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -11,14 +12,30 @@ public class WebSocketSessionStorage {
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     public WebSocketSession getSession(final String sessionId) {
-        return sessions.get(sessionId);
+        try {
+            synchronized (sessions) {
+                return sessions.get(sessionId);
+            }
+        } catch (Exception e) {
+            LogUtils.error("INFO - Get session from storage failed");
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                cause.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
     public void addWebSocketSession(final String sessionId, final WebSocketSession session) {
-        sessions.put(sessionId, session);
+        synchronized (sessions) {
+            sessions.put(sessionId, session);
+        }
     }
 
     public void removeWebSocketSession(final String sessionId) {
-        sessions.remove(sessionId);
+        synchronized (sessions) {
+            sessions.remove(sessionId);
+        }
     }
 }

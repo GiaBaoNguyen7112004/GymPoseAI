@@ -24,4 +24,6 @@ public interface TokenService {
     Token save(Token token);
 
     List<Token> findAllByTypeAndUserId(TokenType type, UUID userId);
+
+    Optional<Token> findByUserIdAndType(UUID userId, TokenType type);
 }
