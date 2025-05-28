@@ -56,7 +56,8 @@ export const formatTimeFromMinutes = (minutes?: number): string => {
  */
 export const formatReadableDateTime = (isoDateString: string | undefined): string => {
     if (!isoDateString) return '_ _'
-    const date = new Date(isoDateString)
+    const fixedIso = isoDateString.replace(' ', 'T')
+    const date = new Date(fixedIso)
 
     const datePart = date.toLocaleDateString(undefined, {
         day: 'numeric',

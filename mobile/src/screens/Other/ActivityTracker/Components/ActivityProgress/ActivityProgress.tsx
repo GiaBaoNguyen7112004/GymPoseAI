@@ -2,7 +2,7 @@ import { activityTrackerBarChart } from '@/config/chart.config'
 import { targetApi } from '@/services/rest'
 import { calculateActivityProgressChart } from '@/utils/chart.util'
 import { useQuery } from '@tanstack/react-query'
-import { memo, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { Dimensions } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart } from 'react-native-chart-kit'
@@ -16,10 +16,8 @@ function ActivityProgress() {
         queryFn: targetApi.getWeeklyStatisticsTarget
     })
 
-    const chartData = useMemo(() => {
-        const activityData = data?.data.data
-        return calculateActivityProgressChart(activityData || [])
-    }, [data])
+    const activityData = data?.data.data
+    const chartData = calculateActivityProgressChart(activityData || [])
 
     const canRender = !isLoading
 

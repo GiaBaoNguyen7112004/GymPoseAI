@@ -11,6 +11,7 @@ class StorageManager {
     private allowNotification: boolean | null = null
     private pushToken: string | null = null
     private Peripheral: PeripheralType | null = null
+    private isLoaded: boolean = false
 
     private constructor() {}
 
@@ -20,7 +21,6 @@ class StorageManager {
         }
         return StorageManager.instance
     }
-
     async load(): Promise<void> {
         try {
             this.accessToken = await AsyncStorage.getItem(StorageKeys.ACCESS_TOKEN)
@@ -32,9 +32,31 @@ class StorageManager {
             this.pushToken = await AsyncStorage.getItem(StorageKeys.PUSH_TOKEN)
             const peripheral = await AsyncStorage.getItem(StorageKeys.PERIPHERAL)
             this.Peripheral = peripheral ? JSON.parse(peripheral) : null
+            this.isLoaded = true
         } catch (error) {
             console.error('Error loading storage:', error)
+            this.isLoaded = true // Set to true even on error to prevent infinite waiting
         }
+    }
+
+    isStorageLoaded(): boolean {
+        return this.isLoaded
+    }
+
+    async waitForLoad(): Promise<void> {
+        return new Promise((resolve) => {
+            if (this.isLoaded) {
+                resolve()
+                return
+            }
+
+            const checkInterval = setInterval(() => {
+                if (this.isLoaded) {
+                    clearInterval(checkInterval)
+                    resolve()
+                }
+            }, 10) // Check every 10ms
+        })
     }
 
     getAccessToken(): string | null {
