@@ -1,7 +1,8 @@
 // Tooltip.tsx
 import { ViewModeType } from '@/types/utils.type'
-import { memo } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { memo, useEffect, useRef } from 'react'
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
 export type TooltipDataType = {
     visible: boolean
@@ -19,15 +20,45 @@ export type TooltipDataType = {
 interface Props {
     viewMode: ViewModeType
     tooltipData: TooltipDataType
+    onClose?: () => void
 }
 const PARENT_HEIGHT = 172
 const TOOLTIP_MAX_HEIGHT = 70
 
-function Tooltip({ viewMode, tooltipData }: Props) {
+function Tooltip({ viewMode, tooltipData, onClose }: Props) {
     const tooltipHeight = TOOLTIP_MAX_HEIGHT
     const adjustedTop = Math.min(tooltipData.y, PARENT_HEIGHT - tooltipHeight)
+    const fadeAnim = useRef(new Animated.Value(0)).current
+    const scaleAnim = useRef(new Animated.Value(0.8)).current
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: true
+            }),
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                tension: 100,
+                friction: 8,
+                useNativeDriver: true
+            })
+        ]).start()
+    }, [fadeAnim, scaleAnim])
+
     return (
-        <View style={[styles.tooltip, { left: tooltipData.x - 75, top: adjustedTop }]}>
+        <Animated.View
+            style={[
+                styles.tooltip,
+                {
+                    left: tooltipData.x - 75,
+                    top: adjustedTop,
+                    opacity: fadeAnim,
+                    transform: [{ scale: scaleAnim }]
+                }
+            ]}
+        >
             <View style={styles.tooltipHeader}>
                 <Text style={styles.tooltipDate}>
                     {tooltipData.date.toLocaleDateString('en-US', {
@@ -37,7 +68,14 @@ function Tooltip({ viewMode, tooltipData }: Props) {
                     })}
                     {viewMode === 'yearly' && ` ${tooltipData.date.getFullYear()}`}
                 </Text>
-                <Text style={styles.tooltipProgress}>{tooltipData.progress}%</Text>
+                <View style={styles.tooltipHeaderRight}>
+                    <Text style={styles.tooltipProgress}>{tooltipData.progress}%</Text>
+                    {onClose && (
+                        <Pressable style={styles.closeButton} onPress={onClose} hitSlop={8}>
+                            <Ionicons name='close' size={12} color='#666' />
+                        </Pressable>
+                    )}
+                </View>
             </View>
 
             <Text style={styles.tooltipWorkout}>Calories Burned: {tooltipData.totalCaloriesBurned}</Text>
@@ -52,7 +90,7 @@ function Tooltip({ viewMode, tooltipData }: Props) {
             <View style={styles.progressBar}>
                 <View style={[styles.progressFill, { width: `${tooltipData.progress}%` }]} />
             </View>
-        </View>
+        </Animated.View>
     )
 }
 
@@ -77,6 +115,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
+    },
+    tooltipHeaderRight: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4
+    },
+    closeButton: {
+        padding: 2,
+        borderRadius: 8,
+        backgroundColor: '#f0f0f0'
     },
     tooltipDate: {
         color: '#666',

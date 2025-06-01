@@ -65,7 +65,7 @@ export default function useWorkoutLogic({ workoutHistoryId, exercise_id, setTrai
 
     useEffect(() => {
         setTrainingPayload({
-            exercise_id: exercise_id ?? null,
+            exercise_id: workoutHistoryId ? null : (exercise_id ?? null),
             workout_summary_id: workoutHistoryId ?? null,
             user_id: profile?.id as string,
             config: peripheralInfo?.config as DeviceConfig

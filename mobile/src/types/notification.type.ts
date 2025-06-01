@@ -7,7 +7,7 @@ export interface Notification {
     description: string
     created_at: string
     is_read: boolean
-    metadata?: NotificationMetadata
+    meta_data?: NotificationMetadata
 }
 
 export interface NotificationMetadata {
@@ -16,6 +16,6 @@ export interface NotificationMetadata {
     activity_id?: string
     category_id?: string
 }
-export type NotificationType = 'workout' | 'activity' | 'admin' | 'exercise' | 'system'
+export type NotificationType = 'WORKOUT' | 'ACTIVITY' | 'ADMIN' | 'EXERCISE' | 'SYSTEM'
 
 export type ResponseAPINotificationPage = ResponseApi<Notification[], PaginationMeta>

@@ -4,6 +4,7 @@ import { DeviceConfig, PeripheralType } from '@/types/peripheral.type'
 import { readCharacteristic } from '@/utils/BLE.util'
 import StorageManagerUtil from '@/utils/StorageManager.util'
 import useBLE from '@/hooks/useBLE'
+import BLEManager from '@/utils/BleManager'
 
 interface BluetoothContextType {
     connectedDevice: Device | null
@@ -18,6 +19,7 @@ interface BluetoothContextType {
     disconnectFromDevice: () => Promise<void>
     connectToDevice: (device: Device) => void
     allDevices: Device[]
+    forceResetBLE: () => Promise<void>
 }
 
 const initialContext: BluetoothContextType = {
@@ -32,7 +34,8 @@ const initialContext: BluetoothContextType = {
     isDisconnecting: false,
     disconnectFromDevice: () => Promise.resolve(),
     connectToDevice: () => {},
-    allDevices: []
+    allDevices: [],
+    forceResetBLE: () => Promise.resolve()
 }
 
 export const BluetoothContext = createContext<BluetoothContextType>(initialContext)
@@ -113,16 +116,23 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
 
     const handleDisconnect = useCallback(async () => {
         try {
+            // First disconnect from BLE device
             if (bleConnectedDevice) {
                 await disconnectFromDevice()
             }
 
+            // Clear all device info from state and storage
             setDeviceInfo(null)
-            StorageManagerUtil.savePeripheral(null)
+            await StorageManagerUtil.savePeripheral(null)
+
+            console.log('Device disconnected and storage cleared successfully')
         } catch (error) {
             console.error('Error disconnecting from device:', error)
+            // Force clear even if disconnect fails
+            setDeviceInfo(null)
+            await StorageManagerUtil.savePeripheral(null)
         }
-    }, [disconnectFromDevice])
+    }, [bleConnectedDevice, disconnectFromDevice])
 
     const handleConnectToDevice = useCallback(
         async (device: Device) => {
@@ -148,6 +158,31 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
         }
     }, [bleConnectedDevice])
 
+    const forceResetBLE = useCallback(async () => {
+        try {
+            console.log('Force resetting BLE state...')
+
+            // Force disconnect all devices
+            await BLEManager.forceDisconnectAll()
+
+            // Clear all local state
+            setDeviceInfo(null)
+
+            // Clear storage
+            await StorageManagerUtil.savePeripheral(null)
+
+            // Destroy and recreate BLE manager instance
+            BLEManager.destroy()
+
+            console.log('BLE state completely reset')
+        } catch (error) {
+            console.error('Error force resetting BLE:', error)
+            // Still clear local state even if BLE operations fail
+            setDeviceInfo(null)
+            await StorageManagerUtil.savePeripheral(null)
+        }
+    }, [])
+
     return (
         <BluetoothContext.Provider
             value={{
@@ -162,7 +197,8 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
                 isConnecting,
                 isScanning,
                 isDisconnecting,
-                reReadInfoDevice
+                reReadInfoDevice,
+                forceResetBLE
             }}
         >
             {children}

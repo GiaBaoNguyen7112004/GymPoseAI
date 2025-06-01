@@ -18,22 +18,32 @@ type ViewModeType = 'weekly' | 'monthly' | 'all'
 
 const WorkoutHistoryCenter: React.FC<RootStackScreenProps<'WorkoutHistoryCenter'>> = ({ navigation }) => {
     const { isReady } = useInteractionReadyState()
-
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedWorkout, setSelectedWorkout] = useState<string>('All workout')
     const [categoryId, setCategoryId] = useState<string | null>(null)
     const [viewMode, setViewMode] = useState<ViewModeType>('weekly')
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     const debouncedCategoryId = useDebounce(categoryId, 500)
     const debouncedViewMode = useDebounce(viewMode, 500)
 
     const { categoriesData, categoriesLoading } = useCategories()
-    const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = useWorkoutHistory(
+    const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } = useWorkoutHistory(
         debouncedCategoryId,
         debouncedViewMode
     )
 
     const workouts = useMemo(() => data?.pages.flatMap((page) => page.data) || [], [data])
+
+    const handleRefresh = useCallback(async () => {
+        setIsRefreshing(true)
+        try {
+            await refetch()
+        } finally {
+            setIsRefreshing(false)
+        }
+    }, [refetch])
+
     const handleSelectWorkout = (id: string | null, name: string = 'All workout') => {
         setSelectedWorkout(name)
         setCategoryId(id)
@@ -72,7 +82,6 @@ const WorkoutHistoryCenter: React.FC<RootStackScreenProps<'WorkoutHistoryCenter'
                     onBackPress={navigation.goBack}
                     onTitlePress={toggleModal}
                 />
-
                 <View style={styles.content}>
                     <WorkoutList
                         fetchNextPage={fetchNextPage}
@@ -82,11 +91,11 @@ const WorkoutHistoryCenter: React.FC<RootStackScreenProps<'WorkoutHistoryCenter'
                         isLoading={isLoading}
                         renderItem={renderItem}
                         workouts={workouts}
+                        onRefresh={handleRefresh}
+                        isRefreshing={isRefreshing}
                     />
                 </View>
-
                 <BottomNavigation viewMode={viewMode} setViewMode={setViewMode} />
-
                 <ModalSelectCategory
                     categoriesData={categoriesData}
                     modalVisible={modalVisible}

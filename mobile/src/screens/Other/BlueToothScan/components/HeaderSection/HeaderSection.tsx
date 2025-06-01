@@ -1,11 +1,16 @@
+import NavigationBar from '@/components/NavigationBar'
+import { useNavigation } from '@react-navigation/native'
 import { View, Text, StyleSheet } from 'react-native'
 
-const HeaderSection = () => (
-    <View style={styles.header}>
-        <Text style={styles.headerTitle}>Connect Your Gear</Text>
-        <Text style={styles.headerSubtitle}>Sync your camera to track your workout like a pro!</Text>
-    </View>
-)
+function HeaderSection() {
+    const navigation = useNavigation()
+    return (
+        <View style={styles.header}>
+            <NavigationBar title='Connect Your Gear' headingStyle={styles.headerTitle} callback={navigation.goBack} />
+            <Text style={styles.headerSubtitle}>Sync your camera to track your workout like a pro!</Text>
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
     header: {
@@ -16,12 +21,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     headerTitle: {
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: 'bold',
-        color: '#ffffff',
-        marginBottom: 8
+        color: '#ffffff'
     },
     headerSubtitle: {
+        marginTop: 9,
         fontSize: 16,
         color: '#94a3b8',
         textAlign: 'center',

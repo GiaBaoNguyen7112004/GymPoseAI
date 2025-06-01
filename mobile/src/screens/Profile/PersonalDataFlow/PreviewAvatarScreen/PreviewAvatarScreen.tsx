@@ -15,7 +15,8 @@ import { uploadImageFromUri } from '@/utils/upload.util'
 function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
     const { refetch } = useUserData()
     const [avatarUri, setAvatarUri] = useState<string | null>(null)
-    const [isEditorVisible, setEditorVisible] = useState(false)
+    const [isEditorVisible, setEditorVisible] = useState<boolean>(false)
+    const [isUploadingImage, setUploadingImage] = useState<boolean>(false)
 
     const { mutateAsync: updateAvatarMutateAsync, isPending: isUpdatingAvatar } = useMutation({
         mutationFn: userApi.updateProfile
@@ -42,8 +43,9 @@ function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
         if (!avatarUri) return
 
         try {
+            setUploadingImage(true)
             const imageUrl = await uploadImageFromUri(avatarUri)
-
+            setUploadingImage(false)
             if (!imageUrl) {
                 showErrorAlert({ statusCode: 'default' })
                 return
@@ -102,7 +104,7 @@ function PreviewAvatarScreen({ onGoBack, goToTop }: ScreenComponentProps) {
                         style={styles.saveButton}
                         Square
                         onPress={handleSavePress}
-                        isLoading={isUpdatingAvatar}
+                        isLoading={isUpdatingAvatar || isUploadingImage}
                     >
                         <Text style={styles.saveText}>Save</Text>
                     </GradientButton>

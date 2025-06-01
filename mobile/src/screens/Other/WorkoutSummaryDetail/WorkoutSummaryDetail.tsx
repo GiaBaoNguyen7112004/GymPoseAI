@@ -30,6 +30,7 @@ import showToast from '@/utils/toast.util'
 function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'WorkoutSummaryDetail'>) {
     const { userData } = useUserData()
     const { workout_id } = route.params
+    console.log(workout_id) // Debugging line to check workout_id
     const { workoutData, poseErrors, isLoading, progressPercentage, poseErrorsCount, repCount, formAccuracy } =
         useWorkoutSummaryData(workout_id)
     const { isReady } = useInteractionReadyState()
@@ -43,15 +44,6 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
         mutationFn: workoutHistoryApi.deleteWorkoutSummaryById
     })
     const queryClient = useQueryClient()
-
-    const handleDeleteWorkoutPress = useCallback(async () => {
-        try {
-            closeBottomSheet()
-            setIsDeleteModalVisible(true)
-        } catch (error) {
-            showToast({ title: 'Failed to delete workout summary', position: 'top' })
-        }
-    }, [closeBottomSheet])
 
     const handleDeleteConfirm = useCallback(async () => {
         try {

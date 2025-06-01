@@ -4,7 +4,7 @@ import { workoutHistoryApi } from '@/services/rest'
 import { QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/types/workoutHistory.type'
 import { isNull, isUndefined, omit, omitBy } from 'lodash'
 
-export const useWorkoutHistory = (categoryId: string | null, viewMode: string, order: 'asc' | 'desc' = 'asc') => {
+export const useWorkoutHistory = (categoryId: string | null, viewMode: string, order: 'asc' | 'desc' = 'desc') => {
     const queryConfig = useMemo<QueryConfigWorkoutHistory>(
         () => ({
             page: 1,

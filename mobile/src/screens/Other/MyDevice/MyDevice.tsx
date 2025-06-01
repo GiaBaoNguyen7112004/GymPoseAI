@@ -15,7 +15,7 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
     //auto reconnect ble with device
     useAutoReconnectBLE()
 
-    const { peripheralInfo, isDisconnecting, configMyDevice, connectedDevice, disconnectFromDevice } =
+    const { peripheralInfo, isDisconnecting, configMyDevice, connectedDevice, disconnectFromDevice, forceResetBLE } =
         useBluetoothContext()
 
     const isMute = Boolean(peripheralInfo?.config.mute)
@@ -23,23 +23,34 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
 
     const handleBackPress = useCallback(() => {
         navigation.goBack()
-    }, [])
+    }, [navigation])
 
     const handleLearnMore = useCallback(() => {
         navigation.navigate('AboutGymBot')
-    }, [])
+    }, [navigation])
 
-    const setSpeaker = useCallback((value: boolean) => {
-        const newConfig = {
-            mute: value
-        }
+    const setSpeaker = useCallback(
+        (value: boolean) => {
+            const newConfig = {
+                mute: value
+            }
 
-        configMyDevice(newConfig)
-    }, [])
+            configMyDevice(newConfig)
+        },
+        [configMyDevice]
+    )
 
     const handleDisconnect = useCallback(async () => {
         try {
+            // Use the comprehensive disconnect method
             await disconnectFromDevice()
+
+            // If that doesn't work, force reset everything
+            if (connectedDevice) {
+                console.log('Attempting force reset BLE...')
+                await forceResetBLE()
+            }
+
             navigation.goBack()
             showToast({
                 title: 'Unpaired',
@@ -47,8 +58,19 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
             })
         } catch (error) {
             console.error('Error disconnecting from device:', error)
+            // Last resort: force reset
+            try {
+                await forceResetBLE()
+                navigation.goBack()
+                showToast({
+                    title: 'Force Unpaired',
+                    subtitle: 'Device connection has been forcefully terminated.'
+                })
+            } catch (forceError) {
+                console.error('Error force resetting BLE:', forceError)
+            }
         }
-    }, [disconnectFromDevice])
+    }, [disconnectFromDevice, forceResetBLE, connectedDevice, navigation])
 
     const handleSteamCamera = useCallback(() => {
         navigation.navigate('GymLiveScreen', {})

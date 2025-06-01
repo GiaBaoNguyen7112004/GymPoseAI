@@ -61,23 +61,32 @@ const NotificationList: React.FC<Props> = ({
         return data
     }, [today, earlier, showAllEarlier])()
 
-    const renderHeader = ({ item }: { item: HeaderItem }) => <Text style={styles.sectionHeader}>{item.title}</Text>
-
-    const renderNotificationItem = ({ item }: { item: Notification }) => (
-        <NotificationCard
-            itemData={item}
-            onCardPress={() => onCardPress(item)}
-            onBtnMorePress={() => onMorePress(item)}
-        />
+    const renderHeader = useCallback(
+        ({ item }: { item: HeaderItem }) => <Text style={styles.sectionHeader}>{item.title}</Text>,
+        []
     )
 
-    const renderItem = ({ item }: { item: ListItem }) => {
+    const renderNotificationItem = useCallback(
+        ({ item }: { item: Notification }) => (
+            <NotificationCard
+                itemData={item}
+                onCardPress={() => onCardPress(item)}
+                onBtnMorePress={() => onMorePress(item)}
+            />
+        ),
+        [onCardPress, onMorePress]
+    )
+
+    const renderItem = useCallback(({ item }: { item: ListItem }) => {
         return 'isHeader' in item ? renderHeader({ item }) : renderNotificationItem({ item: item as Notification })
-    }
+    }, [])
 
-    const keyExtractor = (item: ListItem) => ('isHeader' in item ? item.id : defaultKeyExtractor(item as Notification))
+    const keyExtractor = useCallback(
+        (item: ListItem) => ('isHeader' in item ? item.id : defaultKeyExtractor(item as Notification)),
+        []
+    )
 
-    const renderFooter = () => {
+    const renderFooter = useCallback(() => {
         if (earlier.length > 2 && !showAllEarlier) {
             return (
                 <TouchableOpacity style={styles.footerButton} onPress={() => setShowAllEarlier(true)}>
@@ -95,25 +104,28 @@ const NotificationList: React.FC<Props> = ({
         }
 
         return null
-    }
+    }, [])
 
-    const renderEmptyComponent = () => (
-        <View style={styles.emptyContainer}>
-            <LottieView
-                source={require('@/assets/animations/empty_cart.json')}
-                autoPlay
-                loop
-                style={styles.emptyImage}
-            />
-            <Text style={styles.emptyText}>You have no notifications</Text>
-        </View>
+    const renderEmptyComponent = useCallback(
+        () => (
+            <View style={styles.emptyContainer}>
+                <LottieView
+                    source={require('@/assets/animations/empty_cart.json')}
+                    autoPlay
+                    loop
+                    style={styles.emptyImage}
+                />
+                <Text style={styles.emptyText}>You have no notifications</Text>
+            </View>
+        ),
+        []
     )
 
-    const handleEndReached = () => {
+    const handleEndReached = useCallback(() => {
         if (hasNextPage && !isFetchingNextPage) {
             fetchNextPage()
         }
-    }
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
     return (
         <FlatList

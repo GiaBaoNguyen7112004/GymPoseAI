@@ -2,7 +2,7 @@ import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart'
 
 // ** Line Chart configuration **
 const lineChartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: '#F9FAFB',
+    backgroundGradientFrom: '#FFFFFF',
     backgroundGradientTo: '#FFFFFF',
     backgroundGradientFromOpacity: 0.8,
     backgroundGradientToOpacity: 0.2,
@@ -21,7 +21,7 @@ const lineChartConfig: AbstractChartConfig = {
         color: '#6B7280'
     },
     propsForDots: {
-        r: '2',
+        r: '3',
         strokeWidth: '2',
         stroke: '#6366F1',
         fill: '#FFFFFF'

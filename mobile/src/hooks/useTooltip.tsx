@@ -1,10 +1,21 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { TooltipDataType } from '@/components/WorkoutChart/Components/Tooltip'
 import { DataPoint } from '@/utils/chart.util'
 import { ViewModeType } from '@/types/utils.type'
 
 export function useTooltip(chartData: DataPoint[], viewMode: ViewModeType) {
     const [tooltipData, setTooltipData] = useState<TooltipDataType | null>(null)
+
+    // Auto hide tooltip after 5 seconds
+    useEffect(() => {
+        if (tooltipData?.visible) {
+            const timer = setTimeout(() => {
+                setTooltipData(null)
+            }, 5000)
+
+            return () => clearTimeout(timer)
+        }
+    }, [tooltipData?.visible])
 
     const handleDataPointClick = useCallback(
         ({ index, x, y }: { index: number; x: number; y: number }) => {
@@ -19,6 +30,15 @@ export function useTooltip(chartData: DataPoint[], viewMode: ViewModeType) {
             const trend = caloriesChange > 0 ? { icon: '↑', color: '#4CAF50' } : { icon: '↓', color: '#F44336' }
             const comparisonText = prev ? `vs ${prev.label}` : 'First data point'
 
+            // Toggle tooltip - nếu đang hiển thị và click vào cùng một điểm thì ẩn
+            const isClickingSamePoint =
+                tooltipData?.visible && Math.abs(tooltipData.x - x) < 10 && Math.abs(tooltipData.y - y) < 10
+
+            if (isClickingSamePoint) {
+                setTooltipData(null)
+                return
+            }
+
             setTooltipData({
                 visible: true,
                 x,
@@ -32,11 +52,16 @@ export function useTooltip(chartData: DataPoint[], viewMode: ViewModeType) {
                 comparisonValue: Math.round(percentageChange)
             })
         },
-        [chartData]
+        [chartData, tooltipData]
     )
+
+    const hideTooltip = useCallback(() => {
+        setTooltipData(null)
+    }, [])
 
     return {
         tooltipData,
-        handleDataPointClick
+        handleDataPointClick,
+        hideTooltip
     }
 }

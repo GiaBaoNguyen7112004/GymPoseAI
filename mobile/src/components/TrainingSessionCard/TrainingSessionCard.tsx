@@ -5,6 +5,7 @@ import MyIcon from '@/components/Icon'
 import Progress from '@/components/Progress'
 import { workoutHistory } from '@/types/workoutHistory.type'
 import { COLOR_BRANDS } from '@/constants/common.constants'
+import { formatReadableDateTime } from '@/utils/format.util'
 
 interface TrainingSessionCardProps {
     item: workoutHistory
@@ -34,9 +35,9 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
             ) : (
                 <AvatarWithIcon size={50} colors={COLOR_BRANDS.primary} icon='FullBodyWorkout' />
             )}
-
             <View style={styles.content}>
                 <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.dateTime}>{formatReadableDateTime(item.start_time)}</Text>
                 <Text style={styles.stats}>
                     {item.calories_burned} Calories Burned | {item.duration_minutes} minutes
                 </Text>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         padding: 15,
-        maxHeight: 80,
+        minHeight: 80,
         borderRadius: 16,
         backgroundColor: '#FFF',
         flexDirection: 'row',
@@ -90,6 +91,13 @@ const styles = StyleSheet.create({
         color: '#1D1617',
         fontWeight: '500',
         lineHeight: 18
+    },
+    dateTime: {
+        marginTop: 2,
+        fontSize: 11,
+        color: '#7B6F72',
+        fontWeight: '400',
+        lineHeight: 14
     },
     stats: {
         marginTop: 3,

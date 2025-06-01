@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '@/types/user.type'
 import storage from '@/utils/StorageManager.util'
 import { EventRegister } from 'react-native-event-listeners'
+import { httpClient } from '@/services/core/http'
 
 interface AppContextInterface {
     isAuthenticated: boolean
@@ -24,14 +25,15 @@ export const AppContext = createContext<AppContextInterface>(initialAppContext)
 function AppProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
     const [profile, setProfile] = useState<User | null>(null)
-    const [isInitializing, setIsInitializing] = useState<boolean>(true)
-
-    // Initialize state from storage after storage is loaded
+    const [isInitializing, setIsInitializing] = useState<boolean>(true) // Initialize state from storage after storage is loaded
     useEffect(() => {
         const initializeFromStorage = async () => {
             try {
                 // Wait for storage to be properly loaded
                 await storage.waitForLoad()
+
+                // Initialize HTTP client with stored tokens
+                httpClient.initialize()
 
                 // Now safely get the values
                 const token = storage.getRefreshToken()
@@ -57,6 +59,9 @@ function AppProvider({ children }: { children: React.ReactNode }) {
         const handleLogout = () => {
             setAuthenticated(false)
             setProfile(null)
+            // Clear tokens from httpClient
+            httpClient.clearAccessToken()
+            httpClient.clearRefreshToken()
             // No need to set isInitializing to true on logout
             // as it's only for initial app load
         }

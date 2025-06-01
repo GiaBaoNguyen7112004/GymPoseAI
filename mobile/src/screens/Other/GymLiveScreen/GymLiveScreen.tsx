@@ -79,7 +79,7 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
 
     const handleStopSteaming = useCallback(() => {
         navigation.goBack
-    }, [])
+    }, [navigation])
 
     return (
         <View style={styles.container}>

@@ -24,10 +24,10 @@ export async function uploadImageFromUri(uri: string): Promise<string | null> {
             type: `image/${fileType}`
         } as unknown as Blob
 
-        formData.append('image', imageFile)
+        formData.append('file', imageFile)
 
         const uploadResponse = await uploadApi.uploadImage(formData)
-        return uploadResponse.data?.data?.image || null
+        return uploadResponse.data?.data || null
     } catch (err) {
         if (err instanceof Error && err.message === 'Image size must not exceed 10MB') {
             showToast({

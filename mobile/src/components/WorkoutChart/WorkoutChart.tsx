@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Pressable } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart'
 
@@ -27,7 +27,7 @@ const WorkoutChart = ({
     const chartData = useMemo(() => calculateWorkoutHistoryChart(workoutData, viewMode), [workoutData, viewMode])
     const chartWidth = useMemo(() => getChartWidth(viewMode, chartData.length), [viewMode, chartData.length])
 
-    const { tooltipData, handleDataPointClick } = useTooltip(chartData, viewMode)
+    const { tooltipData, handleDataPointClick, hideTooltip } = useTooltip(chartData, viewMode)
 
     const chartContent: LineChartData = useMemo(
         () => ({
@@ -49,24 +49,30 @@ const WorkoutChart = ({
                 <Text style={styles.noDataText}>No data available</Text>
             </View>
         ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartContainer}>
-                <LineChart
-                    data={chartContent}
-                    width={chartWidth as number}
-                    height={172}
-                    yAxisSuffix='%'
-                    chartConfig={chartConfig}
-                    bezier
-                    onDataPointClick={handleDataPointClick}
-                    segments={4}
-                    withVerticalLines={false}
-                    withHorizontalLines
-                    withDots
-                    withShadow={false}
-                    style={styles.chart}
-                />
-                {tooltipData?.visible && <Tooltip viewMode={viewMode} tooltipData={tooltipData} />}
-            </ScrollView>
+            <View style={styles.chartWrapper}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartContainer}>
+                    <LineChart
+                        data={chartContent}
+                        width={chartWidth as number}
+                        height={172}
+                        yAxisSuffix='%'
+                        chartConfig={chartConfig}
+                        bezier
+                        onDataPointClick={handleDataPointClick}
+                        segments={4}
+                        withVerticalLines={false}
+                        withHorizontalLines
+                        withDots
+                        withShadow={false}
+                        style={styles.chart}
+                    />
+                </ScrollView>
+                {tooltipData?.visible && (
+                    <Pressable style={styles.tooltipOverlay} onPress={hideTooltip}>
+                        <Tooltip viewMode={viewMode} tooltipData={tooltipData} onClose={hideTooltip} />
+                    </Pressable>
+                )}
+            </View>
         )
 
     return <View style={styles.container}>{renderChart}</View>
@@ -79,11 +85,22 @@ const styles = StyleSheet.create({
         width: '100%',
         marginLeft: -10
     },
+    chartWrapper: {
+        position: 'relative'
+    },
     chartContainer: {
-        position: 'relative',
         overflow: 'visible'
     },
     chart: {},
+    tooltipOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 999,
+        pointerEvents: 'box-none'
+    },
     noDataContainer: {
         height: 200,
         justifyContent: 'center',

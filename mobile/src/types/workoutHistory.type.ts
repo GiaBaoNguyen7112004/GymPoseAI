@@ -5,7 +5,7 @@ export interface workoutHistory extends BaseExerciseInfo {
     start_time: string
     calories_burned: number
     calories_base: number
-    reps_count: number
+    rep_count: number
     errors_count: number
     pose_errors: pose_error[]
     elapsed_time: number
