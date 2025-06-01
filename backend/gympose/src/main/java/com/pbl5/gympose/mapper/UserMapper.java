@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
+    @Mapping(target = "isProfileComplete", expression = "java(isProfileComplete(user))")
     UserResponse toUserResponse(User user);
 
     UserDetailResponse toUserDetailResponse(User user);
@@ -32,6 +33,7 @@ public interface UserMapper {
                 user.getGender()
         ).allMatch(Objects::nonNull);
     }
+
 
     @AfterMapping
     default void afterToUserResponse(User user, @MappingTarget UserResponse response) {
