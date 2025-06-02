@@ -70,6 +70,7 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
                     bleManager.stopDeviceScan()
                     setIsScanning(false)
                     resolve(discoveredDevices)
+                    console.error('Device scan error:', error)
                     return
                 }
 
@@ -93,8 +94,7 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
                 resolve(discoveredDevices)
             }, BLE_CONFIG.SCAN_DURATION)
         })
-    }, [requestPermissions, isDuplicateDevice])
-
+    }, [requestPermissions, isDuplicateDevice, isTargetDevice])
     const connectToDevice = useCallback(async (device: Device) => connectToDeviceById(device.id), [])
 
     const connectToDeviceById = useCallback(async (deviceId: string): Promise<Device | null> => {

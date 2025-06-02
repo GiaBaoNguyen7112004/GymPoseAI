@@ -3,6 +3,7 @@ import { User } from '@/types/user.type'
 import storage from '@/utils/StorageManager.util'
 import { EventRegister } from 'react-native-event-listeners'
 import { httpClient } from '@/services/core/http'
+import useBluetoothContext from '@/hooks/useBluetoothContext'
 
 interface AppContextInterface {
     isAuthenticated: boolean
@@ -26,6 +27,7 @@ function AppProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
     const [profile, setProfile] = useState<User | null>(null)
     const [isInitializing, setIsInitializing] = useState<boolean>(true) // Initialize state from storage after storage is loaded
+    const { disconnectFromDevice } = useBluetoothContext()
     useEffect(() => {
         const initializeFromStorage = async () => {
             try {
@@ -59,6 +61,7 @@ function AppProvider({ children }: { children: React.ReactNode }) {
         const handleLogout = () => {
             setAuthenticated(false)
             setProfile(null)
+            disconnectFromDevice()
             // Clear tokens from httpClient
             httpClient.clearAccessToken()
             httpClient.clearRefreshToken()
@@ -75,7 +78,7 @@ function AppProvider({ children }: { children: React.ReactNode }) {
                 EventRegister.removeEventListener(eventListener)
             }
         }
-    }, [])
+    }, [disconnectFromDevice])
 
     const handleSetUserProfile = useCallback(
         (user: User | null) => {

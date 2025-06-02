@@ -67,10 +67,9 @@ class Http {
 
     private async handleError(error: AxiosError) {
         const originalRequest = error.config
-
         const isUnauthorized =
-            error.response?.status === HttpStatusCode.Unauthorized &&
-            (error.response?.data as any)?.message === 'Expired access token!'
+            error.response?.status == HttpStatusCode.Unauthorized &&
+            (error.response?.data as any)?.message == 'Expired access token!'
         if (isUnauthorized && originalRequest) {
             if (!this.refreshTokenRequest) {
                 this.refreshTokenRequest = refreshToken().finally(() => {
@@ -81,8 +80,6 @@ class Http {
             try {
                 const newAccessToken = await this.refreshTokenRequest
                 this.accessToken = newAccessToken
-                storage.saveAccessToken(newAccessToken)
-
                 if (originalRequest.headers) {
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
                 }
@@ -92,7 +89,7 @@ class Http {
                 return Promise.reject(refreshError)
             }
         }
-        console.error('HTTP Error:', error.response?.data || error.message)
+
         return Promise.reject(error)
     }
     setAccessToken(token: string) {

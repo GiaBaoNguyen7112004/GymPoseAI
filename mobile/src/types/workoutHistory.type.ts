@@ -2,6 +2,7 @@ import { BaseExerciseInfo, Category } from './exercises.type'
 import { BaseQueryConfig, PaginationMeta, ResponseApi, ViewModeType } from './utils.type'
 
 export interface workoutHistory extends BaseExerciseInfo {
+    exercise_id: string
     start_time: string
     calories_burned: number
     calories_base: number

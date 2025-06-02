@@ -5,7 +5,7 @@ import { useWorkoutSummaryData } from '@/hooks/useWorkoutSummaryData'
 import { calculateCaloriesBurned } from '@/utils/training.util'
 import { TrainingPayload } from '@/types/payloadWithWebRTCTypes'
 import { DeviceConfig } from '@/types/peripheral.type'
-import useExerciseData from './useExcersieData'
+import useExerciseData from './useExerciseData'
 
 type GymLiveMode = 'NEW' | 'RESUME'
 
@@ -65,7 +65,7 @@ export default function useWorkoutLogic({ workoutHistoryId, exercise_id, setTrai
 
     useEffect(() => {
         setTrainingPayload({
-            exercise_id: workoutHistoryId ? null : (exercise_id ?? null),
+            exercise_id: exercise_id ?? null,
             workout_summary_id: workoutHistoryId ?? null,
             user_id: profile?.id as string,
             config: peripheralInfo?.config as DeviceConfig

@@ -9,7 +9,7 @@ export const useWorkoutHistory = (categoryId: string | null, viewMode: string, o
         () => ({
             page: 1,
             limit: 10,
-            category: categoryId,
+            categoryId: categoryId ? categoryId : undefined,
             viewMode,
             sort_by: 'created_at',
             order

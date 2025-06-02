@@ -66,7 +66,9 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
                 ip_address: idDevice || '',
                 config: { mute: false }
             }
-
+            if (deviceInfo?.id === peripheral.id) {
+                peripheral.config = { ...deviceInfo.config }
+            }
             setDeviceInfo(peripheral)
             await StorageManagerUtil.savePeripheral(peripheral)
         } catch (error) {

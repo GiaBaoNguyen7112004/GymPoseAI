@@ -77,7 +77,8 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
         closeBottomSheet()
         requireDevice(() => {
             navigation.navigate('GymLiveScreen', {
-                workout_history_id: workout_id
+                workout_history_id: workout_id,
+                exercise_id: workoutData?.exercise_id
             })
         })
     }, [closeBottomSheet, navigation, workout_id])

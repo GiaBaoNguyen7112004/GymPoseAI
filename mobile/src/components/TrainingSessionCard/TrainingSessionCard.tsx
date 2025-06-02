@@ -83,10 +83,9 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: 'flex-start',
-        height: 80
+        minHeight: 80
     },
     name: {
-        marginTop: 15,
         fontSize: 14,
         color: '#1D1617',
         fontWeight: '500',

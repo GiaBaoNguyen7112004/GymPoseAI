@@ -90,7 +90,7 @@ export default function useWebRTCHandlers({
     )
 
     const { sendTrainingRequest, sendStartTraining, sendStopTraining, sendPauseTraining } = useWebRTC({
-        wsSignalingUrl: `ws://${peripheralInfo?.ip_address}:8000`,
+        wsSignalingUrl: peripheralInfo?.ip_address as string,
         onRemoteStream: setRemoteStream,
         onAIResponse: listenAIResponse,
         onStatusChange: handleStatusWebRTCChange

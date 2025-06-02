@@ -11,9 +11,9 @@ import ExerciseSteps from './components/ExerciseSteps/ExerciseSteps'
 import useInteractionReadyState from '@/hooks/useInteractionReadyState'
 import { useCallback } from 'react'
 import NoDeviceModal from '@/components/NoDeviceModal'
-import useExerciseData from '@/hooks/useExcersieData'
 import BlankScreenLoader from '@/components/BlankScreenLoader'
 import useRequireDevice from '@/hooks/useRequireDevice'
+import useExerciseData from '@/hooks/useExerciseData'
 
 function ExerciseDetail({ navigation, route }: RootStackScreenProps<'ExerciseDetail'>) {
     const { isReady } = useInteractionReadyState()
