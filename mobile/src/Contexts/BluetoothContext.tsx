@@ -126,10 +126,7 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
             // Clear all device info from state and storage
             setDeviceInfo(null)
             await StorageManagerUtil.savePeripheral(null)
-
-            console.log('Device disconnected and storage cleared successfully')
         } catch (error) {
-            console.error('Error disconnecting from device:', error)
             // Force clear even if disconnect fails
             setDeviceInfo(null)
             await StorageManagerUtil.savePeripheral(null)
@@ -155,15 +152,13 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
             try {
                 handleSetInfoConnectedDevice(bleConnectedDevice)
             } catch (error) {
-                console.error('Error re-reading device info:', error)
+                // console.error('Error re-reading device info:', error)
             }
         }
     }, [bleConnectedDevice])
 
     const forceResetBLE = useCallback(async () => {
         try {
-            console.log('Force resetting BLE state...')
-
             // Force disconnect all devices
             await BLEManager.forceDisconnectAll()
 
@@ -178,7 +173,7 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
 
             console.log('BLE state completely reset')
         } catch (error) {
-            console.error('Error force resetting BLE:', error)
+            // console.error('Error force resetting BLE:', error)
             // Still clear local state even if BLE operations fail
             setDeviceInfo(null)
             await StorageManagerUtil.savePeripheral(null)

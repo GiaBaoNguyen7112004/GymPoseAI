@@ -40,7 +40,7 @@ class BLEManager {
 
             console.log('All BLE connections cancelled')
         } catch (error) {
-            console.error('Error force disconnecting all devices:', error)
+            // console.error('Error force disconnecting all devices:', error)
         }
     }
 }

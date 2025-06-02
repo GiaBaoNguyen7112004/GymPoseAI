@@ -152,7 +152,7 @@ class WebRTCService {
         this.isReconnecting = true
 
         this.reconnectAttempts++
-        console.log(`[WebRTC] Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`)
+        // console.log(`[WebRTC] Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`)
 
         if (this.reconnectAttempts > this.maxReconnectAttempts) {
             this.isReconnecting = false
@@ -163,14 +163,14 @@ class WebRTCService {
         try {
             this.peerConnection.close()
         } catch (e) {
-            console.warn('[WebRTC] Failed to close peer connection:', e)
+            // console.warn('[WebRTC] Failed to close peer connection:', e)
         }
 
         try {
             await this.startConnection()
             this.isReconnecting = false
         } catch (error) {
-            console.error('[WebRTC] Reconnection failed:', error)
+            // console.error('[WebRTC] Reconnection failed:', error)
             this.isReconnecting = false
 
             // Schedule another attempt with exponential backoff

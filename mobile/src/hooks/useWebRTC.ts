@@ -21,7 +21,6 @@ interface UseWebRTCProps {
 const useWebRTC = ({ wsSignalingUrl, onRemoteStream, onAIResponse, onStatusChange }: UseWebRTCProps) => {
     const webRTCServiceRef = useRef<WebRTCService | null>(null)
     const { reReadInfoDevice } = useBluetoothContext()
-
     useEffect(() => {
         const webRTCService = WebRTCService.getInstance({ wsSignalingUrl })
         webRTCServiceRef.current = webRTCService

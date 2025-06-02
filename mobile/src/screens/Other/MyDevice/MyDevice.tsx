@@ -47,7 +47,7 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
 
             // If that doesn't work, force reset everything
             if (connectedDevice) {
-                console.log('Attempting force reset BLE...')
+                // console.log('Attempting force reset BLE...')
                 await forceResetBLE()
             }
 
@@ -57,7 +57,7 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
                 subtitle: 'You have successfully unpair from the device.'
             })
         } catch (error) {
-            console.error('Error disconnecting from device:', error)
+            // console.error('Error disconnecting from device:', error)
             // Last resort: force reset
             try {
                 await forceResetBLE()
@@ -67,7 +67,7 @@ function MyDevice({ navigation }: RootStackScreenProps<'MyDevice'>) {
                     subtitle: 'Device connection has been forcefully terminated.'
                 })
             } catch (forceError) {
-                console.error('Error force resetting BLE:', forceError)
+                // console.error('Error force resetting BLE:', forceError)
             }
         }
     }, [disconnectFromDevice, forceResetBLE, connectedDevice, navigation])

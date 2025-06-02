@@ -81,7 +81,7 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
                 exercise_id: workoutData?.exercise_id
             })
         })
-    }, [closeBottomSheet, navigation, workout_id])
+    }, [closeBottomSheet, navigation, workout_id, requireDevice])
 
     const handlePoseErrorPress = useCallback(
         (item: pose_error) => {

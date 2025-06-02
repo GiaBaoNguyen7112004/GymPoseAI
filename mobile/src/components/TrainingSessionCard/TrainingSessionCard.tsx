@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react'
+import { memo, useMemo } from 'react'
 import { View, Text, Pressable, StyleSheet, StyleProp, ViewStyle, Image } from 'react-native'
 import AvatarWithIcon from '../AvatarWithIcon'
 import MyIcon from '@/components/Icon'
@@ -14,8 +14,6 @@ interface TrainingSessionCardProps {
 }
 
 function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps) {
-    const [imageLoaded, setImageLoaded] = useState(false)
-
     const progress = useMemo(() => {
         return item.elapsed_time ? item.elapsed_time / (item.duration_minutes * 60) : 0
     }, [item.elapsed_time, item.duration_minutes])
@@ -24,13 +22,7 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
         <Pressable style={[styles.container, style]} onPress={onPress}>
             {item.thumbnail_url ? (
                 <View style={styles.avatarContainer}>
-                    {!imageLoaded && <View style={styles.imagePlaceholder} />}
-                    <Image
-                        source={{ uri: item.thumbnail_url }}
-                        style={styles.avatar}
-                        resizeMode='cover'
-                        onLoad={() => setImageLoaded(true)}
-                    />
+                    <Image source={{ uri: item.thumbnail_url }} style={styles.avatar} resizeMode='cover' />
                 </View>
             ) : (
                 <AvatarWithIcon size={50} colors={COLOR_BRANDS.primary} icon='FullBodyWorkout' />
