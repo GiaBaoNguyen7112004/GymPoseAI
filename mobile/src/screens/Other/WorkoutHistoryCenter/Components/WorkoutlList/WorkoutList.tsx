@@ -5,6 +5,7 @@ import { FlatList } from 'react-native'
 import HeaderBanner from './HeaderBanner'
 import EmptyOrLoading from './EmptyOrLoading'
 import LoadingFooter from './LoadingFooter'
+import { defaultKeyExtractor } from '@/utils/list'
 
 interface WorkoutListProps {
     workouts: workoutHistory[]
@@ -34,7 +35,7 @@ const WorkoutList: React.FC<WorkoutListProps> = ({
             style={styles.flatListWrapper}
             data={workouts}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={defaultKeyExtractor}
             ListHeaderComponent={<HeaderBanner />}
             ListEmptyComponent={<EmptyOrLoading isLoading={isLoading || isFetching} />}
             ListFooterComponent={isFetchingNextPage ? <LoadingFooter /> : null}

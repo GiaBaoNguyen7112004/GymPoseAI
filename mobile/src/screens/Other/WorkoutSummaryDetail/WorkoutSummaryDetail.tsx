@@ -30,7 +30,6 @@ import showToast from '@/utils/toast.util'
 function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'WorkoutSummaryDetail'>) {
     const { userData } = useUserData()
     const { workout_id } = route.params
-    console.log(workout_id) // Debugging line to check workout_id
     const { workoutData, poseErrors, isLoading, progressPercentage, poseErrorsCount, repCount, formAccuracy } =
         useWorkoutSummaryData(workout_id)
     const { isReady } = useInteractionReadyState()
@@ -131,6 +130,7 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
                     repCount={repCount}
                     formAccuracy={formAccuracy}
                     poseErrorsCount={poseErrorsCount}
+                    caloriesBurned={workoutData?.calories_burned ?? 0}
                 />
                 {poseErrorsCount > 0 ? (
                     <>

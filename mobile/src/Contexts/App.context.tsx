@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { User } from '@/types/user.type'
 import storage from '@/utils/StorageManager.util'
 import { EventRegister } from 'react-native-event-listeners'
@@ -7,7 +7,7 @@ import { httpClient } from '@/services/core/http'
 interface AppContextInterface {
     isAuthenticated: boolean
     profile: User | null
-    setProfile: React.Dispatch<React.SetStateAction<User | null>>
+    setProfile: (user: User | null) => void
     setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
     isInitializing: boolean
 }
@@ -77,12 +77,22 @@ function AppProvider({ children }: { children: React.ReactNode }) {
         }
     }, [])
 
+    const handleSetUserProfile = useCallback(
+        (user: User | null) => {
+            setProfile(user)
+            if (user) {
+                storage.saveProfile(user)
+            }
+        },
+        [setProfile]
+    )
+
     return (
         <AppContext.Provider
             value={{
                 isAuthenticated,
                 setAuthenticated,
-                setProfile,
+                setProfile: handleSetUserProfile,
                 profile,
                 isInitializing
             }}

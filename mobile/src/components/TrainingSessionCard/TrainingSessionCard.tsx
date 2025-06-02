@@ -17,8 +17,8 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
     const [imageLoaded, setImageLoaded] = useState(false)
 
     const progress = useMemo(() => {
-        return item.calories_base ? item.calories_burned / item.calories_base : 0
-    }, [item.calories_burned, item.calories_base])
+        return item.elapsed_time ? item.elapsed_time / (item.duration_minutes * 60) : 0
+    }, [item.elapsed_time, item.duration_minutes])
 
     return (
         <Pressable style={[styles.container, style]} onPress={onPress}>
@@ -39,7 +39,7 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.dateTime}>{formatReadableDateTime(item.start_time)}</Text>
                 <Text style={styles.stats}>
-                    {item.calories_burned} Calories Burned | {item.duration_minutes} minutes
+                    {item.calories_burned.toFixed(2)} Calories Burned | {item.duration_minutes} minutes
                 </Text>
                 <Progress.Bar
                     progress={progress}

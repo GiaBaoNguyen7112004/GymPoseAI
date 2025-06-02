@@ -35,7 +35,7 @@ const NotificationScreen = ({ navigation }: MainTabScreenProps<'Notification'>) 
                     isFetchingNextPage={isFetchingNextPage}
                     fetchNextPage={fetchNextPage}
                     hasNextPage={hasNextPage}
-                    onCardPress={(item) => handleCardNotificationPress(item)}
+                    onCardPress={handleCardNotificationPress}
                     onMorePress={handlePressNotificationCardMore}
                 />
             </View>

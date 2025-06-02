@@ -23,7 +23,7 @@ function useUserData() {
             setProfile(null)
         }
     }, [isAuthenticated, queryClient, setProfile])
-
+    console.log()
     const { data, isLoading, ...rest } = useQuery({
         queryKey: ['user'],
         queryFn: fetchProfile,
