@@ -91,7 +91,7 @@ public class JwtAuthServiceImpl implements AuthService {
             String refreshToken = jwtUtils.generateToken(email, isRefreshToken);
             String accessToken = jwtUtils.generateToken(email, !isRefreshToken);
 
-            return new JwtLoginResponse(userMapper.toUserResponse(userService.findById(userPrincipal.getId())),
+            return new JwtLoginResponse(userMapper.toUserDetailResponse(userService.findById(userPrincipal.getId())),
                     accessToken, refreshToken);
         } catch (BadCredentialsException e) {
             throw new BadRequestException(ErrorMessage.INCORRECT_EMAIL_OR_PASSWORD);
@@ -212,7 +212,7 @@ public class JwtAuthServiceImpl implements AuthService {
         String refreshToken = jwtUtils.generateToken(userFbEmail, isRefreshToken);
         String accessToken = jwtUtils.generateToken(userFbEmail, !isRefreshToken);
 
-        return new JwtLoginResponse(userMapper.toUserResponse(userService.findById(userId)),
+        return new JwtLoginResponse(userMapper.toUserDetailResponse(userService.findById(userId)),
                 accessToken, refreshToken);
     }
 }

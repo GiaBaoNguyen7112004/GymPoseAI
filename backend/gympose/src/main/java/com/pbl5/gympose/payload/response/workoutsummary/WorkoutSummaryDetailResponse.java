@@ -27,5 +27,6 @@ public class WorkoutSummaryDetailResponse {
     Integer errorsCount;
     String thumbnailUrl;
     Double met;
+    UUID exerciseId;
     List<PoseErrorResponse> poseErrors;
 }

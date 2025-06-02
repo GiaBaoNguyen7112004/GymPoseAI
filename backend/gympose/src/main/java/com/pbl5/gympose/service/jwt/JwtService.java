@@ -3,6 +3,7 @@ package com.pbl5.gympose.service.jwt;
 
 import com.pbl5.gympose.enums.CachePrefix;
 import com.pbl5.gympose.exception.UnauthenticatedException;
+import com.pbl5.gympose.payload.response.jwt.RefreshTokenResponse;
 import com.pbl5.gympose.service.cache.CacheService;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
 import com.pbl5.gympose.utils.jwt.JwtUtils;
@@ -19,7 +20,7 @@ public class JwtService {
     CacheService cacheService;
     JwtUtils jwtUtils;
 
-    public String refreshToken(String refreshToken) {
+    public RefreshTokenResponse refreshToken(String refreshToken) {
         boolean isRefreshToken = true;
         Claims claims = jwtUtils.verifyToken(refreshToken, isRefreshToken);
 
@@ -27,6 +28,7 @@ public class JwtService {
             throw new UnauthenticatedException(ErrorMessage.EXPIRED_REFRESH_TOKEN);
         }
 
-        return jwtUtils.generateToken(claims.get(JwtUtils.USERNAME_CLAIM).toString(), isRefreshToken);
+        return new RefreshTokenResponse(jwtUtils.generateToken(claims.get(JwtUtils.USERNAME_CLAIM)
+                .toString(), !isRefreshToken));
     }
 }

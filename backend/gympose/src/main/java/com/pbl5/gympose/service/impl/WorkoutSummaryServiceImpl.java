@@ -55,6 +55,7 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
                 .met(exercise.getMet())
                 .name(exercise.getName())
                 .thumbnailUrl(exercise.getThumbnailUrl())
+                .exerciseId(exercise.getId())
                 .build();
     }
 
