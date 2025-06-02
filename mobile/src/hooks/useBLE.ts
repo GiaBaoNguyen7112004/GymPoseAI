@@ -159,7 +159,7 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
             // Clear the connected device state
             setConnectedDevice(null)
 
-            console.log('Device disconnected successfully')
+            // console.log('Device disconnected successfully')
         } catch (error) {
             // Even if there's an error, clear the device state
             setConnectedDevice(null)

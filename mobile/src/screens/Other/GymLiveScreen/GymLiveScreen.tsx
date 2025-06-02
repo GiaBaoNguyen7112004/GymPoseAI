@@ -91,8 +91,9 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
                 <NavigationBar
                     title='Training Room (Live)'
                     callback={navigation.goBack}
-                    buttonBackStyle={{ borderRadius: 999 }}
-                    style={{ marginBottom: 30 }}
+                    buttonBackStyle={styles.btnBack}
+                    style={styles.nav}
+                    headingStyle={styles.title}
                 />
                 {assessmentResult && isTrainMode && (
                     <AssessmentFeedback assessmentResult={assessmentResult} fadeAnim={fadeAnim} slideAnim={slideAnim} />
@@ -106,7 +107,7 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
                     />
                 )}
                 <ControlButtons
-                    isTrainMode={false}
+                    isTrainMode={isTrainMode}
                     isPaused={isPaused}
                     onStartWorkout={handleStart}
                     onTogglePause={handlePause}
@@ -133,6 +134,15 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         padding: 20
+    },
+    btnBack: {
+        borderRadius: 999
+    },
+    nav: {
+        marginBottom: 30
+    },
+    title: {
+        color: '#fff'
     }
 })
 

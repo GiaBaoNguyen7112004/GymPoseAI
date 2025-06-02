@@ -136,9 +136,9 @@ export default function useWebRTCHandlers({
             if (!workout_summary_id) throw new Error('Invalid workout summary ID')
             setIsPaused(false)
             setWorkoutHistoryId(workout_summary_id)
-            console.log('Workout started with ID:', workout_summary_id)
+            // console.log('Workout started with ID:', workout_summary_id)
         } catch (error) {
-            console.error('Error starting workout:', error)
+            // console.error('Error starting workout:', error)
             handleConnectionError('Invalid workout summary ID')
             setIsPaused(true)
         }

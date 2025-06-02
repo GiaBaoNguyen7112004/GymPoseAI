@@ -7,7 +7,7 @@ export default function useRequireDevice() {
     const [isModalVisible, setModalVisible] = useState(false)
     const navigation = useNavigation()
 
-    const isDeviceConnected = !!connectedDevice && !!peripheralInfo?.id
+    const isDeviceConnected = !!connectedDevice || !!peripheralInfo?.id
 
     const requireDevice = useCallback(
         (onSuccess: () => void) => {
