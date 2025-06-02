@@ -37,7 +37,7 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
 
             return Object.values(permissions).every((result) => result === PermissionsAndroid.RESULTS.GRANTED)
         } catch (error) {
-            console.error('Permission error:', error)
+            // console.error('Permission error:', error)
             return false
         }
     }, [])
@@ -67,10 +67,10 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
 
             bleManager.startDeviceScan(null, null, (error, device) => {
                 if (error) {
-                    console.error('Scan error:', error)
                     bleManager.stopDeviceScan()
                     setIsScanning(false)
                     resolve(discoveredDevices)
+                    console.error('Device scan error:', error)
                     return
                 }
 
@@ -94,8 +94,7 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
                 resolve(discoveredDevices)
             }, BLE_CONFIG.SCAN_DURATION)
         })
-    }, [requestPermissions, isDuplicateDevice])
-
+    }, [requestPermissions, isDuplicateDevice, isTargetDevice])
     const connectToDevice = useCallback(async (device: Device) => connectToDeviceById(device.id), [])
 
     const connectToDeviceById = useCallback(async (deviceId: string): Promise<Device | null> => {
@@ -121,22 +120,53 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
 
             return device
         } catch (error) {
-            console.error('Connect error:', error)
             return null
         } finally {
             setIsConnecting(false)
         }
     }, [])
+
     const disconnectFromDevice = useCallback(async () => {
         if (!connectedDevice) return
 
         try {
             setIsDisconnecting(true)
-            await bleManager.cancelDeviceConnection(connectedDevice.id)
-            monitorSubscription.current?.remove()
+
+            // Remove the monitor subscription first
+            if (monitorSubscription.current) {
+                monitorSubscription.current.remove()
+                monitorSubscription.current = null
+            }
+
+            // Set a timeout for disconnect operation (5 seconds)
+            const disconnectPromise = (async () => {
+                // Check if device is still connected before attempting to disconnect
+                const isConnected = await connectedDevice.isConnected()
+                if (isConnected) {
+                    await bleManager.cancelDeviceConnection(connectedDevice.id)
+                }
+
+                // Force disconnect all to ensure clean state
+                await BLEManager.forceDisconnectAll()
+            })()
+
+            // Race between disconnect and timeout
+            await Promise.race([
+                disconnectPromise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Disconnect timeout')), 5000))
+            ])
+
+            // Clear the connected device state
             setConnectedDevice(null)
+
+            console.log('Device disconnected successfully')
         } catch (error) {
-            console.error('Disconnect error:', error)
+            // Even if there's an error, clear the device state
+            setConnectedDevice(null)
+            if (monitorSubscription.current) {
+                monitorSubscription.current.remove()
+                monitorSubscription.current = null
+            }
         } finally {
             setIsDisconnecting(false)
         }

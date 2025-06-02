@@ -1,10 +1,11 @@
 import { workoutHistory } from '@/types/workoutHistory.type'
 import React, { memo } from 'react'
-import { ListRenderItem, StyleSheet } from 'react-native'
+import { ListRenderItem, StyleSheet, RefreshControl } from 'react-native'
 import { FlatList } from 'react-native'
 import HeaderBanner from './HeaderBanner'
 import EmptyOrLoading from './EmptyOrLoading'
 import LoadingFooter from './LoadingFooter'
+import { defaultKeyExtractor } from '@/utils/list'
 
 interface WorkoutListProps {
     workouts: workoutHistory[]
@@ -14,6 +15,8 @@ interface WorkoutListProps {
     isFetchingNextPage: boolean
     hasNextPage: boolean
     fetchNextPage: () => void
+    onRefresh?: () => void
+    isRefreshing?: boolean
 }
 
 const WorkoutList: React.FC<WorkoutListProps> = ({
@@ -23,14 +26,16 @@ const WorkoutList: React.FC<WorkoutListProps> = ({
     isFetching,
     isFetchingNextPage,
     hasNextPage,
-    fetchNextPage
+    fetchNextPage,
+    onRefresh,
+    isRefreshing = false
 }) => {
     return (
         <FlatList
             style={styles.flatListWrapper}
             data={workouts}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={defaultKeyExtractor}
             ListHeaderComponent={<HeaderBanner />}
             ListEmptyComponent={<EmptyOrLoading isLoading={isLoading || isFetching} />}
             ListFooterComponent={isFetchingNextPage ? <LoadingFooter /> : null}
@@ -42,6 +47,18 @@ const WorkoutList: React.FC<WorkoutListProps> = ({
             }}
             onEndReachedThreshold={0.2}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+                onRefresh ? (
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={onRefresh}
+                        colors={['#007AFF']} // Android
+                        tintColor='#007AFF' // iOS
+                        title='Pulling to refresh...' // iOS
+                        titleColor='#007AFF' // iOS
+                    />
+                ) : undefined
+            }
         />
     )
 }

@@ -17,7 +17,7 @@ export function useWorkoutSummaryData(workout_id?: string) {
     const workoutData = workoutRes?.data.data
     const poseErrors = workoutData?.pose_errors ?? []
 
-    const repCount = workoutData?.reps_count ?? 1
+    const repCount = workoutData?.rep_count ?? 1
     const poseErrorsCount = poseErrors.length
 
     const formAccuracy = useMemo(() => {

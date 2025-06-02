@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import LoaderModal from '@/components/LoaderModal'
 import NotificationList from './components/NotificationList'
 import DynamicBottomSheet from '@/components/DynamicBottomSheet'
@@ -7,7 +7,6 @@ import { useResetNotificationCountOnFocus } from '@/hooks/useResetNotificationCo
 import { MainTabScreenProps } from '@/navigation/types'
 import useNotifications from '@/hooks/useNotifications'
 import useNotificationHandlers from '@/hooks/useNotificationHandlers'
-import NavigationBarV2 from '@/components/NavigationBarV2'
 import { useCallback } from 'react'
 
 const NotificationScreen = ({ navigation }: MainTabScreenProps<'Notification'>) => {
@@ -36,7 +35,7 @@ const NotificationScreen = ({ navigation }: MainTabScreenProps<'Notification'>) 
                     isFetchingNextPage={isFetchingNextPage}
                     fetchNextPage={fetchNextPage}
                     hasNextPage={hasNextPage}
-                    onCardPress={(item) => handleCardNotificationPress(item, navigation)}
+                    onCardPress={handleCardNotificationPress}
                     onMorePress={handlePressNotificationCardMore}
                 />
             </View>

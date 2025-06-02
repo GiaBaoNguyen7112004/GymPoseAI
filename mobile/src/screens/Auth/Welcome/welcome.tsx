@@ -12,8 +12,7 @@ import useNavigationState from '@/hooks/useNavigationState'
 const WelcomeScreen = ({ navigation }: RootStackScreenProps<'Welcome'>) => {
     const { isNavigating } = useNavigationState(navigation)
     const { userData } = useUserData()
-
-    const isProfileComplete = useMemo(() => Boolean(userData?.is_profile_complete), [userData])
+    const isProfileComplete = useMemo(() => Boolean(userData?.is_profile_complete), [userData?.is_profile_complete])
 
     const handleNavigate = useCallback(() => {
         if (isProfileComplete) {

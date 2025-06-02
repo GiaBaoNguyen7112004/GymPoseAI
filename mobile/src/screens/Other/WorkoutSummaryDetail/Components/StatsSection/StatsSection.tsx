@@ -9,9 +9,17 @@ interface StatsSectionProps {
     repCount: number
     formAccuracy: number
     poseErrorsCount: number
+    caloriesBurned: number
 }
 
-const StatsSection = ({ elapsedTime, durationMinutes, repCount, formAccuracy, poseErrorsCount }: StatsSectionProps) => {
+const StatsSection = ({
+    elapsedTime,
+    durationMinutes,
+    repCount,
+    formAccuracy,
+    poseErrorsCount,
+    caloriesBurned
+}: StatsSectionProps) => {
     return (
         <View style={styles.statsGrid}>
             <View style={styles.statsRow}>
@@ -34,7 +42,7 @@ const StatsSection = ({ elapsedTime, durationMinutes, repCount, formAccuracy, po
                     <Text style={styles.statLabel}>Workout duration</Text>
                 </View>
                 <View style={[styles.statsCell, styles.borderLeft]}>
-                    <Text style={styles.statValue}>346</Text>
+                    <Text style={styles.statValue}>{caloriesBurned.toFixed(2)}</Text>
                     <Text style={styles.statLabel}>Burned</Text>
                 </View>
                 <View style={[styles.statsCell, styles.borderLeft]}>

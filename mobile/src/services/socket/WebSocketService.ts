@@ -140,6 +140,7 @@ class WebSocketService {
         this.eventHandlers = {}
         this.onOpenCallbacks = []
         this.pendingMessages = []
+        this.maxReconnectAttempts = 0
         this.connectionStatusCallback = null
     }
 

@@ -1,5 +1,5 @@
-import { memo, useCallback, useState } from 'react'
-import { View, RefreshControl, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { memo, useCallback } from 'react'
+import { View, RefreshControl, FlatList, StyleSheet, Text } from 'react-native'
 import LottieView from 'lottie-react-native'
 
 import Loader from '@/components/Loader'
@@ -21,14 +21,6 @@ interface Props {
     gotoSearchWorkout: () => void
 }
 
-interface HeaderItem {
-    title: string
-    id: string
-    isHeader: true
-}
-
-type ListItem = Notification | HeaderItem
-
 const NotificationList: React.FC<Props> = ({
     notifications,
     onRefresh,
@@ -41,51 +33,18 @@ const NotificationList: React.FC<Props> = ({
     handlePressNavMore,
     gotoSearchWorkout
 }) => {
-    const [showAllEarlier, setShowAllEarlier] = useState(false)
-
-    const { today, earlier } = groupNotifications(notifications)
-
-    const listData = useCallback((): ListItem[] => {
-        const data: ListItem[] = []
-
-        if (today.length) {
-            data.push({ title: 'Today', id: 'header-Today', isHeader: true }, ...today)
-        }
-
-        if (earlier.length) {
-            data.push({ title: 'Earlier', id: 'header-Earlier', isHeader: true })
-            const displayEarlier = showAllEarlier ? earlier : earlier.slice(0, 2)
-            data.push(...displayEarlier)
-        }
-
-        return data
-    }, [today, earlier, showAllEarlier])()
-
-    const renderHeader = ({ item }: { item: HeaderItem }) => <Text style={styles.sectionHeader}>{item.title}</Text>
-
-    const renderNotificationItem = ({ item }: { item: Notification }) => (
-        <NotificationCard
-            itemData={item}
-            onCardPress={() => onCardPress(item)}
-            onBtnMorePress={() => onMorePress(item)}
-        />
+    const renderNotificationItem = useCallback(
+        ({ item }: { item: Notification }) => (
+            <NotificationCard
+                itemData={item}
+                onCardPress={() => onCardPress(item)}
+                onBtnMorePress={() => onMorePress(item)}
+            />
+        ),
+        [onCardPress, onMorePress]
     )
 
-    const renderItem = ({ item }: { item: ListItem }) => {
-        return 'isHeader' in item ? renderHeader({ item }) : renderNotificationItem({ item: item as Notification })
-    }
-
-    const keyExtractor = (item: ListItem) => ('isHeader' in item ? item.id : defaultKeyExtractor(item as Notification))
-
-    const renderFooter = () => {
-        if (earlier.length > 2 && !showAllEarlier) {
-            return (
-                <TouchableOpacity style={styles.footerButton} onPress={() => setShowAllEarlier(true)}>
-                    <Text style={styles.footerButtonText}>See Previous Notifications</Text>
-                </TouchableOpacity>
-            )
-        }
-
+    const renderFooter = useCallback(() => {
         if (isFetchingNextPage) {
             return (
                 <View style={styles.loadingWrapper}>
@@ -93,33 +52,35 @@ const NotificationList: React.FC<Props> = ({
                 </View>
             )
         }
-
         return null
-    }
+    }, [isFetchingNextPage])
 
-    const renderEmptyComponent = () => (
-        <View style={styles.emptyContainer}>
-            <LottieView
-                source={require('@/assets/animations/empty_cart.json')}
-                autoPlay
-                loop
-                style={styles.emptyImage}
-            />
-            <Text style={styles.emptyText}>You have no notifications</Text>
-        </View>
+    const renderEmptyComponent = useCallback(
+        () => (
+            <View style={styles.emptyContainer}>
+                <LottieView
+                    source={require('@/assets/animations/empty_cart.json')}
+                    autoPlay
+                    loop
+                    style={styles.emptyImage}
+                />
+                <Text style={styles.emptyText}>You have no notifications</Text>
+            </View>
+        ),
+        []
     )
 
-    const handleEndReached = () => {
+    const handleEndReached = useCallback(() => {
         if (hasNextPage && !isFetchingNextPage) {
             fetchNextPage()
         }
-    }
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
     return (
         <FlatList
-            data={listData}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
+            data={notifications}
+            renderItem={renderNotificationItem}
+            keyExtractor={defaultKeyExtractor}
             contentContainerStyle={styles.notificationContainer}
             ListHeaderComponent={
                 <NavigationBarV2
@@ -144,27 +105,6 @@ const NotificationList: React.FC<Props> = ({
 
 export default memo(NotificationList)
 
-const isToday = (dateString: string) => {
-    const date = new Date(dateString.replace(' ', 'T'))
-    const now = new Date()
-    return (
-        date.getDate() === now.getDate() &&
-        date.getMonth() === now.getMonth() &&
-        date.getFullYear() === now.getFullYear()
-    )
-}
-
-const groupNotifications = (notifications: Notification[]) => {
-    const today: Notification[] = []
-    const earlier: Notification[] = []
-
-    notifications.forEach((n) => {
-        isToday(n.created_at) ? today.push(n) : earlier.push(n)
-    })
-
-    return { today, earlier }
-}
-
 const styles = StyleSheet.create({
     notificationContainer: {
         paddingVertical: 5,
@@ -183,7 +123,7 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     emptyText: {
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: '500',
         color: '#7B6F72',
         textAlign: 'center'
@@ -191,28 +131,5 @@ const styles = StyleSheet.create({
     loadingWrapper: {
         alignItems: 'center',
         paddingVertical: 12
-    },
-    sectionHeader: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#333',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        backgroundColor: '#FFF'
-    },
-    footerButton: {
-        backgroundColor: '#E4E6EB',
-        height: 44,
-        borderRadius: 12,
-        marginTop: 15,
-        marginBottom: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginHorizontal: 16
-    },
-    footerButtonText: {
-        color: '#050505',
-        fontSize: 13,
-        fontWeight: '500'
     }
 })

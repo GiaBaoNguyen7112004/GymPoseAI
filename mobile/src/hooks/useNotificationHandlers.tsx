@@ -10,8 +10,10 @@ import showToast from '@/utils/toast.util'
 import { Notification } from '@/types/notification.type'
 import NotificationDetail from '@/screens/Main/Notification/components/NotificationDetail'
 import MoreActionNavBar from '@/screens/Main/Notification/components/MoreActionNavBar'
+import { useNavigation } from '@react-navigation/native'
 
 export default function useNotificationHandlers(refetch: () => void) {
+    const navigation = useNavigation()
     const { openBottomSheet, closeBottomSheet, bottomSheetRef } = useBottomSheetController()
     const { handleReadNotification } = useReadNotification()
     const { markAllAsRead } = useReadAllNotifications()
@@ -49,22 +51,22 @@ export default function useNotificationHandlers(refetch: () => void) {
     }, [])
 
     const handleCardNotificationPress = useCallback(
-        (item: Notification, navigation: any) => {
+        (item: Notification) => {
             handleReadNotification(item.id)
             refetch()
 
-            const { type, metadata } = item
+            const { type, meta_data } = item
             switch (type) {
-                case 'activity':
+                case 'ACTIVITY':
                     navigation.navigate('ActivityTracker')
                     break
-                case 'workout':
-                    navigation.navigate('WorkoutHistoryDetail', { workout_id: metadata?.workout_id })
+                case 'WORKOUT':
+                    navigation.navigate('WorkoutSummaryDetail', { workout_id: meta_data?.workout_id as string })
                     break
-                case 'exercise':
+                case 'EXERCISE':
                     navigation.navigate('CategoryDetail', {
-                        category_id: metadata?.category_id,
-                        exercise_id: metadata?.exercise_id
+                        category_id: meta_data?.category_id as string,
+                        exercise_id: meta_data?.exercise_id
                     })
                     break
             }

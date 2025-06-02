@@ -1,13 +1,12 @@
-import { useCallback } from 'react'
-import { useFocusEffect } from '@react-navigation/native'
+import { useCallback, useEffect } from 'react'
 import useBluetoothContext from './useBluetoothContext'
 import BLEManager from '@/utils/BleManager'
 import showToast from '@/utils/toast.util'
 
 export default function useAutoReconnectBLE(mode: 'infinite' | 'once' = 'infinite') {
-    const { tryConnectMyDevice, peripheralInfo } = useBluetoothContext()
+    const { tryConnectMyDevice, peripheralInfo, connectedDevice } = useBluetoothContext()
 
-    useFocusEffect(
+    useEffect(
         useCallback(() => {
             let isCancelled = false
             let retryInterval: NodeJS.Timeout | null = null
@@ -22,7 +21,7 @@ export default function useAutoReconnectBLE(mode: 'infinite' | 'once' = 'infinit
                     return
                 }
 
-                if (!peripheralInfo?.id || isCancelled) return
+                if (!peripheralInfo?.id || isCancelled || connectedDevice) return
 
                 const isConnected = await tryConnectMyDevice()
 

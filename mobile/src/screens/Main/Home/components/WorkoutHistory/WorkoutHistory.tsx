@@ -15,7 +15,8 @@ export default function WorkoutHistory({ navigation }: MainTabScreenProps<'Home'
                 page: 1,
                 limit: 3,
                 sort_by: 'created_at',
-                viewMode: 'daily'
+                viewMode: 'daily',
+                order: 'desc'
             }),
         staleTime: 1000 * 60 * 5
     })

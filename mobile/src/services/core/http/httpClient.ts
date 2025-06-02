@@ -6,17 +6,12 @@ import { AuthResponse } from '@/types/auth.type'
 import { refreshToken } from './refreshToken'
 import { logoutGlobally } from '@/utils/auth.util'
 
-console.log('API URL:', process.env.EXPO_PUBLIC_API_URL)
-
 class Http {
     instance: AxiosInstance
-    private accessToken: string | null
-    private refreshTokenRequest: Promise<string> | null
+    private accessToken: string | null = null
+    private refreshTokenRequest: Promise<string> | null = null
 
     constructor() {
-        this.accessToken = storage.getAccessToken()
-        this.refreshTokenRequest = null
-
         this.instance = axios.create({
             baseURL: process.env.EXPO_PUBLIC_API_URL,
             timeout: 10000,
@@ -24,6 +19,14 @@ class Http {
         })
 
         this.setupInterceptors()
+    }
+
+    // Initialize tokens from storage after storage is loaded
+    initialize() {
+        const storedAccessToken = storage.getAccessToken()
+        if (storedAccessToken) {
+            this.accessToken = storedAccessToken
+        }
     }
 
     private setupInterceptors() {
@@ -64,11 +67,9 @@ class Http {
 
     private async handleError(error: AxiosError) {
         const originalRequest = error.config
-
         const isUnauthorized =
-            error.response?.status === HttpStatusCode.Unauthorized &&
-            (error.response?.data as any)?.message === 'Expired access token!'
-
+            error.response?.status == HttpStatusCode.Unauthorized &&
+            (error.response?.data as any)?.message == 'Expired access token!'
         if (isUnauthorized && originalRequest) {
             if (!this.refreshTokenRequest) {
                 this.refreshTokenRequest = refreshToken().finally(() => {
@@ -79,8 +80,6 @@ class Http {
             try {
                 const newAccessToken = await this.refreshTokenRequest
                 this.accessToken = newAccessToken
-                storage.saveAccessToken(newAccessToken)
-
                 if (originalRequest.headers) {
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
                 }
@@ -90,11 +89,34 @@ class Http {
                 return Promise.reject(refreshError)
             }
         }
-        console.error('API Error:', error.request)
+
         return Promise.reject(error)
+    }
+    setAccessToken(token: string) {
+        this.accessToken = token
+        storage.saveAccessToken(token)
+    }
+    getAccessToken(): string | null {
+        return this.accessToken || storage.getAccessToken()
+    }
+    clearAccessToken() {
+        this.accessToken = null
+        storage.saveAccessToken('')
+    }
+    setRefreshToken(token: string) {
+        storage.saveRefreshToken(token)
+    }
+    getRefreshToken(): string | null {
+        return storage.getRefreshToken()
+    }
+    clearRefreshToken() {
+        storage.saveRefreshToken('')
     }
 }
 
-const http = new Http().instance
+const httpClient = new Http()
+const http = httpClient.instance
 
+// Export both the instance and the class for initialization
 export default http
+export { httpClient }

@@ -5,7 +5,7 @@ import { useWorkoutSummaryData } from '@/hooks/useWorkoutSummaryData'
 import { calculateCaloriesBurned } from '@/utils/training.util'
 import { TrainingPayload } from '@/types/payloadWithWebRTCTypes'
 import { DeviceConfig } from '@/types/peripheral.type'
-import useExerciseData from './useExcersieData'
+import useExerciseData from './useExerciseData'
 
 type GymLiveMode = 'NEW' | 'RESUME'
 

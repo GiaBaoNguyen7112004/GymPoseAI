@@ -14,9 +14,10 @@ import { DeviceConfig } from '@/types/peripheral.type'
 import useSlideAnimations from '@/hooks/useSlideAnimations'
 import { formatTimeFromSeconds } from '@/utils/format.util'
 import useWebRTCHandlers from '@/hooks/useWebRTCGymLiveHandlers'
-import useWorkoutLogic from '@/hooks/useWorkoutGymeLiveLogic'
+import useWorkoutLogic from '@/hooks/useWorkoutGymLiveLogic'
 import useBluetoothContext from '@/hooks/useBluetoothContext'
 import useUserData from '@/hooks/useUserData'
+import NavigationBar from '@/components/NavigationBar'
 
 const ANIMATION_DURATION = 600
 
@@ -77,10 +78,6 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
         refetchWorkoutSummary
     })
 
-    const handleStopSteaming = useCallback(() => {
-        navigation.goBack
-    }, [])
-
     return (
         <View style={styles.container}>
             <LoaderModal isVisible={isLoading || isStarting || isReconnecting} />
@@ -91,6 +88,12 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
             )}
             <View style={styles.overlay} />
             <SafeAreaView style={styles.safeArea}>
+                <NavigationBar
+                    title='Training Room (Live)'
+                    callback={navigation.goBack}
+                    buttonBackStyle={{ borderRadius: 999 }}
+                    style={{ marginBottom: 30 }}
+                />
                 {assessmentResult && isTrainMode && (
                     <AssessmentFeedback assessmentResult={assessmentResult} fadeAnim={fadeAnim} slideAnim={slideAnim} />
                 )}
@@ -103,12 +106,12 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
                     />
                 )}
                 <ControlButtons
-                    isTrainMode={isTrainMode}
+                    isTrainMode={false}
                     isPaused={isPaused}
                     onStartWorkout={handleStart}
                     onTogglePause={handlePause}
                     onStopWorkout={handleStop}
-                    onStopSteaming={handleStopSteaming}
+                    onStopSteaming={navigation.goBack}
                 />
             </SafeAreaView>
         </View>
@@ -129,8 +132,7 @@ const styles = StyleSheet.create({
     },
     safeArea: {
         flex: 1,
-        padding: 20,
-        paddingTop: 60
+        padding: 20
     }
 })
 

@@ -54,8 +54,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     workoutItem: {
-        width: SCREEN_WIDTH * 0.9,
-        height: 80
+        width: SCREEN_WIDTH * 0.9
     },
     emptyText: {
         fontSize: 14,

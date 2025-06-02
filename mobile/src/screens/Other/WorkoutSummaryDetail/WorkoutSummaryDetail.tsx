@@ -44,15 +44,6 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
     })
     const queryClient = useQueryClient()
 
-    const handleDeleteWorkoutPress = useCallback(async () => {
-        try {
-            closeBottomSheet()
-            setIsDeleteModalVisible(true)
-        } catch (error) {
-            showToast({ title: 'Failed to delete workout summary', position: 'top' })
-        }
-    }, [closeBottomSheet])
-
     const handleDeleteConfirm = useCallback(async () => {
         try {
             setIsDeleting(true)
@@ -86,7 +77,8 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
         closeBottomSheet()
         requireDevice(() => {
             navigation.navigate('GymLiveScreen', {
-                workout_history_id: workout_id
+                workout_history_id: workout_id,
+                exercise_id: workoutData?.exercise_id
             })
         })
     }, [closeBottomSheet, navigation, workout_id])
@@ -139,6 +131,7 @@ function WorkoutSummaryDetail({ navigation, route }: RootStackScreenProps<'Worko
                     repCount={repCount}
                     formAccuracy={formAccuracy}
                     poseErrorsCount={poseErrorsCount}
+                    caloriesBurned={workoutData?.calories_burned ?? 0}
                 />
                 {poseErrorsCount > 0 ? (
                     <>

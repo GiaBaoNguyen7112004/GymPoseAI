@@ -2,14 +2,14 @@ import { useInfiniteQuery, keepPreviousData } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { workoutHistoryApi } from '@/services/rest'
 import { QueryConfigWorkoutHistory, ResponseAPIWorkoutHistoryPage } from '@/types/workoutHistory.type'
-import { isNull, isUndefined, omit, omitBy } from 'lodash'
+import { isNull, isUndefined, omitBy } from 'lodash'
 
-export const useWorkoutHistory = (categoryId: string | null, viewMode: string, order: 'asc' | 'desc' = 'asc') => {
+export const useWorkoutHistory = (categoryId: string | null, viewMode: string, order: 'asc' | 'desc' = 'desc') => {
     const queryConfig = useMemo<QueryConfigWorkoutHistory>(
         () => ({
             page: 1,
             limit: 10,
-            category: categoryId,
+            categoryId: categoryId ? categoryId : undefined,
             viewMode,
             sort_by: 'created_at',
             order

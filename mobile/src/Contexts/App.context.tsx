@@ -1,12 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { User } from '@/types/user.type'
 import storage from '@/utils/StorageManager.util'
 import { EventRegister } from 'react-native-event-listeners'
+import { httpClient } from '@/services/core/http'
+import useBluetoothContext from '@/hooks/useBluetoothContext'
 
 interface AppContextInterface {
     isAuthenticated: boolean
     profile: User | null
-    setProfile: React.Dispatch<React.SetStateAction<User | null>>
+    setProfile: (user: User | null) => void
     setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
     isInitializing: boolean
 }
@@ -24,14 +26,16 @@ export const AppContext = createContext<AppContextInterface>(initialAppContext)
 function AppProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
     const [profile, setProfile] = useState<User | null>(null)
-    const [isInitializing, setIsInitializing] = useState<boolean>(true)
-
-    // Initialize state from storage after storage is loaded
+    const [isInitializing, setIsInitializing] = useState<boolean>(true) // Initialize state from storage after storage is loaded
+    const { disconnectFromDevice } = useBluetoothContext()
     useEffect(() => {
         const initializeFromStorage = async () => {
             try {
                 // Wait for storage to be properly loaded
                 await storage.waitForLoad()
+
+                // Initialize HTTP client with stored tokens
+                httpClient.initialize()
 
                 // Now safely get the values
                 const token = storage.getRefreshToken()
@@ -57,6 +61,10 @@ function AppProvider({ children }: { children: React.ReactNode }) {
         const handleLogout = () => {
             setAuthenticated(false)
             setProfile(null)
+            disconnectFromDevice()
+            // Clear tokens from httpClient
+            httpClient.clearAccessToken()
+            httpClient.clearRefreshToken()
             // No need to set isInitializing to true on logout
             // as it's only for initial app load
         }
@@ -70,14 +78,24 @@ function AppProvider({ children }: { children: React.ReactNode }) {
                 EventRegister.removeEventListener(eventListener)
             }
         }
-    }, [])
+    }, [disconnectFromDevice])
+
+    const handleSetUserProfile = useCallback(
+        (user: User | null) => {
+            setProfile(user)
+            if (user) {
+                storage.saveProfile(user)
+            }
+        },
+        [setProfile]
+    )
 
     return (
         <AppContext.Provider
             value={{
                 isAuthenticated,
                 setAuthenticated,
-                setProfile,
+                setProfile: handleSetUserProfile,
                 profile,
                 isInitializing
             }}
