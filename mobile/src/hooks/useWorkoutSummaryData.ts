@@ -6,7 +6,7 @@ import { clamp } from 'lodash'
 export function useWorkoutSummaryData(workout_id?: string) {
     const {
         data: workoutRes,
-        isPending,
+        isLoading,
         ...rest
     } = useQuery({
         queryKey: ['workout-summary', workout_id],
@@ -41,7 +41,7 @@ export function useWorkoutSummaryData(workout_id?: string) {
         poseErrorsCount,
         formAccuracy,
         progressPercentage,
-        ...rest,
-        isLoading: isPending
+        isLoading,
+        ...rest
     }
 }
