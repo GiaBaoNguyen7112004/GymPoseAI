@@ -17,6 +17,7 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
     const progress = useMemo(() => {
         return item.elapsed_time ? item.elapsed_time / (item.duration_minutes * 60) : 0
     }, [item.elapsed_time, item.duration_minutes])
+    console.log('thumbnail_url', item.thumbnail_url)
 
     return (
         <Pressable style={[styles.container, style]} onPress={onPress}>

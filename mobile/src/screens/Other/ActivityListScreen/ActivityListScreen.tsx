@@ -8,6 +8,7 @@ import { RootStackScreenProps } from '@/navigation/types'
 import { UserActivity } from '@/types/userActivity.type'
 import Header from './components/Header'
 import EmptyComponent from '@/components/EmptyComponent'
+import { defaultKeyExtractor } from '@/utils/list'
 
 function ActivityListScreen({ navigation }: RootStackScreenProps<'ActivityList'>) {
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useActivityList()
@@ -22,7 +23,6 @@ function ActivityListScreen({ navigation }: RootStackScreenProps<'ActivityList'>
     const renderItem = useCallback(({ item }: ListRenderItemInfo<UserActivity>) => {
         return <ActivityItem data={item} />
     }, [])
-    const keyExtractor = useCallback((item: UserActivity) => item.id.toString(), [])
 
     return (
         <View style={styles.container}>
@@ -32,7 +32,7 @@ function ActivityListScreen({ navigation }: RootStackScreenProps<'ActivityList'>
                 <FlatList
                     contentContainerStyle={styles.listContent}
                     data={activities}
-                    keyExtractor={keyExtractor}
+                    keyExtractor={defaultKeyExtractor}
                     renderItem={renderItem}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
