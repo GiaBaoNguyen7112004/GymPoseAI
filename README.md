@@ -4,7 +4,7 @@
 
 ## 🎥 Demo Video
 
-[Video](https://drive.google.com/file/d/1_HYK0VyCR20v1MPl7OJjiNL2PoHr1yEw/view?usp=drive_link)
+[Video](https://drive.google.com/file/d/1-qCqmhA6iKZpND-px9li-EyB5snpeZUz/view?usp=drive_link)
 
 ## 🏋️ Introduction
 
