@@ -17,5 +17,7 @@ public class CloudinaryConfigProperies {
 
     @NotBlank
     private String apiSecret;
+
+    private boolean secure = true;
 }
 

@@ -52,9 +52,12 @@ public class CloudinaryService implements StorageService {
             String mimeType = FileUtils.getMineType(file);
             if (FileUtils.checkMimeType(mimeType)) {
                 Map uploadResult = cloudinary.uploader().upload(file,
-                        ObjectUtils.asMap("folder", folder));
+                        ObjectUtils.asMap(
+                                "folder", folder,
+                                "secure", true  // Thêm secure: true
+                        ));
                 FileUtils.deleteFile(file);
-                fileUrl = uploadResult.get("url").toString();
+                fileUrl = uploadResult.get("secure_url").toString();
             } else {
                 FileUtils.deleteFile(file);
                 throw new BadRequestException(ErrorMessage.FILE_NOT_FORMATTED);

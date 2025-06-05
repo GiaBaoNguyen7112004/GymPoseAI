@@ -24,6 +24,7 @@ public class CloudinaryConfig {
         config.put("cloud_name", cloudinaryConfigProperies.getCloudName());
         config.put("api_key", cloudinaryConfigProperies.getApiKey());
         config.put("api_secret", cloudinaryConfigProperies.getApiSecret());
+        config.put("secure", "true");
         return new Cloudinary(config);
     }
 }

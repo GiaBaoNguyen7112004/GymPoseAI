@@ -3,6 +3,7 @@ package com.pbl5.gympose.websocket;
 import com.pbl5.gympose.entity.PoseError;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +36,10 @@ public class WebSocketSessionUtils {
 
     public static UUID getExerciseIdAttribute(WebSocketSession session) {
         return (UUID) getAttribute(session, EXERCISE_ID);
+    }
+
+    public static LocalDateTime getSessionStartTimeAttribute(WebSocketSession session) {
+        return (LocalDateTime) getAttribute(session, SESSION_START_TIME);
     }
 
     public static void setWorkoutSummaryIdAttribute(WebSocketSession session, Object value) {

@@ -60,17 +60,16 @@ public class WorkoutSessionServiceImpl implements WorkoutSessionService {
     public void endWorkoutSession(WebSocketSession session) {
         LogUtils.info("INFO - VAO END WORKOUT SESSION");
         UUID workoutSummaryId = WebSocketSessionUtils.getWorkoutSummaryIdAttribute(session);
+        LocalDateTime sessionStartTime = WebSocketSessionUtils.getSessionStartTimeAttribute(session);
         WorkoutSummary workoutSummary = workoutSummaryService.findById(workoutSummaryId);
 
-        int sessionDurationMinutes = (int) Duration.between(workoutSummary.getStartTime(), LocalDateTime.now())
+        int sessionDurationMinutes = (int) Duration.between(sessionStartTime, LocalDateTime.now())
                 .toSeconds();
 
         workoutSummary.setElapsedTime(isContinueWorkout(session)
                 ? (workoutSummary.getElapsedTime() + sessionDurationMinutes)
                 : sessionDurationMinutes);
-//        workoutSummary.getPoseErrors().clear();
-//        List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(session);
-//        workoutSummary.setPoseErrors(poseErrors);
+
         WorkoutSummary savedWorkoutSummary = workoutSummaryService.save(workoutSummary);
         eventPublisher.publishEvent(new WorkoutFinishEvent(savedWorkoutSummary));
     }
