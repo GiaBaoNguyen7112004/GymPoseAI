@@ -23,7 +23,13 @@ const UserInfo = ({ editPress }: UserInfoProps) => {
             <View style={styles.ProfileHeader}>
                 <Image
                     style={styles.profile__avatar}
-                    source={avatar ? { uri: avatar } : require('@/assets/images/defaultAvatar.png')}
+                    source={
+                        avatar
+                            ? {
+                                  uri: avatar
+                              }
+                            : require('@/assets/images/defaultAvatar.png')
+                    }
                 />
                 <View style={styles.profile__content}>
                     <Text style={styles.profile_username}>{`${first_name ?? ''} ${last_name ?? ''}`.trim()}</Text>

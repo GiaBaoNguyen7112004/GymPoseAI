@@ -11,6 +11,8 @@ export default function showToast({ title, subtitle, position = 'bottom' }: Toas
         type: 'fitnessXToast',
         text1: title,
         text2: subtitle,
-        position: position
+        position: position,
+        autoHide: true,
+        visibilityTime: 3000
     })
 }

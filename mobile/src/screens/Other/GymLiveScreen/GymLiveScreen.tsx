@@ -89,13 +89,13 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
             <View style={styles.overlay} />
             <SafeAreaView style={styles.safeArea}>
                 <NavigationBar
-                    title='Training Room (Live)'
+                    title={isTrainMode ? 'Training Room (Live)' : 'Camera View'}
                     callback={navigation.goBack}
                     buttonBackStyle={styles.btnBack}
                     style={styles.nav}
                     headingStyle={styles.title}
                 />
-                {assessmentResult && isTrainMode && (
+                {assessmentResult && isTrainMode && !isPaused && (
                     <AssessmentFeedback assessmentResult={assessmentResult} fadeAnim={fadeAnim} slideAnim={slideAnim} />
                 )}
                 <Countdown initialCount={3} ref={countdownRef} onFinish={triggerStartWorkout} />
@@ -107,6 +107,7 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
                     />
                 )}
                 <ControlButtons
+                    isReady={Boolean(remoteStream)}
                     isTrainMode={isTrainMode}
                     isPaused={isPaused}
                     onStartWorkout={handleStart}

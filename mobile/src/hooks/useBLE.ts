@@ -112,7 +112,6 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
             setConnectedDevice(device)
 
             monitorSubscription.current = device.onDisconnected((error, disconnectedDevice) => {
-                console.log('Device disconnected:', disconnectedDevice.id, error)
                 setConnectedDevice(null)
                 setIsConnecting(false)
                 monitorSubscription.current?.remove()

@@ -10,7 +10,7 @@ interface Props {
 const NotificationToggle = ({ value, onToggle }: Props) => {
     const handleToggleNotification = useCallback(() => {
         onToggle(!value)
-    }, [])
+    }, [value, onToggle])
 
     return (
         <SettingItem

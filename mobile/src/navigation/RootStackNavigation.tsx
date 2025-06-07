@@ -1,4 +1,4 @@
-import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack'
+import { createStackNavigator, StackNavigationOptions, TransitionPresets } from '@react-navigation/stack'
 import { RootStackParamList } from './types'
 
 // Auth Screens
@@ -31,6 +31,8 @@ import AboutGymBotScreen from '@/screens/Other/AboutGymBot'
 import Congratulation from '@/screens/Other/Congratulation'
 import VerifyAccountScreen from '@/screens/Auth/VerifyAccount'
 
+import 'react-native-gesture-handler'
+
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootStackNavigation() {
@@ -39,8 +41,12 @@ function RootStackNavigation() {
     const screenOptions: StackNavigationOptions = {
         headerShown: false,
         gestureEnabled: true,
-        animationTypeForReplace: 'pop',
-        animation: 'slide_from_right'
+        animation: 'slide_from_right',
+        cardOverlayEnabled: true,
+        cardStyle: {
+            backgroundColor: '#FFF'
+        },
+        ...TransitionPresets.SlideFromRightIOS
     }
     return (
         <RootStack.Navigator screenOptions={screenOptions} initialRouteName={isAuthenticated ? 'Welcome' : 'Login'}>

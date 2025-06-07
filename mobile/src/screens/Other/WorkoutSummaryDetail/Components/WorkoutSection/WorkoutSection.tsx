@@ -22,7 +22,9 @@ const WorkoutSection = ({ userData, startTime, progress }: HeaderSectionProps) =
                         <Image
                             source={
                                 userData?.avatar
-                                    ? { uri: userData?.avatar }
+                                    ? {
+                                          uri: userData?.avatar
+                                      }
                                     : require('@/assets/images/defaultAvatar.png')
                             }
                             style={styles.profileImage}

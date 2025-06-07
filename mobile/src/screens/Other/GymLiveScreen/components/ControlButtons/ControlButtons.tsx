@@ -12,6 +12,7 @@ type Props = {
     blurIntensity?: number
     isTrainMode?: boolean
     isPaused: boolean
+    isReady: boolean
 }
 
 const ControlButtons = ({
@@ -21,7 +22,8 @@ const ControlButtons = ({
     onStartWorkout,
     blurIntensity = 90,
     onStopSteaming,
-    isTrainMode
+    isTrainMode,
+    isReady
 }: Props) => {
     const [hasStarted, setHasStarted] = useState(false)
     const [scaleAnim] = useState(new Animated.Value(1))
@@ -70,6 +72,7 @@ const ControlButtons = ({
                             style={styles.startButtonContainer}
                             onPress={handleStartWithAnimation}
                             activeOpacity={0.8}
+                            disabled={!isReady}
                         >
                             <BlurView intensity={blurIntensity} tint='light' style={styles.startButton}>
                                 <Animated.View style={[styles.startButtonInner, { transform: [{ scale: scaleAnim }] }]}>

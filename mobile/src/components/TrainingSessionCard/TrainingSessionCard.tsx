@@ -17,13 +17,17 @@ function TrainingSessionCard({ item, style, onPress }: TrainingSessionCardProps)
     const progress = useMemo(() => {
         return item.elapsed_time ? item.elapsed_time / (item.duration_minutes * 60) : 0
     }, [item.elapsed_time, item.duration_minutes])
-    console.log('thumbnail_url', item.thumbnail_url)
-
     return (
         <Pressable style={[styles.container, style]} onPress={onPress}>
             {item.thumbnail_url ? (
                 <View style={styles.avatarContainer}>
-                    <Image source={{ uri: item.thumbnail_url }} style={styles.avatar} resizeMode='cover' />
+                    <Image
+                        source={{
+                            uri: item.thumbnail_url
+                        }}
+                        style={styles.avatar}
+                        resizeMode='cover'
+                    />
                 </View>
             ) : (
                 <AvatarWithIcon size={50} colors={COLOR_BRANDS.primary} icon='FullBodyWorkout' />
