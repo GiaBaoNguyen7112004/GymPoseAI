@@ -8,7 +8,7 @@ const useNotifications = () => {
             const res = await notificationApi.getNotification({ page: pageParam, limit: 10 })
             return res.data
         },
-        getNextPageParam: ({ meta }) => (meta.current_page < meta.total_page ? meta.current_page + 1 : undefined),
+        getNextPageParam: ({ meta }) => (meta.current_page < meta.total_pages ? meta.current_page + 1 : undefined),
         initialPageParam: 1,
         staleTime: 3 * 60 * 1000
     })

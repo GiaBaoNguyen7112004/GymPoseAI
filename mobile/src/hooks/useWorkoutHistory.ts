@@ -34,8 +34,8 @@ export const useWorkoutHistory = (categoryId: string | null, viewMode: string, o
             return response.data
         },
         getNextPageParam: (lastPage) => {
-            const { current_page, total_page } = lastPage.meta
-            return current_page < total_page ? current_page + 1 : undefined
+            const { current_page, total_pages } = lastPage.meta
+            return current_page < total_pages ? current_page + 1 : undefined
         },
         initialPageParam: 1,
         placeholderData: keepPreviousData,

@@ -16,7 +16,7 @@ export interface BaseQueryConfig {
 export interface PaginationMeta {
     current_page: number
     limit: number
-    total_page: number
+    total_pages: number
 }
 
 export interface ErrorField {

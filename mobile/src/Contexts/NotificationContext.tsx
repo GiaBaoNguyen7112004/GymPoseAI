@@ -91,7 +91,7 @@ function NotificationProvider({ children }: NotificationProviderProps) {
                 handleError(err, 'Failed to update notification settings')
             }
         },
-        [expoPushToken, isAuthenticated, cleanup, setup, registerWithBackend]
+        [expoPushToken, isAuthenticated, cleanup, setup, registerWithBackend, handleError]
     )
 
     useEffect(() => {
