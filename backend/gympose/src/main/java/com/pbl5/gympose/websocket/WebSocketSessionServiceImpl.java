@@ -1,8 +1,6 @@
 package com.pbl5.gympose.websocket;
 
 import com.pbl5.gympose.entity.PoseError;
-import com.pbl5.gympose.entity.WorkoutSummary;
-import com.pbl5.gympose.payload.request.workoutsummary.PoseErrorImageRequest;
 import com.pbl5.gympose.service.WorkoutSummaryService;
 import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.LogUtils;
@@ -95,33 +93,6 @@ public class WebSocketSessionServiceImpl implements WebSocketSessionService {
     @Override
     public void removeSession(final String sessionId) {
         sessionStorage.removeWebSocketSession(sessionId);
-    }
-
-    @Override
-    public void addImageUrlsToPoseErrors(String sessionId, List<PoseErrorImageRequest> poseErrorsImages) {
-        poseErrorsImages.forEach(poseErrorImageRequest -> {
-            LogUtils.info("REQUEST - " + poseErrorImageRequest.getUrl());
-            LogUtils.info("REQUEST - " + poseErrorImageRequest.getRepIndex());
-        });
-
-        UUID workoutSummaryId = WebSocketSessionUtils.getWorkoutSummaryIdAttribute(getSession(sessionId));
-        WorkoutSummary workoutSummary = workoutSummaryService.findById(workoutSummaryId);
-
-        LogUtils.info("INFO - ADD IMAGES TO URL");
-        List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(getSession(sessionId));
-        LogUtils.info("INFO - ADD IMAGES : SIZE POSE ERRROS" + poseErrors.size());
-        poseErrors.forEach(poseError -> {
-            String repIndex = String.valueOf(poseError.getRepIndex());
-            poseErrorsImages.stream()
-                    .filter(imageReq -> repIndex.equals(imageReq.getRepIndex()))
-                    .findFirst()
-                    .ifPresent(imageReq -> poseError.setImageUrl(imageReq.getUrl()));
-        });
-        if (workoutSummary.getPoseErrors() == null) {
-            workoutSummary.setPoseErrors(new ArrayList<>());
-        }
-        workoutSummary.getPoseErrors().addAll(poseErrors);
-        workoutSummaryService.save(workoutSummary);
     }
 
 }

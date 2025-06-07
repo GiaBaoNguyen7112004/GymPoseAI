@@ -1,11 +1,13 @@
 package com.pbl5.gympose.service.impl;
 
 import com.pbl5.gympose.entity.Exercise;
+import com.pbl5.gympose.entity.PoseError;
 import com.pbl5.gympose.entity.User;
 import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.exception.NotFoundException;
 import com.pbl5.gympose.mapper.PoseErrorMapper;
 import com.pbl5.gympose.payload.general.PageInfo;
+import com.pbl5.gympose.payload.request.workoutsummary.PoseErrorImageRequest;
 import com.pbl5.gympose.payload.response.workoutsummary.PagingWorkoutSummariesResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.PoseErrorResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.WorkoutStatisticResponse;
@@ -24,7 +26,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -62,8 +66,11 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
     @Override
     public PagingWorkoutSummariesResponse getWorkoutHistory(Pageable pageable, UUID userId, String viewMode,
                                                             UUID categoryId) {
+//        LocalDateTime fromDate = CommonFunction.getFromDate(viewMode);
+//        LocalDateTime toDate = LocalDateTime.now();
+        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
         LocalDateTime fromDate = CommonFunction.getFromDate(viewMode);
-        LocalDateTime toDate = LocalDateTime.now();
+        LocalDateTime toDate = LocalDateTime.now(Clock.system(vnZone));
         Page<WorkoutSummary> pages = workoutSummaryRepository.getWorkoutSummariesByUser_IdAndCreatedAtBetween(userId,
                 fromDate, toDate, pageable);
         PageInfo pageInfo =
@@ -217,5 +224,40 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
     @Override
     public void delete(UUID workoutSummaryId) {
         workoutSummaryRepository.deleteById(workoutSummaryId);
+    }
+
+    @Override
+    public void addImageUrlsToPoseErrors(UUID workoutSummaryId, List<PoseErrorImageRequest> poseErrorsImages) {
+        poseErrorsImages.forEach(poseErrorImageRequest -> {
+            LogUtils.info("REQUEST - " + poseErrorImageRequest.getUrl());
+            LogUtils.info("REQUEST - " + poseErrorImageRequest.getRepIndex());
+        });
+
+        WorkoutSummary workoutSummary = findById(workoutSummaryId);
+
+        LogUtils.info("INFO - ADD IMAGES TO URL");
+        List<PoseError> poseErrors = workoutSummary.getPoseErrors();
+        LogUtils.info("INFO - ADD IMAGES : SIZE POSE ERRROS" + poseErrors.size());
+//        poseErrors.forEach(poseError -> {
+//            String repIndex = String.valueOf(poseError.getRepIndex());
+//            poseErrorsImages.stream()
+//                    .filter(imageReq -> repIndex.equals(imageReq.getRepIndex()))
+//                    .findFirst()
+//                    .ifPresent(imageReq -> poseError.setImageUrl(imageReq.getUrl()));
+//        });
+        poseErrors.forEach(poseError -> {
+            if (poseError.getImageUrl() == null || poseError.getImageUrl().isBlank()) {
+                String repIndex = String.valueOf(poseError.getRepIndex());
+                poseErrorsImages.stream()
+                        .filter(imageReq -> repIndex.equals(imageReq.getRepIndex()))
+                        .findFirst()
+                        .ifPresent(imageReq -> poseError.setImageUrl(imageReq.getUrl()));
+            }
+        });
+//        if (workoutSummary.getPoseErrors() == null) {
+//            workoutSummary.setPoseErrors(new ArrayList<>());
+//        }
+//        workoutSummary.getPoseErrors().addAll(poseErrors);
+        save(workoutSummary);
     }
 }

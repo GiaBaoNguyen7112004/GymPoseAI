@@ -10,12 +10,13 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WorkoutSummaryImagesRequest implements Serializable {
-    String sessionId;
+    UUID workoutSummaryId;
     List<PoseErrorImageRequest> poseErrorImages;
 }

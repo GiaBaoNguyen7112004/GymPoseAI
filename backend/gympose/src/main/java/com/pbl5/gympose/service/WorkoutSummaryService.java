@@ -1,6 +1,7 @@
 package com.pbl5.gympose.service;
 
 import com.pbl5.gympose.entity.WorkoutSummary;
+import com.pbl5.gympose.payload.request.workoutsummary.PoseErrorImageRequest;
 import com.pbl5.gympose.payload.response.workoutsummary.PagingWorkoutSummariesResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.PoseErrorResponse;
 import com.pbl5.gympose.payload.response.workoutsummary.WorkoutStatisticResponse;
@@ -27,4 +28,6 @@ public interface WorkoutSummaryService {
     WorkoutSummary save(WorkoutSummary workoutSummary);
 
     void delete(UUID workoutSummaryId);
+
+    void addImageUrlsToPoseErrors(UUID workoutSummaryId, List<PoseErrorImageRequest> poseErrorsImages);
 }

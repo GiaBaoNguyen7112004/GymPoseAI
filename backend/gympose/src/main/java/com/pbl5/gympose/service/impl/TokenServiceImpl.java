@@ -10,6 +10,7 @@ import com.pbl5.gympose.repository.TokenRepository;
 import com.pbl5.gympose.service.TokenService;
 import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.exception.ErrorMessage;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -67,6 +68,8 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+
+    @Transactional
     @Override
     public void deleteToken(String token) {
         tokenRepository.deleteTokenByToken(token);

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.UUID;
@@ -38,14 +40,27 @@ public final class CommonFunction {
         return 1000 + random.nextInt(9000); // 9000 vì 9999 - 1000 + 1 = 9000
     }
 
+//    public static LocalDateTime getFromDate(String viewMode) {
+//        LocalDateTime now = LocalDateTime.now();
+//        return switch (viewMode.toLowerCase()) {
+//            case "weekly" -> now.with(DayOfWeek.MONDAY).truncatedTo(ChronoUnit.DAYS);
+//            case "monthly" -> now.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+//            case "yearly" -> now.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+//            case "all" -> LocalDateTime.of(1970, 1, 1, 0, 0);
+//            default -> now.truncatedTo(ChronoUnit.DAYS);
+//        };
+//    }
+
     public static LocalDateTime getFromDate(String viewMode) {
-        LocalDateTime now = LocalDateTime.now();
+        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime nowVn = ZonedDateTime.now(vnZone);
+
         return switch (viewMode.toLowerCase()) {
-            case "weekly" -> now.with(DayOfWeek.MONDAY).truncatedTo(ChronoUnit.DAYS);
-            case "monthly" -> now.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-            case "yearly" -> now.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+            case "weekly" -> nowVn.with(DayOfWeek.MONDAY).truncatedTo(ChronoUnit.DAYS).toLocalDateTime();
+            case "monthly" -> nowVn.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS).toLocalDateTime();
+            case "yearly" -> nowVn.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS).toLocalDateTime();
             case "all" -> LocalDateTime.of(1970, 1, 1, 0, 0);
-            default -> now.truncatedTo(ChronoUnit.DAYS);
+            default -> nowVn.truncatedTo(ChronoUnit.DAYS).toLocalDateTime();
         };
     }
 }

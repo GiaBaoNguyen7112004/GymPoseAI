@@ -85,7 +85,7 @@ public class WorkoutSummaryController {
     @PatchMapping(ApiPath.WORKOUT_SUMMARY_ERROR + ApiPath.WORKOUT_SUMMARY_IMAGES)
     @Operation(summary = "add image urls to pose errors")
     public ResponseEntity<ResponseData> addImageUrlsToPoseErrors(@RequestBody WorkoutSummaryImagesRequest request) {
-        webSocketSessionService.addImageUrlsToPoseErrors(request.getSessionId(), request.getPoseErrorImages());
+        workoutSummaryService.addImageUrlsToPoseErrors(request.getWorkoutSummaryId(), request.getPoseErrorImages());
         ResponseData responseData = ResponseData
                 .successWithoutMetaAndData(FeedbackMessage.WORKOUT_SUMMARY_IMAGES_ADDED);
         return ResponseEntity.ok(responseData);
