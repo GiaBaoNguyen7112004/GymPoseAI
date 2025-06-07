@@ -6,7 +6,7 @@ export default {
   slug: 'GymPoseAI',
   version: '1.0.2',
   orientation: 'portrait',
-  icon: './src/assets/images/logo.png',
+  icon: './src/assets/images/playstore.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
@@ -25,7 +25,7 @@ export default {
       'NOTIFICATIONS',
     ],
     adaptiveIcon: {
-      foregroundImage: './src/assets/images/logo.png',
+      foregroundImage: './src/assets/images/playstore.png',
       backgroundColor: '#ffffff',
     },
     permissions: [
@@ -58,7 +58,7 @@ export default {
   web: {
     bundler: 'metro',
     output: 'static',
-    favicon: './src/assets/images/logo.png',
+    favicon: './src/assets/images/playstore.png',
   },
   plugins: [
     [

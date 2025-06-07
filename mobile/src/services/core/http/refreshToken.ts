@@ -18,7 +18,6 @@ export const refreshToken = async (): Promise<string> => {
         await storage.saveAccessToken(access_token)
         return access_token
     } catch (error) {
-        console.error('Error refreshing token:', error)
         logoutGlobally()
         throw (error as AxiosError).response
     }

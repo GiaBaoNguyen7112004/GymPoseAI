@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useState } from 'react'
 import { Device } from 'react-native-ble-plx'
 import { DeviceConfig, PeripheralType } from '@/types/peripheral.type'
-import { readCharacteristic } from '@/utils/BLE.util'
+import { readAndMonitorCharacteristic } from '@/utils/BLE.util'
 import StorageManagerUtil from '@/utils/StorageManager.util'
 import useBLE from '@/hooks/useBLE'
 import BLEManager from '@/utils/BleManager'
@@ -57,24 +57,33 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
         connectedDeviceProps: null
     })
 
-    const handleSetInfoConnectedDevice = useCallback(async (device: Device) => {
-        try {
-            const idDevice = await readCharacteristic(device)
-            const peripheral: PeripheralType = {
-                id: device.id,
-                name: device.name || device.localName || 'Unknown',
-                ip_address: idDevice || '',
-                config: { mute: false }
+    const handleSetInfoConnectedDevice = useCallback(
+        async (device: Device) => {
+            try {
+                // Read the device's IP address from the characteristic
+                await readAndMonitorCharacteristic(device, (value) => {
+                    const ipAddress = value || ''
+
+                    const peripheral: PeripheralType = {
+                        id: device.id,
+                        name: device.name || device.localName || 'Unknown',
+                        ip_address: ipAddress,
+                        config: { mute: false }
+                    }
+
+                    if (deviceInfo?.id === peripheral.id) {
+                        peripheral.config = { ...deviceInfo.config }
+                    }
+
+                    setDeviceInfo(peripheral)
+                    StorageManagerUtil.savePeripheral(peripheral)
+                })
+            } catch (error) {
+                console.error('Error reading device info:', error)
             }
-            if (deviceInfo?.id === peripheral.id) {
-                peripheral.config = { ...deviceInfo.config }
-            }
-            setDeviceInfo(peripheral)
-            await StorageManagerUtil.savePeripheral(peripheral)
-        } catch (error) {
-            console.error('Error reading device info:', error)
-        }
-    }, [])
+        },
+        [deviceInfo]
+    )
 
     const configMyDevice = async (config: DeviceConfig) => {
         if (!deviceInfo?.id) return
@@ -155,7 +164,7 @@ function BlueToothProvider({ children }: { children: React.ReactNode }) {
                 // console.error('Error re-reading device info:', error)
             }
         }
-    }, [bleConnectedDevice])
+    }, [bleConnectedDevice, handleSetInfoConnectedDevice])
 
     const forceResetBLE = useCallback(async () => {
         try {

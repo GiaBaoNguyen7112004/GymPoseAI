@@ -61,7 +61,13 @@ function WorkoutCard({ itemData, onPress, isHighlighted, containerStyle }: Worko
             <Pressable onPress={onPress}>
                 <Animated.View style={[styles.container, { backgroundColor }, containerStyle]}>
                     <View style={styles.content}>
-                        <Image source={{ uri: itemData.thumbnail_url }} style={styles.image} resizeMode='cover' />
+                        <Image
+                            source={{
+                                uri: itemData.thumbnail_url
+                            }}
+                            style={styles.image}
+                            resizeMode='cover'
+                        />
 
                         <View style={styles.textContainer}>
                             <Text style={styles.title}>{itemData.name}</Text>

@@ -22,7 +22,9 @@ const PoseErrorView: React.FC<PoseErrorViewProps> = ({ poseError }) => {
     return (
         <View style={styles.screenContainer}>
             <Image
-                source={{ uri: poseError.image_url }}
+                source={{
+                    uri: poseError.image_url
+                }}
                 style={styles.image}
                 resizeMode='cover'
                 defaultSource={require('@/assets/images/placeHolder.jpg')}
