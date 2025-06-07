@@ -2,6 +2,7 @@ package com.pbl5.gympose.event.handler;
 
 import com.pbl5.gympose.entity.Token;
 import com.pbl5.gympose.entity.User;
+import com.pbl5.gympose.entity.WorkoutSummary;
 import com.pbl5.gympose.enums.TokenType;
 import com.pbl5.gympose.event.RequestResetPasswordEvent;
 import com.pbl5.gympose.event.ResendRequestResetPasswordEvent;
@@ -15,6 +16,7 @@ import com.pbl5.gympose.service.email.EmailService;
 import com.pbl5.gympose.utils.CommonConstant;
 import com.pbl5.gympose.utils.CommonFunction;
 import com.pbl5.gympose.utils.TokenUtils;
+import com.pbl5.gympose.utils.WorkoutUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -87,5 +89,12 @@ public class EventHandler {
     @EventListener
     private void createCaloriesWhenWorkoutFinished(WorkoutFinishEvent event) {
         activityService.createCaloriesConsumption(event.getWorkoutSummary());
+    }
+
+    @EventListener
+    private void updateCaloriesBurned(WorkoutFinishEvent event) {
+        WorkoutSummary workoutSummary = event.getWorkoutSummary();
+        targetService.updateCaloriesBurned(workoutSummary.getUser().getId(),
+                WorkoutUtils.getCaloriesBurned(workoutSummary, workoutSummary.getUser().getWeight(), workoutSummary.getExercise()));
     }
 }

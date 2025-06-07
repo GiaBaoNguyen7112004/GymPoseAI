@@ -67,6 +67,7 @@ public class TargetServiceImpl implements TargetService {
         }).toList();
     }
 
+    @Override
     public Target getTodayTarget(UUID userId) {
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
@@ -140,6 +141,13 @@ public class TargetServiceImpl implements TargetService {
                 LocalDate.of(2025, 4, 30),
                 intakes
         );
+    }
+
+    @Override
+    public void updateCaloriesBurned(UUID userId, Double caloriesBurned) {
+        Target todayTarget = getTodayTarget(userId);
+        todayTarget.setCaloriesBurned(caloriesBurned + todayTarget.getCaloriesBurned());
+        targetRepository.save(todayTarget);
     }
 
 }

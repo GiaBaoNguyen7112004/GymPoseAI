@@ -1,5 +1,6 @@
 package com.pbl5.gympose.service;
 
+import com.pbl5.gympose.entity.Target;
 import com.pbl5.gympose.payload.request.target.TargetRequest;
 import com.pbl5.gympose.payload.response.target.DetailTargetResponse;
 import com.pbl5.gympose.payload.response.target.TargetCaloriesResponse;
@@ -20,6 +21,8 @@ public interface TargetService {
 
     List<DetailTargetResponse> getWeeklyTarget(UUID userId);
 
+    Target getTodayTarget(UUID userId);
+
     @Scheduled(cron = "0 0 0 * * *")
     void createDailyTargets();
 
@@ -27,4 +30,6 @@ public interface TargetService {
     void createUserTarget(UUID userId);
 
     WaterIntakesResponse getMockWaterIntake();
+
+    void updateCaloriesBurned(UUID userId, Double caloriesBurned);
 }
