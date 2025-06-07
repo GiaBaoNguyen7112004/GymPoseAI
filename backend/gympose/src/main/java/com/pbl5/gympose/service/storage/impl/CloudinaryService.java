@@ -1,6 +1,7 @@
 package com.pbl5.gympose.service.storage.impl;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import com.pbl5.gympose.exception.BadRequestException;
 import com.pbl5.gympose.service.storage.StorageService;
@@ -17,6 +18,10 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class CloudinaryService implements StorageService {
+    private static final Object POSE_ERROR_PIC_WIDTH = 350;
+    private static final Object POSE_ERROR_PIC_HEIGHT = 350;
+    private static final Object NORMAL_PIC_WIDTH = 100;
+    private static final Object NORMAL_PIC_HEIGHT = 100;
     private final Cloudinary cloudinary;
 
     @Override
@@ -43,7 +48,7 @@ public class CloudinaryService implements StorageService {
     }
 
     @Override
-    public String uploadFileWithFolder(MultipartFile multipartFile, String folder) {
+    public String uploadFileWithFolder(MultipartFile multipartFile, String folder, Object width, Object height) {
         if (multipartFile == null) throw new BadRequestException(ErrorMessage.FILE_MISSING);
         String fileUrl = null;
         File file = FileUtils.convertMultiPartToFile(multipartFile);
@@ -54,7 +59,14 @@ public class CloudinaryService implements StorageService {
                 Map uploadResult = cloudinary.uploader().upload(file,
                         ObjectUtils.asMap(
                                 "folder", folder,
-                                "secure", true  // Thêm secure: true
+                                "secure", true,  // Thêm secure: true
+                                "transformation", new Transformation()
+                                        .width(width)
+                                        .height(height)
+                                        .crop("limit") // giữ tỷ lệ, không vượt quá
+                                        .quality("auto") // tự động nén ảnh
+                                        .fetchFormat("auto") // chọn định dạng nhẹ nhất (WebP/AVIF nếu có)
+                                        .flags("strip_profile") // xóa metadata: EXIF, ICC profile, etc.
                         ));
                 FileUtils.deleteFile(file);
                 fileUrl = uploadResult.get("secure_url").toString();
@@ -97,5 +109,11 @@ public class CloudinaryService implements StorageService {
         }
 
         return publicIdWithVersion;
+    }
+
+    @Override
+    public String uploadPicture(MultipartFile multipartFile, String folder, boolean isPoseErrorPic) {
+        return isPoseErrorPic ? uploadFileWithFolder(multipartFile, folder, POSE_ERROR_PIC_WIDTH, POSE_ERROR_PIC_HEIGHT)
+                : uploadFileWithFolder(multipartFile, folder, NORMAL_PIC_WIDTH, NORMAL_PIC_HEIGHT);
     }
 }

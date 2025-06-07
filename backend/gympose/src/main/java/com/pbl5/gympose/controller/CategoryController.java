@@ -82,7 +82,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadCategoryImage(@RequestBody MultipartFile file) {
-        ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "category"),
+        ResponseData responseData = ResponseData.success(storageService.uploadPicture(file, "category", false),
                 FeedbackMessage.CATEGORY_IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }

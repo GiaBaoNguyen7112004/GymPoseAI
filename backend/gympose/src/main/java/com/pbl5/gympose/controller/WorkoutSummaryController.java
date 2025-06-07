@@ -95,7 +95,7 @@ public class WorkoutSummaryController {
     @Operation(summary = "upload pose error images")
     @PostMapping(ApiPath.WORKOUT_SUMMARY_ERROR + ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadExerciseImage(@RequestBody MultipartFile file) {
-        ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "pose-errors"),
+        ResponseData responseData = ResponseData.success(storageService.uploadPicture(file, "pose-errors", true),
                 FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }

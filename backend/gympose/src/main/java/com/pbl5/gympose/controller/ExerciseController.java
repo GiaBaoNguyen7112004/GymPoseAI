@@ -91,7 +91,7 @@ public class ExerciseController {
     @Operation(summary = "upload image exercise")
     @PostMapping(ApiPath.EXERCISES + ApiPath.UPLOAD_IMAGE)
     public ResponseEntity<ResponseData> uploadExerciseImage(@RequestBody MultipartFile file) {
-        ResponseData responseData = ResponseData.success(storageService.uploadFileWithFolder(file, "exercises"),
+        ResponseData responseData = ResponseData.success(storageService.uploadPicture(file, "exercises", false),
                 FeedbackMessage.IMAGE_UPLOADED);
         return ResponseEntity.ok(responseData);
     }

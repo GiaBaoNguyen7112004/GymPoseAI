@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String uploadAvatar(MultipartFile file) {
-        return storageService.uploadFileWithFolder(file, "avatars");
+        return storageService.uploadPicture(file, "avatars", false);
     }
 
     @Override
