@@ -19,6 +19,12 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
     const [isDisconnecting, setIsDisconnecting] = useState(false)
 
     const monitorSubscription = useRef<BleSubscription | null>(null)
+    const isCancelledRef = useRef(false)
+
+    const cancelConnecting = useCallback(() => {
+        isCancelledRef.current = true
+        setIsConnecting(false)
+    }, [])
 
     const requestPermissions = useCallback(async (): Promise<boolean> => {
         if (Platform.OS !== 'android') return true
@@ -99,11 +105,15 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
 
     const connectToDeviceById = useCallback(async (deviceId: string): Promise<Device | null> => {
         try {
+            isCancelledRef.current = false
             setIsConnecting(true)
 
             const device = await bleManager.connectToDevice(deviceId, { timeout: 10000 })
             const isConnected = await device?.isConnected()
-
+            if (isCancelledRef.current) {
+                if (device && isConnected) await bleManager.cancelDeviceConnection(device.id)
+                return null
+            }
             if (!isConnected) {
                 throw new Error('Device disconnected right after connect')
             }
@@ -128,6 +138,9 @@ const useBLE = ({ connectedDeviceProps }: UseBLEProps) => {
     const disconnectFromDevice = useCallback(async () => {
         if (!connectedDevice) return
 
+        if (isConnecting) {
+            cancelConnecting()
+        }
         try {
             setIsDisconnecting(true)
 
