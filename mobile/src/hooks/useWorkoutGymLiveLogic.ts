@@ -6,6 +6,7 @@ import { calculateCaloriesBurned } from '@/utils/training.util'
 import { TrainingPayload } from '@/types/payloadWithWebRTCTypes'
 import { DeviceConfig } from '@/types/peripheral.type'
 import useExerciseData from './useExerciseData'
+import useDebounce from './useDebounce'
 
 type GymLiveMode = 'NEW' | 'RESUME'
 
@@ -23,6 +24,7 @@ export default function useWorkoutLogic({ workoutHistoryId, exercise_id, setTrai
     const [isPaused, setIsPaused] = useState<boolean>(true)
     const [timeLeft, setTimeLeft] = useState<number>(-1)
     const [isStarting, setIsStarting] = useState<boolean>(false)
+    const debouncePauseValue = useDebounce(isPaused, 500)
 
     const {
         workoutData: workoutSummary,
@@ -85,6 +87,7 @@ export default function useWorkoutLogic({ workoutHistoryId, exercise_id, setTrai
 
     return {
         isPaused,
+        debouncePauseValue,
         setIsPaused,
         timeLeft,
         setTimeLeft,
