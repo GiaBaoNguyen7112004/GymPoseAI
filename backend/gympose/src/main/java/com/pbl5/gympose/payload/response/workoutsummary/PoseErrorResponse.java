@@ -3,6 +3,8 @@ package com.pbl5.gympose.payload.response.workoutsummary;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pbl5.gympose.config.app.VietnamTimeSerializer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +22,6 @@ public class PoseErrorResponse {
     Integer repIndex;
     String imageUrl;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = VietnamTimeSerializer.class)
     LocalDateTime createdAt;
 }

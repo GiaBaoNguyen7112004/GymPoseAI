@@ -2,6 +2,8 @@ package com.pbl5.gympose.payload.response.workoutsummary;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pbl5.gympose.config.app.VietnamTimeSerializer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class WorkoutSummaryDetailResponse {
     UUID id;
     String name;
+    @JsonSerialize(using = VietnamTimeSerializer.class)
     LocalDateTime startTime;
     Integer durationMinutes;
     Integer elapsedTime;
