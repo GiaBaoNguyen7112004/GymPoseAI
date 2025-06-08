@@ -21,11 +21,11 @@ function CaloriesStats() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Calories</Text>
-            <TextGradient textStyle={styles.value} text={`${calories_burned} kCal`} />
+            <TextGradient textStyle={styles.value} text={`${calories_burned.toFixed(2)} kCal`} />
             <View style={styles.chartContainer}>
                 <Progress.Circle progress={progress} size={66}>
                     <GradientButton rounded containerStyle={styles.button}>
-                        <Text style={styles.buttonText}>{left} kCal left</Text>
+                        <Text style={styles.buttonText}>{left.toFixed(2)} kCal left</Text>
                     </GradientButton>
                 </Progress.Circle>
             </View>

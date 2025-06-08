@@ -20,7 +20,11 @@ const WaterLogItem: React.FC<Props> = ({ item, isLast }) => {
             </View>
             <View>
                 <Text style={[styles.time, isActive && styles.activeItem]}>{item.time}</Text>
-                <TextGradient textStyle={styles.value} text={`${item.value} ml`} colors={['#C58BF2', '#EEA4CE']} />
+                <TextGradient
+                    textStyle={styles.value}
+                    text={`${item.value.toFixed(2)} ml`}
+                    colors={['#C58BF2', '#EEA4CE']}
+                />
             </View>
         </View>
     )
