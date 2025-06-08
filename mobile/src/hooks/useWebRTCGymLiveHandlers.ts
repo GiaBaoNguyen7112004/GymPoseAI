@@ -12,7 +12,6 @@ import useBluetoothContext from '@/hooks/useBluetoothContext'
 interface UseWebRTCHandlersProps {
     trainingPayload: TrainingPayload
     isPaused: boolean
-    debouncePauseValue: boolean
     setIsPaused: (paused: boolean) => void
     setIsStarting: (starting: boolean) => void
     setRemoteStream: (stream: MediaStream | null) => void
@@ -29,7 +28,6 @@ interface UseWebRTCHandlersProps {
 export default function useWebRTCHandlers({
     trainingPayload,
     isPaused,
-    debouncePauseValue,
     setIsPaused,
     setIsStarting,
     setRemoteStream,
@@ -114,9 +112,9 @@ export default function useWebRTCHandlers({
     }, [trainingPayload, sendTrainingRequest, handleConnectionError, setIsStarting, countdownRef])
 
     const handlePause = useCallback(async () => {
-        if (isPaused && isPaused == debouncePauseValue) {
+        if (isPaused) {
             await handleStart()
-        } else if (!isPaused && isPaused == debouncePauseValue) {
+        } else if (!isPaused) {
             setIsPaused(true)
             try {
                 const res = await sendPauseTraining()
