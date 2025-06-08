@@ -43,6 +43,7 @@ public class WorkoutSummaryServiceImpl implements WorkoutSummaryService {
         Double userWeight = workoutSummary.getUser().getWeight();
         Exercise exercise = workoutSummary.getExercise();
         List<PoseErrorResponse> poseErrors = poseErrorMapper.toPoseErrorResponses(workoutSummary.getPoseErrors());
+        poseErrors.sort(Comparator.comparing(PoseErrorResponse::getCreatedAt).reversed());
 
         return WorkoutSummaryDetailResponse.builder()
                 .id(workoutSummary.getId())

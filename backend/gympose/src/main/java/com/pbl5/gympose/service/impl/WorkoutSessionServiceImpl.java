@@ -66,6 +66,8 @@ public class WorkoutSessionServiceImpl implements WorkoutSessionService {
         LocalDateTime sessionStartTime = WebSocketSessionUtils.getSessionStartTimeAttribute(session);
         WorkoutSummary workoutSummary = workoutSummaryService.findById(workoutSummaryId);
         List<PoseError> poseErrors = WebSocketSessionUtils.getPoseErrorsAttribute(session);
+        int currentSize = poseErrors.size();
+        poseErrors.forEach(poseError -> poseError.setRepIndex(poseError.getRepIndex() + currentSize));
 
         int sessionDurationMinutes = (int) Duration.between(sessionStartTime, LocalDateTime.now())
                 .toSeconds();
