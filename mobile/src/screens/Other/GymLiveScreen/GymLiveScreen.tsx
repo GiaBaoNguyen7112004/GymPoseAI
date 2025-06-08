@@ -48,6 +48,7 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
     const { fadeAnim, slideAnim } = useSlideAnimations({ assessmentResult, duration: ANIMATION_DURATION })
     const {
         isPaused,
+        debouncePauseValue,
         setIsPaused,
         timeLeft,
         isStarting,
@@ -66,6 +67,7 @@ const GymLiveScreen: React.FC<GymLiveScreenProps> = ({ navigation, route }) => {
         trainingPayload,
         setWorkoutHistoryId,
         isPaused,
+        debouncePauseValue,
         setIsPaused,
         setIsStarting,
         setRemoteStream,
