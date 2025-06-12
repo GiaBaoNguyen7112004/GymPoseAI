@@ -51,6 +51,32 @@
 
 ## ⚙️ Architecture & Technologies
 
+### 🤖 AI System
+
+| Component              | Details                                                                                   |
+|------------------------|-------------------------------------------------------------------------------------------|
+| Language               | Python 3.10                                                                               |
+| Libraries              | NumPy 1.21, PyTorch 1.12, Scikit-learn 1.0, Matplotlib 3.5, Mediapipe 0.8                 |
+| Model Architecture     | Bi-directional GRU (Bi-GRU) + Attention layer                                             |
+| Input Format           | 2D Tensor (T x F) – T: time frames, F: features (joint keypoints)                         |
+| Output Classes         | 6 squat posture labels (Correct, Narrow feet, Wide feet, Knee in, Too deep, Back bending) |
+| Optimization           | Grid Search (layers, size, dropout, learning rate), class weighting                       |
+| Data Augmentation      | Time warping, Jittering                                                                   |
+| Training Strategy      | 9-fold Cross-Validation + Fixed test subject (1 person = 10%)                             |
+| Hardware               | NVIDIA GPU (training ~3 hours for 1000 epochs)                                            |
+| Accuracy               | 94% on detecting "Toes Lifting" error with GRU + Attention                                |
+
+
+### 🔌 Hardware
+
+| Device            | Raspberry Pi 4                                                          |
+|-------------------|-------------------------------------------------------------------------|
+| Peripherals       | USB Camera, Speaker (loa)                                               |
+| Pose Detection    | MediaPipe Pose (on-device processing)                                   |
+| Communication     | WebSocket (streaming keypoints to backend server)                       |
+| Speech Output     | Google Text-to-Speech (TTS) → Output via speaker                        |
+| Use Case          | Capture human poses → extract keypoints → stream to backend in realtime |
+
 ### 📱 Mobile App
 
 | Component         | Details                     |
@@ -68,11 +94,17 @@
 
 | Component      | Details                 |
 | -------------- | ----------------------- |
-| Language       | Java (Spring Boot)      |
-| Database       | PostgreSQL + Redis      |
-| Authentication | JWT & OAuth 2.0         |
-| API            | RESTful API + WebSocket |
-| Deployment     | Docker                  |
+| Language           | Java (Spring Boot)                   |
+| Database           | PostgreSQL                           |
+| Caching            | Redis                                |
+| Authentication     | JWT & OAuth 2.0 (Facebook)           |
+| API                | RESTful API, WebSocket + STOMP       |
+| Message Broker     | RabbitMQ                             |
+| File Storage       | Cloudinary                           |
+| Email Service      | Gmail SMTP                           |
+| API Documentation  | Swagger                              |
+| Task Scheduling    | Spring Scheduler                     |
+| Deployment         | Docker                               |
 
 ---
 
