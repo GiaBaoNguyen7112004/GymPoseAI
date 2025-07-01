@@ -104,7 +104,7 @@
 | Email Service      | Gmail SMTP                           |
 | API Documentation  | Swagger                              |
 | Task Scheduling    | Spring Scheduler                     |
-| Deployment         | Docker                               |
+| Deployment         | Render                           |
 
 ---
 
